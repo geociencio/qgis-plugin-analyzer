@@ -9,6 +9,7 @@ The **QGIS Plugin Analyzer** is a static analysis tool designed specifically for
 - **Quality Metrics**: Calculates cyclomatic complexity and documentation coverage.
 - **AI-Ready**: Generates structured summaries and optimized contexts for LLMs.
 - **High Performance**: Uses parallel processing to analyze large projects in seconds.
+- **Selective Auditing**: Support for `.analyzerignore` to exclude specific files or directories from analysis.
 
 ## ⚖️ Why use this Analyzer? (Comparison)
 
