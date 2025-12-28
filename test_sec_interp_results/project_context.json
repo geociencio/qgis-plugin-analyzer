@@ -1,0 +1,3877 @@
+{
+  "project_name": "sec_interp",
+  "metrics": {
+    "total_files": 122,
+    "total_lines": 20267,
+    "quality_score": 37.2
+  },
+  "qgis_compliance": {
+    "best_practices": {
+      "issues": [
+        {
+          "file": ".ai-context/context_manager.py",
+          "line": 154,
+          "type": "PRINT_STATEMENT",
+          "severity": "baja",
+          "message": "Uso de print() detectado. Usar QgsMessageLog.",
+          "code": "with open(update_file, \"w\", encoding=\"utf-8\") as f:\n            yaml.dump(current, f, allow_unicode=True)\n\n        print(f\"✅ Contexto actuali"
+        },
+        {
+          "file": ".ai-context/context_manager.py",
+          "line": 161,
+          "type": "PRINT_STATEMENT",
+          "severity": "baja",
+          "message": "Uso de print() detectado. Usar QgsMessageLog.",
+          "code": "if __name__ == \"__main__\":\n    import sys\n\n    if len(sys.argv) < 3:\n        print(\"Uso: python context_manager.py <proyecto> <tarea> [modelo]\")\n        print(\n            \"Ejemplo: python context_manager.py mi_proyecto 'optimizar función X' deepseek-coder\"\n        )\n        sys.exit(1)\n\n    manager = AIContextManager(sys.argv[1])\n    task = sys.argv[2]\n    model = sys.argv[3] if len(sys.argv) > 3 else \"deepseek-coder\"\n\n    prompt = manager.create_optimized_prompt(task, model)\n\n    print(\"=\" * 80)\n    print(\"PROMPT OPTIMIZADO GENERADO:\")\n    print(\"=\" * 80)\n    print(prompt)\n    print(\"=\" * 80)\n\n    # Gua"
+        },
+        {
+          "file": ".ai-context/context_manager.py",
+          "line": 184,
+          "type": "PRINT_STATEMENT",
+          "severity": "baja",
+          "message": "Uso de print() detectado. Usar QgsMessageLog.",
+          "code": "output_file = Path(sys.argv[1]) / f\"prompt_{model}_{int(time.time())}.txt\"\n    output_file.write_text(prompt, encoding=\"utf-8\")\n    print(f\"📝 Prompt guardado"
+        },
+        {
+          "file": "core/validation/layer_validator.py",
+          "line": 38,
+          "type": "UNPRECISE_LAYER_LOOKUP",
+          "severity": "media",
+          "message": "mapLayersByName() puede ser impreciso. Considerar mapLayers() o IDs únicos.",
+          "code": "mapLayersByName(layer_name)\n\n    if"
+        },
+        {
+          "file": "generate_ai_templates.py",
+          "line": 297,
+          "type": "PRINT_STATEMENT",
+          "severity": "baja",
+          "message": "Uso de print() detectado. Usar QgsMessageLog.",
+          "code": "\"gpt-oss-120b_refactor.yaml\": \"\"\"\nsystem: |\n  You are a pragmatic Python expert. Respond with minimal explanation and maximum utility.\n  Assume the user will copy your code directly. Avoid markdown unless necessary.\n  Be concise, precise, and focused on working solutions.\nuser: |\n  Project: {project_name}\n  Task: {task}\n  Relevant context (keep short):\n  {context}\n  Constraints:\n  {constraints}\n\n  Instructions for GPT OSS 120B:\n  - Return only code if the task is implementation.\n  - If explanation is needed, keep it under 3 sentences.\n  - Never ask questions—make best-effort assumptions.\n  - Use modern Python (3.8+), type hints, and error handling.\n  - Do not use XML, JSON, or extra formatting unless explicitly requested.\n\"\"\".strip(),\n}\n\n\ndef main():\n    print(\"🤖 Generando templates personalizados para IA...\")\n    created = 0\n    for filename, content in TEMPLATES.items():\n        filepath = TEMPLATES_DIR / filename\n        if not filepath.exists():\n            filepath.write_text(content, encoding=\"utf-8\")\n            print(f\"✅ Creado: {filename}\")\n            created += 1\n        else:\n            print(f\"⚠️ Ya existe: {filename} (no sobrescrito)\")\n    print(f\"\\n🎉 {created} templates generados en {TEMPLATES_DIR}\")\n    print(\"💡 Usa `ai_workflow."
+        },
+        {
+          "file": "scripts/clean_imports.py",
+          "line": 1,
+          "type": "PRINT_STATEMENT",
+          "severity": "baja",
+          "message": "Uso de print() detectado. Usar QgsMessageLog.",
+          "code": "from pathlib import Path\nimport re\n\n\nfiles = [\n    \"core/types.py\",\n    \"core/validation.py\",\n    \"exporters/base_exporter.py\",\n    \"exporters/csv_exporter.py\",\n    \"exporters/image_exporter.py\",\n    \"exporters/pdf_exporter.py\",\n    \"exporters/profile_exporters.py\",\n    \"exporters/shp_exporter.py\",\n    \"exporters/svg_exporter.py\",\n    \"gui/main_dialog.py\",\n    \"gui/main_dialog_config.py\",\n    \"gui/main_dialog_export.py\",\n    \"gui/main_dialog_preview.py\",\n    \"gui/main_dialog_validation.py\",\n    \"gui/preview_renderer.py\",\n]\n\nbase_dir = Path()\n\nfor file_path in files:\n    path = base_dir / file_path\n    if not path.exists():\n        print(f\"Skipping {path} (n"
+        },
+        {
+          "file": "scripts/clean_imports.py",
+          "line": 62,
+          "type": "PRINT_STATEMENT",
+          "severity": "baja",
+          "message": "Uso de print() detectado. Usar QgsMessageLog.",
+          "code": "if line.strip() == \"from typing import\":\n                continue\n\n        new_lines.append(line)\n\n    path.write_text(\"\\n\".join(new_lines) + \"\\n\")\n    print(f\"Processed {path}\")"
+        },
+        {
+          "file": "scripts/inspect_qgs_api.py",
+          "line": 1,
+          "type": "PRINT_STATEMENT",
+          "severity": "baja",
+          "message": "Uso de print() detectado. Usar QgsMessageLog.",
+          "code": "from qgis.core import QgsPalLayerSettings\n\nprint(\"Attributes containing 'Quad':\")\nfound = False\nfor x in dir(QgsPalLayerSettings):\n    if \"Quad\" in x:\n        print(f\"  QgsPalLayerSettings.{x}\")\n        found = True\n\nif hasattr(QgsPalLayerSettings, \"Property\"):\n    for x in dir(QgsPalLayerSettings.Property):\n        if \"Quad\" in x:\n            print(f\"  QgsPalLayerSettings.Property.{x}\")\n            found = True\n\nif not found:\n    print(\"No attributes conta"
+        },
+        {
+          "file": "logger_config.py",
+          "line": 64,
+          "type": "PRINT_STATEMENT",
+          "severity": "baja",
+          "message": "Uso de print() detectado. Usar QgsMessageLog.",
+          "code": "print(f\"[{self.tag}] (BG)"
+        },
+        {
+          "file": "logger_config.py",
+          "line": 132,
+          "type": "PRINT_STATEMENT",
+          "severity": "baja",
+          "message": "Uso de print() detectado. Usar QgsMessageLog.",
+          "code": "print(f\"Warning: Could not"
+        },
+        {
+          "file": "tools/qgis_plugin_analyzer/src/analyzer/cli.py",
+          "line": 1,
+          "type": "PRINT_STATEMENT",
+          "severity": "baja",
+          "message": "Uso de print() detectado. Usar QgsMessageLog.",
+          "code": "import argparse\nimport sys\nfrom .engine import ProjectAnalyzer\n\ndef main():\n    parser = argparse.ArgumentParser(description=\"QGIS Plugin Analyzer - Un guardián para tu código PyQGIS\")\n    parser.add_argument(\"project_path\", help=\"Ruta al proyecto de QGIS a analizar\")\n    parser.add_argument(\"-o\", \"--output\", help=\"Directorio de salida para los reportes\", default=\"./analysis_results\")\n    \n    args = parser.parse_args()\n    \n    try:\n        analyzer = ProjectAnalyzer(args.project_path, args.output)\n        analyzer.run()\n    except KeyboardInterrupt:\n        print(\"\\n⏹️ Análisis interrumpido.\")\n        sys.exit(1)\n    except Exception as e:\n        print(f\"\\n❌ Error crítico:"
+        },
+        {
+          "file": "tools/qgis_plugin_analyzer/src/analyzer/engine.py",
+          "line": 1,
+          "type": "PRINT_STATEMENT",
+          "severity": "baja",
+          "message": "Uso de print() detectado. Usar QgsMessageLog.",
+          "code": "import os\nimport pathlib\nimport time\nfrom concurrent.futures import ProcessPoolExecutor, as_completed\nfrom typing import Any, Dict, List, Optional\n\nfrom .scanner import analyze_module_worker, audit_qgis_standards, validate_plugin_structure, validate_metadata\nfrom .utils import ProgressTracker, LRUCache\nfrom .reporters import generate_markdown_summary, save_json_context\n\nclass ProjectAnalyzer:\n    def __init__(self, project_path: str, output_dir: Optional[str] = None):\n        self.project_path = pathlib.Path(project_path).resolve()\n        self.output_dir = pathlib.Path(output_dir or \"./analysis_results\").resolve()\n        self.output_dir.mkdir(parents=True, exist_ok=True)\n        self.max_workers = os.cpu_count() or 4\n        \n    def get_python_files(self) -> List[pathlib.Path]:\n        \"\"\"Escanea archivos Python ignorando carpetas comunes.\"\"\"\n        exclude = {\"venv\", \".venv\", \"__pycache__\", \".git\", \"build\", \"dist\"}\n        python_files = []\n        for root, dirs, files in os.walk(self.project_path):\n            dirs[:] = [d for d in dirs if d not in exclude]\n            for file in files:\n                if file.endswith(\".py\"):\n                    python_files.append(pathlib.Path(root) / file)\n        return sorted(python_files)\n\n    def run(self):\n        \"\"\"Ejecuta el pipeline de análisis.\"\"\"\n        print(f\"🔍 Analizando: {sel"
+        },
+        {
+          "file": "tools/qgis_plugin_analyzer/src/analyzer/engine.py",
+          "line": 73,
+          "type": "PRINT_STATEMENT",
+          "severity": "baja",
+          "message": "Uso de print() detectado. Usar QgsMessageLog.",
+          "code": "generate_markdown_summary(analyses, self.output_dir / \"PROJECT_SUMMARY.md\")\n        save_json_context(analyses, self.output_dir / \"project_context.json\")\n        \n        tracker.complete()\n        print(f\"✅ Análisis complet"
+        },
+        {
+          "file": "tools/qgis_plugin_analyzer/src/analyzer/utils.py",
+          "line": 1,
+          "type": "PRINT_STATEMENT",
+          "severity": "baja",
+          "message": "Uso de print() detectado. Usar QgsMessageLog.",
+          "code": "import threading\nimport time\nimport sys\nimport pathlib\nfrom collections import OrderedDict\nfrom typing import Any, List, Dict\nfrom contextlib import contextmanager\nimport signal\n\nclass LRUCache:\n    \"\"\"Cache LRU eficiente.\"\"\"\n    def __init__(self, maxsize: int = 256):\n        self.cache = OrderedDict()\n        self._lock = threading.Lock()\n        self.maxsize = maxsize\n        self.hits = 0\n        self.misses = 0\n\n    def get(self, key: str) -> Any:\n        with self._lock:\n            if key in self.cache:\n                self.cache.move_to_end(key)\n                self.hits += 1\n                return self.cache[key]\n            self.misses += 1\n            return None\n\n    def set(self, key: str, value: Any) -> None:\n        with self._lock:\n            if key in self.cache:\n                self.cache.move_to_end(key)\n            self.cache[key] = value\n            if len(self.cache) > self.maxsize:\n                self.cache.popitem(last=False)\n\n    def stats(self) -> Dict[str, Any]:\n        with self._lock:\n            total = self.hits + self.misses\n            return {\n                \"size\": len(self.cache),\n                \"hits\": self.hits,\n                \"misses\": self.misses,\n                \"hit_rate\": self.hits / total if total > 0 else 0,\n            }\n\nclass ProgressTracker:\n    \"\"\"Tracker de progreso en tiempo real.\"\"\"\n    def __init__(self, total_files: int):\n        self.total = total_files\n        self.processed = 0\n        self.start_time = time.time()\n        self.file_times = []\n        self.last_update = 0\n\n    def update(self, file_path: pathlib.Path, processing_time: float) -> None:\n        self.processed += 1\n        self.file_times.append(processing_time)\n        current_time = time.time()\n        if self.processed % 10 == 0 or current_time - self.last_update > 2:\n            self._display_progress()\n            self.last_update = current_time\n\n    def _display_progress(self) -> None:\n        elapsed = time.time() - self.start_time\n        percent = (self.processed / self.total) * 100 if self.total > 0 else 0\n        if self.file_times and self.processed > 0:\n            avg_time = sum(self.file_times) / len(self.file_times)\n            remaining = self.total - self.processed\n            eta = remaining * avg_time\n            eta_str = f\"{eta:.0f}s\"\n        else:\n            eta_str = \"...\"\n        sys.stdout.write(f\"\\r\\033[K📊 Progreso: {self.processed}/{self.total} ({percent:.1f}%) | ETA: {eta_str}\")\n        sys.stdout.flush()\n\n    def complete(self) -> Dict[str, Any]:\n        elapsed = time.time() - self.start_time\n        print()\n        return {"
+        },
+        {
+          "file": "sec_interp_plugin.py",
+          "line": 264,
+          "type": "UNPRECISE_LAYER_LOOKUP",
+          "severity": "media",
+          "message": "mapLayersByName() puede ser impreciso. Considerar mapLayers() o IDs únicos.",
+          "code": "mapLayersByName(value)\n            i"
+        },
+        {
+          "file": "tools/qgis_plugin_analyzer/src/analyzer/scanner.py",
+          "line": 12,
+          "type": "OBSOLETE_API",
+          "severity": "alta",
+          "message": "Uso de writeAsVectorFormat() obsoleto. Usar writeAsVectorFormatV3().",
+          "code": "writeAsVectorFormat() obsoleto. Usar wri"
+        },
+        {
+          "file": "tools/qgis_plugin_analyzer/src/analyzer/scanner.py",
+          "line": 18,
+          "type": "UNPRECISE_LAYER_LOOKUP",
+          "severity": "media",
+          "message": "mapLayersByName() puede ser impreciso. Considerar mapLayers() o IDs únicos.",
+          "code": "mapLayersByName() puede ser imprecis"
+        },
+        {
+          "file": "tools/qgis_plugin_analyzer/src/analyzer/scanner.py",
+          "line": 42,
+          "type": "PRINT_STATEMENT",
+          "severity": "baja",
+          "message": "Uso de print() detectado. Usar QgsMessageLog.",
+          "code": "\"message\": \"Uso de print() detectado. Usar Qg"
+        },
+        {
+          "file": "scripts/verify_refactor_mock.py",
+          "line": 135,
+          "type": "PRINT_STATEMENT",
+          "severity": "baja",
+          "message": "Uso de print() detectado. Usar QgsMessageLog.",
+          "code": "def test_structure_service():\n    print(\"Testing StructureSe"
+        },
+        {
+          "file": "scripts/verify_refactor_mock.py",
+          "line": 179,
+          "type": "PRINT_STATEMENT",
+          "severity": "baja",
+          "message": "Uso de print() detectado. Usar QgsMessageLog.",
+          "code": "print(f\"Debug: line_feat type: {type(line_feat)}\")\n    print(f\"Debug: line_feat geometry type: {type(line_feat.geometry())}\")\n    print(f\"Debug: line_feat g"
+        },
+        {
+          "file": "scripts/verify_refactor_mock.py",
+          "line": 196,
+          "type": "PRINT_STATEMENT",
+          "severity": "baja",
+          "message": "Uso de print() detectado. Usar QgsMessageLog.",
+          "code": "if not results:\n        print(\"FAIL: No results returned\")\n        return\n\n    first = results[0]\n    print(f\"Result type: {type(first)}\")\n    if isinstance(first, StructureMeasurement):\n        print(\"PASS: Returns StructureMeasurement objects\")\n    else:\n        print(f\"FAIL: Returns {type(first)}\")\n\n    print(f\"Attributes: {first.attributes}\")\n    if first.attributes[\"type\"] == \"fault\":\n        print(\"PASS: Attributes preserved\")\n    else:\n        print(\"FAIL: Attributes lost\")\n\n    print(f\"Elevation: {first.elevation}\")\n    if first.elevation == 50.0:\n        print(\"PASS: Elevation sampled correct\")\n    else:\n        print(f\"FAIL: Elevation is {first.elevation}\")\n\n\ndef test_geology_service():\n    print(\"\\nTesting GeologySe"
+        },
+        {
+          "file": "scripts/verify_refactor_mock.py",
+          "line": 281,
+          "type": "PRINT_STATEMENT",
+          "severity": "baja",
+          "message": "Uso de print() detectado. Usar QgsMessageLog.",
+          "code": "if not results:\n        print(\"FAIL: No results returned\")\n        return\n\n    print(f\"Result count: {len(results)}\")\n    first = results[0]\n    print(f\"Result type: {type(first)}\")\n    if isinstance(first, GeologySegment):\n        print(\"PASS: Returns GeologySegment objects\")\n    else:\n        print(f\"FAIL: Returns {type(first)}\")\n\n    print(f\"Unit Name: {first.unit_name}\")\n    if first.unit_name == \"Granite\":\n        print(\"PASS: Unit name correct\")\n    else:\n        print(f\"FAIL: Unit name is {first.unit_name}\")\n\n    print(f\"Points: {first.points}\")\n    if len(first.points) > 0:\n        print(\"PASS: Points populated\")\n    else:\n        print(\"FAIL: Points empty\")\n\n\nif __name__ == \"__main__\":\n    try:\n        test_structure_service()\n        test_geology_service()\n    except Exception as e:\n        print(f\"CRITICAL FAIL: {e}"
+        },
+        {
+          "file": ".ai-context/ai_workflow.py",
+          "line": 83,
+          "type": "PRINT_STATEMENT",
+          "severity": "baja",
+          "message": "Uso de print() detectado. Usar QgsMessageLog.",
+          "code": "self.current_task = task_type\n        print(f\"🚀 Sesión iniciada: {self.session_id}\")\n        print(f\"📝 Tarea: {description}\")\n        print(f\"📁 Directorio: {ses"
+        },
+        {
+          "file": ".ai-context/ai_workflow.py",
+          "line": 693,
+          "type": "PRINT_STATEMENT",
+          "severity": "baja",
+          "message": "Uso de print() detectado. Usar QgsMessageLog.",
+          "code": "self._generate_session_summary(session_dir, success, summary)\n\n        print(f\"\\n✅ Sesión finalizada: {self.session_id}\")\n        print(f\"📊 Resumen: {summary[:100]}...\")\n        print(f\"📁 Detalles en: {se"
+        },
+        {
+          "file": ".ai-context/ai_workflow.py",
+          "line": 852,
+          "type": "PRINT_STATEMENT",
+          "severity": "baja",
+          "message": "Uso de print() detectado. Usar QgsMessageLog.",
+          "code": "def example_workflow():\n    \"\"\"Ejemplo completo de workflow.\"\"\"\n    print(\"=\" * 60)\n    print(\"WORKFLOW OPTIMIZADO PARA IA - DEMOSTRACIÓN\")\n    print(\"=\" * 60)\n\n    # 1."
+        },
+        {
+          "file": ".ai-context/ai_workflow.py",
+          "line": 870,
+          "type": "PRINT_STATEMENT",
+          "severity": "baja",
+          "message": "Uso de print() detectado. Usar QgsMessageLog.",
+          "code": "prompt_data = manager.generate_optimized_prompt(\n        task_description=\"\"\"\nNecesito optimizar la función `process_large_dataset` en `data_processor.py`.\nActualmente tarda 30 segundos en procesar 100MB de datos.\nRestricciones:\n- No puedo cambiar la interfaz pública\n- Debo mantener compatibilidad con formatos existentes\n- El dataset puede crecer hasta 1GB\n        \"\"\",\n        ai_model=\"deepseek-coder\",\n        context_level=\"normal\",\n    )\n\n    print(\"\\n📤 PROMPT GENERADO:\")\n    print(\"-\" * 40)\n    print(f\"System: {prompt_data['system'][:200]}...\")\n    print(f\"User: {prompt_data"
+        },
+        {
+          "file": ".ai-context/ai_workflow.py",
+          "line": 889,
+          "type": "PRINT_STATEMENT",
+          "severity": "baja",
+          "message": "Uso de print() detectado. Usar QgsMessageLog.",
+          "code": "print(\"\\n⏳ Simulando respu"
+        },
+        {
+          "file": ".ai-context/ai_workflow.py",
+          "line": 919,
+          "type": "PRINT_STATEMENT",
+          "severity": "baja",
+          "message": "Uso de print() detectado. Usar QgsMessageLog.",
+          "code": "result = manager.process_ai_response(simulated_response, prompt_data[\"meta\"])\n\n    print(\"\\n✅ RESPUESTA PROCESADA:\")\n    print(\"-\" * 40)\n    print(f\"Acciones identificadas: {len(result['actions']['code_changes'])}\")\n    print(f\"Archivos guardados"
+        },
+        {
+          "file": ".ai-context/ai_workflow.py",
+          "line": 962,
+          "type": "PRINT_STATEMENT",
+          "severity": "baja",
+          "message": "Uso de print() detectado. Usar QgsMessageLog.",
+          "code": "example_parser = subparsers.add_parser(\n        \"example\", help=\"Ejecutar workflow de ejemplo\"\n    )\n\n    args = parser.parse_args()\n\n    current_dir = os.getcwd()\n    manager = AIWorkflowManager(current_dir)\n\n    if args.command == \"init\":\n        manager._ensure_structure()\n        print(f\"✅ Estructura .ai-c"
+        },
+        {
+          "file": ".ai-context/ai_workflow.py",
+          "line": 978,
+          "type": "PRINT_STATEMENT",
+          "severity": "baja",
+          "message": "Uso de print() detectado. Usar QgsMessageLog.",
+          "code": "(manager.context_dir / \"current_session.txt\").write_text(session_id)\n        print(f\"✅ Sesión iniciada:"
+        },
+        {
+          "file": ".ai-context/ai_workflow.py",
+          "line": 996,
+          "type": "PRINT_STATEMENT",
+          "severity": "baja",
+          "message": "Uso de print() detectado. Usar QgsMessageLog.",
+          "code": "break\n\n        if not manager.current_task:\n            manager.current_task = \"general\"\n\n        prompt = manager.generate_optimized_prompt(\n            args.description, ai_model=args.model\n        )\n        print(\n            f\"✅ Prompt generado en: sessions/{manager.session_id}_{manager.current_task}/\"\n        )\n        print(\"📋 Copia el contenid"
+        },
+        {
+          "file": "analyze_project_optfixed.py",
+          "line": 1591,
+          "type": "OBSOLETE_API",
+          "severity": "alta",
+          "message": "Uso de writeAsVectorFormat() obsoleto. Usar writeAsVectorFormatV3().",
+          "code": "writeAsVectorFormat() obsoleto. Usar wri"
+        },
+        {
+          "file": "analyze_project_optfixed.py",
+          "line": 1603,
+          "type": "UNPRECISE_LAYER_LOOKUP",
+          "severity": "media",
+          "message": "mapLayersByName() puede ser impreciso. Considerar mapLayers() o IDs únicos.",
+          "code": "mapLayersByName() puede ser imprecis"
+        },
+        {
+          "file": "analyze_project_optfixed.py",
+          "line": 288,
+          "type": "PRINT_STATEMENT",
+          "severity": "baja",
+          "message": "Uso de print() detectado. Usar QgsMessageLog.",
+          "code": "sys.stdout.write(\n            f\"\\r\\033[K📊 Progreso: {self.processed}/{self.total} ({percent:.1f}%) | \"\n            f\"Tiempo: {elapsed:.0f}s | ETA: {eta_str}\"\n        )\n        sys.stdout.flush()\n\n    def complete(self) -> dict[str, Any]:\n        \"\"\"Completar tracker y retornar estadísticas.\"\"\"\n        elapsed = time.time() - self.start_time\n        print()  # Nueva línea"
+        },
+        {
+          "file": "analyze_project_optfixed.py",
+          "line": 1208,
+          "type": "PRINT_STATEMENT",
+          "severity": "baja",
+          "message": "Uso de print() detectado. Usar QgsMessageLog.",
+          "code": "if isinstance(saved_state, dict):\n                        self._state = saved_state\n                        print(\n                            f\"📂 Estado cargado: {len(self._state.get('modules', {}))} módulos cacheados\"\n                        )\n        except Exception as e:\n            print(f\"⚠️ No se pudo cargar estado previo: {e}\")\n            self._state = {\"modules\": {}, \"timestamps\": {}, \"metadata\": {}}\n\n    def _save_state(self) -> None:\n        \"\"\"Guardar estado para análisis incrementales.\"\"\"\n        try:\n            state_data = {\n                \"modules\": self._state[\"modules\"],\n                \"timestamps\": self._state[\"timestamps\"],\n                \"metadata\": {\n                    \"project_name\": self.context.project_name,\n                    \"save_time\": time.time(),\n                    \"version\": \"2.0\",\n                    \"total_modules\": len(self._state[\"modules\"]),\n                },\n            }\n\n            with open(self.state_file, \"w\", encoding=\"utf-8\") as f:\n                json.dump(state_data, f, indent=2, ensure_ascii=False)\n\n        except Exception as e:\n            print(f\"⚠️ No se pudo guardar estado: {e}\")\n\n    def _print_cache_stats(self) -> None:\n        \"\"\"Mostrar estadísticas de los caches.\"\"\"\n        ast_stats = self.ast_cache.stats()\n        file_stats = self.file_cache.stats()\n\n        print(\"\\n📊 Estadísticas de Cache:\")\n        print(\n            f\"   AST Cache: {ast_stats['hit_rate']:.1%} hit rate \"\n            f\"({ast_stats['hits']} hits, {ast_stats['misses']} misses)\"\n        )\n        print(\n            f\"   Fi"
+        },
+        {
+          "file": "analyze_project_optfixed.py",
+          "line": 1631,
+          "type": "PRINT_STATEMENT",
+          "severity": "baja",
+          "message": "Uso de print() detectado. Usar QgsMessageLog.",
+          "code": "\"message\": \"Uso de print() detectado. Usar Qg"
+        },
+        {
+          "file": "analyze_project_optfixed.py",
+          "line": 2281,
+          "type": "PRINT_STATEMENT",
+          "severity": "baja",
+          "message": "Uso de print() detectado. Usar QgsMessageLog.",
+          "code": "try:\n                self._save_metrics_history(analyses)\n            except Exception as e:\n                logger.warning(f\"⚠️ Error guardando historial de métricas: {e}\")\n\n            print(\"\\n💾 Resultados guardados en:\")\n            print(f\"   📂 {self.output_dir}\")\n            print(\"   📄 project_context.json\")\n            print(\"   📋 PROJECT_SUMMARY.md\")\n            print(\"   🤖 AI_CONTEXT.md\")\n\n        except Exception as e:\n            print(f\"⚠️ Error guardando"
+        },
+        {
+          "file": "analyze_project_optfixed.py",
+          "line": 2359,
+          "type": "PRINT_STATEMENT",
+          "severity": "baja",
+          "message": "Uso de print() detectado. Usar QgsMessageLog.",
+          "code": "if re.search(pattern, content, flags=re.DOTALL):\n                new_content = re.sub(pattern, new_metrics.strip(), content, flags=re.DOTALL)\n                brain_path.write_text(new_content, encoding=\"utf-8\")\n                print(f\"   🧠 Cerebro actualizado: {brain_path}\")\n            else:\n                print(f\"   ⚠️ No se encontró la sección de métricas en {brain_path.name}\")\n\n        except Exception as e:\n            print(f\"   ⚠️ Falló la act"
+        },
+        {
+          "file": "analyze_project_optfixed.py",
+          "line": 2421,
+          "type": "PRINT_STATEMENT",
+          "severity": "baja",
+          "message": "Uso de print() detectado. Usar QgsMessageLog.",
+          "code": "python:\n  version: \"{python_version}\"\n  testing_framework: {f'\"{testing_framework}\"' if testing_framework else \"null\"}\n  type_checking: null\n  formatter: {f'\"{formatter}\"' if formatter else \"null\"}\n  linter: {f'\"{linter}\"' if linter else \"null\"}\n\ngis_frameworks:\n{chr(10).join(f'  - \"{fw}\"' for fw in gis_frameworks) if gis_frameworks else \"  []\"}\n\narchitecture:\n  pattern: \"{architecture_pattern}\"\n  data_access: \"Repository\"\n  ui_design: \"Programmatic (PyQt5)\"\n\ndependencies:\n{chr(10).join(f'  - \"{dep.split(\".\")[0]}\"' for dep in sorted({imp.split(\".\")[0] for imp in third_party[:10]}))}\n\"\"\"\n\n        try:\n            tech_stack_path.parent.mkdir(parents=True, exist_ok=True)\n            tech_stack_path.write_text(yaml_content, encoding=\"utf-8\")\n            print(f\"   📦 Tech stack actualizado: {tech_stack_path}\")\n        except Exception as e:\n            print(f\"   ⚠️ Error escrib"
+        },
+        {
+          "file": "analyze_project_optfixed.py",
+          "line": 2476,
+          "type": "PRINT_STATEMENT",
+          "severity": "baja",
+          "message": "Uso de print() detectado. Usar QgsMessageLog.",
+          "code": "history = []\n        if history_file.exists():\n            try:\n                with open(history_file, encoding=\"utf-8\") as f:\n                    history = json.load(f)\n            except Exception as e:\n                print(f\"   ⚠️ No se pudo c"
+        },
+        {
+          "file": "analyze_project_optfixed.py",
+          "line": 2492,
+          "type": "PRINT_STATEMENT",
+          "severity": "baja",
+          "message": "Uso de print() detectado. Usar QgsMessageLog.",
+          "code": "try:\n            history_file.parent.mkdir(parents=True, exist_ok=True)\n            with open(history_file, \"w\", encoding=\"utf-8\") as f:\n                json.dump(history, f, indent=2, ensure_ascii=False)\n            print(f\"   📈 Historial de métricas actualizado: {history_file}\")\n            print(f\"      Total de registros: {len(history)}\")\n        except Exception as e:\n            print(f\"   ⚠️ Error guarda"
+        },
+        {
+          "file": "analyze_project_optfixed.py",
+          "line": 2820,
+          "type": "PRINT_STATEMENT",
+          "severity": "baja",
+          "message": "Uso de print() detectado. Usar QgsMessageLog.",
+          "code": "signal.signal(\n        signal.SIGALRM,\n        lambda signum, frame: print(\"\\n⏰ Timeout global"
+        },
+        {
+          "file": "analyze_project_optfixed.py",
+          "line": 2851,
+          "type": "PRINT_STATEMENT",
+          "severity": "baja",
+          "message": "Uso de print() detectado. Usar QgsMessageLog.",
+          "code": "if results:\n            logger.info(f\"\\n{'=' * 60}\")\n            logger.info(f\"🎉 ANÁLISIS COMPLETADO EN {total_time:.1f} SEGUNDOS\")\n            logger.info(f\"{'=' * 60}\")\n\n            metrics = results.get(\"metrics\", {})\n            results.get(\"complexity\", {})\n\n            print(f\"   💡 Optimizaciones: {len(results.get('optimizations', []))} sugerencias\")\n            print(f\"   🏆 Calidad: {met"
+        },
+        {
+          "file": "analyze_project_optfixed.py",
+          "line": 2863,
+          "type": "PRINT_STATEMENT",
+          "severity": "baja",
+          "message": "Uso de print() detectado. Usar QgsMessageLog.",
+          "code": "high_security = [\n                s for s in results.get(\"security\", []) if s.get(\"max_severity\") == \"alta\"\n            ]\n            if high_security:\n                print(\"\\n🚨 PROBLEMAS CRÍTICOS DETECTADOS:\")\n                for issue in high_security[:3]:\n                    print(f\"   - {issue['module']}: {issue['total_issues']} problemas\")\n\n            print(\"\\n💾 Los resultados han sido guardados en el directorio del proyecto.\")\n\n        else:\n            print(\"\\n❌ No se pudieron obtener resultados del análisis\")\n            sys.exit(1)\n\n    except KeyboardInterrupt:\n        print(\"\\n\\n⏹️  Análisis interrumpido por el usuario\")\n        sys.exit(0)\n    except Exception as e:\n        print(f\"\\n❌ Error durante"
+        }
+      ],
+      "issues_count": 44
+    },
+    "repository_standards": {
+      "structure": {
+        "files": {
+          "metadata.txt": true,
+          "__init__.py": true,
+          "LICENSE": true
+        },
+        "has_class_factory": true,
+        "is_valid": true
+      },
+      "metadata": {
+        "is_valid": true,
+        "missing": [],
+        "fields_found": [
+          "name",
+          "description",
+          "version",
+          "qgisMinimumVersion",
+          "author",
+          "email"
+        ]
+      }
+    }
+  },
+  "modules": [
+    {
+      "path": "__init__.py",
+      "lines": 34,
+      "functions": [
+        "classFactory(1 args)"
+      ],
+      "classes": [],
+      "imports": [
+        "sec_interp_plugin"
+      ],
+      "complexity": 1,
+      "has_main": false,
+      "docstrings": {
+        "module": true
+      },
+      "file_size_kb": 1.56640625,
+      "syntax_error": false
+    },
+    {
+      "path": "core/exceptions.py",
+      "lines": 59,
+      "functions": [
+        "__init__(3 args)"
+      ],
+      "classes": [
+        "SecInterpError(Exception)",
+        "ValidationError(SecInterpError)",
+        "ProcessingError(SecInterpError)",
+        "GeometryError(ProcessingError)",
+        "DataMissingError(ProcessingError)",
+        "ExportError(SecInterpError)",
+        "ConfigurationError(SecInterpError)"
+      ],
+      "imports": [
+        "__future__"
+      ],
+      "complexity": 2,
+      "has_main": false,
+      "docstrings": {
+        "module": true
+      },
+      "file_size_kb": 1.353515625,
+      "syntax_error": false
+    },
+    {
+      "path": "core/interfaces/structure_interface.py",
+      "lines": 40,
+      "functions": [
+        "project_structures(9 args)"
+      ],
+      "classes": [
+        "IStructureService(ABC)"
+      ],
+      "imports": [
+        "abc",
+        "qgis.core",
+        "typing"
+      ],
+      "complexity": 1,
+      "has_main": false,
+      "docstrings": {
+        "module": true
+      },
+      "file_size_kb": 1.2548828125,
+      "syntax_error": false
+    },
+    {
+      "path": "core/services/__init__.py",
+      "lines": 21,
+      "functions": [],
+      "classes": [],
+      "imports": [
+        "drillhole_service",
+        "geology_service",
+        "profile_service",
+        "structure_service"
+      ],
+      "complexity": 1,
+      "has_main": false,
+      "docstrings": {
+        "module": true
+      },
+      "file_size_kb": 0.5625,
+      "syntax_error": false
+    },
+    {
+      "path": "core/interfaces/__init__.py",
+      "lines": 2,
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "complexity": 1,
+      "has_main": false,
+      "docstrings": {
+        "module": true
+      },
+      "file_size_kb": 0.064453125,
+      "syntax_error": false
+    },
+    {
+      "path": "core/interfaces/profile_interface.py",
+      "lines": 32,
+      "functions": [
+        "generate_topographic_profile(5 args)"
+      ],
+      "classes": [
+        "IProfileService(ABC)"
+      ],
+      "imports": [
+        "abc",
+        "qgis.core",
+        "typing"
+      ],
+      "complexity": 1,
+      "has_main": false,
+      "docstrings": {
+        "module": true
+      },
+      "file_size_kb": 0.9375,
+      "syntax_error": false
+    },
+    {
+      "path": "core/config.py",
+      "lines": 83,
+      "functions": [
+        "__init__(1 args)",
+        "get(3 args)",
+        "set(3 args)",
+        "reset_defaults(1 args)"
+      ],
+      "classes": [
+        "ConfigService"
+      ],
+      "imports": [
+        "qgis.core",
+        "sec_interp.logger_config",
+        "typing"
+      ],
+      "complexity": 3,
+      "has_main": false,
+      "docstrings": {
+        "module": true
+      },
+      "file_size_kb": 2.34765625,
+      "syntax_error": false
+    },
+    {
+      "path": ".ai-context/context_manager.py",
+      "lines": 187,
+      "functions": [
+        "__init__(2 args)",
+        "_load_contexts(1 args)",
+        "create_optimized_prompt(4 args)",
+        "_deepseek_template(1 args)",
+        "_extract_relevant_context(2 args)",
+        "_extract_keywords(2 args)",
+        "_truncate_to_tokens(3 args)",
+        "update_context(2 args)"
+      ],
+      "classes": [
+        "AIContextManager"
+      ],
+      "imports": [
+        "json",
+        "pathlib",
+        "sys",
+        "typing",
+        "yaml"
+      ],
+      "complexity": 21,
+      "has_main": true,
+      "docstrings": {
+        "module": true
+      },
+      "file_size_kb": 6.1181640625,
+      "syntax_error": false
+    },
+    {
+      "path": "core/data_cache.py",
+      "lines": 155,
+      "functions": [
+        "__init__(2 args)",
+        "get_cache_key(2 args)",
+        "get(3 args)",
+        "set(5 args)",
+        "invalidate(3 args)",
+        "clear(1 args)",
+        "get_metadata(3 args)",
+        "get_cache_size(1 args)"
+      ],
+      "classes": [
+        "DataCache(ICacheService)"
+      ],
+      "imports": [
+        "hashlib",
+        "sec_interp.core.interfaces.cache_interface",
+        "sec_interp.logger_config",
+        "time",
+        "typing"
+      ],
+      "complexity": 19,
+      "has_main": false,
+      "docstrings": {
+        "module": true
+      },
+      "file_size_kb": 4.8876953125,
+      "syntax_error": false
+    },
+    {
+      "path": "core/performance_metrics.py",
+      "lines": 293,
+      "functions": [
+        "format_duration(1 args)",
+        "performance_monitor(1 args)",
+        "__init__(1 args)",
+        "record_timing(3 args)",
+        "record_count(3 args)",
+        "add_metadata(3 args)",
+        "get_summary(1 args)",
+        "clear(1 args)",
+        "__init__(4 args)",
+        "__enter__(1 args)",
+        "__exit__(4 args)",
+        "__init__(2 args)",
+        "_setup_logger(2 args)",
+        "measure_operation(2 args)",
+        "_get_memory_usage(1 args)",
+        "get_operation_stats(2 args)",
+        "wrapper(0 args)"
+      ],
+      "classes": [
+        "MetricsCollector",
+        "PerformanceTimer",
+        "PerformanceMonitor"
+      ],
+      "imports": [
+        "__future__",
+        "contextlib",
+        "functools",
+        "logging",
+        "psutil",
+        "sec_interp.logger_config",
+        "time",
+        "tracemalloc",
+        "typing"
+      ],
+      "complexity": 10,
+      "has_main": false,
+      "docstrings": {
+        "module": true
+      },
+      "file_size_kb": 8.4189453125,
+      "syntax_error": false
+    },
+    {
+      "path": "core/services/profile_service.py",
+      "lines": 93,
+      "functions": [
+        "generate_topographic_profile(5 args)"
+      ],
+      "classes": [
+        "ProfileService(IProfileService)"
+      ],
+      "imports": [
+        "qgis.core",
+        "sec_interp.core",
+        "sec_interp.core.exceptions",
+        "sec_interp.core.interfaces.profile_interface",
+        "sec_interp.core.types",
+        "sec_interp.logger_config",
+        "typing"
+      ],
+      "complexity": 4,
+      "has_main": false,
+      "docstrings": {
+        "module": true
+      },
+      "file_size_kb": 3.474609375,
+      "syntax_error": false
+    },
+    {
+      "path": "core/interfaces/cache_interface.py",
+      "lines": 63,
+      "functions": [
+        "get(3 args)",
+        "set(5 args)",
+        "invalidate(3 args)",
+        "clear(1 args)",
+        "get_metadata(3 args)"
+      ],
+      "classes": [
+        "ICacheService(Protocol)"
+      ],
+      "imports": [
+        "__future__",
+        "typing"
+      ],
+      "complexity": 1,
+      "has_main": false,
+      "docstrings": {
+        "module": true
+      },
+      "file_size_kb": 1.6787109375,
+      "syntax_error": false
+    },
+    {
+      "path": "core/utils/__init__.py",
+      "lines": 106,
+      "functions": [],
+      "classes": [],
+      "imports": [
+        "__future__",
+        "drillhole",
+        "geology",
+        "geometry",
+        "io",
+        "parsing",
+        "rendering",
+        "sampling",
+        "spatial"
+      ],
+      "complexity": 1,
+      "has_main": false,
+      "docstrings": {
+        "module": true
+      },
+      "file_size_kb": 2.23828125,
+      "syntax_error": false
+    },
+    {
+      "path": "core/controller.py",
+      "lines": 313,
+      "functions": [
+        "__init__(1 args)",
+        "connect_layer_notifications(2 args)",
+        "get_cached_data(2 args)",
+        "cache_data(3 args)",
+        "generate_profile_data(2 args)",
+        "get_sub_key(1 args)"
+      ],
+      "classes": [
+        "ProfileController"
+      ],
+      "imports": [
+        "__future__",
+        "hashlib",
+        "math",
+        "pathlib",
+        "qgis.core",
+        "sec_interp.core",
+        "sec_interp.core.config",
+        "sec_interp.core.data_cache",
+        "sec_interp.core.exceptions",
+        "sec_interp.core.services",
+        "sec_interp.core.types",
+        "sec_interp.logger_config",
+        "time",
+        "typing"
+      ],
+      "complexity": 25,
+      "has_main": false,
+      "docstrings": {
+        "module": true
+      },
+      "file_size_kb": 12.791015625,
+      "syntax_error": false
+    },
+    {
+      "path": "core/services/export_service.py",
+      "lines": 229,
+      "functions": [
+        "__init__(2 args)",
+        "export_data(8 args)",
+        "_export_topography(6 args)",
+        "_export_geology(6 args)",
+        "_export_structures(7 args)",
+        "_export_drillholes(5 args)",
+        "_export_interpretations(5 args)",
+        "_export_axes(5 args)",
+        "get_map_settings(5 args)"
+      ],
+      "classes": [
+        "ExportService"
+      ],
+      "imports": [
+        "__future__",
+        "pathlib",
+        "qgis.core",
+        "sec_interp.core.exceptions",
+        "sec_interp.core.types",
+        "sec_interp.exporters",
+        "sec_interp.logger_config",
+        "typing"
+      ],
+      "complexity": 15,
+      "has_main": false,
+      "docstrings": {
+        "module": true
+      },
+      "file_size_kb": 8.3671875,
+      "syntax_error": false
+    },
+    {
+      "path": "core/utils/geometry.py",
+      "lines": 33,
+      "functions": [],
+      "classes": [],
+      "imports": [
+        "geometry_utils.extraction",
+        "geometry_utils.filtering",
+        "geometry_utils.processing"
+      ],
+      "complexity": 1,
+      "has_main": false,
+      "docstrings": {
+        "module": true
+      },
+      "file_size_kb": 0.7451171875,
+      "syntax_error": false
+    },
+    {
+      "path": "core/utils/geometry_utils/__init__.py",
+      "lines": 2,
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "complexity": 1,
+      "has_main": false,
+      "docstrings": {
+        "module": true
+      },
+      "file_size_kb": 0.06640625,
+      "syntax_error": false
+    },
+    {
+      "path": "core/utils/geometry_utils/extraction.py",
+      "lines": 46,
+      "functions": [
+        "extract_all_vertices(1 args)",
+        "get_line_vertices(1 args)"
+      ],
+      "classes": [],
+      "imports": [
+        "__future__",
+        "qgis.core"
+      ],
+      "complexity": 7,
+      "has_main": false,
+      "docstrings": {
+        "module": true
+      },
+      "file_size_kb": 1.21484375,
+      "syntax_error": false
+    },
+    {
+      "path": "core/utils/geology.py",
+      "lines": 40,
+      "functions": [
+        "calculate_apparent_dip(3 args)"
+      ],
+      "classes": [],
+      "imports": [
+        "math"
+      ],
+      "complexity": 1,
+      "has_main": false,
+      "docstrings": {
+        "module": true
+      },
+      "file_size_kb": 1.3427734375,
+      "syntax_error": false
+    },
+    {
+      "path": "core/services/geology_service.py",
+      "lines": 404,
+      "functions": [
+        "generate_geological_profile(6 args)",
+        "_generate_master_profile_data(6 args)",
+        "_intersect_to_temp_layer(3 args)",
+        "_process_intersection_feature(8 args)",
+        "_create_segment_from_geometry(9 args)",
+        "_extract_line_info(2 args)",
+        "_convert_to_segment_points(6 args)"
+      ],
+      "classes": [
+        "GeologyService(IGeologyService)"
+      ],
+      "imports": [
+        "collections.abc",
+        "contextlib",
+        "qgis",
+        "qgis.core",
+        "sec_interp.core",
+        "sec_interp.core.exceptions",
+        "sec_interp.core.interfaces.geology_interface",
+        "sec_interp.core.performance_metrics",
+        "sec_interp.core.types",
+        "sec_interp.core.utils.resource_manager",
+        "sec_interp.core.utils.sampling",
+        "sec_interp.logger_config",
+        "typing"
+      ],
+      "complexity": 22,
+      "has_main": false,
+      "docstrings": {
+        "module": true
+      },
+      "file_size_kb": 14.541015625,
+      "syntax_error": false
+    },
+    {
+      "path": "core/services/preview_service.py",
+      "lines": 263,
+      "functions": [
+        "__init__(2 args)",
+        "calculate_max_points(4 args)",
+        "generate_all(3 args)",
+        "_generate_drillholes(2 args)"
+      ],
+      "classes": [
+        "PreviewService"
+      ],
+      "imports": [
+        "__future__",
+        "math",
+        "qgis.core",
+        "sec_interp.core",
+        "sec_interp.core.exceptions",
+        "sec_interp.core.performance_metrics",
+        "sec_interp.core.types",
+        "sec_interp.logger_config",
+        "time",
+        "typing"
+      ],
+      "complexity": 19,
+      "has_main": false,
+      "docstrings": {
+        "module": true
+      },
+      "file_size_kb": 9.361328125,
+      "syntax_error": false
+    },
+    {
+      "path": "core/services/structure_service.py",
+      "lines": 345,
+      "functions": [
+        "project_structures(9 args)",
+        "_create_buffer_zone(4 args)",
+        "_filter_structures(4 args)",
+        "_process_single_structure(10 args)",
+        "_extract_line_info(2 args)",
+        "_sample_elevation(4 args)",
+        "_parse_structural_data(5 args)"
+      ],
+      "classes": [
+        "StructureService(IStructureService)"
+      ],
+      "imports": [
+        "__future__",
+        "collections.abc",
+        "qgis.core",
+        "sec_interp.core",
+        "sec_interp.core.exceptions",
+        "sec_interp.core.interfaces.structure_interface",
+        "sec_interp.core.types",
+        "sec_interp.logger_config",
+        "typing"
+      ],
+      "complexity": 18,
+      "has_main": false,
+      "docstrings": {
+        "module": true
+      },
+      "file_size_kb": 11.615234375,
+      "syntax_error": false
+    },
+    {
+      "path": "core/services/drillhole_service.py",
+      "lines": 462,
+      "functions": [
+        "project_collars(14 args)",
+        "_get_collar_info(9 args)",
+        "process_intervals(16 args)",
+        "_build_collar_coord_map(6 args)",
+        "_get_survey_data(4 args)",
+        "_get_interval_data(4 args)",
+        "_interpolate_hole_intervals(4 args)",
+        "_project_single_collar(13 args)"
+      ],
+      "classes": [
+        "DrillholeService(IDrillholeService)"
+      ],
+      "imports": [
+        "__future__",
+        "contextlib",
+        "qgis.core",
+        "sec_interp.core",
+        "sec_interp.core.exceptions",
+        "sec_interp.core.interfaces.drillhole_interface",
+        "sec_interp.core.types",
+        "sec_interp.logger_config",
+        "typing"
+      ],
+      "complexity": 45,
+      "has_main": false,
+      "docstrings": {
+        "module": true
+      },
+      "file_size_kb": 15.7353515625,
+      "syntax_error": false
+    },
+    {
+      "path": "core/types.py",
+      "lines": 350,
+      "functions": [
+        "validate(1 args)",
+        "get_elevation_range(1 args)",
+        "get_distance_range(1 args)"
+      ],
+      "classes": [
+        "FieldType(IntEnum)",
+        "StructureMeasurement",
+        "GeologySegment",
+        "InterpretationPolygon",
+        "InterpretationPolygon25D",
+        "PreviewParams",
+        "PreviewResult"
+      ],
+      "imports": [
+        "__future__",
+        "dataclasses",
+        "enum",
+        "qgis.core",
+        "sec_interp.core.exceptions",
+        "sec_interp.core.performance_metrics",
+        "typing"
+      ],
+      "complexity": 29,
+      "has_main": false,
+      "docstrings": {
+        "module": true
+      },
+      "file_size_kb": 11.6630859375,
+      "syntax_error": false
+    },
+    {
+      "path": "core/utils/geometry_utils/filtering.py",
+      "lines": 71,
+      "functions": [
+        "filter_features_by_buffer(3 args)"
+      ],
+      "classes": [],
+      "imports": [
+        "__future__",
+        "qgis.core",
+        "sec_interp.logger_config"
+      ],
+      "complexity": 10,
+      "has_main": false,
+      "docstrings": {
+        "module": true
+      },
+      "file_size_kb": 2.1298828125,
+      "syntax_error": false
+    },
+    {
+      "path": "core/utils/drillhole.py",
+      "lines": 222,
+      "functions": [
+        "calculate_drillhole_trajectory(6 args)",
+        "project_trajectory_to_section(4 args)",
+        "interpolate_intervals_on_trajectory(3 args)"
+      ],
+      "classes": [],
+      "imports": [
+        "math",
+        "qgis.core",
+        "typing"
+      ],
+      "complexity": 14,
+      "has_main": false,
+      "docstrings": {
+        "module": true
+      },
+      "file_size_kb": 7.724609375,
+      "syntax_error": false
+    },
+    {
+      "path": "core/utils/geometry_utils/measurement.py",
+      "lines": 80,
+      "functions": [
+        "calculate_polyline_metrics(1 args)"
+      ],
+      "classes": [],
+      "imports": [
+        "__future__",
+        "math",
+        "qgis.core",
+        "typing"
+      ],
+      "complexity": 4,
+      "has_main": false,
+      "docstrings": {
+        "module": true
+      },
+      "file_size_kb": 2.23828125,
+      "syntax_error": false
+    },
+    {
+      "path": "core/utils/io.py",
+      "lines": 60,
+      "functions": [
+        "create_shapefile_writer(4 args)"
+      ],
+      "classes": [],
+      "imports": [
+        "pathlib",
+        "qgis.core",
+        "typing"
+      ],
+      "complexity": 2,
+      "has_main": false,
+      "docstrings": {
+        "module": true
+      },
+      "file_size_kb": 1.59765625,
+      "syntax_error": false
+    },
+    {
+      "path": "core/validation/__init__.py",
+      "lines": 47,
+      "functions": [],
+      "classes": [],
+      "imports": [
+        "field_validator",
+        "layer_validator",
+        "path_validator",
+        "project_validator"
+      ],
+      "complexity": 1,
+      "has_main": false,
+      "docstrings": {
+        "module": true
+      },
+      "file_size_kb": 1.1064453125,
+      "syntax_error": false
+    },
+    {
+      "path": "core/utils/geometry_utils/processing.py",
+      "lines": 124,
+      "functions": [
+        "create_buffer_geometry(4 args)",
+        "create_memory_layer(4 args)",
+        "densify_line_by_interval(2 args)",
+        "run_geometry_operation(1 args)",
+        "run_processing_algorithm(2 args)"
+      ],
+      "classes": [],
+      "imports": [
+        "__future__",
+        "qgis",
+        "qgis.core",
+        "sec_interp.logger_config",
+        "typing"
+      ],
+      "complexity": 7,
+      "has_main": false,
+      "docstrings": {
+        "module": true
+      },
+      "file_size_kb": 3.2216796875,
+      "syntax_error": false
+    },
+    {
+      "path": "core/utils/resource_manager.py",
+      "lines": 107,
+      "functions": [
+        "temporary_memory_layer(3 args)",
+        "temporary_file(3 args)",
+        "cleanup_layer(1 args)"
+      ],
+      "classes": [
+        "ResourceManager"
+      ],
+      "imports": [
+        "__future__",
+        "collections.abc",
+        "contextlib",
+        "os",
+        "qgis.core",
+        "sec_interp.logger_config",
+        "tempfile",
+        "typing"
+      ],
+      "complexity": 8,
+      "has_main": false,
+      "docstrings": {
+        "module": true
+      },
+      "file_size_kb": 3.0693359375,
+      "syntax_error": false
+    },
+    {
+      "path": "core/utils/parsing.py",
+      "lines": 127,
+      "functions": [
+        "parse_strike(1 args)",
+        "parse_dip(1 args)",
+        "cardinal_to_azimuth(1 args)"
+      ],
+      "classes": [],
+      "imports": [
+        "__future__",
+        "re",
+        "typing"
+      ],
+      "complexity": 15,
+      "has_main": false,
+      "docstrings": {
+        "module": true
+      },
+      "file_size_kb": 2.9716796875,
+      "syntax_error": false
+    },
+    {
+      "path": "core/utils/spatial.py",
+      "lines": 125,
+      "functions": [
+        "calculate_line_azimuth(1 args)",
+        "calculate_step_size(2 args)",
+        "get_line_start_point(1 args)",
+        "create_distance_area(1 args)"
+      ],
+      "classes": [],
+      "imports": [
+        "math",
+        "qgis.core"
+      ],
+      "complexity": 11,
+      "has_main": false,
+      "docstrings": {
+        "module": true
+      },
+      "file_size_kb": 3.5595703125,
+      "syntax_error": false
+    },
+    {
+      "path": "core/utils/rendering.py",
+      "lines": 124,
+      "functions": [
+        "calculate_bounds(2 args)",
+        "create_coordinate_transform(5 args)",
+        "calculate_interval(1 args)",
+        "transform(2 args)"
+      ],
+      "classes": [],
+      "imports": [
+        "__future__",
+        "collections.abc",
+        "math",
+        "sec_interp.core.types",
+        "typing"
+      ],
+      "complexity": 6,
+      "has_main": false,
+      "docstrings": {
+        "module": true
+      },
+      "file_size_kb": 3.5595703125,
+      "syntax_error": false
+    },
+    {
+      "path": "core/utils/sampling.py",
+      "lines": 155,
+      "functions": [
+        "sample_elevation_along_line(6 args)",
+        "prepare_profile_context(1 args)",
+        "interpolate_elevation(2 args)"
+      ],
+      "classes": [],
+      "imports": [
+        "__future__",
+        "bisect",
+        "geometry",
+        "qgis.core",
+        "sec_interp.logger_config",
+        "spatial",
+        "typing"
+      ],
+      "complexity": 13,
+      "has_main": false,
+      "docstrings": {
+        "module": true
+      },
+      "file_size_kb": 4.5,
+      "syntax_error": false
+    },
+    {
+      "path": "exporters/__init__.py",
+      "lines": 70,
+      "functions": [
+        "get_exporter(2 args)"
+      ],
+      "classes": [],
+      "imports": [
+        "base_exporter",
+        "csv_exporter",
+        "drillhole_exporters",
+        "image_exporter",
+        "interpretation_exporters",
+        "pdf_exporter",
+        "profile_exporters",
+        "shp_exporter",
+        "svg_exporter"
+      ],
+      "complexity": 6,
+      "has_main": false,
+      "docstrings": {
+        "module": true
+      },
+      "file_size_kb": 1.7958984375,
+      "syntax_error": false
+    },
+    {
+      "path": "docs/source/conf.py",
+      "lines": 67,
+      "functions": [],
+      "classes": [],
+      "imports": [
+        "datetime",
+        "os",
+        "sys"
+      ],
+      "complexity": 1,
+      "has_main": false,
+      "docstrings": {
+        "module": false
+      },
+      "file_size_kb": 1.544921875,
+      "syntax_error": false
+    },
+    {
+      "path": "core/validation/path_validator.py",
+      "lines": 106,
+      "functions": [
+        "validate_safe_output_path(4 args)",
+        "validate_output_path(1 args)"
+      ],
+      "classes": [],
+      "imports": [
+        "__future__",
+        "pathlib",
+        "typing"
+      ],
+      "complexity": 18,
+      "has_main": false,
+      "docstrings": {
+        "module": true
+      },
+      "file_size_kb": 3.8837890625,
+      "syntax_error": false
+    },
+    {
+      "path": "exporters/base_exporter.py",
+      "lines": 105,
+      "functions": [
+        "__init__(2 args)",
+        "export(3 args)",
+        "validate_export_path(3 args)",
+        "get_supported_extensions(1 args)",
+        "validate_path(2 args)",
+        "get_setting(3 args)"
+      ],
+      "classes": [
+        "BaseExporter(ABC)"
+      ],
+      "imports": [
+        "__future__",
+        "abc",
+        "pathlib",
+        "sec_interp.core.validation",
+        "typing"
+      ],
+      "complexity": 2,
+      "has_main": false,
+      "docstrings": {
+        "module": true
+      },
+      "file_size_kb": 3.138671875,
+      "syntax_error": false
+    },
+    {
+      "path": "exporters/csv_exporter.py",
+      "lines": 52,
+      "functions": [
+        "get_supported_extensions(1 args)",
+        "export(3 args)"
+      ],
+      "classes": [
+        "CSVExporter(BaseExporter)"
+      ],
+      "imports": [
+        "base_exporter",
+        "csv",
+        "pathlib",
+        "sec_interp.logger_config",
+        "typing"
+      ],
+      "complexity": 5,
+      "has_main": false,
+      "docstrings": {
+        "module": true
+      },
+      "file_size_kb": 1.333984375,
+      "syntax_error": false
+    },
+    {
+      "path": "exporters/image_exporter.py",
+      "lines": 71,
+      "functions": [
+        "get_supported_extensions(1 args)",
+        "export(3 args)"
+      ],
+      "classes": [
+        "ImageExporter(BaseExporter)"
+      ],
+      "imports": [
+        "base_exporter",
+        "pathlib",
+        "qgis.PyQt.QtCore",
+        "qgis.PyQt.QtGui",
+        "qgis.core",
+        "sec_interp.logger_config",
+        "typing"
+      ],
+      "complexity": 3,
+      "has_main": false,
+      "docstrings": {
+        "module": true
+      },
+      "file_size_kb": 2.138671875,
+      "syntax_error": false
+    },
+    {
+      "path": "core/validation/field_validator.py",
+      "lines": 205,
+      "functions": [
+        "validate_numeric_input(5 args)",
+        "validate_integer_input(5 args)",
+        "validate_angle_range(4 args)",
+        "validate_field_exists(2 args)",
+        "validate_field_type(3 args)"
+      ],
+      "classes": [],
+      "imports": [
+        "__future__",
+        "qgis.core",
+        "sec_interp.core.types",
+        "typing"
+      ],
+      "complexity": 27,
+      "has_main": false,
+      "docstrings": {
+        "module": true
+      },
+      "file_size_kb": 6.484375,
+      "syntax_error": false
+    },
+    {
+      "path": "exporters/pdf_exporter.py",
+      "lines": 79,
+      "functions": [
+        "get_supported_extensions(1 args)",
+        "export(3 args)"
+      ],
+      "classes": [
+        "PDFExporter(BaseExporter)"
+      ],
+      "imports": [
+        "base_exporter",
+        "pathlib",
+        "qgis.PyQt.QtCore",
+        "qgis.PyQt.QtGui",
+        "qgis.core",
+        "sec_interp.logger_config"
+      ],
+      "complexity": 4,
+      "has_main": false,
+      "docstrings": {
+        "module": true
+      },
+      "file_size_kb": 2.513671875,
+      "syntax_error": false
+    },
+    {
+      "path": "core/validation/layer_validator.py",
+      "lines": 223,
+      "functions": [
+        "validate_layer_exists(1 args)",
+        "validate_layer_has_features(1 args)",
+        "validate_layer_geometry(2 args)",
+        "validate_raster_band(2 args)",
+        "validate_structural_requirements(4 args)",
+        "validate_crs_compatibility(1 args)"
+      ],
+      "classes": [],
+      "imports": [
+        "__future__",
+        "field_validator",
+        "qgis.core",
+        "sec_interp.core.exceptions",
+        "sec_interp.core.types",
+        "typing"
+      ],
+      "complexity": 25,
+      "has_main": false,
+      "docstrings": {
+        "module": true
+      },
+      "file_size_kb": 6.9638671875,
+      "syntax_error": false
+    },
+    {
+      "path": "gui/__init__.py",
+      "lines": 14,
+      "functions": [],
+      "classes": [],
+      "imports": [
+        "main_dialog",
+        "preview_renderer"
+      ],
+      "complexity": 1,
+      "has_main": false,
+      "docstrings": {
+        "module": true
+      },
+      "file_size_kb": 0.23828125,
+      "syntax_error": false
+    },
+    {
+      "path": "exporters/interpretation_exporters.py",
+      "lines": 135,
+      "functions": [
+        "__init__(2 args)",
+        "export(3 args)",
+        "get_supported_extensions(1 args)"
+      ],
+      "classes": [
+        "Interpretation2DExporter(BaseExporter)"
+      ],
+      "imports": [
+        "pathlib",
+        "qgis.PyQt.QtCore",
+        "qgis.core",
+        "sec_interp.core.types",
+        "sec_interp.exporters.base_exporter",
+        "sec_interp.logger_config",
+        "typing"
+      ],
+      "complexity": 6,
+      "has_main": false,
+      "docstrings": {
+        "module": true
+      },
+      "file_size_kb": 3.8955078125,
+      "syntax_error": false
+    },
+    {
+      "path": "exporters/drillhole_exporters.py",
+      "lines": 130,
+      "functions": [
+        "get_supported_extensions(1 args)",
+        "export(3 args)",
+        "get_supported_extensions(1 args)",
+        "export(3 args)"
+      ],
+      "classes": [
+        "DrillholeTraceShpExporter(BaseExporter)",
+        "DrillholeIntervalShpExporter(BaseExporter)"
+      ],
+      "imports": [
+        "base_exporter",
+        "qgis.PyQt.QtCore",
+        "qgis.core",
+        "sec_interp.core",
+        "sec_interp.logger_config",
+        "typing"
+      ],
+      "complexity": 19,
+      "has_main": false,
+      "docstrings": {
+        "module": true
+      },
+      "file_size_kb": 4.12109375,
+      "syntax_error": false
+    },
+    {
+      "path": "generate_ai_templates.py",
+      "lines": 337,
+      "functions": [
+        "main(0 args)"
+      ],
+      "classes": [],
+      "imports": [
+        "os",
+        "pathlib"
+      ],
+      "complexity": 4,
+      "has_main": true,
+      "docstrings": {
+        "module": true
+      },
+      "file_size_kb": 11.3857421875,
+      "syntax_error": false
+    },
+    {
+      "path": "exporters/svg_exporter.py",
+      "lines": 77,
+      "functions": [
+        "get_supported_extensions(1 args)",
+        "export(3 args)"
+      ],
+      "classes": [
+        "SVGExporter(BaseExporter)"
+      ],
+      "imports": [
+        "base_exporter",
+        "pathlib",
+        "qgis.PyQt.QtCore",
+        "qgis.PyQt.QtGui",
+        "qgis.PyQt.QtSvg",
+        "qgis.core",
+        "sec_interp.logger_config"
+      ],
+      "complexity": 4,
+      "has_main": false,
+      "docstrings": {
+        "module": true
+      },
+      "file_size_kb": 2.3017578125,
+      "syntax_error": false
+    },
+    {
+      "path": "gui/main_dialog_cache_handler.py",
+      "lines": 17,
+      "functions": [
+        "__init__(2 args)"
+      ],
+      "classes": [
+        "CacheHandler"
+      ],
+      "imports": [],
+      "complexity": 1,
+      "has_main": false,
+      "docstrings": {
+        "module": true
+      },
+      "file_size_kb": 0.4140625,
+      "syntax_error": false
+    },
+    {
+      "path": "exporters/shp_exporter.py",
+      "lines": 103,
+      "functions": [
+        "get_supported_extensions(1 args)",
+        "export(3 args)"
+      ],
+      "classes": [
+        "ShapefileExporter(BaseExporter)"
+      ],
+      "imports": [
+        "base_exporter",
+        "pathlib",
+        "qgis.PyQt.QtCore",
+        "qgis.core",
+        "sec_interp.logger_config",
+        "typing"
+      ],
+      "complexity": 12,
+      "has_main": false,
+      "docstrings": {
+        "module": true
+      },
+      "file_size_kb": 3.234375,
+      "syntax_error": false
+    },
+    {
+      "path": "gui/legend_widget.py",
+      "lines": 56,
+      "functions": [
+        "__init__(2 args)",
+        "eventFilter(3 args)",
+        "update_legend(2 args)",
+        "paintEvent(2 args)"
+      ],
+      "classes": [
+        "LegendWidget(QWidget)"
+      ],
+      "imports": [
+        "__future__",
+        "preview_legend_renderer",
+        "qgis.PyQt",
+        "qgis.PyQt.QtCore",
+        "qgis.PyQt.QtGui",
+        "qgis.PyQt.QtWidgets",
+        "sec_interp.gui.main_dialog",
+        "typing"
+      ],
+      "complexity": 6,
+      "has_main": false,
+      "docstrings": {
+        "module": true
+      },
+      "file_size_kb": 1.8916015625,
+      "syntax_error": false
+    },
+    {
+      "path": "core/utils/geometry_utils/optimization.py",
+      "lines": 169,
+      "functions": [
+        "decimate(3 args)",
+        "calculate_curvature(1 args)",
+        "adaptive_sample(5 args)"
+      ],
+      "classes": [
+        "PreviewOptimizer"
+      ],
+      "imports": [
+        "__future__",
+        "math",
+        "qgis.core",
+        "sec_interp.logger_config",
+        "typing"
+      ],
+      "complexity": 11,
+      "has_main": false,
+      "docstrings": {
+        "module": true
+      },
+      "file_size_kb": 5.6142578125,
+      "syntax_error": false
+    },
+    {
+      "path": "core/validation/project_validator.py",
+      "lines": 286,
+      "functions": [
+        "validate_reasonable_ranges(1 args)",
+        "validate_all(1 args)",
+        "validate_preview_requirements(1 args)",
+        "is_drillhole_complete(1 args)",
+        "is_geology_complete(1 args)",
+        "is_structure_complete(1 args)"
+      ],
+      "classes": [
+        "ValidationParams",
+        "ProjectValidator"
+      ],
+      "imports": [
+        "__future__",
+        "dataclasses",
+        "layer_validator",
+        "path_validator",
+        "qgis.core",
+        "sec_interp.core.exceptions",
+        "typing"
+      ],
+      "complexity": 44,
+      "has_main": false,
+      "docstrings": {
+        "module": true
+      },
+      "file_size_kb": 9.2685546875,
+      "syntax_error": false
+    },
+    {
+      "path": "gui/main_dialog_config.py",
+      "lines": 145,
+      "functions": [],
+      "classes": [
+        "DialogDefaults",
+        "DialogConfig",
+        "ValidationMessages",
+        "UIConstants"
+      ],
+      "imports": [
+        "__future__",
+        "qgis.PyQt.QtGui",
+        "typing"
+      ],
+      "complexity": 1,
+      "has_main": false,
+      "docstrings": {
+        "module": true
+      },
+      "file_size_kb": 3.9453125,
+      "syntax_error": false
+    },
+    {
+      "path": "core/__init__.py",
+      "lines": 5,
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "complexity": 1,
+      "has_main": false,
+      "docstrings": {
+        "module": true
+      },
+      "file_size_kb": 0.091796875,
+      "syntax_error": false
+    },
+    {
+      "path": "core/interfaces/preview_interface.py",
+      "lines": 24,
+      "functions": [
+        "generate_all(3 args)"
+      ],
+      "classes": [
+        "IPreviewService(ABC)"
+      ],
+      "imports": [
+        "abc",
+        "qgis.core",
+        "typing"
+      ],
+      "complexity": 1,
+      "has_main": false,
+      "docstrings": {
+        "module": true
+      },
+      "file_size_kb": 0.6728515625,
+      "syntax_error": false
+    },
+    {
+      "path": "gui/main_dialog_data.py",
+      "lines": 174,
+      "functions": [
+        "__init__(2 args)",
+        "get_all_values(1 args)",
+        "_get_dem_values(1 args)",
+        "_get_section_values(1 args)",
+        "_get_geology_values(1 args)",
+        "_get_structure_values(1 args)",
+        "_get_drillhole_values(1 args)",
+        "get_validation_params(1 args)"
+      ],
+      "classes": [
+        "DialogDataAggregator"
+      ],
+      "imports": [
+        "main_dialog",
+        "sec_interp.core.validation.project_validator",
+        "typing"
+      ],
+      "complexity": 2,
+      "has_main": false,
+      "docstrings": {
+        "module": true
+      },
+      "file_size_kb": 6.279296875,
+      "syntax_error": false
+    },
+    {
+      "path": "gui/main_dialog_status.py",
+      "lines": 118,
+      "functions": [
+        "__init__(2 args)",
+        "update_all(1 args)",
+        "update_preview_checkbox_states(1 args)",
+        "update_button_state(1 args)",
+        "setup_indicators(1 args)",
+        "update_raster_status(1 args)",
+        "update_section_status(1 args)"
+      ],
+      "classes": [
+        "DialogStatusManager"
+      ],
+      "imports": [
+        "main_dialog",
+        "qgis.PyQt.QtCore",
+        "qgis.PyQt.QtWidgets",
+        "qgis.core",
+        "sec_interp.core.validation.project_validator",
+        "typing"
+      ],
+      "complexity": 11,
+      "has_main": false,
+      "docstrings": {
+        "module": true
+      },
+      "file_size_kb": 4.646484375,
+      "syntax_error": false
+    },
+    {
+      "path": "core/interfaces/geology_interface.py",
+      "lines": 34,
+      "functions": [
+        "generate_geological_profile(6 args)"
+      ],
+      "classes": [
+        "IGeologyService(ABC)"
+      ],
+      "imports": [
+        "abc",
+        "qgis.core",
+        "typing"
+      ],
+      "complexity": 1,
+      "has_main": false,
+      "docstrings": {
+        "module": true
+      },
+      "file_size_kb": 1.0380859375,
+      "syntax_error": false
+    },
+    {
+      "path": "gui/main_dialog_export.py",
+      "lines": 207,
+      "functions": [
+        "__init__(2 args)",
+        "export_preview(1 args)",
+        "export_data(1 args)"
+      ],
+      "classes": [
+        "ExportManager"
+      ],
+      "imports": [
+        "__future__",
+        "main_dialog",
+        "main_dialog_config",
+        "pathlib",
+        "qgis.PyQt.QtCore",
+        "qgis.PyQt.QtGui",
+        "qgis.PyQt.QtWidgets",
+        "qgis.core",
+        "sec_interp.core.exceptions",
+        "sec_interp.core.performance_metrics",
+        "sec_interp.core.services.export_service",
+        "sec_interp.exporters",
+        "sec_interp.logger_config",
+        "typing"
+      ],
+      "complexity": 15,
+      "has_main": false,
+      "docstrings": {
+        "module": true
+      },
+      "file_size_kb": 7.3935546875,
+      "syntax_error": false
+    },
+    {
+      "path": "gui/main_dialog_utils.py",
+      "lines": 51,
+      "functions": [
+        "populate_field_combobox(2 args)",
+        "get_layer_names_by_type(1 args)",
+        "get_layer_names_by_geometry(1 args)",
+        "get_theme_icon(1 args)"
+      ],
+      "classes": [
+        "DialogEntityManager"
+      ],
+      "imports": [
+        "qgis.PyQt.QtGui",
+        "qgis.core",
+        "typing"
+      ],
+      "complexity": 3,
+      "has_main": false,
+      "docstrings": {
+        "module": true
+      },
+      "file_size_kb": 1.67578125,
+      "syntax_error": false
+    },
+    {
+      "path": "gui/main_dialog_tools.py",
+      "lines": 160,
+      "functions": [
+        "__init__(5 args)",
+        "initialize_tools(1 args)",
+        "toggle_measure_tool(2 args)",
+        "activate_default_tool(1 args)",
+        "toggle_interpretation_tool(2 args)",
+        "update_measurement_display(2 args)",
+        "__init__(2 args)",
+        "handle_wheel_event(2 args)"
+      ],
+      "classes": [
+        "DialogToolManager",
+        "NavigationManager"
+      ],
+      "imports": [
+        "__future__",
+        "main_dialog",
+        "qgis.gui",
+        "tools.interpretation_tool",
+        "tools.measure_tool",
+        "typing"
+      ],
+      "complexity": 11,
+      "has_main": false,
+      "docstrings": {
+        "module": true
+      },
+      "file_size_kb": 5.900390625,
+      "syntax_error": false
+    },
+    {
+      "path": "gui/main_dialog_validation.py",
+      "lines": 69,
+      "functions": [
+        "__init__(2 args)",
+        "_collect_params(1 args)",
+        "validate_inputs(1 args)",
+        "validate_preview_requirements(1 args)"
+      ],
+      "classes": [
+        "DialogValidator"
+      ],
+      "imports": [
+        "main_dialog",
+        "main_dialog_config",
+        "qgis.PyQt.QtCore",
+        "qgis.core",
+        "sec_interp.core",
+        "typing"
+      ],
+      "complexity": 4,
+      "has_main": false,
+      "docstrings": {
+        "module": true
+      },
+      "file_size_kb": 2.6845703125,
+      "syntax_error": false
+    },
+    {
+      "path": "gui/services/__init__.py",
+      "lines": 6,
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "complexity": 1,
+      "has_main": false,
+      "docstrings": {
+        "module": true
+      },
+      "file_size_kb": 0.150390625,
+      "syntax_error": false
+    },
+    {
+      "path": "gui/tools/__init__.py",
+      "lines": 2,
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "complexity": 1,
+      "has_main": false,
+      "docstrings": {
+        "module": true
+      },
+      "file_size_kb": 0.0576171875,
+      "syntax_error": false
+    },
+    {
+      "path": "gui/main_dialog_settings.py",
+      "lines": 188,
+      "functions": [
+        "__init__(2 args)",
+        "load_settings(1 args)",
+        "save_settings(1 args)",
+        "_save_layer(3 args)",
+        "_restore_layer(3 args)",
+        "_save_field(3 args)",
+        "_restore_field(3 args)",
+        "_save_check(3 args)",
+        "_restore_check(3 args)"
+      ],
+      "classes": [
+        "DialogSettingsManager"
+      ],
+      "imports": [
+        "main_dialog",
+        "qgis.core",
+        "typing"
+      ],
+      "complexity": 15,
+      "has_main": false,
+      "docstrings": {
+        "module": true
+      },
+      "file_size_kb": 7.439453125,
+      "syntax_error": false
+    },
+    {
+      "path": "gui/main_dialog.py",
+      "lines": 396,
+      "functions": [
+        "pushMessage(1 args)",
+        "__init__(4 args)",
+        "_init_managers(1 args)",
+        "handle_error(3 args)",
+        "wheelEvent(2 args)",
+        "closeEvent(2 args)",
+        "open_help(1 args)",
+        "toggle_measure_tool(2 args)",
+        "update_measurement_display(2 args)",
+        "toggle_interpretation_tool(2 args)",
+        "on_interpretation_finished(2 args)",
+        "update_preview_checkbox_states(1 args)",
+        "update_button_state(1 args)",
+        "get_selected_values(1 args)",
+        "get_preview_options(1 args)",
+        "update_preview_from_checkboxes(1 args)",
+        "preview_profile_handler(1 args)",
+        "export_preview(1 args)",
+        "accept_handler(1 args)",
+        "reject_handler(1 args)",
+        "validate_inputs(1 args)",
+        "clear_cache_handler(1 args)",
+        "_populate_field_combobox(3 args)",
+        "get_layer_names_by_type(2 args)",
+        "get_layer_names_by_geometry(2 args)",
+        "getThemeIcon(2 args)",
+        "_load_user_settings(1 args)",
+        "_save_user_settings(1 args)"
+      ],
+      "classes": [
+        "_NoOpMessageBar",
+        "SecInterpDialog(SecInterpMainWindow)"
+      ],
+      "imports": [
+        "legend_widget",
+        "main_dialog_cache_handler",
+        "main_dialog_config",
+        "main_dialog_data",
+        "main_dialog_export",
+        "main_dialog_preview",
+        "main_dialog_settings",
+        "main_dialog_signals",
+        "main_dialog_status",
+        "main_dialog_tools",
+        "main_dialog_utils",
+        "main_dialog_validation",
+        "pathlib",
+        "qgis.PyQt.QtCore",
+        "qgis.PyQt.QtGui",
+        "qgis.PyQt.QtWidgets",
+        "qgis.core",
+        "qgis.gui",
+        "sec_interp.core",
+        "sec_interp.core.exceptions",
+        "sec_interp.core.services.preview_service",
+        "sec_interp.exporters",
+        "sec_interp.gui.utils",
+        "sec_interp.logger_config",
+        "tempfile",
+        "traceback",
+        "ui.main_window"
+      ],
+      "complexity": 14,
+      "has_main": false,
+      "docstrings": {
+        "module": true
+      },
+      "file_size_kb": 14.5517578125,
+      "syntax_error": false
+    },
+    {
+      "path": "gui/ui/__init__.py",
+      "lines": 6,
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "complexity": 1,
+      "has_main": false,
+      "docstrings": {
+        "module": true
+      },
+      "file_size_kb": 0.0673828125,
+      "syntax_error": false
+    },
+    {
+      "path": "gui/preview_axes_manager.py",
+      "lines": 207,
+      "functions": [
+        "get_nice_interval(1 args)",
+        "create_axes_layer(3 args)",
+        "create_axes_labels_layer(3 args)"
+      ],
+      "classes": [
+        "PreviewAxesManager"
+      ],
+      "imports": [
+        "__future__",
+        "math",
+        "qgis.PyQt.QtGui",
+        "qgis.core",
+        "sec_interp.logger_config",
+        "typing"
+      ],
+      "complexity": 13,
+      "has_main": false,
+      "docstrings": {
+        "module": true
+      },
+      "file_size_kb": 6.2841796875,
+      "syntax_error": false
+    },
+    {
+      "path": "gui/preview_reporter.py",
+      "lines": 153,
+      "functions": [
+        "format_results_message(2 args)",
+        "format_geology_summary(1 args)",
+        "format_structure_summary(2 args)",
+        "format_drillhole_summary(1 args)",
+        "format_result_metrics(1 args)",
+        "format_performance_metrics(2 args)"
+      ],
+      "classes": [
+        "PreviewReporter"
+      ],
+      "imports": [
+        "__future__",
+        "main_dialog_config",
+        "qgis.PyQt.QtCore",
+        "sec_interp.core.performance_metrics",
+        "sec_interp.core.types",
+        "typing"
+      ],
+      "complexity": 13,
+      "has_main": false,
+      "docstrings": {
+        "module": true
+      },
+      "file_size_kb": 5.3935546875,
+      "syntax_error": false
+    },
+    {
+      "path": "gui/ui/pages/__init__.py",
+      "lines": 7,
+      "functions": [],
+      "classes": [],
+      "imports": [
+        "base_page"
+      ],
+      "complexity": 1,
+      "has_main": false,
+      "docstrings": {
+        "module": true
+      },
+      "file_size_kb": 0.0859375,
+      "syntax_error": false
+    },
+    {
+      "path": "gui/preview_legend_renderer.py",
+      "lines": 157,
+      "functions": [
+        "draw_legend(5 args)",
+        "_calculate_legend_size(5 args)",
+        "_draw_legend_background(5 args)",
+        "_draw_line_item(7 args)",
+        "_draw_geology_items(6 args)"
+      ],
+      "classes": [
+        "PreviewLegendRenderer"
+      ],
+      "imports": [
+        "__future__",
+        "qgis.PyQt.QtCore",
+        "qgis.PyQt.QtGui",
+        "sec_interp.logger_config",
+        "typing"
+      ],
+      "complexity": 9,
+      "has_main": false,
+      "docstrings": {
+        "module": true
+      },
+      "file_size_kb": 4.9697265625,
+      "syntax_error": false
+    },
+    {
+      "path": "gui/ui/pages/base_page.py",
+      "lines": 52,
+      "functions": [
+        "__init__(3 args)",
+        "_setup_ui(1 args)",
+        "get_data(1 args)",
+        "validate(1 args)"
+      ],
+      "classes": [
+        "BasePage(QWidget)"
+      ],
+      "imports": [
+        "qgis.PyQt.QtWidgets"
+      ],
+      "complexity": 1,
+      "has_main": false,
+      "docstrings": {
+        "module": true
+      },
+      "file_size_kb": 1.447265625,
+      "syntax_error": false
+    },
+    {
+      "path": "core/algorithms.py",
+      "lines": 13,
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "complexity": 1,
+      "has_main": false,
+      "docstrings": {
+        "module": true
+      },
+      "file_size_kb": 0.4306640625,
+      "syntax_error": false
+    },
+    {
+      "path": "core/interfaces/drillhole_interface.py",
+      "lines": 100,
+      "functions": [
+        "project_collars(14 args)",
+        "process_intervals(16 args)"
+      ],
+      "classes": [
+        "IDrillholeService(ABC)"
+      ],
+      "imports": [
+        "abc",
+        "qgis.core",
+        "typing"
+      ],
+      "complexity": 1,
+      "has_main": false,
+      "docstrings": {
+        "module": true
+      },
+      "file_size_kb": 3.611328125,
+      "syntax_error": false
+    },
+    {
+      "path": "gui/preview_renderer.py",
+      "lines": 283,
+      "functions": [
+        "__init__(2 args)",
+        "active_units(1 args)",
+        "render(11 args)",
+        "draw_legend(3 args)",
+        "export_to_image(7 args)",
+        "_cleanup_layers(1 args)",
+        "_render_interpretations(3 args)",
+        "_calculate_extent(2 args)"
+      ],
+      "classes": [
+        "PreviewRenderer"
+      ],
+      "imports": [
+        "__future__",
+        "contextlib",
+        "preview_axes_manager",
+        "preview_layer_factory",
+        "preview_legend_renderer",
+        "qgis.PyQt.QtCore",
+        "qgis.PyQt.QtGui",
+        "qgis.core",
+        "qgis.gui",
+        "sec_interp.core.types",
+        "sec_interp.core.utils.geometry_utils.optimization",
+        "sec_interp.logger_config",
+        "typing"
+      ],
+      "complexity": 25,
+      "has_main": false,
+      "docstrings": {
+        "module": true
+      },
+      "file_size_kb": 9.3017578125,
+      "syntax_error": false
+    },
+    {
+      "path": "gui/services/parallel_geology_service.py",
+      "lines": 224,
+      "functions": [
+        "__init__(3 args)",
+        "cancel(1 args)",
+        "is_canceled(1 args)",
+        "run(1 args)",
+        "__init__(1 args)",
+        "_get_optimal_thread_count(1 args)",
+        "process_profiles_parallel(3 args)",
+        "_on_chunk_finished(2 args)",
+        "_cleanup_thread(2 args)",
+        "cancel_processing(1 args)",
+        "_on_chunk_canceled(1 args)",
+        "_on_chunk_progress(3 args)",
+        "_on_chunk_error(2 args)",
+        "_process_profile_chunk(2 args)"
+      ],
+      "classes": [
+        "GeologyProcessingThread(QThread)",
+        "ParallelGeologyService(QObject)"
+      ],
+      "imports": [
+        "__future__",
+        "collections.abc",
+        "concurrent.futures",
+        "os",
+        "qgis.PyQt.QtCore",
+        "sec_interp.logger_config",
+        "threading",
+        "typing"
+      ],
+      "complexity": 19,
+      "has_main": false,
+      "docstrings": {
+        "module": true
+      },
+      "file_size_kb": 7.34375,
+      "syntax_error": false
+    },
+    {
+      "path": "gui/ui/main_window.py",
+      "lines": 135,
+      "functions": [
+        "__init__(3 args)",
+        "_setup_ui(1 args)",
+        "_connect_signals(1 args)"
+      ],
+      "classes": [
+        "SecInterpMainWindow(QDialog)"
+      ],
+      "imports": [
+        "pages.dem_page",
+        "pages.drillhole_page",
+        "pages.geology_page",
+        "pages.preview_page",
+        "pages.section_page",
+        "pages.structure_page",
+        "qgis.PyQt.QtCore",
+        "qgis.PyQt.QtWidgets",
+        "qgis.gui",
+        "sidebar"
+      ],
+      "complexity": 1,
+      "has_main": false,
+      "docstrings": {
+        "module": true
+      },
+      "file_size_kb": 4.4375,
+      "syntax_error": false
+    },
+    {
+      "path": "gui/ui/pages/geology_page.py",
+      "lines": 73,
+      "functions": [
+        "__init__(2 args)",
+        "_setup_ui(1 args)",
+        "get_data(1 args)",
+        "is_complete(1 args)"
+      ],
+      "classes": [
+        "GeologyPage(BasePage)"
+      ],
+      "imports": [
+        "base_page",
+        "qgis.PyQt.QtCore",
+        "qgis.PyQt.QtWidgets",
+        "qgis.core",
+        "qgis.gui"
+      ],
+      "complexity": 3,
+      "has_main": false,
+      "docstrings": {
+        "module": true
+      },
+      "file_size_kb": 2.484375,
+      "syntax_error": false
+    },
+    {
+      "path": "gui/main_dialog_preview.py",
+      "lines": 501,
+      "functions": [
+        "__init__(3 args)",
+        "cleanup(1 args)",
+        "generate_preview(1 args)",
+        "_process_preview_data(2 args)",
+        "_run_render_pipeline(2 args)",
+        "update_from_checkboxes(1 args)",
+        "_calculate_params_hash(2 args)",
+        "_get_buffer_distance(1 args)",
+        "_on_extents_changed(1 args)",
+        "_update_lod_for_zoom(1 args)",
+        "_start_async_geology(2 args)",
+        "_on_geology_finished(2 args)",
+        "_on_geology_progress(2 args)",
+        "_on_geology_error(2 args)",
+        "_handle_invalid_plugin_instance(1 args)",
+        "_update_crs_label(2 args)",
+        "get_id(1 args)"
+      ],
+      "classes": [
+        "PreviewManager"
+      ],
+      "imports": [
+        "__future__",
+        "hashlib",
+        "main_dialog",
+        "main_dialog_config",
+        "pathlib",
+        "preview_reporter",
+        "qgis.PyQt.QtCore",
+        "qgis.core",
+        "sec_interp.core",
+        "sec_interp.core.exceptions",
+        "sec_interp.core.interfaces.preview_interface",
+        "sec_interp.core.performance_metrics",
+        "sec_interp.core.services.preview_service",
+        "sec_interp.core.types",
+        "sec_interp.logger_config",
+        "services.parallel_geology_service",
+        "tempfile",
+        "traceback",
+        "typing"
+      ],
+      "complexity": 37,
+      "has_main": false,
+      "docstrings": {
+        "module": true
+      },
+      "file_size_kb": 18.732421875,
+      "syntax_error": false
+    },
+    {
+      "path": "gui/utils.py",
+      "lines": 46,
+      "functions": [
+        "show_user_message(4 args)"
+      ],
+      "classes": [],
+      "imports": [
+        "qgis.PyQt.QtWidgets",
+        "sec_interp.logger_config"
+      ],
+      "complexity": 7,
+      "has_main": false,
+      "docstrings": {
+        "module": true
+      },
+      "file_size_kb": 1.333984375,
+      "syntax_error": false
+    },
+    {
+      "path": "resources/__init__.py",
+      "lines": 5,
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "complexity": 1,
+      "has_main": false,
+      "docstrings": {
+        "module": true
+      },
+      "file_size_kb": 0.095703125,
+      "syntax_error": false
+    },
+    {
+      "path": "gui/ui/pages/dem_page.py",
+      "lines": 155,
+      "functions": [
+        "__init__(3 args)",
+        "_setup_ui(1 args)",
+        "_setup_raster_selection(1 args)",
+        "_setup_band_and_resolution(1 args)",
+        "_setup_profile_settings(1 args)",
+        "_update_resolution(1 args)",
+        "get_data(1 args)",
+        "validate(1 args)",
+        "is_complete(1 args)"
+      ],
+      "classes": [
+        "DemPage(BasePage)"
+      ],
+      "imports": [
+        "base_page",
+        "qgis.PyQt.QtCore",
+        "qgis.PyQt.QtWidgets",
+        "qgis.core",
+        "qgis.gui",
+        "sec_interp.gui.main_dialog_config"
+      ],
+      "complexity": 5,
+      "has_main": false,
+      "docstrings": {
+        "module": true
+      },
+      "file_size_kb": 5.541015625,
+      "syntax_error": false
+    },
+    {
+      "path": "gui/main_dialog_signals.py",
+      "lines": 152,
+      "functions": [
+        "__init__(2 args)",
+        "connect_all(1 args)",
+        "_connect_button_signals(1 args)",
+        "_connect_preview_signals(1 args)",
+        "_connect_page_signals(1 args)",
+        "_connect_tool_signals(1 args)",
+        "finalize_with_log(0 args)"
+      ],
+      "classes": [
+        "DialogSignalManager"
+      ],
+      "imports": [
+        "main_dialog",
+        "qgis.PyQt.QtWidgets",
+        "sec_interp.logger_config",
+        "typing"
+      ],
+      "complexity": 3,
+      "has_main": false,
+      "docstrings": {
+        "module": true
+      },
+      "file_size_kb": 5.2646484375,
+      "syntax_error": false
+    },
+    {
+      "path": "gui/tools/interpretation_tool.py",
+      "lines": 318,
+      "functions": [
+        "__init__(2 args)",
+        "snap(2 args)",
+        "_cleanup_locators(2 args)",
+        "_is_snappable(2 args)",
+        "_get_locator(4 args)",
+        "__init__(2 args)",
+        "activate(1 args)",
+        "deactivate(1 args)",
+        "reset(1 args)",
+        "canvasReleaseEvent(2 args)",
+        "canvasMoveEvent(2 args)",
+        "canvasDoubleClickEvent(2 args)",
+        "keyPressEvent(2 args)",
+        "_add_point(2 args)",
+        "_remove_last_point(1 args)",
+        "_add_vertex_marker(2 args)",
+        "_ensure_rubber_band(1 args)",
+        "_update_rubber_band(2 args)",
+        "finalize_polygon(1 args)"
+      ],
+      "classes": [
+        "ProfileSnapper",
+        "ProfileInterpretationTool(QgsMapToolEmitPoint)"
+      ],
+      "imports": [
+        "__future__",
+        "contextlib",
+        "datetime",
+        "qgis.PyQt.QtCore",
+        "qgis.PyQt.QtGui",
+        "qgis.core",
+        "qgis.gui",
+        "random",
+        "sec_interp.core.types",
+        "sec_interp.logger_config",
+        "typing",
+        "uuid"
+      ],
+      "complexity": 35,
+      "has_main": false,
+      "docstrings": {
+        "module": true
+      },
+      "file_size_kb": 10.9423828125,
+      "syntax_error": false
+    },
+    {
+      "path": "gui/ui/pages/structure_page.py",
+      "lines": 103,
+      "functions": [
+        "__init__(2 args)",
+        "_setup_ui(1 args)",
+        "_on_layer_changed(2 args)",
+        "get_data(1 args)",
+        "is_complete(1 args)"
+      ],
+      "classes": [
+        "StructurePage(BasePage)"
+      ],
+      "imports": [
+        "base_page",
+        "qgis.PyQt.QtCore",
+        "qgis.PyQt.QtWidgets",
+        "qgis.core",
+        "qgis.gui",
+        "sec_interp.gui.main_dialog_config"
+      ],
+      "complexity": 3,
+      "has_main": false,
+      "docstrings": {
+        "module": true
+      },
+      "file_size_kb": 3.724609375,
+      "syntax_error": false
+    },
+    {
+      "path": "resources/resources.py",
+      "lines": 178,
+      "functions": [
+        "qInitResources(0 args)",
+        "qCleanupResources(0 args)"
+      ],
+      "classes": [],
+      "imports": [
+        "PyQt5"
+      ],
+      "complexity": 2,
+      "has_main": false,
+      "docstrings": {
+        "module": false
+      },
+      "file_size_kb": 8.6025390625,
+      "syntax_error": false
+    },
+    {
+      "path": "gui/ui/sidebar.py",
+      "lines": 55,
+      "functions": [
+        "__init__(2 args)",
+        "add_item(3 args)"
+      ],
+      "classes": [
+        "Sidebar(QListWidget)"
+      ],
+      "imports": [
+        "qgis.PyQt.QtCore",
+        "qgis.PyQt.QtWidgets",
+        "qgis.core"
+      ],
+      "complexity": 2,
+      "has_main": false,
+      "docstrings": {
+        "module": true
+      },
+      "file_size_kb": 1.5947265625,
+      "syntax_error": false
+    },
+    {
+      "path": "exporters/profile_exporters.py",
+      "lines": 277,
+      "functions": [
+        "get_supported_extensions(1 args)",
+        "export(3 args)",
+        "get_supported_extensions(1 args)",
+        "export(3 args)",
+        "_create_geology_fields(2 args)",
+        "_create_geology_feature(3 args)",
+        "get_supported_extensions(1 args)",
+        "export(3 args)",
+        "_create_structure_fields(2 args)",
+        "_create_structure_feature(4 args)",
+        "_calculate_dip_geometry(3 args)",
+        "get_supported_extensions(1 args)",
+        "export(3 args)"
+      ],
+      "classes": [
+        "ProfileLineShpExporter(BaseExporter)",
+        "GeologyShpExporter(BaseExporter)",
+        "StructureShpExporter(BaseExporter)",
+        "AxesShpExporter(BaseExporter)"
+      ],
+      "imports": [
+        "__future__",
+        "base_exporter",
+        "math",
+        "pathlib",
+        "qgis.PyQt.QtCore",
+        "qgis.core",
+        "sec_interp.core",
+        "sec_interp.logger_config",
+        "typing"
+      ],
+      "complexity": 32,
+      "has_main": false,
+      "docstrings": {
+        "module": true
+      },
+      "file_size_kb": 8.830078125,
+      "syntax_error": false
+    },
+    {
+      "path": "scripts/clean_imports.py",
+      "lines": 69,
+      "functions": [],
+      "classes": [],
+      "imports": [
+        "pathlib",
+        "re"
+      ],
+      "complexity": 8,
+      "has_main": false,
+      "docstrings": {
+        "module": false
+      },
+      "file_size_kb": 1.93359375,
+      "syntax_error": false
+    },
+    {
+      "path": "tests/core/test_algorithms.py",
+      "lines": 36,
+      "functions": [
+        "test_calculate_line_azimuth_horizontal(0 args)",
+        "test_calculate_line_azimuth_vertical(0 args)",
+        "test_calculate_line_azimuth_point(0 args)"
+      ],
+      "classes": [],
+      "imports": [
+        "qgis.core",
+        "sec_interp.core.utils"
+      ],
+      "complexity": 1,
+      "has_main": false,
+      "docstrings": {
+        "module": true
+      },
+      "file_size_kb": 0.927734375,
+      "syntax_error": false
+    },
+    {
+      "path": "gui/preview_layer_factory.py",
+      "lines": 393,
+      "functions": [
+        "__init__(1 args)",
+        "get_color_for_unit(2 args)",
+        "create_memory_layer(4 args)",
+        "create_topo_layer(5 args)",
+        "create_geol_layer(4 args)",
+        "create_struct_layer(5 args)",
+        "create_drillhole_trace_layer(3 args)",
+        "create_drillhole_interval_layer(3 args)",
+        "interpolate_elevation(3 args)"
+      ],
+      "classes": [
+        "PreviewLayerFactory"
+      ],
+      "imports": [
+        "__future__",
+        "math",
+        "qgis.PyQt.QtGui",
+        "qgis.core",
+        "sec_interp.core.types",
+        "sec_interp.core.utils.geometry_utils.optimization",
+        "sec_interp.logger_config",
+        "typing"
+      ],
+      "complexity": 42,
+      "has_main": false,
+      "docstrings": {
+        "module": true
+      },
+      "file_size_kb": 12.6875,
+      "syntax_error": false
+    },
+    {
+      "path": "scripts/inspect_qgs_api.py",
+      "lines": 18,
+      "functions": [],
+      "classes": [],
+      "imports": [
+        "qgis.core"
+      ],
+      "complexity": 7,
+      "has_main": false,
+      "docstrings": {
+        "module": false
+      },
+      "file_size_kb": 0.4716796875,
+      "syntax_error": false
+    },
+    {
+      "path": "tests/core/test_config.py",
+      "lines": 53,
+      "functions": [
+        "config_service(1 args)",
+        "test_get_default(2 args)",
+        "test_get_explicit_default(2 args)",
+        "test_set_value(2 args)",
+        "test_reset_defaults(2 args)"
+      ],
+      "classes": [
+        "TestConfigService"
+      ],
+      "imports": [
+        "pytest",
+        "sec_interp.core.config",
+        "unittest.mock"
+      ],
+      "complexity": 1,
+      "has_main": false,
+      "docstrings": {
+        "module": true
+      },
+      "file_size_kb": 1.96484375,
+      "syntax_error": false
+    },
+    {
+      "path": "logger_config.py",
+      "lines": 171,
+      "functions": [
+        "get_logger(1 args)",
+        "log_critical_operation(2 args)",
+        "emit(2 args)",
+        "__init__(2 args)",
+        "emit(2 args)"
+      ],
+      "classes": [
+        "ImmediateFlushFileHandler(RotatingFileHandler)",
+        "QgsLogHandler(logging.Handler)"
+      ],
+      "imports": [
+        "datetime",
+        "logging",
+        "logging.handlers",
+        "os",
+        "pathlib",
+        "qgis.PyQt.QtCore",
+        "qgis.core",
+        "sys"
+      ],
+      "complexity": 13,
+      "has_main": false,
+      "docstrings": {
+        "module": true
+      },
+      "file_size_kb": 5.541015625,
+      "syntax_error": false
+    },
+    {
+      "path": "tests/exporters/test_exporters.py",
+      "lines": 77,
+      "functions": [
+        "test_get_supported_extensions(1 args)",
+        "test_export_valid_data(3 args)",
+        "test_export_empty_data(2 args)",
+        "test_export_missing_headers(2 args)",
+        "test_export_missing_rows(2 args)",
+        "test_get_setting_with_default(1 args)",
+        "test_get_setting_no_default(1 args)"
+      ],
+      "classes": [
+        "TestCSVExporter",
+        "TestBaseExporter"
+      ],
+      "imports": [
+        "exporters.base_exporter",
+        "exporters.csv_exporter",
+        "pathlib",
+        "pytest"
+      ],
+      "complexity": 1,
+      "has_main": false,
+      "docstrings": {
+        "module": true
+      },
+      "file_size_kb": 2.419921875,
+      "syntax_error": false
+    },
+    {
+      "path": "tests/conftest.py",
+      "lines": 245,
+      "functions": [
+        "sample_strike_values(0 args)",
+        "sample_dip_values(0 args)",
+        "sample_profile_data(0 args)",
+        "temp_output_dir(1 args)",
+        "sample_csv_data(0 args)",
+        "isNull(1 args)",
+        "type(1 args)",
+        "isValid(1 args)",
+        "featureCount(1 args)",
+        "setCrs(2 args)",
+        "dataProvider(1 args)",
+        "updateFields(1 args)",
+        "getFeatures(2 args)",
+        "__init__(1 args)",
+        "__init__(1 args)",
+        "fromPolylineXY(1 args)",
+        "fromPointXY(1 args)",
+        "boundingBox(1 args)",
+        "intersects(2 args)",
+        "isMultipart(1 args)",
+        "asPolyline(1 args)",
+        "asMultiPolyline(1 args)",
+        "asPoint(1 args)",
+        "wkbType(1 args)",
+        "length(1 args)",
+        "interpolate(2 args)",
+        "authid(1 args)",
+        "ellipsoidAcronym(1 args)",
+        "__init__(2 args)",
+        "intersects(2 args)",
+        "setFilterFids(2 args)",
+        "__init__(3 args)",
+        "x(1 args)",
+        "y(1 args)",
+        "setSourceCrs(3 args)",
+        "setEllipsoid(2 args)"
+      ],
+      "classes": [
+        "MockQgsBase",
+        "MockQgsMapLayer(MockQgsBase)",
+        "MockQgsVectorLayer(MockQgsMapLayer)",
+        "MockQgsRasterLayer(MockQgsMapLayer)",
+        "MockQgsGeometry(MockQgsBase)",
+        "MockQgsCoordinateReferenceSystem(MockQgsBase)",
+        "MockQgsSpatialIndex",
+        "MockQgsFeatureRequest",
+        "MockQgsPointXY",
+        "MockQgsDistanceArea(MockQgsBase)",
+        "LayerType"
+      ],
+      "imports": [
+        "pathlib",
+        "pytest",
+        "qgis.core",
+        "qgis.gui",
+        "qgis.processing",
+        "sys",
+        "unittest.mock"
+      ],
+      "complexity": 4,
+      "has_main": false,
+      "docstrings": {
+        "module": false
+      },
+      "file_size_kb": 5.4873046875,
+      "syntax_error": false
+    },
+    {
+      "path": "tests/core/test_validation_refactor.py",
+      "lines": 48,
+      "functions": [
+        "test_numeric_input(1 args)",
+        "test_integer_input(1 args)",
+        "test_angle_range(1 args)",
+        "test_valid_path(2 args)"
+      ],
+      "classes": [
+        "TestRefactoredFieldValidation",
+        "TestRefactoredPathValidation"
+      ],
+      "imports": [
+        "core.validation.field_validator",
+        "core.validation.path_validator",
+        "pathlib",
+        "pytest",
+        "sys",
+        "unittest.mock"
+      ],
+      "complexity": 1,
+      "has_main": false,
+      "docstrings": {
+        "module": false
+      },
+      "file_size_kb": 1.4921875,
+      "syntax_error": false
+    },
+    {
+      "path": "tests/core/test_validation.py",
+      "lines": 97,
+      "functions": [
+        "test_validate_numeric_input_valid(1 args)",
+        "test_validate_numeric_input_invalid(1 args)",
+        "test_validate_numeric_input_with_range(1 args)",
+        "test_validate_integer_input_valid(1 args)",
+        "test_validate_integer_input_invalid(1 args)",
+        "test_validate_angle_range_valid(1 args)",
+        "test_validate_angle_range_invalid(1 args)",
+        "test_validate_output_path_valid(2 args)",
+        "test_validate_output_path_nonexistent(2 args)",
+        "test_validate_output_path_not_directory(2 args)"
+      ],
+      "classes": [
+        "TestNumericValidation",
+        "TestIntegerValidation",
+        "TestAngleValidation",
+        "TestOutputPathValidation"
+      ],
+      "imports": [
+        "core"
+      ],
+      "complexity": 2,
+      "has_main": false,
+      "docstrings": {
+        "module": true
+      },
+      "file_size_kb": 3.318359375,
+      "syntax_error": false
+    },
+    {
+      "path": "tests/gui/test_gui_utils.py",
+      "lines": 42,
+      "functions": [
+        "test_show_user_message_warning(2 args)",
+        "test_show_user_message_info(2 args)",
+        "test_show_user_message_error(2 args)"
+      ],
+      "classes": [
+        "TestShowUserMessage"
+      ],
+      "imports": [
+        "sec_interp.gui.utils",
+        "unittest.mock"
+      ],
+      "complexity": 1,
+      "has_main": false,
+      "docstrings": {
+        "module": true
+      },
+      "file_size_kb": 1.4404296875,
+      "syntax_error": false
+    },
+    {
+      "path": "gui/tools/measure_tool.py",
+      "lines": 339,
+      "functions": [
+        "__init__(2 args)",
+        "snap(2 args)",
+        "_cleanup_locators(2 args)",
+        "_is_snappable(2 args)",
+        "_get_locator(4 args)",
+        "__init__(2 args)",
+        "activate(1 args)",
+        "deactivate(1 args)",
+        "reset(1 args)",
+        "canvasReleaseEvent(2 args)",
+        "canvasMoveEvent(2 args)",
+        "keyPressEvent(2 args)",
+        "_add_point(2 args)",
+        "finalize_measurement(1 args)",
+        "_add_vertex_marker(2 args)",
+        "_ensure_rubber_band(1 args)",
+        "_update_rubber_band(2 args)",
+        "_calculate_and_emit_preview(2 args)"
+      ],
+      "classes": [
+        "ProfileSnapper",
+        "ProfileMeasureTool(QgsMapToolEmitPoint)"
+      ],
+      "imports": [
+        "__future__",
+        "math",
+        "qgis.PyQt.QtCore",
+        "qgis.PyQt.QtGui",
+        "qgis.core",
+        "qgis.gui",
+        "sec_interp.core.utils.geometry_utils.measurement",
+        "sec_interp.logger_config",
+        "time",
+        "typing"
+      ],
+      "complexity": 33,
+      "has_main": false,
+      "docstrings": {
+        "module": true
+      },
+      "file_size_kb": 11.3251953125,
+      "syntax_error": false
+    },
+    {
+      "path": "gui/ui/pages/section_page.py",
+      "lines": 76,
+      "functions": [
+        "__init__(2 args)",
+        "_setup_ui(1 args)",
+        "get_data(1 args)",
+        "validate(1 args)",
+        "is_complete(1 args)"
+      ],
+      "classes": [
+        "SectionPage(BasePage)"
+      ],
+      "imports": [
+        "base_page",
+        "qgis.PyQt.QtCore",
+        "qgis.PyQt.QtWidgets",
+        "qgis.core",
+        "qgis.gui"
+      ],
+      "complexity": 3,
+      "has_main": false,
+      "docstrings": {
+        "module": true
+      },
+      "file_size_kb": 2.5849609375,
+      "syntax_error": false
+    },
+    {
+      "path": "tools/qgis_plugin_analyzer/src/analyzer/cli.py",
+      "lines": 24,
+      "functions": [
+        "main(0 args)"
+      ],
+      "classes": [],
+      "imports": [
+        "argparse",
+        "engine",
+        "sys"
+      ],
+      "complexity": 4,
+      "has_main": true,
+      "docstrings": {
+        "module": false
+      },
+      "file_size_kb": 0.7421875,
+      "syntax_error": false
+    },
+    {
+      "path": "tools/qgis_plugin_analyzer/src/analyzer/models.py",
+      "lines": 32,
+      "functions": [],
+      "classes": [
+        "ModuleAnalysis",
+        "ProjectContext"
+      ],
+      "imports": [
+        "dataclasses",
+        "pathlib",
+        "typing"
+      ],
+      "complexity": 1,
+      "has_main": false,
+      "docstrings": {
+        "module": false
+      },
+      "file_size_kb": 1.0615234375,
+      "syntax_error": false
+    },
+    {
+      "path": "gui/ui/pages/drillhole_page.py",
+      "lines": 334,
+      "functions": [
+        "__init__(2 args)",
+        "_setup_ui(1 args)",
+        "_setup_collar_tab(2 args)",
+        "_add_collar_layer_widgets(2 args)",
+        "_add_collar_coordinate_widgets(2 args)",
+        "_add_collar_depth_widgets(2 args)",
+        "_connect_collar_signals(1 args)",
+        "_setup_survey_tab(2 args)",
+        "_setup_interval_tab(2 args)",
+        "_toggle_xy_fields(2 args)",
+        "get_data(1 args)",
+        "is_complete(1 args)"
+      ],
+      "classes": [
+        "DrillholePage(BasePage)"
+      ],
+      "imports": [
+        "base_page",
+        "qgis.PyQt.QtCore",
+        "qgis.PyQt.QtWidgets",
+        "qgis.core",
+        "qgis.gui",
+        "sec_interp.core.validation.project_validator",
+        "sec_interp.logger_config"
+      ],
+      "complexity": 9,
+      "has_main": false,
+      "docstrings": {
+        "module": true
+      },
+      "file_size_kb": 11.962890625,
+      "syntax_error": false
+    },
+    {
+      "path": "tests/core/test_data_cache_fix.py",
+      "lines": 65,
+      "functions": [
+        "setUp(1 args)",
+        "test_get_cache_key(1 args)",
+        "test_set_and_get(1 args)",
+        "test_get_missing(1 args)"
+      ],
+      "classes": [
+        "TestDataCache(unittest.TestCase)"
+      ],
+      "imports": [
+        "os",
+        "pathlib",
+        "sec_interp.core.data_cache",
+        "sys",
+        "unittest"
+      ],
+      "complexity": 2,
+      "has_main": true,
+      "docstrings": {
+        "module": false
+      },
+      "file_size_kb": 2.197265625,
+      "syntax_error": false
+    },
+    {
+      "path": "gui/ui/pages/preview_page.py",
+      "lines": 171,
+      "functions": [
+        "__init__(2 args)",
+        "_setup_ui(1 args)",
+        "_setup_canvas_area(1 args)",
+        "_setup_action_buttons(1 args)",
+        "_setup_lod_controls(1 args)",
+        "_setup_layer_checkboxes(1 args)",
+        "_setup_results_area(1 args)",
+        "_update_coords(2 args)",
+        "_update_scale(2 args)",
+        "_toggle_lod_spin(2 args)"
+      ],
+      "classes": [
+        "PreviewWidget(QWidget)"
+      ],
+      "imports": [
+        "qgis.PyQt.QtGui",
+        "qgis.PyQt.QtWidgets",
+        "qgis.gui"
+      ],
+      "complexity": 2,
+      "has_main": false,
+      "docstrings": {
+        "module": true
+      },
+      "file_size_kb": 6.23046875,
+      "syntax_error": false
+    },
+    {
+      "path": "tools/qgis_plugin_analyzer/src/analyzer/engine.py",
+      "lines": 97,
+      "functions": [
+        "__init__(3 args)",
+        "get_python_files(1 args)",
+        "run(1 args)",
+        "_calculate_score(5 args)"
+      ],
+      "classes": [
+        "ProjectAnalyzer"
+      ],
+      "imports": [
+        "concurrent.futures",
+        "os",
+        "pathlib",
+        "reporters",
+        "scanner",
+        "time",
+        "typing",
+        "utils"
+      ],
+      "complexity": 11,
+      "has_main": false,
+      "docstrings": {
+        "module": false
+      },
+      "file_size_kb": 3.91796875,
+      "syntax_error": false
+    },
+    {
+      "path": "tests/core/test_utils_standalone.py",
+      "lines": 210,
+      "functions": [
+        "test_parse_strike_numeric(1 args)",
+        "test_parse_strike_string_numeric(1 args)",
+        "test_parse_strike_quadrant_ne(1 args)",
+        "test_parse_strike_quadrant_nw(1 args)",
+        "test_parse_strike_quadrant_se(1 args)",
+        "test_parse_strike_quadrant_sw(1 args)",
+        "test_parse_strike_invalid(1 args)",
+        "test_parse_dip_numeric(1 args)",
+        "test_parse_dip_with_direction(1 args)",
+        "test_parse_dip_cardinal_directions(1 args)",
+        "test_parse_dip_invalid(1 args)",
+        "test_cardinal_to_azimuth_all_directions(1 args)",
+        "test_cardinal_to_azimuth_invalid(1 args)",
+        "test_calculate_apparent_dip_perpendicular(1 args)",
+        "test_calculate_apparent_dip_parallel(1 args)",
+        "test_calculate_apparent_dip_45_degrees(1 args)",
+        "test_interpolate_elevation_exact_point(1 args)",
+        "test_interpolate_elevation_midpoint(1 args)",
+        "test_interpolate_elevation_beyond_range(1 args)",
+        "test_interpolate_elevation_empty_data(1 args)"
+      ],
+      "classes": [
+        "TestStrikeParsing",
+        "TestDipParsing",
+        "TestCardinalToAzimuth",
+        "TestApparentDip",
+        "TestInterpolation"
+      ],
+      "imports": [
+        "core.utils",
+        "math",
+        "os",
+        "pytest",
+        "sys"
+      ],
+      "complexity": 2,
+      "has_main": false,
+      "docstrings": {
+        "module": true
+      },
+      "file_size_kb": 6.625,
+      "syntax_error": false
+    },
+    {
+      "path": "tests/test_translation_loading.py",
+      "lines": 235,
+      "functions": [
+        "setUp(1 args)",
+        "test_translation_loads_es(8 args)",
+        "test_translation_loads_fr(8 args)",
+        "test_translation_loads_pt_br(8 args)",
+        "test_translation_loads_de(8 args)",
+        "test_translation_loads_default_on_fail(7 args)",
+        "test_translation_loads_ru(8 args)"
+      ],
+      "classes": [
+        "TestTranslationLoading(unittest.TestCase)"
+      ],
+      "imports": [
+        "pathlib",
+        "qgis.PyQt.QtCore",
+        "qgis.core",
+        "sec_interp.sec_interp_plugin",
+        "unittest",
+        "unittest.mock"
+      ],
+      "complexity": 2,
+      "has_main": true,
+      "docstrings": {
+        "module": true
+      },
+      "file_size_kb": 8.48828125,
+      "syntax_error": false
+    },
+    {
+      "path": "tools/qgis_plugin_analyzer/src/analyzer/reporters.py",
+      "lines": 60,
+      "functions": [
+        "generate_markdown_summary(2 args)",
+        "save_json_context(2 args)"
+      ],
+      "classes": [],
+      "imports": [
+        "datetime",
+        "json",
+        "pathlib",
+        "typing"
+      ],
+      "complexity": 8,
+      "has_main": false,
+      "docstrings": {
+        "module": false
+      },
+      "file_size_kb": 2.66796875,
+      "syntax_error": false
+    },
+    {
+      "path": "tools/qgis_plugin_analyzer/src/analyzer/utils.py",
+      "lines": 95,
+      "functions": [
+        "timeout_manager(1 args)",
+        "__init__(2 args)",
+        "get(2 args)",
+        "set(3 args)",
+        "stats(1 args)",
+        "__init__(2 args)",
+        "update(3 args)",
+        "_display_progress(1 args)",
+        "complete(1 args)",
+        "signal_handler(2 args)"
+      ],
+      "classes": [
+        "LRUCache",
+        "ProgressTracker"
+      ],
+      "imports": [
+        "collections",
+        "contextlib",
+        "pathlib",
+        "signal",
+        "sys",
+        "threading",
+        "time",
+        "typing"
+      ],
+      "complexity": 8,
+      "has_main": false,
+      "docstrings": {
+        "module": false
+      },
+      "file_size_kb": 3.009765625,
+      "syntax_error": false
+    },
+    {
+      "path": "tests/core/test_utils.py",
+      "lines": 336,
+      "functions": [
+        "test_parse_strike_numeric(1 args)",
+        "test_parse_strike_string_numeric(1 args)",
+        "test_parse_strike_quadrant_ne(2 args)",
+        "test_parse_strike_quadrant_nw(1 args)",
+        "test_parse_strike_quadrant_se(1 args)",
+        "test_parse_strike_quadrant_sw(1 args)",
+        "test_parse_strike_invalid(1 args)",
+        "test_parse_dip_numeric(1 args)",
+        "test_parse_dip_with_direction(1 args)",
+        "test_parse_dip_cardinal_directions(1 args)",
+        "test_parse_dip_invalid(1 args)",
+        "test_cardinal_to_azimuth_all_directions(1 args)",
+        "test_cardinal_to_azimuth_invalid(1 args)",
+        "test_calculate_apparent_dip_perpendicular(1 args)",
+        "test_calculate_apparent_dip_parallel(1 args)",
+        "test_calculate_apparent_dip_45_degrees(1 args)",
+        "test_interpolate_elevation_exact_point(2 args)",
+        "test_interpolate_elevation_midpoint(2 args)",
+        "test_interpolate_elevation_beyond_range(2 args)",
+        "test_interpolate_elevation_empty_data(1 args)",
+        "test_create_buffer_geometry_basic(1 args)",
+        "test_create_buffer_geometry_invalid_input(1 args)",
+        "test_create_buffer_geometry_no_features(1 args)",
+        "test_create_buffer_geometry_processing_error(1 args)",
+        "test_filter_features_by_buffer_basic(1 args)",
+        "test_filter_features_invalid_layer(1 args)",
+        "test_filter_features_invalid_buffer(1 args)"
+      ],
+      "classes": [
+        "TestStrikeParsing",
+        "TestDipParsing",
+        "TestCardinalToAzimuth",
+        "TestApparentDip",
+        "TestInterpolation",
+        "TestBufferGeometry",
+        "TestSpatialFiltering"
+      ],
+      "imports": [
+        "core",
+        "core.utils.geometry",
+        "math",
+        "pytest",
+        "qgis.core",
+        "unittest.mock"
+      ],
+      "complexity": 2,
+      "has_main": false,
+      "docstrings": {
+        "module": true
+      },
+      "file_size_kb": 11.78125,
+      "syntax_error": false
+    },
+    {
+      "path": "tests/gui/test_preview_renderer_custom.py",
+      "lines": 86,
+      "functions": [
+        "renderer(0 args)",
+        "test_create_struct_layer_custom_length(1 args)",
+        "test_create_struct_layer_default_length(1 args)"
+      ],
+      "classes": [],
+      "imports": [
+        "pytest",
+        "qgis.core",
+        "sec_interp.core.types",
+        "sec_interp.gui.preview_renderer",
+        "unittest.mock"
+      ],
+      "complexity": 1,
+      "has_main": false,
+      "docstrings": {
+        "module": false
+      },
+      "file_size_kb": 2.521484375,
+      "syntax_error": false
+    },
+    {
+      "path": "sec_interp_plugin.py",
+      "lines": 482,
+      "functions": [
+        "__init__(2 args)",
+        "tr(2 args)",
+        "add_action(10 args)",
+        "initGui(1 args)",
+        "unload(1 args)",
+        "run(1 args)",
+        "_resolve_layer_obj(3 args)",
+        "_get_and_validate_inputs(1 args)",
+        "process_data(2 args)",
+        "save_profile_line(1 args)",
+        "draw_preview(6 args)"
+      ],
+      "classes": [
+        "SecInterp"
+      ],
+      "imports": [
+        "__future__",
+        "contextlib",
+        "pathlib",
+        "qgis.PyQt.QtCore",
+        "qgis.PyQt.QtGui",
+        "qgis.PyQt.QtWidgets",
+        "qgis.core",
+        "sec_interp.core.controller",
+        "sec_interp.core.exceptions",
+        "sec_interp.core.services.export_service",
+        "sec_interp.core.types",
+        "sec_interp.gui.main_dialog",
+        "sec_interp.gui.preview_renderer",
+        "sec_interp.gui.utils",
+        "sec_interp.logger_config",
+        "typing"
+      ],
+      "complexity": 31,
+      "has_main": false,
+      "docstrings": {
+        "module": true
+      },
+      "file_size_kb": 19.3916015625,
+      "syntax_error": false
+    },
+    {
+      "path": "tools/qgis_plugin_analyzer/src/analyzer/scanner.py",
+      "lines": 180,
+      "functions": [
+        "get_qgis_audit_rules(0 args)",
+        "analyze_module_worker(3 args)",
+        "audit_qgis_standards(2 args)",
+        "validate_plugin_structure(1 args)",
+        "validate_metadata(1 args)"
+      ],
+      "classes": [],
+      "imports": [
+        "ast",
+        "pathlib",
+        "re",
+        "typing"
+      ],
+      "complexity": 28,
+      "has_main": false,
+      "docstrings": {
+        "module": false
+      },
+      "file_size_kb": 6.734375,
+      "syntax_error": false
+    },
+    {
+      "path": "scripts/verify_refactor_mock.py",
+      "lines": 315,
+      "functions": [
+        "test_structure_service(0 args)",
+        "test_geology_service(0 args)",
+        "__init__(3 args)",
+        "x(1 args)",
+        "y(1 args)",
+        "lineLocatePoint(2 args)",
+        "interpolate(2 args)",
+        "asPoint(1 args)",
+        "intersects(2 args)",
+        "isNull(1 args)",
+        "length(1 args)",
+        "isMultipart(1 args)",
+        "asPolyline(1 args)",
+        "wkbType(1 args)",
+        "dataProvider(1 args)",
+        "identify(3 args)",
+        "rasterUnitsPerPixelX(1 args)",
+        "__init__(3 args)",
+        "geometry(1 args)",
+        "attributes(1 args)",
+        "fields(1 args)",
+        "__getitem__(2 args)"
+      ],
+      "classes": [
+        "MockQgsPointXY",
+        "MockQgsGeometry",
+        "MockQgsRasterLayer",
+        "MockQgsFeature"
+      ],
+      "imports": [
+        "os",
+        "sec_interp.core.services.geology_service",
+        "sec_interp.core.services.structure_service",
+        "sec_interp.core.types",
+        "sys",
+        "traceback",
+        "unittest.mock"
+      ],
+      "complexity": 14,
+      "has_main": true,
+      "docstrings": {
+        "module": false
+      },
+      "file_size_kb": 9.0732421875,
+      "syntax_error": false
+    },
+    {
+      "path": ".ai-context/ai_workflow.py",
+      "lines": 1014,
+      "functions": [
+        "example_workflow(0 args)",
+        "__init__(2 args)",
+        "_ensure_structure(1 args)",
+        "start_session(3 args)",
+        "generate_optimized_prompt(4 args)",
+        "_load_relevant_context(3 args)",
+        "_load_normal_context(2 args)",
+        "_normalize(2 args)",
+        "_add_if_relevant(6 args)",
+        "_get_constraints(1 args)",
+        "_select_template(3 args)",
+        "_qwen_cli_template(1 args)",
+        "_deepseek_template(1 args)",
+        "_chatgpt_template(1 args)",
+        "_claude_template(1 args)",
+        "_gemini_3_pro_template(1 args)",
+        "_claude_sonnet_45_template(1 args)",
+        "_gpt_oss_120b_template(1 args)",
+        "_gemini_template(1 args)",
+        "_default_template(2 args)",
+        "_truncate_to_tokens(3 args)",
+        "process_ai_response(3 args)",
+        "_parse_structured_response(2 args)",
+        "_extract_actions(2 args)",
+        "_update_project_brain(2 args)",
+        "_log_action(3 args)",
+        "end_session(3 args)",
+        "_generate_session_summary(4 args)",
+        "_default_brain_template(1 args)",
+        "_default_tech_stack(1 args)",
+        "_cheatsheet_template(1 args)",
+        "_extract_keywords(2 args)",
+        "_estimate_tokens(2 args)"
+      ],
+      "classes": [
+        "AIWorkflowManager"
+      ],
+      "imports": [
+        "argparse",
+        "datetime",
+        "hashlib",
+        "json",
+        "os",
+        "pathlib",
+        "re",
+        "sys",
+        "time",
+        "typing",
+        "unicodedata",
+        "yaml"
+      ],
+      "complexity": 69,
+      "has_main": true,
+      "docstrings": {
+        "module": true
+      },
+      "file_size_kb": 36.01953125,
+      "syntax_error": false
+    },
+    {
+      "path": "analyze_project_optfixed.py",
+      "lines": 2889,
+      "functions": [
+        "_worker_analyze_module(4 args)",
+        "timeout(1 args)",
+        "setup_logging(1 args)",
+        "main(0 args)",
+        "signal_handler(2 args)",
+        "__init__(2 args)",
+        "get(2 args)",
+        "set(3 args)",
+        "clear(1 args)",
+        "stats(1 args)",
+        "__init__(2 args)",
+        "update(3 args)",
+        "_display_progress(1 args)",
+        "complete(1 args)",
+        "__init__(6 args)",
+        "_load_config(1 args)",
+        "analyze(1 args)",
+        "_run_post_analysis(2 args)",
+        "_load_exclusion_patterns(1 args)",
+        "_get_python_files_filtered(1 args)",
+        "_analyze_single_module_optimized(2 args)",
+        "_read_file_fast(2 args)",
+        "_extract_imports_optimized(2 args)",
+        "_calculate_complexity_optimized(2 args)",
+        "_count_edges(1 args)",
+        "_find_simple_cycles(2 args)",
+        "_count_connected_components(1 args)",
+        "_analyze_dependencies_optimized(2 args)",
+        "_detect_patterns_advanced(2 args)",
+        "_load_state(1 args)",
+        "_save_state(1 args)",
+        "_print_cache_stats(1 args)",
+        "_log_error(3 args)",
+        "_analyze_structure(2 args)",
+        "_analyze_qgis_compliance(2 args)",
+        "_check_mandatory_plugin_files(1 args)",
+        "_check_metadata_validity(1 args)",
+        "_check_ui_logic_separation(2 args)",
+        "_check_qgis_widget_usage(2 args)",
+        "_check_performance_patterns(2 args)",
+        "_generate_tree_optimized(1 args)",
+        "_count_file_types_optimized(1 args)",
+        "_calculate_size_stats_optimized(1 args)",
+        "_check_qgis_best_practices(2 args)",
+        "_find_entry_points(1 args)",
+        "_analyze_complexity(2 args)",
+        "_calculate_complexity_distribution(2 args)",
+        "_find_technical_debt(2 args)",
+        "_find_optimizations(2 args)",
+        "_find_security_issues(2 args)",
+        "_calculate_project_metrics(2 args)",
+        "_calculate_quality_score(2 args)",
+        "_count_test_files(1 args)",
+        "_is_test_file(2 args)",
+        "_extract_functions(2 args)",
+        "_extract_classes(2 args)",
+        "_get_base_name(2 args)",
+        "_check_docstrings(2 args)",
+        "_has_main_guard(2 args)",
+        "_save_context_optimized(2 args)",
+        "_update_ai_brain(3 args)",
+        "_update_tech_stack_yaml(2 args)",
+        "_save_metrics_history(2 args)",
+        "_generate_project_summary(3 args)",
+        "_generate_ai_context(3 args)",
+        "dfs(1 args)"
+      ],
+      "classes": [
+        "TimeoutException(Exception)",
+        "AnalysisError(Exception)",
+        "LRUCache",
+        "ProgressTracker",
+        "ModuleAnalysis",
+        "ProjectContext",
+        "ProjectAnalyzer"
+      ],
+      "imports": [
+        "__future__",
+        "argparse",
+        "ast",
+        "collections",
+        "collections.abc",
+        "concurrent.futures",
+        "contextlib",
+        "dataclasses",
+        "datetime",
+        "fnmatch",
+        "functools",
+        "gc",
+        "hashlib",
+        "json",
+        "logging",
+        "mmap",
+        "os",
+        "pathlib",
+        "re",
+        "shutil",
+        "signal",
+        "subprocess",
+        "sys",
+        "threading",
+        "time",
+        "traceback",
+        "typing"
+      ],
+      "complexity": 357,
+      "has_main": true,
+      "docstrings": {
+        "module": true
+      },
+      "file_size_kb": 110.140625,
+      "syntax_error": false
+    }
+  ]
+}
