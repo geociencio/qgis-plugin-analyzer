@@ -23,4 +23,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fixed regex typo and lookahead logic in `scanner.py`.
 
 ## [0.0.1] - 2025-12-25
-- Conceptual prototype and research and comparative analysis.
+- Conceptual prototype, research, and comparative analysis.

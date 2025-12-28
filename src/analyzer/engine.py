@@ -36,7 +36,7 @@ class ProjectAnalyzer:
         self.max_workers = os.cpu_count() or 4
         
     def get_python_files(self) -> List[pathlib.Path]:
-        """Escanea archivos Python ignorando carpetas comunes."""
+        """Scans Python files ignoring common folders."""
         exclude = {"venv", ".venv", "__pycache__", ".git", "build", "dist"}
         python_files = []
         for root, dirs, files in os.walk(self.project_path):
@@ -47,13 +47,13 @@ class ProjectAnalyzer:
         return sorted(python_files)
 
     def run(self):
-        """Ejecuta el pipeline de análisis."""
-        print(f"🔍 Analizando: {self.project_path}")
+        """Runs the analysis pipeline."""
+        print(f"🔍 Analyzing: {self.project_path}")
         files = self.get_python_files()
         tracker = ProgressTracker(len(files))
         modules_data = []
 
-        # Análisis en paralelo
+        # Parallel analysis
         with ProcessPoolExecutor(max_workers=self.max_workers) as executor:
             futures = {executor.submit(analyze_module_worker, f, self.project_path): f for f in files}
             for future in as_completed(futures):
@@ -62,14 +62,14 @@ class ProjectAnalyzer:
                     modules_data.append(res)
                 tracker.update(futures[future], 0)
 
-        # Análisis de cumplimiento QGIS
+        # QGIS compliance analysis
         compliance = audit_qgis_standards(modules_data, self.project_path)
         
-        # Auditoría de repositorio oficial
+        # Official repository audit
         structure = validate_plugin_structure(self.project_path)
         metadata = validate_metadata(self.project_path)
 
-        # Calcular métricas básicas
+        # Calculate basic metrics
         code_score, qgis_score = self._calculate_scores(modules_data, compliance, structure, metadata)
         
         metrics = {
@@ -92,26 +92,26 @@ class ProjectAnalyzer:
             "modules": modules_data
         }
 
-        # Guardar reportes
+        # Save reports
         generate_markdown_summary(analyses, self.output_dir / "PROJECT_SUMMARY.md")
         save_json_context(analyses, self.output_dir / "project_context.json")
         
         tracker.complete()
-        print(f"✅ Análisis completado. Reportes en: {self.output_dir}")
+        print(f"✅ Analysis completed. Reports in: {self.output_dir}")
 
     def _calculate_scores(self, modules_data, compliance, structure, metadata) -> tuple:
-        """Cálculo de scores basado en estándares QGIS y calidad de código."""
+        """Calculates scores based on QGIS standards and code quality."""
         if not modules_data: return 0.0, 0.0
         
-        # 1. Base Calidad de Código (50%)
+        # 1. Base Code Quality (50%)
         avg_comp = sum(m["complexity"] for m in modules_data) / len(modules_data)
         code_score = max(0, 100 - (avg_comp * 3))
         
-        # 2. Estándares QGIS (50%)
+        # 2. QGIS Standards (50%)
         qgis_score = 100
-        # Penalización por hallazgos técnicos
+        # Penalty for technical findings
         qgis_score -= compliance.get("issues_count", 0) * 2
-        # Penalización por faltas de repositorio
+        # Penalty for repository missing files/metadata
         if not structure["is_valid"]: qgis_score -= 20
         if not metadata["is_valid"]: qgis_score -= 10
         

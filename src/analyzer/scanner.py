@@ -24,59 +24,59 @@ import pathlib
 from typing import Any, Dict, List, Optional
 
 def get_qgis_audit_rules() -> List[Dict[str, Any]]:
-    """Devuelve el catálogo de reglas de auditoría de QGIS."""
+    """Returns the QGIS audit rule catalog."""
     return [
         {
             "id": "OBSOLETE_API",
             "pattern": r"writeAsVectorFormat\(",
-            "message": "Uso de writeAsVectorFormat() obsoleto. Usar writeAsVectorFormatV3().",
-            "severity": "alta",
+            "message": "Obsolete writeAsVectorFormat() usage. Use writeAsVectorFormatV3().",
+            "severity": "high",
         },
         {
             "id": "UNPRECISE_LAYER_LOOKUP",
             "pattern": r"mapLayersByName\(",
-            "message": "mapLayersByName() puede ser impreciso. Considerar mapLayers() o IDs únicos.",
-            "severity": "media",
+            "message": "mapLayersByName() can be imprecise. Consider mapLayers() or unique IDs.",
+            "severity": "medium",
         },
         {
             "id": "MISSING_I18N",
             "pattern": r"\.(?:setText|setWindowTitle|setTitle|setToolTip|setPlaceholderText|setTabText)\(\s*['\"](?![%])",
-            "message": "Cadena de texto en UI sin traducir. Usar self.tr().",
-            "severity": "alta",
+            "message": "Untranslated UI text string. Use self.tr().",
+            "severity": "high",
         },
         {
             "id": "UNSAFE_THREADING",
             "pattern": r"\bthreading\.Thread\(",
-            "message": "Uso de threading.Thread detectado. Preferir QgsTask o QThread.",
-            "severity": "alta",
+            "message": "threading.Thread usage detected. Prefer QgsTask or QThread.",
+            "severity": "high",
         },
         {
             "id": "MANUAL_RESOURCE_PATH",
             "pattern": r"QIcon\(\s*['\"](?!\s*:\/)[^'\"]*?(?:icons|images|ui)/",
-            "message": "Ruta de recurso manual detectada. Usar :/plugins/...",
-            "severity": "media",
+            "message": "Manual resource path detected. Use :/plugins/...",
+            "severity": "medium",
         },
         {
             "id": "PRINT_STATEMENT",
             "pattern": r"^[^#]*\bprint\(",
-            "message": "Uso de print() detectado. Usar QgsMessageLog.",
-            "severity": "baja",
+            "message": "print() usage detected. Use QgsMessageLog.",
+            "severity": "low",
         },
     ]
 
 def analyze_module_worker(py_file: pathlib.Path, project_path: pathlib.Path, cached_data: Optional[Dict] = None) -> Optional[Dict]:
-    """Trabajador para análisis de módulo (ejecutado en subprocesos)."""
+    """Worker for module analysis (executed in sub-processes)."""
     try:
         rel_path = str(py_file.relative_to(project_path))
         
-        # Lectura rápida
+        # Fast read
         with open(py_file, "r", encoding="utf-8-sig", errors="replace") as f:
             content = f.read()
         
         if not content:
             return None
 
-        # Parsear AST
+        # Parse AST
         try:
             tree = ast.parse(content)
         except SyntaxError:
@@ -87,7 +87,7 @@ def analyze_module_worker(py_file: pathlib.Path, project_path: pathlib.Path, cac
                 "file_size_kb": py_file.stat().st_size / 1024,
             }
 
-        # Extracción de info
+        # Info extraction
         functions = []
         classes = []
         imports = []
@@ -134,7 +134,7 @@ def analyze_module_worker(py_file: pathlib.Path, project_path: pathlib.Path, cac
         return None
 
 def audit_qgis_standards(modules_data: List[Dict], project_path: pathlib.Path) -> Dict[str, Any]:
-    """Ejecuta la auditoría de estándares QGIS basada en regex."""
+    """Executes regex-based QGIS standards audit."""
     rules = get_qgis_audit_rules()
     results = {"issues": [], "issues_count": 0}
     
@@ -165,11 +165,11 @@ def audit_qgis_standards(modules_data: List[Dict], project_path: pathlib.Path) -
     return results
 
 def validate_plugin_structure(project_path: pathlib.Path) -> Dict[str, Any]:
-    """Verifica la presencia de archivos obligatorios."""
+    """Verifies presence of mandatory files."""
     mandatory = ["metadata.txt", "__init__.py", "LICENSE"]
     found = {f: (project_path / f).exists() for f in mandatory}
     
-    # Verificar classFactory en __init__.py
+    # Check classFactory in __init__.py
     init_file = project_path / "__init__.py"
     has_factory = False
     if init_file.exists():
@@ -182,7 +182,7 @@ def validate_plugin_structure(project_path: pathlib.Path) -> Dict[str, Any]:
     }
 
 def validate_metadata(project_path: pathlib.Path) -> Dict[str, Any]:
-    """Valida el contenido de metadata.txt."""
+    """Validates metadata.txt content."""
     metadata_path = project_path / "metadata.txt"
     required = ["name", "description", "version", "qgisMinimumVersion", "author", "email"]
     

@@ -28,7 +28,7 @@ from contextlib import contextmanager
 import signal
 
 class LRUCache:
-    """Cache LRU eficiente."""
+    """Efficient LRU Cache."""
     def __init__(self, maxsize: int = 256):
         self.cache = OrderedDict()
         self._lock = threading.Lock()
@@ -64,7 +64,7 @@ class LRUCache:
             }
 
 class ProgressTracker:
-    """Tracker de progreso en tiempo real."""
+    """Real-time progress tracker."""
     def __init__(self, total_files: int):
         self.total = total_files
         self.processed = 0
@@ -90,7 +90,7 @@ class ProgressTracker:
             eta_str = f"{eta:.0f}s"
         else:
             eta_str = "..."
-        sys.stdout.write(f"\r\033[K📊 Progreso: {self.processed}/{self.total} ({percent:.1f}%) | ETA: {eta_str}")
+        sys.stdout.write(f"\r\033[K📊 Progress: {self.processed}/{self.total} ({percent:.1f}%) | ETA: {eta_str}")
         sys.stdout.flush()
 
     def complete(self) -> Dict[str, Any]:
@@ -103,9 +103,9 @@ class ProgressTracker:
 
 @contextmanager
 def timeout_manager(seconds: int):
-    """Context manager para timeout."""
+    """Context manager for timeouts."""
     def signal_handler(signum, frame):
-        raise TimeoutError(f"Operación excedió {seconds}s")
+        raise TimeoutError(f"Operation exceeded {seconds}s")
     signal.signal(signal.SIGALRM, signal_handler)
     signal.alarm(seconds)
     try:

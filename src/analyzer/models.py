@@ -24,7 +24,7 @@ import pathlib
 
 @dataclass
 class ModuleAnalysis:
-    """Análisis de un módulo Python."""
+    """Analysis of a Python module."""
     path: str
     lines: int
     functions: List[str]
@@ -39,7 +39,7 @@ class ModuleAnalysis:
 
 @dataclass
 class ProjectContext:
-    """Contexto completo del proyecto."""
+    """Full project context."""
     project_name: str
     structure: Dict[str, Any] = field(default_factory=dict)
     entry_points: List[str] = field(default_factory=list)

@@ -23,9 +23,9 @@ import sys
 from .engine import ProjectAnalyzer
 
 def main():
-    parser = argparse.ArgumentParser(description="QGIS Plugin Analyzer - Un guardián para tu código PyQGIS")
-    parser.add_argument("project_path", help="Ruta al proyecto de QGIS a analizar")
-    parser.add_argument("-o", "--output", help="Directorio de salida para los reportes", default="./analysis_results")
+    parser = argparse.ArgumentParser(description="QGIS Plugin Analyzer - A guardian for your PyQGIS code")
+    parser.add_argument("project_path", help="Path to the QGIS project to analyze")
+    parser.add_argument("-o", "--output", help="Output directory for reports", default="./analysis_results")
     
     args = parser.parse_args()
     
@@ -33,10 +33,10 @@ def main():
         analyzer = ProjectAnalyzer(args.project_path, args.output)
         analyzer.run()
     except KeyboardInterrupt:
-        print("\n⏹️ Análisis interrumpido.")
+        print("\n⏹️ Analysis interrupted.")
         sys.exit(1)
     except Exception as e:
-        print(f"\n❌ Error crítico: {e}")
+        print(f"\n❌ Critical Error: {e}")
         sys.exit(1)
 
 if __name__ == "__main__":

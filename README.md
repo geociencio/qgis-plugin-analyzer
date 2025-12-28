@@ -1,81 +1,81 @@
 # QGIS Plugin Analyzer 🛡️
 
-El **QGIS Plugin Analyzer** es una herramienta de análisis estático diseñada específicamente para desarrolladores de plugins de QGIS (PyQGIS). Su objetivo es elevar la calidad de los plugins, asegurando que cumplan con las mejores prácticas de la comunidad y estén optimizados para el desarrollo asistido por IA.
+The **QGIS Plugin Analyzer** is a static analysis tool designed specifically for QGIS (PyQGIS) plugin developers. Its goal is to elevate plugin quality by ensuring they follow community best practices and are optimized for AI-assisted development.
 
-## ✨ Características Principales
+## ✨ Main Features
 
-- **Auditoría de Estándares QGIS**: Detecta falta de internacionalización (i18n), uso de APIs obsoletas, y riesgos de seguridad en hilos (Threading). Ver [Catálogo de Reglas](RULES.md).
-- **Análisis de Arquitectura**: Identifica violaciones en la separación de responsabilidades (Core vs GUI).
-- **Métricas de Calidad**: Calcula complejidad ciclomática y cobertura de documentación.
-- **Preparado para IA**: Genera resúmenes estructurados y contextos optimizados para LLMs.
-- **Alto Rendimiento**: Utiliza procesamiento paralelo para analizar proyectos grandes en segundos.
+- **QGIS Standards Audit**: Detects missing internationalization (i18n), obsolete APIs, and unsafe threading. See [Rule Catalog](RULES.md).
+- **Architecture Analysis**: Identifies violations in separation of responsibilities (Core vs GUI).
+- **Quality Metrics**: Calculates cyclomatic complexity and documentation coverage.
+- **AI-Ready**: Generates structured summaries and optimized contexts for LLMs.
+- **High Performance**: Uses parallel processing to analyze large projects in seconds.
 
-## ⚖️ ¿Por qué usar este Analizador? (Comparativa)
+## ⚖️ Why use this Analyzer? (Comparison)
 
-| Característica | QGIS Plugin Analyzer | flake8-qgis | qgis-plugin-dev-tools | Official Repo Bot |
+| Feature | QGIS Plugin Analyzer | flake8-qgis | qgis-plugin-dev-tools | Official Repo Bot |
 | :--- | :---: | :---: | :---: | :---: |
-| **Linting Estático** | ✅ (Reglas Propias) | ✅ (Estricto) | ❌ | ✅ (Limitado) |
-| **Complejidad (AST)** | ✅ | ❌ | ❌ | ❌ |
-| **Auditoría i18n QGIS** | ✅ | ❌ | ❌ | ✅ |
-| **Auditoría Arquitectura**| ✅ (UI/Core) | ❌ | ❌ | ❌ |
-| **Reglas de Rendimiento** | ✅ (Spatial Index) | ✅ | ❌ | ❌ |
-| **Escaneo de Seguridad** | ✅ | ❌ | ❌ | ✅ (Malware) |
-| **Generación Contexto IA**| ✅ | ❌ | ❌ | ❌ |
-| **Soporte Multiproceso**  | ✅ | ❌ | ❌ | ❌ |
-| **Reportes Externos**    | ✅ (MD, JSON) | ❌ | ✅ (Packaging) | ❌ |
+| **Static Linting** | ✅ (Custom Rules) | ✅ (Strict) | ❌ | ✅ (Limited) |
+| **Complexity (AST)** | ✅ | ❌ | ❌ | ❌ |
+| **QGIS i18n Audit** | ✅ | ❌ | ❌ | ✅ |
+| **Architecture Audit**| ✅ (UI/Core) | ❌ | ❌ | ❌ |
+| **Performance Rules** | ✅ (Spatial Index) | ✅ | ❌ | ❌ |
+| **Security Scan** | ✅ | ❌ | ❌ | ✅ (Malware) |
+| **AI Context Gen**| ✅ | ❌ | ❌ | ❌ |
+| **Multiprocess Support**  | ✅ | ❌ | ❌ | ❌ |
+| **External Reports**    | ✅ (MD, JSON) | ❌ | ✅ (Packaging) | ❌ |
 
-### Diferenciadores Clave
+### Key Differentiators
 
-1.  **Puntuación de Calidad Holística**: A diferencia de los linters que solo reportan errores, el Analyzer proporciona una **Puntuación de Calidad (0-100)**.
-2.  **Infraestructura Nativa para IA**: Genera un "Cerebro de Proyecto" estructurado que permite a asistentes de IA (ChatGPT/Gemini) dar sugerencias de refactorización mucho más precisas.
-3.  **Cumplimiento de Arquitectura**: Detecta violaciones de patrones (ej. lógica pesada en la UI), la causa #1 de deuda técnica en plugins.
-4.  **Independencia Total**: Puede ejecutarse en cualquier proyecto sin formar parte de él, manteniendo el repositorio del plugin limpio.
+1.  **Holistic Quality Score**: Unlike linters that only report errors, the Analyzer provides a **Quality Score (0-100)**.
+2.  **Native AI Infrastructure**: Generates a structured "Project Brain" that allows AI assistants (ChatGPT/Gemini) to provide much more accurate refactoring suggestions.
+3.  **Architecture Compliance**: Detects pattern violations (e.g., heavy logic in the UI), the #1 cause of technical debt in plugins.
+4.  **Total Independence**: Can be run on any project without being part of it, keeping the plugin repository clean.
 
-## 🚀 Instalación y Uso
+## 🚀 Installation and Usage
 
-### Instalación con `uv` (Recomendado):
+### Installation with `uv` (Recommended):
 
-Si tienes [uv](https://github.com/astral-sh/uv) instalado, puedes instalar el analizador de forma rápida y aislada:
+If you have [uv](https://github.com/astral-sh/uv) installed, you can install the analyzer quickly and in isolation:
 
-**1. Como herramienta global (aislada):**
+**1. As a global tool (isolated):**
 ```bash
 uv tool install git+https://github.com/geociencio/qgis-plugin-analyzer.git
 ```
 
-**2. Instalación local para desarrollo:**
+**2. Local installation for development:**
 ```bash
 git clone https://github.com/geociencio/qgis-plugin-analyzer
 cd qgis-plugin-analyzer
 uv sync
 ```
 
-### Instalación con `pip`:
+### Installation with `pip`:
 ```bash
 pip install .
 ```
 
-### Ejecutar análisis:
+### Run Analysis:
 ```bash
-qgis-analyzer /ruta/a/tu/plugin -o ./reporte_calidad
+qgis-analyzer /path/to/your/plugin -o ./quality_report
 ```
 
-## 📊 Reportes Generados
+## 📊 Generated Reports
 
-- `PROJECT_SUMMARY.md`: Resumen ejecutivo con puntuación de calidad y hallazgos críticos.
-- `project_context.json`: Datos estructurados completos para integraciones externas.
+- `PROJECT_SUMMARY.md`: Executive summary with quality score and critical findings.
+- `project_context.json`: Full structured data for external integrations.
 
-## 📚 Referencias y Estándares
+## 📚 References and Standards
 
-El desarrollo de este analizador se basa en las directrices oficiales de la comunidad de QGIS y estándares de la industria:
+The development of this analyzer is based on official QGIS community guidelines and industry standards:
 
-- **[PyQGIS Developer Cookbook](https://docs.qgis.org/latest/en/docs/pyqgis_developer_cookbook/)**: La biblia para el desarrollo de plugins en Python.
-- **[QGIS Plugin Repository Requirements](https://plugins.qgis.org/publish/)**: Criterios oficiales para la aprobación de plugins en el repositorio oficial.
-- **[QGIS Coding Standards](https://docs.qgis.org/latest/en/docs/developer_guide/codingstandards.html)**: Estándares de estilo y organización de código de QGIS.
-- **[QGIS HIG (Human Interface Guidelines)](https://docs.qgis.org/latest/en/docs/developer_guide/hig.html)**: Guía para el diseño de interfaces de usuario consistentes.
-- **[Conventional Commits](https://www.conventionalcommits.org/)**: Estándar para mensajes de commit claros y estructurados.
+- **[PyQGIS Developer Cookbook](https://docs.qgis.org/latest/en/docs/pyqgis_developer_cookbook/)**: The bible for Python plugin development.
+- **[QGIS Plugin Repository Requirements](https://plugins.qgis.org/publish/)**: Official criteria for plugin approval in the official repository.
+- **[QGIS Coding Standards](https://docs.qgis.org/latest/en/docs/developer_guide/codingstandards.html)**: Style and code organization standards for QGIS.
+- **[QGIS HIG (Human Interface Guidelines)](https://docs.qgis.org/latest/en/docs/developer_guide/hig.html)**: Guide for designing consistent user interfaces.
+- **[Conventional Commits](https://www.conventionalcommits.org/)**: Standard for clear and structured commit messages.
 
-## 🛠️ Contribuir
-Las reglas de auditoría se encuentran en `src/analyzer/scanner.py`. ¡Siéntete libre de añadir nuevas reglas siguiendo el patrón existente!
+## 🛠️ Contributing
+Audit rules are located in `src/analyzer/scanner.py`. Feel free to add new rules following the existing pattern!
 
 ---
-*Desarrollado para el equipo de SecInterp y la comunidad de QGIS.*
+*Developed for the SecInterp team and the QGIS community.*

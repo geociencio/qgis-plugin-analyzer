@@ -1,41 +1,41 @@
-# Catálogo de Reglas: QGIS Plugin Analyzer 📜
+# Rule Catalog: QGIS Plugin Analyzer 📜
 
-Este documento detalla las reglas de auditoría automática implementadas en el analizador para garantizar que los plugins sigan los estándares oficiales de QGIS y las mejores prácticas de desarrollo.
+This document details the automatic audit rules implemented in the analyzer to ensure that plugins follow official QGIS standards and development best practices.
 
-## 1. Internacionalización (i18n)
+## 1. Internationalization (i18n)
 
-| ID de Regla | Severidad | Descripción | Recomendación |
+| Rule ID | Severity | Description | Recommendation |
 | :--- | :--- | :--- | :--- |
-| `MISSING_I18N` | 🔴 Alta | Detecta cadenas de texto en la interfaz (setText, setToolTip, etc.) que no están envueltas en funciones de traducción. | Envolver las cadenas en `self.tr("Texto")` o `QCoreApplication.translate()`. |
+| `MISSING_I18N` | 🔴 High | Detects text strings in the interface (setText, setToolTip, etc.) that are not wrapped in translation functions. | Wrap strings in `self.tr("Text")` or `QCoreApplication.translate()`. |
 
-## 2. API Obsoleta y Precisión
+## 2. Obsolete API and Precision
 
-| ID de Regla | Severidad | Descripción | Recomendación |
+| Rule ID | Severity | Description | Recommendation |
 | :--- | :--- | :--- | :--- |
-| `OBSOLETE_API` | 🔴 Alta | Uso de métodos antiguos como `writeAsVectorFormat()`. | Usar la versión moderna V3: `QgsVectorFileWriter.writeAsVectorFormatV3()`. |
-| `OBSOLETE_VARIANT`| 🟡 Media | Uso de constantes de tipo obsoletas de `QVariant` (ej. `QVariant.String`). | Usar `QMetaType.Type.QString` o tipos nativos según la versión de QGIS. |
-| `UNPRECISE_LAYER` | 🟡 Media | Uso de `mapLayersByName()`. | Usar `mapLayers()` o IDs únicos de capa para evitar ambigüedad con nombres duplicados. |
+| `OBSOLETE_API` | 🔴 High | Use of old methods like `writeAsVectorFormat()`. | Use the modern V3 version: `QgsVectorFileWriter.writeAsVectorFormatV3()`. |
+| `OBSOLETE_VARIANT`| 🟡 Medium | Use of obsolete `QVariant` type constants (e.g., `QVariant.String`). | Use `QMetaType.Type.QString` or native types depending on the QGIS version. |
+| `UNPRECISE_LAYER` | 🟡 Medium | Use of `mapLayersByName()`. | Use `mapLayers()` or unique layer IDs to avoid ambiguity with duplicate names. |
 
-## 3. Seguridad en Hilos (Threading)
+## 3. Threading Security
 
-| ID de Regla | Severidad | Descripción | Recomendación |
+| Rule ID | Severity | Description | Recommendation |
 | :--- | :--- | :--- | :--- |
-| `UNSAFE_THREAD` | 🔴 Alta | Uso de `threading.Thread` estándar de Python. | Usar `QgsTask` o `QThread` para interactuar de forma segura con el hilo principal de QGIS. |
+| `UNSAFE_THREAD` | 🔴 High | Use of standard Python `threading.Thread`. | Use `QgsTask` or `QThread` to safely interact with the QGIS main thread. |
 
-## 4. Gestión de Recursos
+## 4. Resource Management
 
-| ID de Regla | Severidad | Descripción | Recomendación |
+| Rule ID | Severity | Description | Recommendation |
 | :--- | :--- | :--- | :--- |
-| `MANUAL_PATH` | 🟡 Media | Rutas manuales para iconos o archivos UI (ej. `icons/ico.png`). | Usar el sistema de recursos de Qt con el prefijo `:/plugins/...`. |
+| `MANUAL_PATH` | 🟡 Medium | Manual paths for icons or UI files (e.g., `icons/ico.png`). | Use the Qt resource system with the `:/plugins/...` prefix. |
 
-## 5. Rendimiento (Performance)
+## 5. Performance
 
-| ID de Regla | Severidad | Descripción | Recomendación |
+| Rule ID | Severity | Description | Recommendation |
 | :--- | :--- | :--- | :--- |
-| `SPATIAL_INDEX` | 🔴 Alta | Iteración sobre entidades sin usar un índice espacial en capas pesadas. | Utilizar `QgsSpatialIndex` para optimizar las consultas espaciales. |
+| `SPATIAL_INDEX` | 🔴 High | Iteration over features without using a spatial index on heavy layers. | Use `QgsSpatialIndex` to optimize spatial queries. |
 
-## 6. Arquitectura
+## 6. Architecture
 
-| ID de Regla | Severidad | Descripción | Recomendación |
+| Rule ID | Severity | Description | Recommendation |
 | :--- | :--- | :--- | :--- |
-| `HEAVY_LOGIC_UI` | 🟡 Media | Lógica compleja o dependencias pesadas detectadas dentro de archivos de la interfaz gráfica (GUI). | Mover la lógica de negocio a `core/services/` o `core/logic/`. |
+| `HEAVY_LOGIC_UI` | 🟡 Medium | Complex logic or heavy dependencies detected within graphical interface (GUI) files. | Move business logic to `core/services/` or `core/logic/`. |
