@@ -33,11 +33,25 @@ El **QGIS Plugin Analyzer** es una herramienta de análisis estático diseñada 
 
 ## 🚀 Instalación y Uso
 
-### Instalación local (desarrollo):
+### Instalación con `uv` (Recomendado):
+
+Si tienes [uv](https://github.com/astral-sh/uv) instalado, puedes instalar el analizador de forma rápida y aislada:
+
+**1. Como herramienta global (aislada):**
 ```bash
-git clone https://github.com/tu-usuario/qgis-plugin-analyzer
+uv tool install git+https://github.com/geociencio/qgis-plugin-analyzer.git
+```
+
+**2. Instalación local para desarrollo:**
+```bash
+git clone https://github.com/geociencio/qgis-plugin-analyzer
 cd qgis-plugin-analyzer
-pip install -e .
+uv sync
+```
+
+### Instalación con `pip`:
+```bash
+pip install .
 ```
 
 ### Ejecutar análisis:
