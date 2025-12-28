@@ -18,9 +18,11 @@
 #  *                                                                         *
 #  ***************************************************************************/
 
+import os
 import threading
 import time
 import sys
+import fnmatch
 import pathlib
 from collections import OrderedDict
 from typing import Any, List, Dict
@@ -112,3 +114,39 @@ def timeout_manager(seconds: int):
         yield
     finally:
         signal.alarm(0)
+
+class IgnoreMatcher:
+    """Handles .analyzerignore patterns using fnmatch."""
+    def __init__(self, root_path: pathlib.Path, patterns: List[str]):
+        self.root_path = root_path
+        self.patterns = [p.strip() for p in patterns if p.strip() and not p.startswith("#")]
+
+    def is_ignored(self, path: pathlib.Path) -> bool:
+        """Returns True if the path matches any of the ignore patterns."""
+        try:
+            rel_path = path.relative_to(self.root_path)
+            str_rel_path = str(rel_path)
+        except ValueError:
+            return False
+
+        for pattern in self.patterns:
+            # Handle directory-specific patterns (ending in /)
+            if pattern.endswith("/"):
+                # If the pattern is 'dir/', match any path that starts with 'dir/'
+                clean_pattern = pattern.rstrip("/")
+                if str_rel_path.startswith(clean_pattern + os.sep) or str_rel_path == clean_pattern:
+                    return True
+            # Standard glob matching
+            if fnmatch.fnmatch(str_rel_path, pattern):
+                return True
+            # Match basename if pattern doesn't contain a slash
+            if "/" not in pattern and fnmatch.fnmatch(path.name, pattern):
+                return True
+        return False
+
+def load_ignore_patterns(ignore_file: pathlib.Path) -> List[str]:
+    """Loads ignore patterns from a file."""
+    if not ignore_file.exists():
+        return []
+    with open(ignore_file, "r") as f:
+        return f.readlines()

@@ -25,7 +25,7 @@ from concurrent.futures import ProcessPoolExecutor, as_completed
 from typing import Any, Dict, List, Optional
 
 from .scanner import analyze_module_worker, audit_qgis_standards, validate_plugin_structure, validate_metadata
-from .utils import ProgressTracker, LRUCache
+from .utils import ProgressTracker, LRUCache, IgnoreMatcher, load_ignore_patterns
 from .reporters import generate_markdown_summary, save_json_context
 
 class ProjectAnalyzer:
@@ -35,15 +35,25 @@ class ProjectAnalyzer:
         self.output_dir.mkdir(parents=True, exist_ok=True)
         self.max_workers = os.cpu_count() or 4
         
+        # Load .analyzerignore
+        ignore_file = self.project_path / ".analyzerignore"
+        patterns = load_ignore_patterns(ignore_file)
+        self.matcher = IgnoreMatcher(self.project_path, patterns)
+        
     def get_python_files(self) -> List[pathlib.Path]:
-        """Scans Python files ignoring common folders."""
+        """Scans Python files ignoring common folders and .analyzerignore patterns."""
         exclude = {"venv", ".venv", "__pycache__", ".git", "build", "dist"}
         python_files = []
         for root, dirs, files in os.walk(self.project_path):
-            dirs[:] = [d for d in dirs if d not in exclude]
+            root_path = pathlib.Path(root)
+            
+            # Filter directories
+            dirs[:] = [d for d in dirs if d not in exclude and not self.matcher.is_ignored(root_path / d)]
+            
             for file in files:
-                if file.endswith(".py"):
-                    python_files.append(pathlib.Path(root) / file)
+                file_path = root_path / file
+                if file.endswith(".py") and not self.matcher.is_ignored(file_path):
+                    python_files.append(file_path)
         return sorted(python_files)
 
     def run(self):
