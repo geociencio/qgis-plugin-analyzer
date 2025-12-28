@@ -52,7 +52,7 @@ def get_qgis_audit_rules() -> List[Dict[str, Any]]:
         },
         {
             "id": "MANUAL_RESOURCE_PATH",
-            "pattern": r"QIcon\(\s*['\"](?!s*:\/)[^'\"/]+/(?:icons|images|ui)/",
+            "pattern": r"QIcon\(\s*['\"](?!\s*:\/)[^'\"]*?(?:icons|images|ui)/",
             "message": "Ruta de recurso manual detectada. Usar :/plugins/...",
             "severity": "media",
         },

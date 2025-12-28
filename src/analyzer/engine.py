@@ -70,16 +70,19 @@ class ProjectAnalyzer:
         metadata = validate_metadata(self.project_path)
 
         # Calcular métricas básicas
+        code_score, qgis_score = self._calculate_scores(modules_data, compliance, structure, metadata)
+        
         metrics = {
             "total_files": len(files),
             "total_lines": sum(m["lines"] for m in modules_data),
-            "quality_score": self._calculate_score(modules_data, compliance, structure, metadata)
+            "quality_score": round((code_score * 0.5) + (qgis_score * 0.5), 1)
         }
 
         analyses = {
             "project_name": self.project_path.name,
             "metrics": metrics,
             "qgis_compliance": {
+                "compliance_score": round(qgis_score, 1),
                 "best_practices": compliance,
                 "repository_standards": {
                     "structure": structure,
@@ -96,9 +99,9 @@ class ProjectAnalyzer:
         tracker.complete()
         print(f"✅ Análisis completado. Reportes en: {self.output_dir}")
 
-    def _calculate_score(self, modules_data, compliance, structure, metadata) -> float:
-        """Cálculo de score basado en estándares QGIS y calidad de código."""
-        if not modules_data: return 0.0
+    def _calculate_scores(self, modules_data, compliance, structure, metadata) -> tuple:
+        """Cálculo de scores basado en estándares QGIS y calidad de código."""
+        if not modules_data: return 0.0, 0.0
         
         # 1. Base Calidad de Código (50%)
         avg_comp = sum(m["complexity"] for m in modules_data) / len(modules_data)
@@ -112,5 +115,4 @@ class ProjectAnalyzer:
         if not structure["is_valid"]: qgis_score -= 20
         if not metadata["is_valid"]: qgis_score -= 10
         
-        final_score = (code_score * 0.5) + (max(0, qgis_score) * 0.5)
-        return round(final_score, 1)
+        return code_score, max(0, qgis_score)
