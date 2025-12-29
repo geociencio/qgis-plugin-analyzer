@@ -14,6 +14,7 @@ The **QGIS Plugin Analyzer** is a static analysis tool designed specifically for
 - **AI-Ready**: Generates structured summaries and optimized contexts for LLMs.
 - **HTML Reports**: Professional visualization of plugin health.
 - **High Performance**: Parallel processing to analyze large projects in seconds.
+- **Detailed Audit Rules**: Over 15+ specialized QGIS checks (fully documented in [RULES.md](RULES.md)).
 - **Selective Auditing**: Support for `.analyzerignore` to exclude specific files or directories from analysis.
 
 ## ⚖️ Why use this Analyzer? (Comparison)
@@ -103,8 +104,13 @@ Generates a new QGIS plugin project structure from a template.
 
 ## 📊 Generated Reports
 
-- `PROJECT_SUMMARY.md`: Executive summary with quality score and critical findings.
 - `project_context.json`: Full structured data for external integrations.
+
+## 📜 Audit Rules
+
+For a complete list of all implemented checks, their severity, and recommendations, please refer to the:
+
+👉 **[Detailed Rules Catalog (RULES.md)](RULES.md)**
 
 ## 📚 References and Standards
 
