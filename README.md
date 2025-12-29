@@ -9,11 +9,11 @@ The **QGIS Plugin Analyzer** is a static analysis tool designed specifically for
 
 ## ✨ Main Features
 
-- **Análisis de Ruff Integrado**: Combina reglas personalizadas de QGIS con el linter más rápido del ecosistema Python.
-- **Generación de Boilerplate (`init`)**: Crea estructuras de plugins profesionales (`processing`, `gui`, `map_tool`) al instante.
-- **AI-Ready**: Genera resúmenes estructurados y contextos optimizados para LLMs.
-- **Reportes HTML**: Visualización profesional de la salud del plugin.
-- **Alto Rendimiento**: Procesamiento en paralelo para analizar proyectos grandes en segundos.
+- **Integrated Ruff Analysis**: Combines custom QGIS rules with the fastest linter in the Python ecosystem.
+- **Boilerplate Generation (`init`)**: Creates professional plugin structures (`processing`, `gui`, `map_tool`) instantly.
+- **AI-Ready**: Generates structured summaries and optimized contexts for LLMs.
+- **HTML Reports**: Professional visualization of plugin health.
+- **High Performance**: Parallel processing to analyze large projects in seconds.
 - **Selective Auditing**: Support for `.analyzerignore` to exclude specific files or directories from analysis.
 
 ## ⚖️ Why use this Analyzer? (Comparison)
@@ -32,11 +32,11 @@ The **QGIS Plugin Analyzer** is a static analysis tool designed specifically for
 
 ### Key Differentiators
 
-1.  **Motor Híbrido de Máximo Rendimiento**: Combina el motor Rust de **Ruff** (para reglas PEP8) con nuestro motor **AST** (para reglas PyQGIS), ofreciendo una velocidad hasta 100 veces superior a linters tradicionales.
-2.  **Generación de Boilerplate Inteligente**: A diferencia de otras herramientas que se centran en el análisis, el comando `init` permite crear plugins "AI-Ready" desde el primer segundo.
-3.  **Auditoría de Arquitectura**: Único en detectar violaciones de patrones (como lógica pesada en la UI), la causa #1 de deuda técnica en plugins complejos.
-4.  **Infraestructura para IA (Project Brain)**: Genera resúmenes técnicos optimizados para que asistentes como ChatGPT o Gemini entiendan tu código al instante.
-5.  **Listo para CI/CD**: Los perfiles de configuración permiten integrar fallos de cumplimiento directamente en tus pipelines de GitHub Actions.
+1.  **Maximum Performance Hybrid Engine**: Combines **Ruff's** Rust engine (for PEP8 rules) with our **AST** engine (for PyQGIS rules), offering up to 100x speed over traditional linters.
+2.  **Intelligent Boilerplate Generation**: Unlike other tools focused solely on analysis, the `init` command allows creating "AI-Ready" plugins from day one.
+3.  **Architecture Audit**: Unique in detecting pattern violations (like heavy logic in the UI), the #1 cause of technical debt in complex plugins.
+4.  **AI Infrastructure (Project Brain)**: Generates optimized technical summaries so assistants like ChatGPT or Gemini understand your code instantly.
+5.  **CI/CD Ready**: Configuration profiles allow integrating compliance failures directly into your GitHub Actions pipelines.
 
 ## 🚀 Installation and Usage
 
@@ -61,20 +61,20 @@ uv sync
 pip install .
 ```
 
-### Comandos Principales:
+### Main Commands:
 
-**1. Analizar un Plugin:**
+**1. Analyze a Plugin:**
 ```bash
 qgis-analyzer analyze /path/to/your/plugin -o ./quality_report
 ```
 
-**2. Crear un Plugin desde Plantilla:**
+**2. Create a Plugin from Template:**
 ```bash
-qgis-analyzer init my_new_plugin --type map_tool --name "Herramienta Pro"
+qgis-analyzer init my_new_plugin --type map_tool --name "Pro Tool"
 ```
 
-**3. Soporte Legacy:**
-El comando por defecto sigue siendo el análisis si no se especifica subcomando:
+**3. Legacy Support:**
+The default command remains analysis if no subcommand is specified:
 ```bash
 qgis-analyzer /path/to/your/plugin
 ```
