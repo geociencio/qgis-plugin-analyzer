@@ -5,6 +5,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.3.1] - 2025-12-29
+### Added
+- **Professional Logging System**: Persistent logging to `analysis_results/analyzer.log` with detailed tracebacks for troubleshooting.
+- **Resource Management**: Optimized concurrency (limited to 4 workers) and file size safety (skips files >500KB) to prevent system crashes on large projects.
+- **Cache Optimization**: Added results cache to `IgnoreMatcher` for faster file scanning.
+
+### Fixed
+- **CLI Stability**: Resolved `NameError: pathlib` and improved top-level exception handling.
+- **Audit Rule IDs**: Renamed `UNPRECISE_LAYER` to `UNPRECISE_LAYER_LOOKUP` and `MANUAL_PATH` to `MANUAL_RESOURCE_PATH` for clarity and test consistency.
+
 ## [0.3.0] - 2025-12-29
 ### Added
 - **Ruff Integration**: Native execution of Ruff for Python standard linting.

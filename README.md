@@ -13,9 +13,10 @@ The **QGIS Plugin Analyzer** is a static analysis tool designed specifically for
 - **Boilerplate Generation (`init`)**: Creates professional plugin structures (`processing`, `gui`, `map_tool`) instantly.
 - **AI-Ready**: Generates structured summaries and optimized contexts for LLMs.
 - **HTML Reports**: Professional visualization of plugin health.
-- **High Performance**: Parallel processing to analyze large projects in seconds.
+- **High Performance & Safety**: Parallel processing with smart resource management and file size limits.
 - **Detailed Audit Rules**: Over 15+ specialized QGIS checks (fully documented in [RULES.md](RULES.md)).
 - **Selective Auditing**: Support for `.analyzerignore` to exclude specific files or directories from analysis.
+- **Professional Logging**: Persistent log file generation (`analyzer.log`) with detailed tracebacks for debugging.
 
 ## ⚖️ Why use this Analyzer? (Comparison)
 
