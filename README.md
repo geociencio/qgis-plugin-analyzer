@@ -9,11 +9,11 @@ The **QGIS Plugin Analyzer** is a static analysis tool designed specifically for
 
 ## ✨ Main Features
 
-- **QGIS Standards Audit**: Detects missing internationalization (i18n), obsolete APIs, and unsafe threading. See [Rule Catalog](RULES.md).
-- **Architecture Analysis**: Identifies violations in separation of responsibilities (Core vs GUI).
-- **Quality Metrics**: Calculates cyclomatic complexity and documentation coverage.
-- **AI-Ready**: Generates structured summaries and optimized contexts for LLMs.
-- **High Performance**: Uses parallel processing to analyze large projects in seconds.
+- **Análisis de Ruff Integrado**: Combina reglas personalizadas de QGIS con el linter más rápido del ecosistema Python.
+- **Generación de Boilerplate (`init`)**: Crea estructuras de plugins profesionales (`processing`, `gui`, `map_tool`) al instante.
+- **AI-Ready**: Genera resúmenes estructurados y contextos optimizados para LLMs.
+- **Reportes HTML**: Visualización profesional de la salud del plugin.
+- **Alto Rendimiento**: Procesamiento en paralelo para analizar proyectos grandes en segundos.
 - **Selective Auditing**: Support for `.analyzerignore` to exclude specific files or directories from analysis.
 
 ## ⚖️ Why use this Analyzer? (Comparison)
@@ -60,9 +60,22 @@ uv sync
 pip install .
 ```
 
-### Run Analysis:
+### Comandos Principales:
+
+**1. Analizar un Plugin:**
 ```bash
-qgis-analyzer /path/to/your/plugin -o ./quality_report
+qgis-analyzer analyze /path/to/your/plugin -o ./quality_report
+```
+
+**2. Crear un Plugin desde Plantilla:**
+```bash
+qgis-analyzer init my_new_plugin --type map_tool --name "Herramienta Pro"
+```
+
+**3. Soporte Legacy:**
+El comando por defecto sigue siendo el análisis si no se especifica subcomando:
+```bash
+qgis-analyzer /path/to/your/plugin
 ```
 
 ## 📊 Generated Reports

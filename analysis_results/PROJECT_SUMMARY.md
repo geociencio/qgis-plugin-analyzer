@@ -1,13 +1,33 @@
-# 📋 Informe de Análisis de Proyecto: qgis_plugin_analyzer
-*Generado el: 2025-12-28 10:13:25*
+# 📋 Project Analysis Report: qgis_plugin_analyzer
+*Generated on: 2025-12-29 01:07:49*
 
-## 📊 Indicadores de Calidad
-- **Puntuación de Código**: `79.5/100`
-- **Cumplimiento QGIS**: `0/100`
+## 📊 Quality Indicators
+- **Code Score**: `57.0/100`
+- **QGIS Compliance**: `44/100`
 
-## 🛠️ Hallazgos de Estándares QGIS
-Se detectaron **0** desviaciones.
+## 🛠️ QGIS Standard Findings
+Detected **13** technical deviations.
+- 🟡 `src/analyzer/cli.py:61`: print() usage detected. Use QgsMessageLog.
+- 🟡 `tests/test_scanner.py:53`: mapLayersByName() can be imprecise. Consider mapLayers() or unique IDs.
+- 🟡 `tests/test_scanner.py:54`: Manual resource path detected. Use :/plugins/...
+- 🟡 `tests/test_scanner.py:6`: print() usage detected. Use QgsMessageLog.
+- 🟡 `src/analyzer/generator.py:1`: print() usage detected. Use QgsMessageLog.
+- 🟡 `src/analyzer/generator.py:25`: print() usage detected. Use QgsMessageLog.
+- 🟡 `src/analyzer/engine.py:68`: print() usage detected. Use QgsMessageLog.
+- 🟡 `src/analyzer/engine.py:142`: print() usage detected. Use QgsMessageLog.
+- 🟡 `src/analyzer/engine.py:151`: print() usage detected. Use QgsMessageLog.
+- 🟡 `src/analyzer/utils.py:20`: print() usage detected. Use QgsMessageLog.
+- 🟡 `src/analyzer/utils.py:157`: print() usage detected. Use QgsMessageLog.
+- 🟡 `src/analyzer/scanner.py:33`: mapLayersByName() can be imprecise. Consider mapLayers() or unique IDs.
+- 🟡 `src/analyzer/scanner.py:51`: print() usage detected. Use QgsMessageLog.
 
-## 📈 Métricas Generales
-- **Total Files**: 6
-- **Total Lines**: 415
+## 📦 Official Repository Standards
+- **File Structure**: ❌ Incomplete
+  - Missing: `metadata.txt, __init__.py, LICENSE`
+  - Missing `classFactory` in `__init__.py`
+- **Metadata (metadata.txt)**: 🛠️ Needs Attention
+  - Missing fields: `name, description, version, qgisMinimumVersion, author, email`
+
+## 📈 General Metrics
+- **Total Files**: 14
+- **Total Lines**: 1392

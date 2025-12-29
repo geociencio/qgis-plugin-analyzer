@@ -18,14 +18,14 @@
 #  *                                                                         *
 #  ***************************************************************************/
 
-import json
 import datetime
+import json
 import pathlib
 from typing import Any, Dict
+
 import dominate
-from dominate.tags import (
-    style, div, h1, h2, p, span, br, pre, ul, li, b
-)
+from dominate.tags import b, br, div, h1, h2, li, p, pre, span, style, ul
+
 
 def generate_markdown_summary(analyses: Dict[str, Any], output_path: pathlib.Path):
     """Generates a professional PROJECT_SUMMARY.md report."""
@@ -33,7 +33,7 @@ def generate_markdown_summary(analyses: Dict[str, Any], output_path: pathlib.Pat
     compliance = analyses.get("qgis_compliance", {})
     score = metrics.get("quality_score", 0)
     qgis_score = compliance.get("compliance_score", 0)
-    
+
     lines = [
         f"# 📋 Project Analysis Report: {analyses.get('project_name', 'QGIS Plugin')}",
         f"*Generated on: {datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}*",
@@ -47,15 +47,15 @@ def generate_markdown_summary(analyses: Dict[str, Any], output_path: pathlib.Pat
     best_practices = compliance.get("best_practices", {})
     lines.append("## 🛠️ QGIS Standard Findings")
     lines.append(f"Detected **{best_practices.get('issues_count', 0)}** technical deviations.")
-    
+
     for issue in best_practices.get("issues", []):
         icon = "🔴" if issue["severity"] == "high" else "🟡"
         lines.append(f"- {icon} `{issue['file']}:{issue['line']}`: {issue['message']}")
-        
+
     # Repository Audit
     repo_stats = compliance.get("repository_standards", {})
     lines.append("\n## 📦 Official Repository Standards")
-    
+
     struct = repo_stats.get("structure", {})
     status = "✅ OK" if struct.get("is_valid") else "❌ Incomplete"
     lines.append(f"- **File Structure**: {status}")
@@ -76,20 +76,22 @@ def generate_markdown_summary(analyses: Dict[str, Any], output_path: pathlib.Pat
     for k, v in metrics.items():
         if k != "quality_score":
             lines.append(f"- **{k.replace('_', ' ').title()}**: {v}")
-            
+
     output_path.write_text("\n".join(lines), encoding="utf-8")
+
 
 def save_json_context(analyses: Dict[str, Any], output_path: pathlib.Path):
     """Saves the full context in JSON format."""
     with open(output_path, "w", encoding="utf-8") as f:
         json.dump(analyses, f, indent=2, ensure_ascii=False)
 
+
 def generate_html_report(analyses: Dict[str, Any], output_path: pathlib.Path):
     """Generates a professional HTML report using dominate."""
     metrics = analyses.get("metrics", {})
     compliance = analyses.get("qgis_compliance", {})
     ruff_findings = analyses.get("ruff_findings", [])
-    
+
     doc = dominate.document(title=f"Analysis Report - {analyses.get('project_name')}")
 
     with doc.head:
@@ -117,15 +119,15 @@ def generate_html_report(analyses: Dict[str, Any], output_path: pathlib.Path):
         with div(cls="header"):
             h1(f"📊 QGIS Plugin Analysis: {analyses.get('project_name')}")
             p(f"Generated on: {datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
-            
+
             with div(cls="score-container"):
-                q_score = metrics.get('quality_score', 0)
+                q_score = metrics.get("quality_score", 0)
                 cls_q = "high" if q_score >= 80 else "medium" if q_score >= 50 else "low"
                 with div(cls=f"score-box {cls_q}"):
                     span("Overall Score", cls="score-label")
                     span(f"{q_score}/100", cls="score-value")
-                
-                c_score = compliance.get('compliance_score', 0)
+
+                c_score = compliance.get("compliance_score", 0)
                 cls_c = "high" if c_score >= 80 else "medium" if c_score >= 50 else "low"
                 with div(cls=f"score-box {cls_c}"):
                     span("QGIS Compliance", cls="score-label")
@@ -139,28 +141,31 @@ def generate_html_report(analyses: Dict[str, Any], output_path: pathlib.Path):
             else:
                 for issue in best_practices.get("issues"):
                     with div(cls=f"issue {issue['severity']}"):
-                        span(issue['severity'], cls="severity")
+                        span(issue["severity"], cls="severity")
                         span(f" - {issue['message']}")
                         br()
                         span(f"{issue['file']}:{issue['line']}", cls="file-path")
                         if issue.get("code"):
-                            pre(issue['code'])
+                            pre(issue["code"])
 
         if ruff_findings:
             with div(cls="card"):
                 h2("🐍 Python Linting (Ruff)")
-                for find in ruff_findings[:50]: # Limit to 50 for report
+                for find in ruff_findings[:50]:  # Limit to 50 for report
                     with div(cls="issue medium"):
-                        span(find.get('code', 'LINT'), cls="severity")
+                        span(find.get("code", "LINT"), cls="severity")
                         span(f" - {find.get('message')}")
                         br()
-                        span(f"{find.get('filename')}:{find.get('location', {}).get('row', 0)}", cls="file-path")
+                        span(
+                            f"{find.get('filename')}:{find.get('location', {}).get('row', 0)}",
+                            cls="file-path",
+                        )
 
         with div(cls="card"):
             h2("📈 General Metrics")
             with ul():
                 for k, v in metrics.items():
                     if k != "quality_score":
-                        li(b(k.replace('_', ' ').title()), f": {v}")
+                        li(b(k.replace("_", " ").title()), f": {v}")
 
     output_path.write_text(doc.render(), encoding="utf-8")

@@ -17,26 +17,26 @@
 #  *   (at your option) any later version.                                   *
 #  *                                                                         *
 #  ***************************************************************************/
-
-import os
-import threading
-import time
-import sys
 import fnmatch
+import os
 import pathlib
-from collections import OrderedDict
-from typing import Any, List, Dict
-from contextlib import contextmanager
 import signal
 import sys
+import threading
+import time
+from collections import OrderedDict
+from contextlib import contextmanager
+from typing import Any, Dict, List
 
 if sys.version_info >= (3, 11):
     import tomllib
 else:
     import tomli as tomllib
 
+
 class LRUCache:
     """Efficient LRU Cache."""
+
     def __init__(self, maxsize: int = 256):
         self.cache = OrderedDict()
         self._lock = threading.Lock()
@@ -71,8 +71,10 @@ class LRUCache:
                 "hit_rate": self.hits / total if total > 0 else 0,
             }
 
+
 class ProgressTracker:
     """Real-time progress tracker."""
+
     def __init__(self, total_files: int):
         self.total = total_files
         self.processed = 0
@@ -97,7 +99,9 @@ class ProgressTracker:
             eta_str = f"{eta:.0f}s"
         else:
             eta_str = "..."
-        sys.stdout.write(f"\r\033[K📊 Progress: {self.processed}/{self.total} ({percent:.1f}%) | ETA: {eta_str}")
+        sys.stdout.write(
+            f"\r\033[K📊 Progress: {self.processed}/{self.total} ({percent:.1f}%) | ETA: {eta_str}"
+        )
         sys.stdout.flush()
 
     def complete(self) -> Dict[str, Any]:
@@ -108,11 +112,14 @@ class ProgressTracker:
             "files_per_second": self.processed / elapsed if elapsed > 0 else 0,
         }
 
+
 @contextmanager
 def timeout_manager(seconds: int):
     """Context manager for timeouts."""
+
     def signal_handler(signum, frame):
         raise TimeoutError(f"Operation exceeded {seconds}s")
+
     signal.signal(signal.SIGALRM, signal_handler)
     signal.alarm(seconds)
     try:
@@ -120,8 +127,10 @@ def timeout_manager(seconds: int):
     finally:
         signal.alarm(0)
 
+
 class IgnoreMatcher:
     """Handles .analyzerignore patterns using fnmatch."""
+
     def __init__(self, root_path: pathlib.Path, patterns: List[str]):
         self.root_path = root_path
         self.patterns = [p.strip() for p in patterns if p.strip() and not p.startswith("#")]
@@ -149,37 +158,37 @@ class IgnoreMatcher:
                 return True
         return False
 
+
 def load_ignore_patterns(ignore_file: pathlib.Path) -> List[str]:
     """Loads ignore patterns from a file."""
     if not ignore_file.exists():
         return []
-    with open(ignore_file, "r") as f:
+    with open(ignore_file) as f:
         return f.readlines()
 
-def load_profile_config(project_path: pathlib.Path, profile_name: str = "default") -> Dict[str, Any]:
+
+def load_profile_config(
+    project_path: pathlib.Path, profile_name: str = "default"
+) -> Dict[str, Any]:
     """Loads a specific profile configuration from pyproject.toml."""
     pyproject = project_path / "pyproject.toml"
-    default_config = {
-        "strict": False,
-        "generate_html": True,
-        "fail_on_error": False
-    }
-    
+    default_config = {"strict": False, "generate_html": True, "fail_on_error": False}
+
     if not pyproject.exists():
         return default_config
-        
+
     try:
         with open(pyproject, "rb") as f:
             data = tomllib.load(f)
-            
+
         profiles = data.get("tool", {}).get("qgis-analyzer", {}).get("profiles", {})
         profile_data = profiles.get(profile_name)
-        
+
         if not profile_data:
             if profile_name != "default":
                 print(f"⚠️ Profile '{profile_name}' not found. Using default values.")
             return default_config
-            
+
         return {**default_config, **profile_data}
     except Exception as e:
         print(f"⚠️ Error loading profile: {e}")

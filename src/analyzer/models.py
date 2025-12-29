@@ -21,9 +21,11 @@
 from dataclasses import dataclass, field
 from typing import Any, Dict, List
 
+
 @dataclass
 class ModuleAnalysis:
     """Analysis of a Python module."""
+
     path: str
     lines: int
     functions: List[str]
@@ -36,9 +38,11 @@ class ModuleAnalysis:
     syntax_error: bool = False
     metadata: Dict[str, Any] = field(default_factory=dict)
 
+
 @dataclass
 class ProjectContext:
     """Full project context."""
+
     project_name: str
     structure: Dict[str, Any] = field(default_factory=dict)
     entry_points: List[str] = field(default_factory=list)

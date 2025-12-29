@@ -25,10 +25,11 @@ dev = [
 [tool.ruff]
 line-length = 100
 target-version = "py38"
+exclude = ["src/analyzer/templates"]
 
 [tool.ruff.lint]
 select = ["E", "F", "W", "I", "N", "UP", "B"]
-ignore = ["E701"] # Permite if cond: statement en una línea si es necesario, aunque lo corregimos
+ignore = ["E701", "E501"] # Permite if cond: statement y líneas largas
 
 [tool.ruff.lint.per-file-ignores]
 "src/analyzer/reporters.py" = ["F401", "F403", "F405"] # Dominate usa mucho import *

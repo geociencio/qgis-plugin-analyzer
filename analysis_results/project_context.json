@@ -1,75 +1,194 @@
 {
   "project_name": "qgis_plugin_analyzer",
   "metrics": {
-    "total_files": 6,
-    "total_lines": 415,
-    "quality_score": 79.5
+    "total_files": 14,
+    "total_lines": 1392,
+    "quality_score": 57.0
   },
   "qgis_compliance": {
-    "issues": [
-      {
-        "file": "src/analyzer/cli.py",
-        "line": 1,
-        "type": "PRINT_STATEMENT",
-        "severity": "baja",
-        "message": "Uso de print() detectado. Usar QgsMessageLog.",
-        "code": "import argparse\nimport sys\nfrom .engine import ProjectAnalyzer\n\ndef main():\n    parser = argparse.ArgumentParser(description=\"QGIS Plugin Analyzer - Un guardián para tu código PyQGIS\")\n    parser.add_argument(\"project_path\", help=\"Ruta al proyecto de QGIS a analizar\")\n    parser.add_argument(\"-o\", \"--output\", help=\"Directorio de salida para los reportes\", default=\"./analysis_results\")\n    \n    args = parser.parse_args()\n    \n    try:\n        analyzer = ProjectAnalyzer(args.project_path, args.output)\n        analyzer.run()\n    except KeyboardInterrupt:\n        print(\"\\n⏹️ Análisis interrumpido.\")\n        sys.exit(1)\n    except Exception as e:\n        print(f\"\\n❌ Error crítico:"
+    "compliance_score": 44,
+    "best_practices": {
+      "issues": [
+        {
+          "file": "src/analyzer/cli.py",
+          "line": 61,
+          "type": "PRINT_STATEMENT",
+          "severity": "low",
+          "message": "print() usage detected. Use QgsMessageLog.",
+          "code": "if not sys.argv[1].startswith(\"-\"):\n            sys.argv.insert(1, \"analyze\")\n\n    args = parser.parse_args()\n\n    try:\n        if args.command == \"init\":\n            class_name = args.name.replace(\" \", \"\").replace(\"-\", \"\").capitalize()\n            name_id = args.name.lower().replace(\" \", \"_\").replace(\"-\", \"_\")\n\n            context = {\n                \"name\": args.name,\n                \"name_id\": name_id,\n                \"class_name\": class_name,\n                \"description\": f\"A professional {args.type} plugin for QGIS.\",\n                \"author\": args.author,\n                \"email\": args.email,\n            }\n\n            generator = ProjectGenerator(args.path)\n            generator.generate(args.type, context)\n\n        elif args.command == \"analyze\":\n            analyzer = ProjectAnalyzer(args.project_path, args.output, args.profile)\n            success = analyzer.run()\n            if not success:\n                sys.exit(1)\n        else:\n            parser.print_help()\n\n    except KeyboardInterrupt:\n        print(\"\\n⏹️ Analysis interrupted.\")\n        sys.exit(1)\n    except Exception as e:\n        print(f\"\\n❌ Critical Error"
+        },
+        {
+          "file": "tests/test_scanner.py",
+          "line": 53,
+          "type": "UNPRECISE_LAYER_LOOKUP",
+          "severity": "medium",
+          "message": "mapLayersByName() can be imprecise. Consider mapLayers() or unique IDs.",
+          "code": "mapLayersByName(\"test\")[0]\nQIcon(\"ic"
+        },
+        {
+          "file": "tests/test_scanner.py",
+          "line": 54,
+          "type": "MANUAL_RESOURCE_PATH",
+          "severity": "medium",
+          "message": "Manual resource path detected. Use :/plugins/...",
+          "code": "QIcon(\"icons/my_icon.png\")\nprint("
+        },
+        {
+          "file": "tests/test_scanner.py",
+          "line": 6,
+          "type": "PRINT_STATEMENT",
+          "severity": "low",
+          "message": "print() usage detected. Use QgsMessageLog.",
+          "code": "(tmp_path / \"metadata.txt\").write_text(\"name=Test\")\n    (tmp_path / \"__init__.py\").write_text(\"def classFactory(): pass\")\n    (tmp_path / \"LICENSE\").write_text(\"GPL\")\n\n    result = validate_plugin_structure(tmp_path)\n    assert result[\"is_valid\"] is True\n    assert result[\"files\"][\"metadata.txt\"] is True\n    assert result[\"has_class_factory\"] is True\n\n\ndef test_validate_plugin_structure_missing_file(tmp_path):\n    (tmp_path / \"__init__.py\").write_text(\"def classFactory(): pass\")\n\n    result = validate_plugin_structure(tmp_path)\n    assert result[\"is_valid\"] is False\n    assert result[\"files\"][\"metadata.txt\"] is False\n\n\ndef test_validate_metadata(tmp_path):\n    metadata_content = \"\"\"\n[general]\nname=Test Plugin\ndescription=A description\nversion=0.1\nqgisMinimumVersion=3.0\nauthor=Tester\nemail=test@test.com\n\"\"\"\n    meta_file = tmp_path / \"metadata.txt\"\n    meta_file.write_text(metadata_content)\n\n    result = validate_metadata(tmp_path)\n    assert result[\"is_valid\"] is True\n    assert len(result[\"missing\"]) == 0\n\n\ndef test_validate_metadata_missing_fields(tmp_path):\n    meta_file = tmp_path / \"metadata.txt\"\n    meta_file.write_text(\"name=Test\\nversion=0.1\")\n\n    result = validate_metadata(tmp_path)\n    assert result[\"is_valid\"] is False\n    assert \"description\" in result[\"missing\"]\n\n\ndef test_audit_qgis_standards(tmp_path):\n    py_content = \"\"\"\nlayer = mapLayersByName(\"test\")[0]\nQIcon(\"icons/my_icon.png\")\nprint(\"debug\")\n\"\"\"\n    py_"
+        },
+        {
+          "file": "src/analyzer/generator.py",
+          "line": 1,
+          "type": "PRINT_STATEMENT",
+          "severity": "low",
+          "message": "print() usage detected. Use QgsMessageLog.",
+          "code": "import pathlib\n\n\nclass ProjectGenerator:\n    \"\"\"Generates QGIS plugin projects from templates.\"\"\"\n\n    def __init__(self, target_path: str):\n        self.target_path = pathlib.Path(target_path).resolve()\n        self.template_dir = pathlib.Path(__file__).parent / \"templates\"\n\n    def generate(self, plugin_type: str, context: dict):\n        \"\"\"Generates the plugin structure.\"\"\"\n        if not self.target_path.exists():\n            self.target_path.mkdir(parents=True)\n\n        print(f\"🚀 Generating plugi"
+        },
+        {
+          "file": "src/analyzer/generator.py",
+          "line": 25,
+          "type": "PRINT_STATEMENT",
+          "severity": "low",
+          "message": "print() usage detected. Use QgsMessageLog.",
+          "code": "self._finalize_structure(plugin_type, context)\n\n        print(f\"✅ Plugin '{context['name']}' created successfully!\")\n\n    def _copy_and_render(self, template_name: str, context: dict):\n        source = self.template_dir / template_name\n        if not source.exists():\n            print(f\"⚠️ Template '{temp"
+        },
+        {
+          "file": "src/analyzer/engine.py",
+          "line": 68,
+          "type": "PRINT_STATEMENT",
+          "severity": "low",
+          "message": "print() usage detected. Use QgsMessageLog.",
+          "code": "dirs[:] = [\n                d for d in dirs if d not in exclude and not self.matcher.is_ignored(root_path / d)\n            ]\n\n            for file in files:\n                file_path = root_path / file\n                if file.endswith(\".py\") and not self.matcher.is_ignored(file_path):\n                    python_files.append(file_path)\n        return sorted(python_files)\n\n    def run_ruff_audit(self) -> List[Dict[str, Any]]:\n        \"\"\"Executes Ruff via subprocess and returns findings.\"\"\"\n        try:\n            cmd = [\"ruff\", \"check\", str(self.project_path), \"--format\", \"json\", \"--quiet\"]\n            result = subprocess.run(cmd, capture_output=True, text=True, check=False)\n            if result.stdout:\n                return json.loads(result.stdout)\n            return []\n        except Exception as e:\n            print(f\"⚠️ Error running Ruff: {e}\")\n            return []\n\n    def run(self):\n        \"\"\"Runs the analysis pipeline.\"\"\"\n        print(f\"🔍 Analyzing: {self"
+        },
+        {
+          "file": "src/analyzer/engine.py",
+          "line": 142,
+          "type": "PRINT_STATEMENT",
+          "severity": "low",
+          "message": "print() usage detected. Use QgsMessageLog.",
+          "code": "generate_markdown_summary(analyses, self.output_dir / \"PROJECT_SUMMARY.md\")\n        if self.config.get(\"generate_html\", True):\n            generate_html_report(analyses, self.output_dir / \"PROJECT_SUMMARY.html\")\n        save_json_context(analyses, self.output_dir / \"project_context.json\")\n\n        tracker.complete()\n        print(f\"✅ Analysis complet"
+        },
+        {
+          "file": "src/analyzer/engine.py",
+          "line": 151,
+          "type": "PRINT_STATEMENT",
+          "severity": "low",
+          "message": "print() usage detected. Use QgsMessageLog.",
+          "code": "if self.config.get(\"fail_on_error\") and (\n            compliance.get(\"issues_count\", 0) > 0\n            or not structure[\"is_valid\"]\n            or not metadata[\"is_valid\"]\n        ):\n            print(\"❌ Strict Mode: Crit"
+        },
+        {
+          "file": "src/analyzer/utils.py",
+          "line": 20,
+          "type": "PRINT_STATEMENT",
+          "severity": "low",
+          "message": "print() usage detected. Use QgsMessageLog.",
+          "code": "import fnmatch\nimport os\nimport pathlib\nimport signal\nimport sys\nimport threading\nimport time\nfrom collections import OrderedDict\nfrom contextlib import contextmanager\nfrom typing import Any, Dict, List\n\nif sys.version_info >= (3, 11):\n    import tomllib\nelse:\n    import tomli as tomllib\n\n\nclass LRUCache:\n    \"\"\"Efficient LRU Cache.\"\"\"\n\n    def __init__(self, maxsize: int = 256):\n        self.cache = OrderedDict()\n        self._lock = threading.Lock()\n        self.maxsize = maxsize\n        self.hits = 0\n        self.misses = 0\n\n    def get(self, key: str) -> Any:\n        with self._lock:\n            if key in self.cache:\n                self.cache.move_to_end(key)\n                self.hits += 1\n                return self.cache[key]\n            self.misses += 1\n            return None\n\n    def set(self, key: str, value: Any) -> None:\n        with self._lock:\n            if key in self.cache:\n                self.cache.move_to_end(key)\n            self.cache[key] = value\n            if len(self.cache) > self.maxsize:\n                self.cache.popitem(last=False)\n\n    def stats(self) -> Dict[str, Any]:\n        with self._lock:\n            total = self.hits + self.misses\n            return {\n                \"size\": len(self.cache),\n                \"hits\": self.hits,\n                \"misses\": self.misses,\n                \"hit_rate\": self.hits / total if total > 0 else 0,\n            }\n\n\nclass ProgressTracker:\n    \"\"\"Real-time progress tracker.\"\"\"\n\n    def __init__(self, total_files: int):\n        self.total = total_files\n        self.processed = 0\n        self.start_time = time.time()\n        self.file_times = []\n        self.last_update = 0\n\n    def update(self, file_path: pathlib.Path, processing_time: float) -> None:\n        self.processed += 1\n        self.file_times.append(processing_time)\n        current_time = time.time()\n        if self.processed % 10 == 0 or current_time - self.last_update > 2:\n            self._display_progress()\n            self.last_update = current_time\n\n    def _display_progress(self) -> None:\n        percent = (self.processed / self.total) * 100 if self.total > 0 else 0\n        if self.file_times and self.processed > 0:\n            avg_time = sum(self.file_times) / len(self.file_times)\n            remaining = self.total - self.processed\n            eta = remaining * avg_time\n            eta_str = f\"{eta:.0f}s\"\n        else:\n            eta_str = \"...\"\n        sys.stdout.write(\n            f\"\\r\\033[K📊 Progress: {self.processed}/{self.total} ({percent:.1f}%) | ETA: {eta_str}\"\n        )\n        sys.stdout.flush()\n\n    def complete(self) -> Dict[str, Any]:\n        elapsed = time.time() - self.start_time\n        print()\n        return {"
+        },
+        {
+          "file": "src/analyzer/utils.py",
+          "line": 157,
+          "type": "PRINT_STATEMENT",
+          "severity": "low",
+          "message": "print() usage detected. Use QgsMessageLog.",
+          "code": "if \"/\" not in pattern and fnmatch.fnmatch(path.name, pattern):\n                return True\n        return False\n\n\ndef load_ignore_patterns(ignore_file: pathlib.Path) -> List[str]:\n    \"\"\"Loads ignore patterns from a file.\"\"\"\n    if not ignore_file.exists():\n        return []\n    with open(ignore_file) as f:\n        return f.readlines()\n\n\ndef load_profile_config(\n    project_path: pathlib.Path, profile_name: str = \"default\"\n) -> Dict[str, Any]:\n    \"\"\"Loads a specific profile configuration from pyproject.toml.\"\"\"\n    pyproject = project_path / \"pyproject.toml\"\n    default_config = {\"strict\": False, \"generate_html\": True, \"fail_on_error\": False}\n\n    if not pyproject.exists():\n        return default_config\n\n    try:\n        with open(pyproject, \"rb\") as f:\n            data = tomllib.load(f)\n\n        profiles = data.get(\"tool\", {}).get(\"qgis-analyzer\", {}).get(\"profiles\", {})\n        profile_data = profiles.get(profile_name)\n\n        if not profile_data:\n            if profile_name != \"default\":\n                print(f\"⚠️ Profile '{profile_name}' not found. Using default values.\")\n            return default_config\n\n        return {**default_config, **profile_data}\n    except Exception as e:\n        print(f\"⚠️ Error loading p"
+        },
+        {
+          "file": "src/analyzer/scanner.py",
+          "line": 33,
+          "type": "UNPRECISE_LAYER_LOOKUP",
+          "severity": "medium",
+          "message": "mapLayersByName() can be imprecise. Consider mapLayers() or unique IDs.",
+          "code": "mapLayersByName() can be imprecise."
+        },
+        {
+          "file": "src/analyzer/scanner.py",
+          "line": 51,
+          "type": "PRINT_STATEMENT",
+          "severity": "low",
+          "message": "print() usage detected. Use QgsMessageLog.",
+          "code": "\"message\": \"print() usage detected. Us"
+        }
+      ],
+      "issues_count": 13
+    },
+    "repository_standards": {
+      "structure": {
+        "files": {
+          "metadata.txt": false,
+          "__init__.py": false,
+          "LICENSE": false
+        },
+        "has_class_factory": false,
+        "is_valid": false
       },
-      {
-        "file": "src/analyzer/engine.py",
-        "line": 1,
-        "type": "PRINT_STATEMENT",
-        "severity": "baja",
-        "message": "Uso de print() detectado. Usar QgsMessageLog.",
-        "code": "import os\nimport pathlib\nimport time\nfrom concurrent.futures import ProcessPoolExecutor, as_completed\nfrom typing import Any, Dict, List, Optional\n\nfrom .scanner import analyze_module_worker, audit_qgis_standards\nfrom .utils import ProgressTracker, LRUCache\nfrom .reporters import generate_markdown_summary, save_json_context\n\nclass ProjectAnalyzer:\n    def __init__(self, project_path: str, output_dir: Optional[str] = None):\n        self.project_path = pathlib.Path(project_path).resolve()\n        self.output_dir = pathlib.Path(output_dir or \"./analysis_results\").resolve()\n        self.output_dir.mkdir(parents=True, exist_ok=True)\n        self.max_workers = os.cpu_count() or 4\n        \n    def get_python_files(self) -> List[pathlib.Path]:\n        \"\"\"Escanea archivos Python ignorando carpetas comunes.\"\"\"\n        exclude = {\"venv\", \".venv\", \"__pycache__\", \".git\", \"build\", \"dist\"}\n        python_files = []\n        for root, dirs, files in os.walk(self.project_path):\n            dirs[:] = [d for d in dirs if d not in exclude]\n            for file in files:\n                if file.endswith(\".py\"):\n                    python_files.append(pathlib.Path(root) / file)\n        return sorted(python_files)\n\n    def run(self):\n        \"\"\"Ejecuta el pipeline de análisis.\"\"\"\n        print(f\"🔍 Analizando: {sel"
-      },
-      {
-        "file": "src/analyzer/engine.py",
-        "line": 63,
-        "type": "PRINT_STATEMENT",
-        "severity": "baja",
-        "message": "Uso de print() detectado. Usar QgsMessageLog.",
-        "code": "generate_markdown_summary(analyses, self.output_dir / \"PROJECT_SUMMARY.md\")\n        save_json_context(analyses, self.output_dir / \"project_context.json\")\n        \n        tracker.complete()\n        print(f\"✅ Análisis complet"
-      },
-      {
-        "file": "src/analyzer/utils.py",
-        "line": 1,
-        "type": "PRINT_STATEMENT",
-        "severity": "baja",
-        "message": "Uso de print() detectado. Usar QgsMessageLog.",
-        "code": "import threading\nimport time\nimport sys\nimport pathlib\nfrom collections import OrderedDict\nfrom typing import Any, List, Dict\nfrom contextlib import contextmanager\nimport signal\n\nclass LRUCache:\n    \"\"\"Cache LRU eficiente.\"\"\"\n    def __init__(self, maxsize: int = 256):\n        self.cache = OrderedDict()\n        self._lock = threading.Lock()\n        self.maxsize = maxsize\n        self.hits = 0\n        self.misses = 0\n\n    def get(self, key: str) -> Any:\n        with self._lock:\n            if key in self.cache:\n                self.cache.move_to_end(key)\n                self.hits += 1\n                return self.cache[key]\n            self.misses += 1\n            return None\n\n    def set(self, key: str, value: Any) -> None:\n        with self._lock:\n            if key in self.cache:\n                self.cache.move_to_end(key)\n            self.cache[key] = value\n            if len(self.cache) > self.maxsize:\n                self.cache.popitem(last=False)\n\n    def stats(self) -> Dict[str, Any]:\n        with self._lock:\n            total = self.hits + self.misses\n            return {\n                \"size\": len(self.cache),\n                \"hits\": self.hits,\n                \"misses\": self.misses,\n                \"hit_rate\": self.hits / total if total > 0 else 0,\n            }\n\nclass ProgressTracker:\n    \"\"\"Tracker de progreso en tiempo real.\"\"\"\n    def __init__(self, total_files: int):\n        self.total = total_files\n        self.processed = 0\n        self.start_time = time.time()\n        self.file_times = []\n        self.last_update = 0\n\n    def update(self, file_path: pathlib.Path, processing_time: float) -> None:\n        self.processed += 1\n        self.file_times.append(processing_time)\n        current_time = time.time()\n        if self.processed % 10 == 0 or current_time - self.last_update > 2:\n            self._display_progress()\n            self.last_update = current_time\n\n    def _display_progress(self) -> None:\n        elapsed = time.time() - self.start_time\n        percent = (self.processed / self.total) * 100 if self.total > 0 else 0\n        if self.file_times and self.processed > 0:\n            avg_time = sum(self.file_times) / len(self.file_times)\n            remaining = self.total - self.processed\n            eta = remaining * avg_time\n            eta_str = f\"{eta:.0f}s\"\n        else:\n            eta_str = \"...\"\n        sys.stdout.write(f\"\\r\\033[K📊 Progreso: {self.processed}/{self.total} ({percent:.1f}%) | ETA: {eta_str}\")\n        sys.stdout.flush()\n\n    def complete(self) -> Dict[str, Any]:\n        elapsed = time.time() - self.start_time\n        print()\n        return {"
-      },
-      {
-        "file": "src/analyzer/scanner.py",
-        "line": 12,
-        "type": "OBSOLETE_API",
-        "severity": "alta",
-        "message": "Uso de writeAsVectorFormat() obsoleto. Usar writeAsVectorFormatV3().",
-        "code": "writeAsVectorFormat() obsoleto. Usar wri"
-      },
-      {
-        "file": "src/analyzer/scanner.py",
-        "line": 18,
-        "type": "UNPRECISE_LAYER_LOOKUP",
-        "severity": "media",
-        "message": "mapLayersByName() puede ser impreciso. Considerar mapLayers() o IDs únicos.",
-        "code": "mapLayersByName() puede ser imprecis"
-      },
-      {
-        "file": "src/analyzer/scanner.py",
-        "line": 42,
-        "type": "PRINT_STATEMENT",
-        "severity": "baja",
-        "message": "Uso de print() detectado. Usar QgsMessageLog.",
-        "code": "\"message\": \"Uso de print() detectado. Usar Qg"
+      "metadata": {
+        "is_valid": false,
+        "missing": [
+          "name",
+          "description",
+          "version",
+          "qgisMinimumVersion",
+          "author",
+          "email"
+        ]
       }
-    ],
-    "issues_count": 7
+    }
   },
+  "ruff_findings": [],
   "modules": [
     {
+      "path": "src/__init__.py",
+      "lines": 20,
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "complexity": 1,
+      "has_main": false,
+      "docstrings": {
+        "module": false
+      },
+      "file_size_kb": 1.1572265625,
+      "syntax_error": false,
+      "ast_issues": []
+    },
+    {
+      "path": "src/analyzer/__init__.py",
+      "lines": 20,
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "complexity": 1,
+      "has_main": false,
+      "docstrings": {
+        "module": false
+      },
+      "file_size_kb": 1.1572265625,
+      "syntax_error": false,
+      "ast_issues": []
+    },
+    {
+      "path": "src/analyzer/templates/base/__init__.py",
+      "lines": 4,
+      "syntax_error": true,
+      "file_size_kb": 0.0947265625,
+      "complexity": 1,
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "has_main": false,
+      "docstrings": {
+        "module": false
+      },
+      "ast_issues": []
+    },
+    {
       "path": "src/analyzer/cli.py",
-      "lines": 24,
+      "lines": 101,
       "functions": [
         "main(0 args)"
       ],
@@ -77,19 +196,74 @@
       "imports": [
         "argparse",
         "engine",
+        "generator",
         "sys"
       ],
-      "complexity": 4,
+      "complexity": 10,
       "has_main": true,
       "docstrings": {
         "module": false
       },
-      "file_size_kb": 0.7421875,
-      "syntax_error": false
+      "file_size_kb": 3.9892578125,
+      "syntax_error": false,
+      "ast_issues": []
+    },
+    {
+      "path": "src/analyzer/templates/processing/algorithm.py",
+      "lines": 52,
+      "syntax_error": true,
+      "file_size_kb": 1.5673828125,
+      "complexity": 1,
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "has_main": false,
+      "docstrings": {
+        "module": false
+      },
+      "ast_issues": []
+    },
+    {
+      "path": "tests/test_scanner.py",
+      "lines": 67,
+      "functions": [
+        "test_validate_plugin_structure(1 args)",
+        "test_validate_plugin_structure_missing_file(1 args)",
+        "test_validate_metadata(1 args)",
+        "test_validate_metadata_missing_fields(1 args)",
+        "test_audit_qgis_standards(1 args)"
+      ],
+      "classes": [],
+      "imports": [
+        "src.analyzer.scanner"
+      ],
+      "complexity": 1,
+      "has_main": false,
+      "docstrings": {
+        "module": false
+      },
+      "file_size_kb": 1.9775390625,
+      "syntax_error": false,
+      "ast_issues": []
+    },
+    {
+      "path": "src/analyzer/templates/map_tool/plugin.py",
+      "lines": 38,
+      "syntax_error": true,
+      "file_size_kb": 1.2509765625,
+      "complexity": 1,
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "has_main": false,
+      "docstrings": {
+        "module": false
+      },
+      "ast_issues": []
     },
     {
       "path": "src/analyzer/models.py",
-      "lines": 32,
+      "lines": 55,
       "functions": [],
       "classes": [
         "ModuleAnalysis",
@@ -97,7 +271,6 @@
       ],
       "imports": [
         "dataclasses",
-        "pathlib",
         "typing"
       ],
       "complexity": 1,
@@ -105,66 +278,89 @@
       "docstrings": {
         "module": false
       },
-      "file_size_kb": 1.0615234375,
-      "syntax_error": false
+      "file_size_kb": 2.1865234375,
+      "syntax_error": false,
+      "ast_issues": []
     },
     {
-      "path": "src/analyzer/reporters.py",
-      "lines": 40,
-      "functions": [
-        "generate_markdown_summary(2 args)",
-        "save_json_context(2 args)"
-      ],
+      "path": "src/analyzer/templates/gui/plugin.py",
+      "lines": 32,
+      "syntax_error": true,
+      "file_size_kb": 1.03125,
+      "complexity": 1,
+      "functions": [],
       "classes": [],
-      "imports": [
-        "datetime",
-        "json",
-        "pathlib",
-        "typing"
-      ],
-      "complexity": 4,
+      "imports": [],
       "has_main": false,
       "docstrings": {
         "module": false
       },
-      "file_size_kb": 1.6572265625,
-      "syntax_error": false
+      "ast_issues": []
+    },
+    {
+      "path": "src/analyzer/generator.py",
+      "lines": 66,
+      "functions": [
+        "__init__(2 args)",
+        "generate(3 args)",
+        "_copy_and_render(3 args)",
+        "_finalize_structure(3 args)"
+      ],
+      "classes": [
+        "ProjectGenerator"
+      ],
+      "imports": [
+        "pathlib"
+      ],
+      "complexity": 10,
+      "has_main": false,
+      "docstrings": {
+        "module": false
+      },
+      "file_size_kb": 2.5498046875,
+      "syntax_error": false,
+      "ast_issues": []
     },
     {
       "path": "src/analyzer/engine.py",
-      "lines": 78,
+      "lines": 181,
       "functions": [
-        "__init__(3 args)",
+        "__init__(4 args)",
         "get_python_files(1 args)",
+        "run_ruff_audit(1 args)",
         "run(1 args)",
-        "_calculate_score(3 args)"
+        "_calculate_scores(5 args)"
       ],
       "classes": [
         "ProjectAnalyzer"
       ],
       "imports": [
         "concurrent.futures",
+        "json",
         "os",
         "pathlib",
         "reporters",
         "scanner",
-        "time",
+        "subprocess",
         "typing",
         "utils"
       ],
-      "complexity": 9,
+      "complexity": 19,
       "has_main": false,
       "docstrings": {
         "module": false
       },
-      "file_size_kb": 3.1318359375,
-      "syntax_error": false
+      "file_size_kb": 6.951171875,
+      "syntax_error": false,
+      "ast_issues": []
     },
     {
       "path": "src/analyzer/utils.py",
-      "lines": 95,
+      "lines": 196,
       "functions": [
         "timeout_manager(1 args)",
+        "load_ignore_patterns(1 args)",
+        "load_profile_config(2 args)",
         "__init__(2 args)",
         "get(2 args)",
         "set(3 args)",
@@ -173,52 +369,97 @@
         "update(3 args)",
         "_display_progress(1 args)",
         "complete(1 args)",
-        "signal_handler(2 args)"
+        "signal_handler(2 args)",
+        "__init__(3 args)",
+        "is_ignored(2 args)"
       ],
       "classes": [
         "LRUCache",
-        "ProgressTracker"
+        "ProgressTracker",
+        "IgnoreMatcher"
       ],
       "imports": [
         "collections",
         "contextlib",
+        "fnmatch",
+        "os",
         "pathlib",
         "signal",
         "sys",
         "threading",
         "time",
+        "tomli",
+        "tomllib",
         "typing"
       ],
-      "complexity": 8,
+      "complexity": 23,
       "has_main": false,
       "docstrings": {
         "module": false
       },
-      "file_size_kb": 3.009765625,
-      "syntax_error": false
+      "file_size_kb": 6.6591796875,
+      "syntax_error": false,
+      "ast_issues": []
+    },
+    {
+      "path": "src/analyzer/reporters.py",
+      "lines": 172,
+      "functions": [
+        "generate_markdown_summary(2 args)",
+        "save_json_context(2 args)",
+        "generate_html_report(2 args)"
+      ],
+      "classes": [],
+      "imports": [
+        "datetime",
+        "dominate",
+        "dominate.tags",
+        "json",
+        "pathlib",
+        "typing"
+      ],
+      "complexity": 15,
+      "has_main": false,
+      "docstrings": {
+        "module": false
+      },
+      "file_size_kb": 8.3359375,
+      "syntax_error": false,
+      "ast_issues": []
     },
     {
       "path": "src/analyzer/scanner.py",
-      "lines": 146,
+      "lines": 388,
       "functions": [
         "get_qgis_audit_rules(0 args)",
         "analyze_module_worker(3 args)",
-        "audit_qgis_standards(2 args)"
+        "audit_qgis_standards(2 args)",
+        "validate_plugin_structure(1 args)",
+        "validate_metadata(1 args)",
+        "__init__(2 args)",
+        "visit_Call(2 args)",
+        "visit_ClassDef(2 args)",
+        "visit_FunctionDef(2 args)",
+        "visit_Import(2 args)",
+        "visit_ImportFrom(2 args)"
       ],
-      "classes": [],
+      "classes": [
+        "QGISASTVisitor(ast.NodeVisitor)"
+      ],
       "imports": [
         "ast",
         "pathlib",
         "re",
         "typing"
       ],
-      "complexity": 25,
+      "complexity": 55,
       "has_main": false,
       "docstrings": {
         "module": false
       },
-      "file_size_kb": 5.439453125,
-      "syntax_error": false
+      "file_size_kb": 15.15234375,
+      "syntax_error": false,
+      "ast_issues": []
     }
   ]
 }

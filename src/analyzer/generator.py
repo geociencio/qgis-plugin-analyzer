@@ -1,10 +1,9 @@
-import os
 import pathlib
-import shutil
+
 
 class ProjectGenerator:
     """Generates QGIS plugin projects from templates."""
-    
+
     def __init__(self, target_path: str):
         self.target_path = pathlib.Path(target_path).resolve()
         self.template_dir = pathlib.Path(__file__).parent / "templates"
@@ -13,18 +12,18 @@ class ProjectGenerator:
         """Generates the plugin structure."""
         if not self.target_path.exists():
             self.target_path.mkdir(parents=True)
-            
+
         print(f"🚀 Generating plugin in: {self.target_path}")
-        
+
         # 1. Copy base files
         self._copy_and_render("base", context)
-        
+
         # 2. Copy type-specific files
         self._copy_and_render(plugin_type, context)
-        
+
         # 3. Handle special name mappings
         self._finalize_structure(plugin_type, context)
-        
+
         print(f"✅ Plugin '{context['name']}' created successfully!")
 
     def _copy_and_render(self, template_name: str, context: dict):
@@ -39,7 +38,7 @@ class ProjectGenerator:
                 # Simple variable substitution
                 for key, value in context.items():
                     content = content.replace(f"{{{{{key}}}}}", str(value))
-                
+
                 target_file = self.target_path / item.name
                 target_file.write_text(content, encoding="utf-8")
 
@@ -55,10 +54,12 @@ class ProjectGenerator:
         elif plugin_type == "map_tool":
             # already named plugin.py
             pass
-            
+
         # Create a dummy icon if not exists
         icon_path = self.target_path / "icon.png"
         if not icon_path.exists():
             with open(icon_path, "wb") as f:
                 # 1x1 transparent pixel or similar
-                f.write(b"\x89PNG\r\n\x1a\n\x00\x00\x00\rIHDR\x00\x00\x00\x01\x00\x00\x00\x01\x08\x06\x00\x00\x00\x1f\x15\xc4\x89\x00\x00\x00\nIDATx\x9cc\x00\x01\x00\x00\x05\x00\x01\r\n-\xb4\x00\x00\x00\x00IEND\xaeB`\x82")
+                f.write(
+                    b"\x89PNG\r\n\x1a\n\x00\x00\x00\rIHDR\x00\x00\x00\x01\x00\x00\x00\x01\x08\x06\x00\x00\x00\x1f\x15\xc4\x89\x00\x00\x00\nIDATx\x9cc\x00\x01\x00\x00\x05\x00\x01\r\n-\xb4\x00\x00\x00\x00IEND\xaeB`\x82"
+                )
