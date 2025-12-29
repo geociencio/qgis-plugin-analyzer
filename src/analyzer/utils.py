@@ -28,6 +28,12 @@ from collections import OrderedDict
 from typing import Any, List, Dict
 from contextlib import contextmanager
 import signal
+import sys
+
+if sys.version_info >= (3, 11):
+    import tomllib
+else:
+    import tomli as tomllib
 
 class LRUCache:
     """Efficient LRU Cache."""
@@ -83,7 +89,6 @@ class ProgressTracker:
             self.last_update = current_time
 
     def _display_progress(self) -> None:
-        elapsed = time.time() - self.start_time
         percent = (self.processed / self.total) * 100 if self.total > 0 else 0
         if self.file_times and self.processed > 0:
             avg_time = sum(self.file_times) / len(self.file_times)
@@ -150,3 +155,32 @@ def load_ignore_patterns(ignore_file: pathlib.Path) -> List[str]:
         return []
     with open(ignore_file, "r") as f:
         return f.readlines()
+
+def load_profile_config(project_path: pathlib.Path, profile_name: str = "default") -> Dict[str, Any]:
+    """Loads a specific profile configuration from pyproject.toml."""
+    pyproject = project_path / "pyproject.toml"
+    default_config = {
+        "strict": False,
+        "generate_html": True,
+        "fail_on_error": False
+    }
+    
+    if not pyproject.exists():
+        return default_config
+        
+    try:
+        with open(pyproject, "rb") as f:
+            data = tomllib.load(f)
+            
+        profiles = data.get("tool", {}).get("qgis-analyzer", {}).get("profiles", {})
+        profile_data = profiles.get(profile_name)
+        
+        if not profile_data:
+            if profile_name != "default":
+                print(f"⚠️ Profile '{profile_name}' not found. Using default values.")
+            return default_config
+            
+        return {**default_config, **profile_data}
+    except Exception as e:
+        print(f"⚠️ Error loading profile: {e}")
+        return default_config

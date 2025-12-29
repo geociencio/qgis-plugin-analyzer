@@ -1,5 +1,3 @@
-import pathlib
-import pytest
 from src.analyzer.scanner import validate_plugin_structure, validate_metadata, audit_qgis_standards
 
 def test_validate_plugin_structure(tmp_path):

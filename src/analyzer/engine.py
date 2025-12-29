@@ -20,20 +20,24 @@
 
 import os
 import pathlib
-import time
+import json
+import subprocess
 from concurrent.futures import ProcessPoolExecutor, as_completed
 from typing import Any, Dict, List, Optional
 
 from .scanner import analyze_module_worker, audit_qgis_standards, validate_plugin_structure, validate_metadata
-from .utils import ProgressTracker, LRUCache, IgnoreMatcher, load_ignore_patterns
-from .reporters import generate_markdown_summary, save_json_context
+from .utils import ProgressTracker, LRUCache, IgnoreMatcher, load_ignore_patterns, load_profile_config
+from .reporters import generate_markdown_summary, save_json_context, generate_html_report
 
 class ProjectAnalyzer:
-    def __init__(self, project_path: str, output_dir: Optional[str] = None):
+    def __init__(self, project_path: str, output_dir: Optional[str] = None, profile: str = "default"):
         self.project_path = pathlib.Path(project_path).resolve()
         self.output_dir = pathlib.Path(output_dir or "./analysis_results").resolve()
         self.output_dir.mkdir(parents=True, exist_ok=True)
         self.max_workers = os.cpu_count() or 4
+        
+        # Load profile config
+        self.config = load_profile_config(self.project_path, profile)
         
         # Load .analyzerignore
         ignore_file = self.project_path / ".analyzerignore"
@@ -56,6 +60,18 @@ class ProjectAnalyzer:
                     python_files.append(file_path)
         return sorted(python_files)
 
+    def run_ruff_audit(self) -> List[Dict[str, Any]]:
+        """Executes Ruff via subprocess and returns findings."""
+        try:
+            cmd = ["ruff", "check", str(self.project_path), "--format", "json", "--quiet"]
+            result = subprocess.run(cmd, capture_output=True, text=True, check=False)
+            if result.stdout:
+                return json.loads(result.stdout)
+            return []
+        except Exception as e:
+            print(f"⚠️ Error running Ruff: {e}")
+            return []
+
     def run(self):
         """Runs the analysis pipeline."""
         print(f"🔍 Analyzing: {self.project_path}")
@@ -71,6 +87,9 @@ class ProjectAnalyzer:
                 if res:
                     modules_data.append(res)
                 tracker.update(futures[future], 0)
+
+        # Ruff audit
+        ruff_findings = self.run_ruff_audit()
 
         # QGIS compliance analysis
         compliance = audit_qgis_standards(modules_data, self.project_path)
@@ -99,19 +118,30 @@ class ProjectAnalyzer:
                     "metadata": metadata
                 }
             },
+            "ruff_findings": ruff_findings,
             "modules": modules_data
         }
 
         # Save reports
         generate_markdown_summary(analyses, self.output_dir / "PROJECT_SUMMARY.md")
+        if self.config.get("generate_html", True):
+            generate_html_report(analyses, self.output_dir / "PROJECT_SUMMARY.html")
         save_json_context(analyses, self.output_dir / "project_context.json")
         
         tracker.complete()
         print(f"✅ Analysis completed. Reports in: {self.output_dir}")
 
+        # Fail on error if strict mode is on and there are issues
+        if self.config.get("fail_on_error") and (compliance.get("issues_count", 0) > 0 or not structure["is_valid"] or not metadata["is_valid"]):
+            print("❌ Strict Mode: Critical QGIS compliance issues detected. Failing analysis.")
+            return False
+            
+        return True
+
     def _calculate_scores(self, modules_data, compliance, structure, metadata) -> tuple:
         """Calculates scores based on QGIS standards and code quality."""
-        if not modules_data: return 0.0, 0.0
+        if not modules_data:
+            return 0.0, 0.0
         
         # 1. Base Code Quality (50%)
         avg_comp = sum(m["complexity"] for m in modules_data) / len(modules_data)
@@ -122,7 +152,9 @@ class ProjectAnalyzer:
         # Penalty for technical findings
         qgis_score -= compliance.get("issues_count", 0) * 2
         # Penalty for repository missing files/metadata
-        if not structure["is_valid"]: qgis_score -= 20
-        if not metadata["is_valid"]: qgis_score -= 10
+        if not structure["is_valid"]:
+            qgis_score -= 20
+        if not metadata["is_valid"]:
+            qgis_score -= 10
         
         return code_score, max(0, qgis_score)

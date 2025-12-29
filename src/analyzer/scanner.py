@@ -27,22 +27,10 @@ def get_qgis_audit_rules() -> List[Dict[str, Any]]:
     """Returns the QGIS audit rule catalog."""
     return [
         {
-            "id": "OBSOLETE_API",
-            "pattern": r"writeAsVectorFormat\(",
-            "message": "Obsolete writeAsVectorFormat() usage. Use writeAsVectorFormatV3().",
-            "severity": "high",
-        },
-        {
             "id": "UNPRECISE_LAYER_LOOKUP",
             "pattern": r"mapLayersByName\(",
             "message": "mapLayersByName() can be imprecise. Consider mapLayers() or unique IDs.",
             "severity": "medium",
-        },
-        {
-            "id": "MISSING_I18N",
-            "pattern": r"\.(?:setText|setWindowTitle|setTitle|setToolTip|setPlaceholderText|setTabText)\(\s*['\"](?![%])",
-            "message": "Untranslated UI text string. Use self.tr().",
-            "severity": "high",
         },
         {
             "id": "UNSAFE_THREADING",
@@ -63,6 +51,147 @@ def get_qgis_audit_rules() -> List[Dict[str, Any]]:
             "severity": "low",
         },
     ]
+
+class QGISASTVisitor(ast.NodeVisitor):
+    """AST visitor to detect QGIS-specific issues."""
+    def __init__(self, rel_path: str):
+        self.rel_path = rel_path
+        self.issues = []
+        self.i18n_methods = {
+            "setText", "setWindowTitle", "setTitle", "setToolTip", 
+            "setPlaceholderText", "setTabText"
+        }
+
+    def visit_Call(self, node: ast.Call):
+        # 1. Detect OBSOLETE_API (writeAsVectorFormat)
+        if isinstance(node.func, ast.Attribute) and node.func.attr == "writeAsVectorFormat":
+            self.issues.append({
+                "file": self.rel_path,
+                "line": node.lineno,
+                "type": "OBSOLETE_API",
+                "severity": "high",
+                "message": "Obsolete writeAsVectorFormat() usage. Use writeAsVectorFormatV3().",
+                "code": ast.unparse(node)
+            })
+
+        # 2. Detect MISSING_I18N
+        if isinstance(node.func, ast.Attribute) and node.func.attr in self.i18n_methods:
+            # Check if the first argument is a literal string and NOT wrapped in self.tr() or similar
+            if node.args and isinstance(node.args[0], ast.Constant) and isinstance(node.args[0].value, str):
+                val = node.args[0].value
+                # Ignore empty strings or strings starting with % (placeholders)
+                if val.strip() and not val.startswith("%"):
+                    self.issues.append({
+                        "file": self.rel_path,
+                        "line": node.lineno,
+                        "type": "MISSING_I18N",
+                        "severity": "high",
+                        "message": f"Untranslated UI text string in '{node.func.attr}': '{val}'. Use self.tr().",
+                        "code": ast.unparse(node)
+                    })
+
+        self.generic_visit(node)
+
+    def visit_ClassDef(self, node: ast.ClassDef):
+        # 3. Detect MANDATORY_CLEANUP
+        # Simple check: if a class has initGui, it MUST have unload
+        has_init_gui = any(isinstance(m, ast.FunctionDef) and m.name == "initGui" for m in node.body)
+        has_unload = any(isinstance(m, ast.FunctionDef) and m.name == "unload" for m in node.body)
+        
+        if has_init_gui and not has_unload:
+            self.issues.append({
+                "file": self.rel_path,
+                "line": node.lineno,
+                "type": "MANDATORY_CLEANUP",
+                "severity": "high",
+                "message": f"Class '{node.name}' implements 'initGui()' but is missing 'unload()'. Mandatory for cleanup.",
+                "code": f"class {node.name}..."
+            })
+        self.generic_visit(node)
+
+    def visit_FunctionDef(self, node: ast.FunctionDef):
+        # 4. Detect IFACE_AS_ARGUMENT (QGS105)
+        # Avoid passing QgisInterface as an argument
+        for arg in node.args.args:
+            if arg.annotation and isinstance(arg.annotation, ast.Name):
+                if arg.annotation.id == "QgisInterface":
+                    self.issues.append({
+                        "file": self.rel_path,
+                        "line": node.lineno,
+                        "type": "IFACE_AS_ARGUMENT",
+                        "severity": "medium",
+                        "message": f"Function '{node.name}' receives 'QgisInterface' as an argument. Use the global 'iface' or Singleton pattern.",
+                        "code": ast.unparse(node).split("\n")[0]
+                    })
+        self.generic_visit(node)
+
+    def visit_Import(self, node: ast.Import):
+        for alias in node.names:
+            # 5. Detect QGIS_PROTECTED_MEMBER (QGS101/102)
+            if alias.name.startswith("qgis._") and not alias.name.startswith("qgis._3d"):
+                 self.issues.append({
+                    "file": self.rel_path,
+                    "line": node.lineno,
+                    "type": "QGIS_PROTECTED_MEMBER",
+                    "severity": "high",
+                    "message": f"Protected member import detected: '{alias.name}'. Protected members are unstable.",
+                    "code": ast.unparse(node)
+                })
+            # 6. Detect GDAL_DIRECT_IMPORT (QGS106)
+            if alias.name == "gdal":
+                self.issues.append({
+                    "file": self.rel_path,
+                    "line": node.lineno,
+                    "type": "GDAL_DIRECT_IMPORT",
+                    "severity": "medium",
+                    "message": "Direct 'gdal' import detected. Use 'from osgeo import gdal'.",
+                    "code": ast.unparse(node)
+                })
+            # QGIS_LEGACY_IMPORT (already existing)
+            if alias.name.startswith(("PyQt4", "PyQt5")):
+                self.issues.append({
+                    "file": self.rel_path,
+                    "line": node.lineno,
+                    "type": "QGIS_LEGACY_IMPORT",
+                    "severity": "high",
+                    "message": f"Legacy import detected: '{alias.name}'. Use 'qgis.PyQt' for compatibility.",
+                    "code": ast.unparse(node)
+                })
+        self.generic_visit(node)
+
+    def visit_ImportFrom(self, node: ast.ImportFrom):
+        if node.module:
+            # Detect QGIS_PROTECTED_MEMBER
+            if node.module.startswith("qgis._") and not node.module.startswith("qgis._3d"):
+                self.issues.append({
+                    "file": self.rel_path,
+                    "line": node.lineno,
+                    "type": "QGIS_PROTECTED_MEMBER",
+                    "severity": "high",
+                    "message": f"Protected member import detected: 'from {node.module} import ...'. Protected members are unstable.",
+                    "code": ast.unparse(node)
+                })
+            # Detect GDAL_DIRECT_IMPORT
+            if node.module == "gdal":
+                self.issues.append({
+                    "file": self.rel_path,
+                    "line": node.lineno,
+                    "type": "GDAL_DIRECT_IMPORT",
+                    "severity": "medium",
+                    "message": "Direct 'gdal' import detected. Use 'from osgeo import gdal'.",
+                    "code": ast.unparse(node)
+                })
+            # QGIS_LEGACY_IMPORT
+            if node.module.startswith(("PyQt4", "PyQt5")):
+                self.issues.append({
+                    "file": self.rel_path,
+                    "line": node.lineno,
+                    "type": "QGIS_LEGACY_IMPORT",
+                    "severity": "high",
+                    "message": f"Legacy import detected: 'from {node.module} import ...'. Use 'qgis.PyQt' for compatibility.",
+                    "code": ast.unparse(node)
+                })
+        self.generic_visit(node)
 
 def analyze_module_worker(py_file: pathlib.Path, project_path: pathlib.Path, cached_data: Optional[Dict] = None) -> Optional[Dict]:
     """Worker for module analysis (executed in sub-processes)."""
@@ -116,6 +245,10 @@ def analyze_module_worker(py_file: pathlib.Path, project_path: pathlib.Path, cac
                             if isinstance(cmp, ast.Constant) and cmp.value == "__main__":
                                 has_main = True
 
+        # Custom AST Audit
+        visitor = QGISASTVisitor(rel_path)
+        visitor.visit(tree)
+
         return {
             "path": rel_path,
             "lines": content.count("\n") + 1,
@@ -129,6 +262,7 @@ def analyze_module_worker(py_file: pathlib.Path, project_path: pathlib.Path, cac
             },
             "file_size_kb": py_file.stat().st_size / 1024,
             "syntax_error": False,
+            "ast_issues": visitor.issues
         }
     except Exception:
         return None
@@ -139,11 +273,17 @@ def audit_qgis_standards(modules_data: List[Dict], project_path: pathlib.Path) -
     results = {"issues": [], "issues_count": 0}
     
     for module in modules_data:
+        # Add issues found via AST
+        if "ast_issues" in module:
+            results["issues"].extend(module["ast_issues"])
+
         path = module.get("path")
-        if not path: continue
+        if not path:
+            continue
         
         full_path = project_path / path
-        if not full_path.exists(): continue
+        if not full_path.exists():
+            continue
         
         try:
             content = full_path.read_text(encoding="utf-8", errors="replace")

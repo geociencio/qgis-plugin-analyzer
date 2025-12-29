@@ -19,8 +19,7 @@
 #  ***************************************************************************/
 
 from dataclasses import dataclass, field
-from typing import Any, Dict, List, Optional
-import pathlib
+from typing import Any, Dict, List
 
 @dataclass
 class ModuleAnalysis:
