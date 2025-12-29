@@ -19,10 +19,12 @@
 #  ***************************************************************************/
 
 import argparse
+import pathlib
 import sys
 
 from .engine import ProjectAnalyzer
 from .generator import ProjectGenerator
+from .utils import logger, setup_logger
 
 
 def main():
@@ -63,6 +65,11 @@ def main():
 
     args = parser.parse_args()
 
+    # Initialize logger (default to analysis_results if not specified)
+    output_dir = pathlib.Path(getattr(args, "output", "./analysis_results")).resolve()
+    output_dir.mkdir(parents=True, exist_ok=True)
+    setup_logger(output_dir)
+
     try:
         if args.command == "init":
             class_name = args.name.replace(" ", "").replace("-", "").capitalize()
@@ -89,10 +96,10 @@ def main():
             parser.print_help()
 
     except KeyboardInterrupt:
-        print("\n⏹️ Analysis interrupted.")
+        logger.info("\n⏹️ Analysis interrupted.")
         sys.exit(1)
     except Exception as e:
-        print(f"\n❌ Critical Error: {e}")
+        logger.critical(f"Critical Error: {e}", exc_info=True)
         sys.exit(1)
 
 

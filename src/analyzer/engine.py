@@ -37,6 +37,8 @@ from .utils import (
     ProgressTracker,
     load_ignore_patterns,
     load_profile_config,
+    logger,
+    setup_logger,
 )
 
 
@@ -47,7 +49,13 @@ class ProjectAnalyzer:
         self.project_path = pathlib.Path(project_path).resolve()
         self.output_dir = pathlib.Path(output_dir or "./analysis_results").resolve()
         self.output_dir.mkdir(parents=True, exist_ok=True)
-        self.max_workers = os.cpu_count() or 4
+        
+        # Initialize logging
+        setup_logger(self.output_dir)
+        
+        # Limit workers to 4 or cpu count, whichever is smaller, to prevent OOM
+        self.max_workers = min(os.cpu_count() or 4, 4)
+        self.max_file_size_kb = 500
 
         # Load profile config
         self.config = load_profile_config(self.project_path, profile)
@@ -72,6 +80,10 @@ class ProjectAnalyzer:
             for file in files:
                 file_path = root_path / file
                 if file.endswith(".py") and not self.matcher.is_ignored(file_path):
+                    # Skip very large files to avoid OOM
+                    if file_path.stat().st_size > self.max_file_size_kb * 1024:
+                        logger.warning(f"⚠️ Skipping large file: {file_path.name} (> {self.max_file_size_kb}KB)")
+                        continue
                     python_files.append(file_path)
         return sorted(python_files)
 
@@ -84,12 +96,12 @@ class ProjectAnalyzer:
                 return json.loads(result.stdout)
             return []
         except Exception as e:
-            print(f"⚠️ Error running Ruff: {e}")
+            logger.error(f"Error running Ruff: {e}")
             return []
 
     def run(self):
         """Runs the analysis pipeline."""
-        print(f"🔍 Analyzing: {self.project_path}")
+        logger.info(f"🔍 Analyzing: {self.project_path}")
         files = self.get_python_files()
         tracker = ProgressTracker(len(files))
         modules_data = []
@@ -145,7 +157,7 @@ class ProjectAnalyzer:
         save_json_context(analyses, self.output_dir / "project_context.json")
 
         tracker.complete()
-        print(f"✅ Analysis completed. Reports in: {self.output_dir}")
+        logger.info(f"✅ Analysis completed. Reports in: {self.output_dir}")
 
         # Fail on error if strict mode is on and there are issues
         if self.config.get("fail_on_error") and (
@@ -153,7 +165,7 @@ class ProjectAnalyzer:
             or not structure["is_valid"]
             or not metadata["is_valid"]
         ):
-            print("❌ Strict Mode: Critical QGIS compliance issues detected. Failing analysis.")
+            logger.error("❌ Strict Mode: Critical QGIS compliance issues detected. Failing analysis.")
             return False
 
         return True

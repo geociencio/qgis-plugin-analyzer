@@ -18,6 +18,7 @@
 #  *                                                                         *
 #  ***************************************************************************/
 import fnmatch
+import logging
 import os
 import pathlib
 import signal
@@ -27,6 +28,37 @@ import time
 from collections import OrderedDict
 from contextlib import contextmanager
 from typing import Any, Dict, List
+
+def setup_logger(output_dir: pathlib.Path) -> logging.Logger:
+    """Configures the global logger with console and file handlers."""
+    logger = logging.getLogger("qgis_analyzer")
+    logger.setLevel(logging.DEBUG)
+    
+    # Avoid duplicate handlers
+    if logger.handlers:
+        return logger
+
+    # Formatters
+    console_fmt = logging.Formatter("%(message)s")
+    file_fmt = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
+
+    # Console Handler (User facing)
+    ch = logging.StreamHandler(sys.stdout)
+    ch.setLevel(logging.INFO)
+    ch.setFormatter(console_fmt)
+    logger.addHandler(ch)
+
+    # File Handler (Detailed debugging)
+    log_file = output_dir / "analyzer.log"
+    fh = logging.FileHandler(log_file, encoding="utf-8")
+    fh.setLevel(logging.DEBUG)
+    fh.setFormatter(file_fmt)
+    logger.addHandler(fh)
+
+    return logger
+
+# Global logger instance (will be configured in cli.py or engine.py)
+logger = logging.getLogger("qgis_analyzer")
 
 if sys.version_info >= (3, 11):
     import tomllib
@@ -79,12 +111,17 @@ class ProgressTracker:
         self.total = total_files
         self.processed = 0
         self.start_time = time.time()
-        self.file_times = []
+        self.avg_time = 0.0
         self.last_update = 0
 
     def update(self, file_path: pathlib.Path, processing_time: float) -> None:
         self.processed += 1
-        self.file_times.append(processing_time)
+        # Simple moving average for ETA
+        if self.avg_time == 0:
+            self.avg_time = processing_time
+        else:
+            self.avg_time = (self.avg_time * 0.9) + (processing_time * 0.1)
+            
         current_time = time.time()
         if self.processed % 10 == 0 or current_time - self.last_update > 2:
             self._display_progress()
@@ -92,10 +129,9 @@ class ProgressTracker:
 
     def _display_progress(self) -> None:
         percent = (self.processed / self.total) * 100 if self.total > 0 else 0
-        if self.file_times and self.processed > 0:
-            avg_time = sum(self.file_times) / len(self.file_times)
+        if self.processed > 0:
             remaining = self.total - self.processed
-            eta = remaining * avg_time
+            eta = remaining * self.avg_time
             eta_str = f"{eta:.0f}s"
         else:
             eta_str = "..."
@@ -134,15 +170,24 @@ class IgnoreMatcher:
     def __init__(self, root_path: pathlib.Path, patterns: List[str]):
         self.root_path = root_path
         self.patterns = [p.strip() for p in patterns if p.strip() and not p.startswith("#")]
+        self._cache = {}
 
     def is_ignored(self, path: pathlib.Path) -> bool:
         """Returns True if the path matches any of the ignore patterns."""
+        str_path = str(path)
+        if str_path in self._cache:
+            return self._cache[str_path]
+            
         try:
             rel_path = path.relative_to(self.root_path)
             str_rel_path = str(rel_path)
+            result = self._check_patterns(str_rel_path, path.name)
+            self._cache[str_path] = result
+            return result
         except ValueError:
             return False
 
+    def _check_patterns(self, str_rel_path: str, name: str) -> bool:
         for pattern in self.patterns:
             # Handle directory-specific patterns (ending in /)
             if pattern.endswith("/"):
@@ -154,7 +199,7 @@ class IgnoreMatcher:
             if fnmatch.fnmatch(str_rel_path, pattern):
                 return True
             # Match basename if pattern doesn't contain a slash
-            if "/" not in pattern and fnmatch.fnmatch(path.name, pattern):
+            if "/" not in pattern and fnmatch.fnmatch(name, pattern):
                 return True
         return False
 
@@ -186,10 +231,10 @@ def load_profile_config(
 
         if not profile_data:
             if profile_name != "default":
-                print(f"⚠️ Profile '{profile_name}' not found. Using default values.")
+                logger.warning(f"Profile '{profile_name}' not found. Using default values.")
             return default_config
 
         return {**default_config, **profile_data}
     except Exception as e:
-        print(f"⚠️ Error loading profile: {e}")
+        logger.error(f"Error loading profile: {e}")
         return default_config

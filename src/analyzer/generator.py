@@ -1,4 +1,5 @@
 import pathlib
+from .utils import logger
 
 
 class ProjectGenerator:
@@ -13,7 +14,7 @@ class ProjectGenerator:
         if not self.target_path.exists():
             self.target_path.mkdir(parents=True)
 
-        print(f"🚀 Generating plugin in: {self.target_path}")
+        logger.info(f"🚀 Generating plugin in: {self.target_path}")
 
         # 1. Copy base files
         self._copy_and_render("base", context)
@@ -24,12 +25,12 @@ class ProjectGenerator:
         # 3. Handle special name mappings
         self._finalize_structure(plugin_type, context)
 
-        print(f"✅ Plugin '{context['name']}' created successfully!")
+        logger.info(f"✅ Plugin '{context['name']}' created successfully!")
 
     def _copy_and_render(self, template_name: str, context: dict):
         source = self.template_dir / template_name
         if not source.exists():
-            print(f"⚠️ Template '{template_name}' not found.")
+            logger.warning(f"⚠️ Template '{template_name}' not found.")
             return
 
         for item in source.iterdir():

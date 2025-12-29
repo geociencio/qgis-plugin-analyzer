@@ -28,7 +28,7 @@ def get_qgis_audit_rules() -> List[Dict[str, Any]]:
     """Returns the QGIS audit rule catalog."""
     return [
         {
-            "id": "UNPRECISE_LAYER",
+            "id": "UNPRECISE_LAYER_LOOKUP",
             "pattern": r"mapLayersByName\(",
             "message": "mapLayersByName() can be imprecise. Consider mapLayers() or unique IDs.",
             "severity": "medium",
@@ -40,7 +40,7 @@ def get_qgis_audit_rules() -> List[Dict[str, Any]]:
             "severity": "high",
         },
         {
-            "id": "MANUAL_PATH",
+            "id": "MANUAL_RESOURCE_PATH",
             "pattern": r"QIcon\(\s*['\"](?!\s*:\/)[^'\"]*?(?:icons|images|ui)/",
             "message": "Manual resource path detected. Use :/plugins/...",
             "severity": "medium",
