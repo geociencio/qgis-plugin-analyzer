@@ -18,24 +18,25 @@ The **QGIS Plugin Analyzer** is a static analysis tool designed specifically for
 
 ## ⚖️ Why use this Analyzer? (Comparison)
 
-| Feature | QGIS Plugin Analyzer | flake8-qgis | qgis-plugin-dev-tools | Official Repo Bot |
+| Feature | **QGIS Plugin Analyzer** | flake8-qgis | Ruff (Standard) | Official Repo Bot |
 | :--- | :---: | :---: | :---: | :---: |
-| **Static Linting** | ✅ (Custom Rules) | ✅ (Strict) | ❌ | ✅ (Limited) |
-| **Complexity (AST)** | ✅ | ❌ | ❌ | ❌ |
-| **QGIS i18n Audit** | ✅ | ❌ | ❌ | ✅ |
-| **Architecture Audit**| ✅ (UI/Core) | ❌ | ❌ | ❌ |
-| **Performance Rules** | ✅ (Spatial Index) | ✅ | ❌ | ❌ |
-| **Security Scan** | ✅ | ❌ | ❌ | ✅ (Malware) |
-| **AI Context Gen**| ✅ | ❌ | ❌ | ❌ |
-| **Multiprocess Support**  | ✅ | ❌ | ❌ | ❌ |
-| **External Reports**    | ✅ (MD, JSON) | ❌ | ✅ (Packaging) | ❌ |
+| **Static Linting** | ✅ (Ruff + Custom) | ✅ (flake8) | ✅ (General) | ✅ (Limited) |
+| **QGIS-Specific Rules**| ✅ (Precise AST) | ✅ (Regex/AST) | ❌ | ✅ |
+| **Speed (Rust/Parallel)**| ✅ | ❌ | ✅ | ❌ |
+| **Project Templating** | ✅ (`init`) | ❌ | ❌ | ❌ |
+| **i18n / API Audit** | ✅ | ❌ | ❌ | ✅ |
+| **Architecture Audit** | ✅ (UI/Core) | ❌ | ❌ | ❌ |
+| **HTML/MD Reports** | ✅ | ❌ | ❌ | ❌ |
+| **AI Context Gen** | ✅ (Project Brain) | ❌ | ❌ | ❌ |
+| **Strict CI Profiles** | ✅ | ❌ | ✅ | ❌ |
 
 ### Key Differentiators
 
-1.  **Holistic Quality Score**: Unlike linters that only report errors, the Analyzer provides a **Quality Score (0-100)**.
-2.  **Native AI Infrastructure**: Generates a structured "Project Brain" that allows AI assistants (ChatGPT/Gemini) to provide much more accurate refactoring suggestions.
-3.  **Architecture Compliance**: Detects pattern violations (e.g., heavy logic in the UI), the #1 cause of technical debt in plugins.
-4.  **Total Independence**: Can be run on any project without being part of it, keeping the plugin repository clean.
+1.  **Motor Híbrido de Máximo Rendimiento**: Combina el motor Rust de **Ruff** (para reglas PEP8) con nuestro motor **AST** (para reglas PyQGIS), ofreciendo una velocidad hasta 100 veces superior a linters tradicionales.
+2.  **Generación de Boilerplate Inteligente**: A diferencia de otras herramientas que se centran en el análisis, el comando `init` permite crear plugins "AI-Ready" desde el primer segundo.
+3.  **Auditoría de Arquitectura**: Único en detectar violaciones de patrones (como lógica pesada en la UI), la causa #1 de deuda técnica en plugins complejos.
+4.  **Infraestructura para IA (Project Brain)**: Genera resúmenes técnicos optimizados para que asistentes como ChatGPT o Gemini entiendan tu código al instante.
+5.  **Listo para CI/CD**: Los perfiles de configuración permiten integrar fallos de cumplimiento directamente en tus pipelines de GitHub Actions.
 
 ## 🚀 Installation and Usage
 
