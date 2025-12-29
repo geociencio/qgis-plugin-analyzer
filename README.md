@@ -108,13 +108,22 @@ Generates a new QGIS plugin project structure from a template.
 
 ## 📚 References and Standards
 
-The development of this analyzer is based on official QGIS community guidelines and industry standards:
+The development of this analyzer is based on official QGIS community guidelines, geospatial standards, and industry best practices:
 
-- **[PyQGIS Developer Cookbook](https://docs.qgis.org/latest/en/docs/pyqgis_developer_cookbook/)**: The bible for Python plugin development.
-- **[QGIS Plugin Repository Requirements](https://plugins.qgis.org/publish/)**: Official criteria for plugin approval in the official repository.
-- **[QGIS Coding Standards](https://docs.qgis.org/latest/en/docs/developer_guide/codingstandards.html)**: Style and code organization standards for QGIS.
-- **[QGIS HIG (Human Interface Guidelines)](https://docs.qgis.org/latest/en/docs/developer_guide/hig.html)**: Guide for designing consistent user interfaces.
-- **[Conventional Commits](https://www.conventionalcommits.org/)**: Standard for clear and structured commit messages.
+### Official QGIS Documentation
+- **[PyQGIS Developer Cookbook](https://docs.qgis.org/latest/en/docs/pyqgis_developer_cookbook/)**: The primary resource for PyQGIS API usage and standards.
+- **[QGIS Plugin Repository Requirements](https://plugins.qgis.org/publish/)**: Mandatory criteria for plugin approval in the official repository.
+- **[QGIS Coding Standards](https://docs.qgis.org/latest/en/docs/developer_guide/codingstandards.html)**: Core style and organization guidelines for the QGIS project.
+- **[QGIS HIG (Human Interface Guidelines)](https://docs.qgis.org/latest/en/docs/developer_guide/hig.html)**: Standards for consistent and accessible user interface design.
+
+### Industry & Community Standards
+- **[flake8-qgis Rules](https://github.com/qgis/flake8-qgis)**: Community-driven linting rules for PyQGIS (QGS101-106).
+- **[PEP 8 Style Guide](https://peps.python.org/pep-0008/)**: The fundamental style guide for Python code.
+- **[Conventional Commits](https://www.conventionalcommits.org/)**: Standard for clear, machine-readable commit history.
+- **[Keep a Changelog](https://keepachangelog.com/)**: Best practices for maintainable version history.
+
+### Internal Resources
+- **[Detailed Rules Catalog](RULES.md)**: Full documentation of all audit rules implemented in this analyzer.
 
 ## 🛠️ Contributing
 Audit rules are located in `src/analyzer/scanner.py`. Feel free to add new rules following the existing pattern!
