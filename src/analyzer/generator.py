@@ -39,7 +39,8 @@ class ProjectGenerator:
                 for key, value in context.items():
                     content = content.replace(f"{{{{{key}}}}}", str(value))
 
-                target_file = self.target_path / item.name
+                target_name = item.name.replace(".tmpl", "")
+                target_file = self.target_path / target_name
                 target_file.write_text(content, encoding="utf-8")
 
     def _finalize_structure(self, plugin_type: str, context: dict):
