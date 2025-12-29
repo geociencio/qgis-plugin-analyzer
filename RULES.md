@@ -49,3 +49,10 @@ This document details the automatic audit rules implemented in the analyzer to e
 | `GDAL_DIRECT_IMPORT` | 🟡 Medium | Direct `import gdal` instead of `from osgeo import gdal`. | Use `from osgeo import gdal` for consistency. |
 | `QGIS_LEGACY_IMPORT` | 🔴 High | Direct import of `PyQt4` or `PyQt5`. | Use `qgis.PyQt` shim for maximum compatibility. |
 | `MANDATORY_CLEANUP` | 🔴 High | `initGui()` implemented but `unload()` is missing. | Always implement `unload()` to prevent memory leaks and UI artifacts. |
+| `HEAVY_LOGIC_UI` | 🟡 Medium | Heavy dependencies (pandas, numpy) or complex logic in UI files. | Move heavy logic and dependencies to core modules. |
+
+## 8. General Python Best Practices (QGIS Context)
+
+| Rule ID | Severity | Description | Recommendation |
+| :--- | :--- | :--- | :--- |
+| `PRINT_STATEMENT` | 🟢 Low | Use of `print()` statements in production code. | Use `QgsMessageLog` for user-facing logs or standard `logging` for debug. |

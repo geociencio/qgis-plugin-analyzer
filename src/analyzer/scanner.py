@@ -28,19 +28,19 @@ def get_qgis_audit_rules() -> List[Dict[str, Any]]:
     """Returns the QGIS audit rule catalog."""
     return [
         {
-            "id": "UNPRECISE_LAYER_LOOKUP",
+            "id": "UNPRECISE_LAYER",
             "pattern": r"mapLayersByName\(",
             "message": "mapLayersByName() can be imprecise. Consider mapLayers() or unique IDs.",
             "severity": "medium",
         },
         {
-            "id": "UNSAFE_THREADING",
+            "id": "UNSAFE_THREAD",
             "pattern": r"\bthreading\.Thread\(",
             "message": "threading.Thread usage detected. Prefer QgsTask or QThread.",
             "severity": "high",
         },
         {
-            "id": "MANUAL_RESOURCE_PATH",
+            "id": "MANUAL_PATH",
             "pattern": r"QIcon\(\s*['\"](?!\s*:\/)[^'\"]*?(?:icons|images|ui)/",
             "message": "Manual resource path detected. Use :/plugins/...",
             "severity": "medium",
@@ -50,6 +50,18 @@ def get_qgis_audit_rules() -> List[Dict[str, Any]]:
             "pattern": r"^[^#]*\bprint\(",
             "message": "print() usage detected. Use QgsMessageLog.",
             "severity": "low",
+        },
+        {
+            "id": "OBSOLETE_VARIANT",
+            "pattern": r"QVariant\.(?:String|Int|Double|LongLong|Bool|Date|Time|DateTime)",
+            "message": "Obsolete QVariant type constants detected. Use QMetaType or native types.",
+            "severity": "medium",
+        },
+        {
+            "id": "SPATIAL_INDEX",
+            "pattern": r"for\s+\w+\s+in\s+.*?\.getFeatures\(\):\n\s+(?!.*?QgsSpatialIndex)",
+            "message": "Iteration over features without spatial index detected on potentially heavy loop.",
+            "severity": "high",
         },
     ]
 
@@ -221,6 +233,20 @@ class QGISASTVisitor(ast.NodeVisitor):
                         "type": "QGIS_LEGACY_IMPORT",
                         "severity": "high",
                         "message": f"Legacy import detected: 'from {node.module} import ...'. Use 'qgis.PyQt' for compatibility.",
+                        "code": ast.unparse(node),
+                    }
+                )
+            # 7. Detect HEAVY_LOGIC_UI (QGS107)
+            heavy_libs = {"pandas", "numpy", "scipy", "sklearn", "matplotlib"}
+            is_ui_file = "gui" in self.rel_path.lower() or "ui" in self.rel_path.lower()
+            if is_ui_file and (node.module in heavy_libs or node.module.split(".")[0] in heavy_libs):
+                self.issues.append(
+                    {
+                        "file": self.rel_path,
+                        "line": node.lineno,
+                        "type": "HEAVY_LOGIC_UI",
+                        "severity": "medium",
+                        "message": f"Heavy dependency '{node.module}' detected in UI file. Move logic to core.",
                         "code": ast.unparse(node),
                     }
                 )
