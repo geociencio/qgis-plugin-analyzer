@@ -1,28 +1,39 @@
+import unittest
+import pathlib
+import tempfile
+import shutil
 from src.analyzer.scanner import audit_qgis_standards, validate_metadata, validate_plugin_structure
 
 
-def test_validate_plugin_structure(tmp_path):
-    # Setup: Create a fake plugin structure
-    (tmp_path / "metadata.txt").write_text("name=Test")
-    (tmp_path / "__init__.py").write_text("def classFactory(): pass")
-    (tmp_path / "LICENSE").write_text("GPL")
+class TestScanner(unittest.TestCase):
+    def setUp(self):
+        # Create a temporary directory for each test
+        self.test_dir = pathlib.Path(tempfile.mkdtemp())
 
-    result = validate_plugin_structure(tmp_path)
-    assert result["is_valid"] is True
-    assert result["files"]["metadata.txt"] is True
-    assert result["has_class_factory"] is True
+    def tearDown(self):
+        # Remove the directory after the test
+        shutil.rmtree(self.test_dir)
 
+    def test_validate_plugin_structure(self):
+        # Setup: Create a fake plugin structure
+        (self.test_dir / "metadata.txt").write_text("name=Test", encoding="utf-8")
+        (self.test_dir / "__init__.py").write_text("def classFactory(): pass", encoding="utf-8")
+        (self.test_dir / "LICENSE").write_text("GPL", encoding="utf-8")
 
-def test_validate_plugin_structure_missing_file(tmp_path):
-    (tmp_path / "__init__.py").write_text("def classFactory(): pass")
+        result = validate_plugin_structure(self.test_dir)
+        self.assertTrue(result["is_valid"])
+        self.assertTrue(result["files"]["metadata.txt"])
+        self.assertTrue(result["has_class_factory"])
 
-    result = validate_plugin_structure(tmp_path)
-    assert result["is_valid"] is False
-    assert result["files"]["metadata.txt"] is False
+    def test_validate_plugin_structure_missing_file(self):
+        (self.test_dir / "__init__.py").write_text("def classFactory(): pass", encoding="utf-8")
 
+        result = validate_plugin_structure(self.test_dir)
+        self.assertFalse(result["is_valid"])
+        self.assertFalse(result["files"]["metadata.txt"])
 
-def test_validate_metadata(tmp_path):
-    metadata_content = """
+    def test_validate_metadata(self):
+        metadata_content = """
 [general]
 name=Test Plugin
 description=A description
@@ -31,36 +42,38 @@ qgisMinimumVersion=3.0
 author=Tester
 email=test@test.com
 """
-    meta_file = tmp_path / "metadata.txt"
-    meta_file.write_text(metadata_content)
+        meta_file = self.test_dir / "metadata.txt"
+        meta_file.write_text(metadata_content, encoding="utf-8")
 
-    result = validate_metadata(tmp_path)
-    assert result["is_valid"] is True
-    assert len(result["missing"]) == 0
+        result = validate_metadata(self.test_dir)
+        self.assertTrue(result["is_valid"])
+        self.assertEqual(len(result["missing"]), 0)
 
+    def test_validate_metadata_missing_fields(self):
+        meta_file = self.test_dir / "metadata.txt"
+        meta_file.write_text("name=Test\nversion=0.1", encoding="utf-8")
 
-def test_validate_metadata_missing_fields(tmp_path):
-    meta_file = tmp_path / "metadata.txt"
-    meta_file.write_text("name=Test\nversion=0.1")
+        result = validate_metadata(self.test_dir)
+        self.assertFalse(result["is_valid"])
+        self.assertIn("description", result["missing"])
 
-    result = validate_metadata(tmp_path)
-    assert result["is_valid"] is False
-    assert "description" in result["missing"]
-
-
-def test_audit_qgis_standards(tmp_path):
-    py_content = """
+    def test_audit_qgis_standards(self):
+        py_content = """
 layer = mapLayersByName("test")[0]
 QIcon("icons/my_icon.png")
 print("debug")
 """
-    py_file = tmp_path / "test_plugin.py"
-    py_file.write_text(py_content)
+        py_file = self.test_dir / "test_plugin.py"
+        py_file.write_text(py_content, encoding="utf-8")
 
-    modules_data = [{"path": "test_plugin.py"}]
-    results = audit_qgis_standards(modules_data, tmp_path)
+        modules_data = [{"path": "test_plugin.py"}]
+        results = audit_qgis_standards(modules_data, self.test_dir)
 
-    issue_types = [i["type"] for i in results["issues"]]
-    assert "UNPRECISE_LAYER_LOOKUP" in issue_types
-    assert "MANUAL_RESOURCE_PATH" in issue_types
-    assert "PRINT_STATEMENT" in issue_types
+        issue_types = [i["type"] for i in results["issues"]]
+        self.assertIn("UNPRECISE_LAYER_LOOKUP", issue_types)
+        self.assertIn("MANUAL_RESOURCE_PATH", issue_types)
+        self.assertIn("PRINT_STATEMENT", issue_types)
+
+
+if __name__ == "__main__":
+    unittest.main()

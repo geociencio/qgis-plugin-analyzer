@@ -12,7 +12,9 @@ The **QGIS Plugin Analyzer** is a static analysis tool designed specifically for
 - **Integrated Ruff Analysis**: Combines custom QGIS rules with the fastest linter in the Python ecosystem.
 - **Boilerplate Generation (`init`)**: Creates professional plugin structures (`processing`, `gui`, `map_tool`) instantly.
 - **AI-Ready**: Generates structured summaries and optimized contexts for LLMs.
-- **HTML Reports**: Professional visualization of plugin health.
+- **Cero Dependencias de Ejecución**: Funciona solo con la biblioteca estándar de Python (Ruff se usa como herramienta externa).
+- **Reportes HTML Profesionales**: Generación de reportes visuales sin dependencias pesadas.
+- **Migración a Unittest**: Suite de pruebas nativa y ultra-rápida.
 - **High Performance & Safety**: Parallel processing with smart resource management and file size limits.
 - **Detailed Audit Rules**: Over 15+ specialized QGIS checks (fully documented in [RULES.md](RULES.md)).
 - **Selective Auditing**: Support for `.analyzerignore` to exclude specific files or directories from analysis.

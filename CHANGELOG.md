@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.4.0] - 2025-12-29
+### Changed
+- **Zero Runtime Dependencies**: Removed all external runtime dependencies (`tomli`, `dominate`). The analyzer now uses a built-in minimal TOML generator and manual HTML reporting.
+- **Migration to Unittest**: Refactored the entire test suite from `pytest` to the native `unittest` framework, removing `pytest` from the development stack.
+- **Optimized Deployment**: Reduced project footprint by eliminating non-essential packages.
+
 ## [0.3.1] - 2025-12-29
 ### Added
 - **Professional Logging System**: Persistent logging to `analysis_results/analyzer.log` with detailed tracebacks for troubleshooting.

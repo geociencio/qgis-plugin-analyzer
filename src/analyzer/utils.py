@@ -21,6 +21,7 @@ import fnmatch
 import logging
 import os
 import pathlib
+import re
 import signal
 import sys
 import threading
@@ -60,10 +61,66 @@ def setup_logger(output_dir: pathlib.Path) -> logging.Logger:
 # Global logger instance (will be configured in cli.py or engine.py)
 logger = logging.getLogger("qgis_analyzer")
 
-if sys.version_info >= (3, 11):
+
+def _minimal_toml_load(file_obj) -> Dict[str, Any]:
+    """
+    EXTREMELY minimal TOML parser focused ONLY on extracting 
+    [tool.qgis-analyzer.profiles] from pyproject.toml.
+    Does not handle nested structures or full TOML spec.
+    """
+    data = {"tool": {"qgis-analyzer": {"profiles": {}}}}
+    current_section = None
+    
+    # Simple regex to catch [tool.qgis-analyzer.profiles.NAME]
+    profile_regex = re.compile(r'^\[tool\.qgis-analyzer\.profiles\.([\w-]+)\]')
+    
+    try:
+        content = file_obj.read().decode("utf-8")
+        for line in content.splitlines():
+            line = line.strip()
+            if not line or line.startswith("#"):
+                continue
+            
+            # Check for section header
+            if line.startswith("[") and line.endswith("]"):
+                match = profile_regex.match(line)
+                if match:
+                    current_section = match.group(1)
+                    data["tool"]["qgis-analyzer"]["profiles"][current_section] = {}
+                else:
+                    current_section = None
+                continue
+            
+            # Key-value pair
+            if current_section and "=" in line:
+                key, val = line.split("=", 1)
+                key = key.strip()
+                val = val.strip()
+                
+                # Basic type conversion
+                if val.lower() == "true":
+                    val = True
+                elif val.lower() == "false":
+                    val = False
+                elif val.isdigit():
+                    val = int(val)
+                elif val.startswith('"') and val.endswith('"'):
+                    val = val[1:-1]
+                elif val.startswith("'") and val.endswith("'"):
+                    val = val[1:-1]
+                
+                data["tool"]["qgis-analyzer"]["profiles"][current_section][key] = val
+    except Exception as e:
+        logger.error(f"Error in minimal TOML parser: {e}")
+        
+    return data
+
+
+try:
     import tomllib
-else:
-    import tomli as tomllib
+except ImportError:
+    # Use our minimal fallback if tomllib is not available (Python < 3.11)
+    tomllib = None
 
 
 class LRUCache:
@@ -224,7 +281,10 @@ def load_profile_config(
 
     try:
         with open(pyproject, "rb") as f:
-            data = tomllib.load(f)
+            if tomllib:
+                data = tomllib.load(f)
+            else:
+                data = _minimal_toml_load(f)
 
         profiles = data.get("tool", {}).get("qgis-analyzer", {}).get("profiles", {})
         profile_data = profiles.get(profile_name)
