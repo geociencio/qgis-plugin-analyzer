@@ -79,6 +79,28 @@ The default command remains analysis if no subcommand is specified:
 qgis-analyzer /path/to/your/plugin
 ```
 
+## ⌨️ Full CLI Reference
+
+### `qgis-analyzer analyze`
+Audits an existing QGIS plugin repository.
+
+| Argument | Description | Default |
+| :--- | :--- | :--- |
+| `project_path` | **(Required)** Path to the plugin directory to analyze. | N/A |
+| `-o`, `--output` | Directory where HTML/Markdown reports will be saved. | `./analysis_results` |
+| `-p`, `--profile`| Configuration profile from `pyproject.toml` (`default`, `release`). | `default` |
+
+### `qgis-analyzer init`
+Generates a new QGIS plugin project structure from a template.
+
+| Argument | Description | Default |
+| :--- | :--- | :--- |
+| `path` | **(Required)** Destination path for the new project. | N/A |
+| `-t`, `--type` | Template type: `processing`, `gui`, or `map_tool`. | `gui` |
+| `--name` | Human-readable name of the plugin. | `My QGIS Plugin` |
+| `--author` | Name of the lead developer. | `QGIS Developer` |
+| `--email` | Contact email for the plugin. | `dev@qgis.org` |
+
 ## 📊 Generated Reports
 
 - `PROJECT_SUMMARY.md`: Executive summary with quality score and critical findings.
