@@ -39,3 +39,13 @@ This document details the automatic audit rules implemented in the analyzer to e
 | Rule ID | Severity | Description | Recommendation |
 | :--- | :--- | :--- | :--- |
 | `HEAVY_LOGIC_UI` | 🟡 Medium | Complex logic or heavy dependencies detected within graphical interface (GUI) files. | Move business logic to `core/services/` or `core/logic/`. |
+
+## 7. QGIS Specific Standards (flake8-qgis inspired)
+
+| Rule ID | Severity | Description | Recommendation |
+| :--- | :--- | :--- | :--- |
+| `QGIS_PROTECTED_MEMBER` | 🔴 High | Import of protected members (e.g., `qgis._core`). Unstable API. | Use the public API instead of internal members. |
+| `IFACE_AS_ARGUMENT` | 🟡 Medium | Passing `QgisInterface` as an argument to functions. | Use the global `iface` or a Singleton pattern. |
+| `GDAL_DIRECT_IMPORT` | 🟡 Medium | Direct `import gdal` instead of `from osgeo import gdal`. | Use `from osgeo import gdal` for consistency. |
+| `QGIS_LEGACY_IMPORT` | 🔴 High | Direct import of `PyQt4` or `PyQt5`. | Use `qgis.PyQt` shim for maximum compatibility. |
+| `MANDATORY_CLEANUP` | 🔴 High | `initGui()` implemented but `unload()` is missing. | Always implement `unload()` to prevent memory leaks and UI artifacts. |
