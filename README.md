@@ -9,15 +9,15 @@ The **QGIS Plugin Analyzer** is a static analysis tool designed specifically for
 
 ## ✨ Main Features
 
+- **Deep Semantic Analysis**: Cross-file dependency graphing, circular import detection, and module coupling metrics.
+- **Interactive Auto-Fix Mode**: Automatically fix common QGIS issues (GDAL imports, PyQt bridge, logging, i18n) with safety checks.
+- **Official Repository Compliance**: Proactive validation of binaries, package size, and metadata URLs.
+- **Enhanced Configuration Profiles**: Rule-level severity control (`error`, `warning`, `info`, `ignore`) via `pyproject.toml`.
 - **Integrated Ruff Analysis**: Combines custom QGIS rules with the fastest linter in the Python ecosystem.
+- **Qt Resource Validation**: Detect missing or broken resource paths (`:/plugins/...`) in your code.
+- **Signal/Slot Safety**: Detection of potentially missing slots or inherited slot warnings.
 - **AI-Ready**: Generates structured summaries and optimized contexts for LLMs.
-- **Cero Dependencias de Ejecución**: Funciona solo con la biblioteca estándar de Python (Ruff se usa como herramienta externa).
-- **Reportes HTML Profesionales**: Generación de reportes visuales sin dependencias pesadas.
-- **Migración a Unittest**: Suite de pruebas nativa y ultra-rápida.
-- **High Performance & Safety**: Parallel processing with smart resource management and file size limits.
-- **Detailed Audit Rules**: Over 15+ specialized QGIS checks (fully documented in [RULES.md](RULES.md)).
-- **Selective Auditing**: Support for `.analyzerignore` to exclude specific files or directories from analysis.
-- **Professional Logging**: Persistent log file generation (`analyzer.log`) with detailed tracebacks for debugging.
+- **Zero Runtime Dependencies**: Works using only the Python standard library (Ruff as an external tool).
 
 ## ⚖️ Why use this Analyzer? (Comparison)
 
@@ -25,21 +25,21 @@ The **QGIS Plugin Analyzer** is a static analysis tool designed specifically for
 | :--- | :---: | :---: | :---: | :---: |
 | **Static Linting** | ✅ (Ruff + Custom) | ✅ (flake8) | ✅ (General) | ✅ (Limited) |
 | **QGIS-Specific Rules**| ✅ (Precise AST) | ✅ (Regex/AST) | ❌ | ✅ |
-| **Speed (Rust/Parallel)**| ✅ | ❌ | ✅ | ❌ |
-| **Project Templating** | ✅ (`init`) | ❌ | ❌ | ❌ |
-| **i18n / API Audit** | ✅ | ❌ | ❌ | ✅ |
+| **Interactive Auto-Fix**| ✅ | ❌ | ❌ | ❌ |
+| **Semantic Analysis**  | ✅ | ❌ | ❌ | ❌ |
+| **Compliance Checks**  | ✅ | ❌ | ❌ | ✅ |
+| **i18n / API Audit**   | ✅ | ❌ | ❌ | ✅ |
 | **Architecture Audit** | ✅ (UI/Core) | ❌ | ❌ | ❌ |
-| **HTML/MD Reports** | ✅ | ❌ | ❌ | ❌ |
-| **AI Context Gen** | ✅ (Project Brain) | ❌ | ❌ | ❌ |
-| **Strict CI Profiles** | ✅ | ❌ | ✅ | ❌ |
+| **HTML/MD Reports**    | ✅ | ❌ | ❌ | ❌ |
+| **AI Context Gen**      | ✅ (Project Brain) | ❌ | ❌ | ❌ |
 
 ### Key Differentiators
 
-1.  **Maximum Performance Hybrid Engine**: Combines **Ruff's** Rust engine (for PEP8 rules) with our **AST** engine (for PyQGIS rules), offering up to 100x speed over traditional linters.
-2.  **Intelligent Boilerplate Generation**: Unlike other tools focused solely on analysis, the `init` command allows creating "AI-Ready" plugins from day one.
-3.  **Architecture Audit**: Unique in detecting pattern violations (like heavy logic in the UI), the #1 cause of technical debt in complex plugins.
-4.  **AI Infrastructure (Project Brain)**: Generates optimized technical summaries so assistants like ChatGPT or Gemini understand your code instantly.
-5.  **CI/CD Ready**: Configuration profiles allow integrating compliance failures directly into your GitHub Actions pipelines.
+1.  **Hybrid AST & Semantic Engine**: Deep understanding of cross-file relationships and Qt-specific patterns.
+2.  **Safety-First Auto-Fixing**: AST-based transformations with Git status verification and interactive diff previews.
+3.  **Repository Compliance**: Local pre-checks to ensure your plugin passes the Official QGIS Repository policies.
+4.  **Zero Runtime Stack**: Minimal footprint, ultra-fast execution, and easy CI integration.
+5.  **AI-Centric Design**: Built to help developers and AI agents understand complex QGIS plugins instantly.
 
 ## 🚀 Installation and Usage
 
@@ -71,7 +71,12 @@ pip install .
 qgis-analyzer analyze /path/to/your/plugin -o ./quality_report
 ```
 
-**2. Legacy Support:**
+**2. Auto-Fix issues (Dry Run):**
+```bash
+qgis-analyzer fix /path/to/your/plugin
+```
+
+**3. Legacy Support:**
 The default command remains analysis if no subcommand is specified:
 ```bash
 qgis-analyzer /path/to/your/plugin
@@ -87,6 +92,18 @@ Audits an existing QGIS plugin repository.
 | `project_path` | **(Required)** Path to the plugin directory to analyze. | N/A |
 | `-o`, `--output` | Directory where HTML/Markdown reports will be saved. | `./analysis_results` |
 | `-p`, `--profile`| Configuration profile from `pyproject.toml` (`default`, `release`). | `default` |
+
+### `qgis-analyzer fix`
+Automatically fix common QGIS issues identified during analysis.
+
+| Argument | Description | Default |
+| :--- | :--- | :--- |
+| `path` | **(Required)** Path to the plugin directory. | N/A |
+| `--dry-run` | Show proposed changes without applying them. | `True` |
+| `--apply` | Apply fixes to the files (disables dry-run). | `False` |
+| `--auto-approve`| Apply fixes without interactive confirmation. | `False` |
+| `--rules` | Comma-separated list of rule IDs to fix. | Fix all |
+| `-o`, `--output` | Directory to read previous analysis from. | `./analysis_results` |
 
 
 ## 📊 Generated Reports
