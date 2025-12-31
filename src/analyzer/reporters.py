@@ -208,6 +208,51 @@ def generate_html_report(analyses: Dict[str, Any], output_path: pathlib.Path):
 
         html.append("</div>")
 
+    # Repository Compliance
+    repo_comp = analyses.get("repository_compliance", {})
+    if repo_comp:
+        is_compliant = repo_comp.get("is_compliant", False)
+        status_icon = "✅" if is_compliant else "⚠️"
+        
+        html.append(f"<div class='card'><h2>{status_icon} Repository Compliance</h2>")
+        
+        # Binaries
+        binaries = repo_comp.get("binaries", [])
+        if binaries:
+            html.append(f"<div class='issue high'><b>Prohibited Binaries Detected:</b> {len(binaries)}</div>")
+            html.append("<ul>")
+            for binary in binaries[:10]:
+                html.append(f"<li><code>{binary}</code></li>")
+            if len(binaries) > 10:
+                html.append(f"<li>... ({len(binaries) - 10} more)</li>")
+            html.append("</ul>")
+        else:
+            html.append("<div class='info'>✅ No prohibited binaries found</div>")
+        
+        # Package Size
+        package_size = repo_comp.get("package_size_mb", 0)
+        if package_size > 20:
+            html.append(f"<div class='issue medium'><b>Package Size:</b> {package_size:.2f} MB (exceeds 20MB limit)</div>")
+        else:
+            html.append(f"<div class='info'><b>Package Size:</b> {package_size:.2f} MB</div>")
+        
+        # URL Validation
+        url_status = repo_comp.get("url_validation", {})
+        if url_status:
+            ok_count = sum(1 for status in url_status.values() if status == "ok")
+            total = len(url_status)
+            if ok_count == total:
+                html.append(f"<div class='info'>✅ <b>URL Validation:</b> All {total} links working</div>")
+            else:
+                html.append(f"<div class='issue medium'><b>URL Validation:</b> {ok_count}/{total} links working</div>")
+                html.append("<ul>")
+                for url, status in url_status.items():
+                    if status != "ok":
+                        html.append(f"<li>{url}: <code>{status}</code></li>")
+                html.append("</ul>")
+        
+        html.append("</div>")
+
     if ruff_findings:
         html.append("<div class='card'><h2>🐍 Python Linting (Ruff)</h2>")
         for find in ruff_findings[:50]:

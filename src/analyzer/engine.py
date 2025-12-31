@@ -33,6 +33,11 @@ from .scanner import (
     validate_plugin_structure,
 )
 from .semantic import DependencyGraph, ResourceValidator
+from .validators import (
+    scan_for_binaries,
+    calculate_package_size,
+    validate_metadata_urls,
+)
 from .utils import (
     IgnoreMatcher,
     ProgressTracker,
@@ -128,6 +133,14 @@ class ProjectAnalyzer:
         structure = validate_plugin_structure(self.project_path)
         metadata = validate_metadata(self.project_path)
 
+        # Repository Compliance Checks
+        logger.info("Running repository compliance checks...")
+        binaries = scan_for_binaries(self.project_path)
+        package_size = calculate_package_size(self.project_path, self.ignore_matcher)
+        url_status = {}
+        if metadata.get("is_valid") and "metadata" in metadata:
+            url_status = validate_metadata_urls(metadata["metadata"])
+
         # Semantic Analysis
         dep_graph = DependencyGraph()
         res_validator = ResourceValidator(self.project_path)
@@ -147,7 +160,7 @@ class ProjectAnalyzer:
 
         # Calculate basic metrics
         code_score, qgis_score = self._calculate_scores(
-            modules_data, compliance, structure, metadata, cycles, missing_resources
+            modules_data, compliance, structure, metadata, cycles, missing_resources, binaries, package_size
         )
 
         metrics_summary = {
@@ -169,6 +182,12 @@ class ProjectAnalyzer:
                 "circular_dependencies": cycles,
                 "missing_resources": missing_resources,
                 "coupling_metrics": metrics
+            },
+            "repository_compliance": {
+                "binaries": binaries,
+                "package_size_mb": round(package_size, 2),
+                "url_validation": url_status,
+                "is_compliant": len(binaries) == 0 and package_size <= 20,
             },
             "modules": modules_data,
         }
@@ -194,7 +213,7 @@ class ProjectAnalyzer:
         return True
 
     def _calculate_scores(
-        self, modules_data, compliance, structure, metadata, cycles, missing_resources
+        self, modules_data, compliance, structure, metadata, cycles, missing_resources, binaries, package_size
     ) -> tuple:
         """Calculates scores based on QGIS standards and code quality."""
         if not modules_data:
@@ -219,5 +238,10 @@ class ProjectAnalyzer:
         
         # Penalty for missing resources
         qgis_score -= len(missing_resources) * 5
+
+        # Repository compliance penalties
+        qgis_score -= len(binaries) * 50  # Critical: binaries prohibited
+        if package_size > 20:
+            qgis_score -= 10  # Warning: size exceeds limit
 
         return max(0, code_score), max(0, qgis_score)
