@@ -11,6 +11,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Migration to Unittest**: Refactored the entire test suite from `pytest` to the native `unittest` framework, removing `pytest` from the development stack.
 - **Optimized Deployment**: Reduced project footprint by eliminating non-essential packages.
 
+### Removed
+- **Project Generator (`init`)**: Project generation capabilities were removed from the analyzer to focus strictly on static analysis. The code has been exported to `generator_export`.
+
 ## [0.3.1] - 2025-12-29
 ### Added
 - **Professional Logging System**: Persistent logging to `analysis_results/analyzer.log` with detailed tracebacks for troubleshooting.

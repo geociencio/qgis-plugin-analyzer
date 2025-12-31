@@ -49,10 +49,37 @@ def generate_markdown_summary(analyses: Dict[str, Any], output_path: pathlib.Pat
         icon = "🔴" if issue["severity"] == "high" else "🟡"
         lines.append(f"- {icon} `{issue['file']}:{issue['line']}`: {issue['message']}")
 
-    # Repository Audit
     repo_stats = compliance.get("repository_standards", {})
-    lines.append("\n## 📦 Official Repository Standards")
+    meta = repo_stats.get("metadata", {})
+    status_meta = "✅ OK" if meta.get("is_valid") else "🛠️ Needs Attention"
+    lines.append(f"- **Metadata (metadata.txt)**: {status_meta}")
+    if not meta.get("is_valid"):
+        lines.append(f"  - Missing fields: `{', '.join(meta.get('missing', []))}`")
+        
+    # Semantic Findings
+    semantic = analyses.get("semantic", {})
+    cycles = semantic.get("circular_dependencies", [])
+    missing_res = semantic.get("missing_resources", [])
+    
+    lines.append("\n## 🧠 Semantic Analysis")
+    if cycles:
+        lines.append("🔴 **Circular Import Cycles Detected:**")
+        for cycle in cycles:
+            lines.append(f"  - `{' -> '.join(cycle)}`")
+    else:
+        lines.append("- No circular imports detected.")
 
+    if missing_res:
+         lines.append(f"\n🟡 **Missing Resources**: {len(missing_res)} found (used in code but not in QRC)")
+         for res in missing_res[:10]:
+             lines.append(f"  - `{res}`")
+         if len(missing_res) > 10:
+             lines.append(f"  - ... ({len(missing_res) - 10} more)")
+    else:
+        lines.append("- All resource paths validated.")
+        
+    lines.append("\n## 📦 Official Repository Standards")
+    
     struct = repo_stats.get("structure", {})
     status = "✅ OK" if struct.get("is_valid") else "❌ Incomplete"
     lines.append(f"- **File Structure**: {status}")
@@ -144,6 +171,42 @@ def generate_html_report(analyses: Dict[str, Any], output_path: pathlib.Path):
             html.append("</div>")
     
     html.append("</div>")
+
+    # Semantic Section
+    semantic = analyses.get("semantic", {})
+    if semantic:
+        html.append("<div class='card'><h2>🧠 Semantic Analysis</h2>")
+        
+        # Circular Imports
+        cycles = semantic.get("circular_dependencies", [])
+        if cycles:
+            html.append(f"<div class='issue high'><b>Circular Dependencies Detected:</b> {len(cycles)}<br>")
+            html.append("<ul>")
+            for cycle in cycles:
+                html.append(f"<li><code>{' -> '.join(cycle)}</code></li>")
+            html.append("</ul></div>")
+        
+        # Missing Resources
+        missing_res = semantic.get("missing_resources", [])
+        if missing_res:
+            html.append(f"<div class='issue medium'><b>Missing Resources:</b> {len(missing_res)} (Defined in code but missing in QRC)<br>")
+            html.append("<ul>")
+            for res in missing_res[:10]:
+                html.append(f"<li>{res}</li>")
+            if len(missing_res) > 10:
+                html.append(f"<li>... ({len(missing_res) - 10} more)</li>")
+            html.append("</ul></div>")
+
+        # Coupling Metrics Table
+        metrics = semantic.get("coupling_metrics", {})
+        if metrics:
+            html.append("<h3>Module Coupling</h3>")
+            html.append("<table style='width:100%; border-collapse: collapse;'><thead><tr style='background:#eee;'><th>Module</th><th>Fan-In (Incoming)</th><th>Fan-Out (Outgoing)</th></tr></thead><tbody>")
+            for mod, vals in sorted(metrics.items(), key=lambda x: x[1]['fan_in'], reverse=True)[:10]:
+                 html.append(f"<tr><td style='border:1px solid #ddd; padding:8px;'>{mod}</td><td style='border:1px solid #ddd; padding:8px;'>{vals['fan_in']}</td><td style='border:1px solid #ddd; padding:8px;'>{vals['fan_out']}</td></tr>")
+            html.append("</tbody></table>")
+
+        html.append("</div>")
 
     if ruff_findings:
         html.append("<div class='card'><h2>🐍 Python Linting (Ruff)</h2>")

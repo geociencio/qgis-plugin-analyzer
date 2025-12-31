@@ -10,7 +10,6 @@ The **QGIS Plugin Analyzer** is a static analysis tool designed specifically for
 ## ✨ Main Features
 
 - **Integrated Ruff Analysis**: Combines custom QGIS rules with the fastest linter in the Python ecosystem.
-- **Boilerplate Generation (`init`)**: Creates professional plugin structures (`processing`, `gui`, `map_tool`) instantly.
 - **AI-Ready**: Generates structured summaries and optimized contexts for LLMs.
 - **Cero Dependencias de Ejecución**: Funciona solo con la biblioteca estándar de Python (Ruff se usa como herramienta externa).
 - **Reportes HTML Profesionales**: Generación de reportes visuales sin dependencias pesadas.
@@ -72,12 +71,7 @@ pip install .
 qgis-analyzer analyze /path/to/your/plugin -o ./quality_report
 ```
 
-**2. Create a Plugin from Template:**
-```bash
-qgis-analyzer init my_new_plugin --type map_tool --name "Pro Tool"
-```
-
-**3. Legacy Support:**
+**2. Legacy Support:**
 The default command remains analysis if no subcommand is specified:
 ```bash
 qgis-analyzer /path/to/your/plugin
@@ -94,16 +88,6 @@ Audits an existing QGIS plugin repository.
 | `-o`, `--output` | Directory where HTML/Markdown reports will be saved. | `./analysis_results` |
 | `-p`, `--profile`| Configuration profile from `pyproject.toml` (`default`, `release`). | `default` |
 
-### `qgis-analyzer init`
-Generates a new QGIS plugin project structure from a template.
-
-| Argument | Description | Default |
-| :--- | :--- | :--- |
-| `path` | **(Required)** Destination path for the new project. | N/A |
-| `-t`, `--type` | Template type: `processing`, `gui`, or `map_tool`. | `gui` |
-| `--name` | Human-readable name of the plugin. | `My QGIS Plugin` |
-| `--author` | Name of the lead developer. | `QGIS Developer` |
-| `--email` | Contact email for the plugin. | `dev@qgis.org` |
 
 ## 📊 Generated Reports
 

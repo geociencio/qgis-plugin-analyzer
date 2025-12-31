@@ -72,6 +72,8 @@ class QGISASTVisitor(ast.NodeVisitor):
     def __init__(self, rel_path: str):
         self.rel_path = rel_path
         self.issues = []
+        self.resource_usages = []  # Stores found ":/..." paths
+        self.class_methods_stack = [] # Stack of sets containing method names for current class context
         self.i18n_methods = {
             "setText",
             "setWindowTitle",
@@ -80,6 +82,16 @@ class QGISASTVisitor(ast.NodeVisitor):
             "setPlaceholderText",
             "setTabText",
         }
+
+    def visit_ClassDef(self, node: ast.ClassDef):
+        """Track methods defined in the current class context."""
+        methods = {
+            item.name for item in node.body 
+            if isinstance(item, (ast.FunctionDef, ast.AsyncFunctionDef))
+        }
+        self.class_methods_stack.append(methods)
+        self.generic_visit(node)
+        self.class_methods_stack.pop()
 
     def visit_Call(self, node: ast.Call):
         # 1. Detect OBSOLETE_API (writeAsVectorFormat)
@@ -117,9 +129,35 @@ class QGISASTVisitor(ast.NodeVisitor):
                         }
                     )
 
+        # Detect POTENTIAL_MISSING_SLOT (Signal Safety)
+        if isinstance(node.func, ast.Attribute) and node.func.attr == 'connect':
+             if node.args:
+                arg = node.args[0]
+                # Check for self.method_name pattern
+                if isinstance(arg, ast.Attribute) and isinstance(arg.value, ast.Name) and arg.value.id == "self":
+                     slot = arg.attr
+                     if self.class_methods_stack:
+                         current_methods = self.class_methods_stack[-1]
+                         if slot not in current_methods:
+                             self.issues.append({
+                                 "file": self.rel_path,
+                                 "line": node.lineno,
+                                 "type": "POTENTIAL_MISSING_SLOT",
+                                 "severity": "medium",
+                                 "message": f"Connected slot 'self.{slot}' not found in class definitions. Verify it is defined or inherited.",
+                                 "id": "POTENTIAL_MISSING_SLOT"
+                             })
+
         self.generic_visit(node)
 
     def visit_ClassDef(self, node: ast.ClassDef):
+        # Track methods defined in the current class context
+        methods = {
+            item.name for item in node.body 
+            if isinstance(item, (ast.FunctionDef, ast.AsyncFunctionDef))
+        }
+        self.class_methods_stack.append(methods)
+
         # 3. Detect MANDATORY_CLEANUP
         # Simple check: if a class has initGui, it MUST have unload
         has_init_gui = any(
@@ -139,6 +177,7 @@ class QGISASTVisitor(ast.NodeVisitor):
                 }
             )
         self.generic_visit(node)
+        self.class_methods_stack.pop()
 
     def visit_FunctionDef(self, node: ast.FunctionDef):
         # 4. Detect IFACE_AS_ARGUMENT (QGS105)
@@ -332,6 +371,7 @@ def analyze_module_worker(
             "file_size_kb": py_file.stat().st_size / 1024,
             "syntax_error": False,
             "ast_issues": visitor.issues,
+            "resource_usages": visitor.resource_usages,
         }
     except Exception:
         return None

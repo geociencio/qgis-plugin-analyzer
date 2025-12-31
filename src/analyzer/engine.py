@@ -32,6 +32,7 @@ from .scanner import (
     validate_metadata,
     validate_plugin_structure,
 )
+from .semantic import DependencyGraph, ResourceValidator
 from .utils import (
     IgnoreMatcher,
     ProgressTracker,
@@ -127,12 +128,29 @@ class ProjectAnalyzer:
         structure = validate_plugin_structure(self.project_path)
         metadata = validate_metadata(self.project_path)
 
+        # Semantic Analysis
+        dep_graph = DependencyGraph()
+        res_validator = ResourceValidator(self.project_path)
+        res_validator.scan_project_resources()
+        
+        all_resource_usages = []
+
+        for m in modules_data:
+             dep_graph.add_node(m["path"], m)
+             if "resource_usages" in m:
+                 all_resource_usages.extend(m["resource_usages"])
+
+        dep_graph.build_edges(self.project_path)
+        cycles = dep_graph.detect_cycles()
+        metrics = dep_graph.get_coupling_metrics()
+        missing_resources = res_validator.validate_usage(all_resource_usages)
+
         # Calculate basic metrics
         code_score, qgis_score = self._calculate_scores(
-            modules_data, compliance, structure, metadata
+            modules_data, compliance, structure, metadata, cycles, missing_resources
         )
 
-        metrics = {
+        metrics_summary = {
             "total_files": len(files),
             "total_lines": sum(m["lines"] for m in modules_data),
             "quality_score": round((code_score * 0.5) + (qgis_score * 0.5), 1),
@@ -140,13 +158,18 @@ class ProjectAnalyzer:
 
         analyses = {
             "project_name": self.project_path.name,
-            "metrics": metrics,
+            "metrics": metrics_summary,
             "qgis_compliance": {
                 "compliance_score": round(qgis_score, 1),
                 "best_practices": compliance,
                 "repository_standards": {"structure": structure, "metadata": metadata},
             },
             "ruff_findings": ruff_findings,
+            "semantic": {
+                "circular_dependencies": cycles,
+                "missing_resources": missing_resources,
+                "coupling_metrics": metrics
+            },
             "modules": modules_data,
         }
 
@@ -170,7 +193,9 @@ class ProjectAnalyzer:
 
         return True
 
-    def _calculate_scores(self, modules_data, compliance, structure, metadata) -> tuple:
+    def _calculate_scores(
+        self, modules_data, compliance, structure, metadata, cycles, missing_resources
+    ) -> tuple:
         """Calculates scores based on QGIS standards and code quality."""
         if not modules_data:
             return 0.0, 0.0
@@ -178,6 +203,9 @@ class ProjectAnalyzer:
         # 1. Base Code Quality (50%)
         avg_comp = sum(m["complexity"] for m in modules_data) / len(modules_data)
         code_score = max(0, 100 - (avg_comp * 3))
+
+        # Penalty for circular dependencies (major design flaw)
+        code_score -= len(cycles) * 10 
 
         # 2. QGIS Standards (50%)
         qgis_score = 100
@@ -188,5 +216,8 @@ class ProjectAnalyzer:
             qgis_score -= 20
         if not metadata["is_valid"]:
             qgis_score -= 10
+        
+        # Penalty for missing resources
+        qgis_score -= len(missing_resources) * 5
 
-        return code_score, max(0, qgis_score)
+        return max(0, code_score), max(0, qgis_score)
