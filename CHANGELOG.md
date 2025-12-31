@@ -5,6 +5,21 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.6.0] - 2025-12-31
+
+### Added
+- **Security Hardening**:
+  - Implemented SSRF protection in metadata URL validation to prevent internal network probing.
+  - Added Path Traversal protection using `safe_path_resolve` for all file operations.
+  - Implemented security-focused unit tests covering SSRF and traversal scenarios.
+- **Improved Scans**:
+  - Refactored `SPATIAL_INDEX` as an AST-based rule for high-precision detection of unoptimized loops.
+
+### Changed
+- **Performance Optimization**:
+  - Analysis pipeline now caches file content, reducing disk I/O significantly during multi-phase scanning.
+  - Refined exception handling in CLI to provide specific feedback for file and validation errors.
+
 ## [0.5.1] - 2025-12-31
 
 ### Fixed
