@@ -45,6 +45,7 @@ from .utils import (
     load_profile_config,
     logger,
     setup_logger,
+    safe_path_resolve,
 )
 
 
@@ -136,8 +137,9 @@ class ProjectAnalyzer:
         compliance = audit_qgis_standards(modules_data, self.project_path, rules_config=rules_config)
 
         # Official repository audit
+        metadata_path = safe_path_resolve(self.project_path, "metadata.txt")
         structure = validate_plugin_structure(self.project_path)
-        metadata = validate_metadata(self.project_path / "metadata.txt")
+        metadata = validate_metadata(metadata_path)
 
         # Repository Compliance Checks
         logger.info("Running repository compliance checks...")

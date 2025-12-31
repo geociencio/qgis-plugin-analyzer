@@ -132,6 +132,13 @@ def main():
     except KeyboardInterrupt:
         logger.info("\n⏹️ Analysis interrupted.")
         sys.exit(1)
+    except FileNotFoundError as e:
+        logger.error(f"Error: File not found: {e}")
+        sys.exit(1)
+    except ValueError as e:
+        # This handles path traversal or other validation errors
+        logger.error(f"Error: {e}")
+        sys.exit(1)
     except Exception as e:
         logger.critical(f"Critical Error: {e}", exc_info=True)
         sys.exit(1)

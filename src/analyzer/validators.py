@@ -7,6 +7,9 @@
 import pathlib
 import urllib.request
 import urllib.error
+import urllib.parse
+import ipaddress
+import socket
 from typing import Dict, List, Tuple
 
 
@@ -56,6 +59,49 @@ def calculate_package_size(
     return total_size / (1024 * 1024)
 
 
+def is_ssrf_safe(url: str) -> bool:
+    """
+    Checks if a URL is safe from SSRF.
+    Ensures the hostname does not resolve to private, loopback, or local IP ranges.
+    """
+    try:
+        parsed = urllib.parse.urlparse(url)
+        hostname = parsed.hostname
+        # We also block URLs without a hostname or non-standard ports if needed,
+        # but here we focus on IP resolving.
+        if not hostname:
+            return False
+
+        # Basic name check for common local addresses
+        if hostname.lower() in ("localhost", "127.0.0.1", "::1"):
+            return False
+
+        # Resolve host to IP
+        # We use socket.getaddrinfo to handle both IPv4 and IPv6
+        # This is more robust than gethostbyname
+        try:
+            addresses = socket.getaddrinfo(hostname, None)
+        except socket.gaierror:
+            # If we can't resolve it, it's either invalid or an internal name
+            # we shouldn't trust for public URL validation.
+            return False
+
+        for addr in addresses:
+            ip_str = addr[4][0]
+            ip = ipaddress.ip_address(ip_str)
+            # Check for private ranges: 
+            # 10.0.0.0/8, 172.16.0.0/12, 192.168.0.0/16 (Private)
+            # 127.0.0.0/8 (Loopback)
+            # 169.254.0.0/16 (Link Local)
+            # and IPv6 equivalents
+            if ip.is_private or ip.is_loopback or ip.is_link_local or ip.is_unspecified:
+                return False
+        
+        return True
+    except Exception:
+        return False
+
+
 def validate_metadata_urls(metadata: Dict[str, str]) -> Dict[str, str]:
     """
     Validates URLs from metadata.txt.
@@ -76,6 +122,11 @@ def validate_metadata_urls(metadata: Dict[str, str]) -> Dict[str, str]:
             results[url] = "invalid"
             continue
         
+        # SSRF Protection: check if URL is safe before making the request
+        if not is_ssrf_safe(url):
+            results[url] = "error_ssrf_blocked"
+            continue
+            
         try:
             # HEAD request to check availability
             req = urllib.request.Request(url, method="HEAD")

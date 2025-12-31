@@ -57,12 +57,6 @@ def get_qgis_audit_rules() -> List[Dict[str, Any]]:
             "message": "Obsolete QVariant type constants detected. Use QMetaType or native types.",
             "severity": "medium",
         },
-        {
-            "id": "SPATIAL_INDEX",
-            "pattern": re.compile(r"for\s+\w+\s+in\s+.*?\.getFeatures\(\):\n\s+(?!.*?QgsSpatialIndex)"),
-            "message": "Iteration over features without spatial index detected on potentially heavy loop.",
-            "severity": "high",
-        },
     ]
 
 
@@ -158,6 +152,35 @@ class QGISASTVisitor(ast.NodeVisitor):
                                      "message": f"Connected slot 'self.{slot}' not found in class definitions. Verify it is defined or inherited.",
                                      "id": "POTENTIAL_MISSING_SLOT"
                                  })
+
+        self.generic_visit(node)
+
+    def visit_For(self, node: ast.For):
+        # Detect SPATIAL_INDEX (Looping features without filter)
+        # Check if iterating over .getFeatures()
+        if isinstance(node.iter, ast.Call) and isinstance(node.iter.func, ast.Attribute):
+            if node.iter.func.attr == "getFeatures":
+                # If getFeatures() has no arguments or is passed QgsFeatureRequest() with no filter,
+                # it's potentially heavy.
+                warn = False
+                if not node.iter.args:
+                    warn = True
+                elif len(node.iter.args) == 1:
+                    arg = node.iter.args[0]
+                    # Check if it's a blank QgsFeatureRequest()
+                    if isinstance(arg, ast.Call) and isinstance(arg.func, ast.Name) and arg.func.id == "QgsFeatureRequest":
+                        if not arg.args and not arg.keywords:
+                            warn = True
+                
+                if warn and self._should_report("SPATIAL_INDEX"):
+                    self.issues.append({
+                        "file": self.rel_path,
+                        "line": node.lineno,
+                        "type": "SPATIAL_INDEX",
+                        "severity": self._get_severity("SPATIAL_INDEX"),
+                        "message": "Iteration over features with getFeatures() and no filter. Use a spatial index and QgsFeatureRequest for large layers.",
+                        "code": ast.unparse(node.iter)
+                    })
 
         self.generic_visit(node)
 
@@ -392,6 +415,7 @@ def analyze_module_worker(
             "syntax_error": False,
             "ast_issues": visitor.issues,
             "resource_usages": visitor.resource_usages,
+            "content": content,
         }
     except Exception:
         return None
@@ -407,40 +431,43 @@ def audit_qgis_standards(modules_data: List[Dict], project_path: pathlib.Path, r
         if "ast_issues" in module:
             results["issues"].extend(module["ast_issues"])
 
+        # Use cached content if available
         path = module.get("path")
-        if not path:
+        content = module.get("content")
+        
+        if content is None and path:
+             full_path = project_path / path
+             if full_path.exists():
+                 try:
+                     content = full_path.read_text(encoding="utf-8", errors="replace")
+                 except Exception:
+                     continue
+
+        if content is None:
             continue
 
-        full_path = project_path / path
-        if not full_path.exists():
-            continue
+        for rule in rules:
+            rule_id = rule["id"]
+            severity_val = rules_config.get(rule_id, "warning") if rules_config else "warning"
+            if severity_val == "ignore":
+                continue
+            
+            # Map config severity to internal severity
+            severity_map = {"error": "high", "warning": "medium", "info": "low"}
+            internal_severity = severity_map.get(severity_val, rule["severity"])
 
-        try:
-            content = full_path.read_text(encoding="utf-8", errors="replace")
-            for rule in rules:
-                rule_id = rule["id"]
-                severity_val = rules_config.get(rule_id, "warning") if rules_config else "warning"
-                if severity_val == "ignore":
-                    continue
-                
-                # Map config severity to internal severity
-                severity_map = {"error": "high", "warning": "medium", "info": "low"}
-                internal_severity = severity_map.get(severity_val, rule["severity"])
-
-                for match in rule["pattern"].finditer(content):
-                    line_no = content.count("\n", 0, match.start()) + 1
-                    results["issues"].append(
-                        {
-                            "file": path,
-                            "line": line_no,
-                            "type": rule["id"],
-                            "severity": internal_severity,
-                            "message": rule["message"],
-                            "code": content[match.start() : match.end() + 20].strip(),
-                        }
-                    )
-        except Exception:
-            continue
+            for match in rule["pattern"].finditer(content):
+                line_no = content.count("\n", 0, match.start()) + 1
+                results["issues"].append(
+                    {
+                        "file": path,
+                        "line": line_no,
+                        "type": rule["id"],
+                        "severity": internal_severity,
+                        "message": rule["message"],
+                        "code": content[match.start() : match.end() + 20].strip(),
+                    }
+                )
 
     results["issues_count"] = len(results["issues"])
     return results

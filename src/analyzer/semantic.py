@@ -124,6 +124,8 @@ class ResourceValidator:
         for qrc_file in self.project_path.rglob("*.qrc"):
             try:
                 # Use standard xml.etree.ElementTree for robust parsing
+                # Note: ElementTree is safe against XXE by default in Python 3.x
+                # as it does not resolve entities unless a custom parser is provided.
                 try:
                     tree = ET.parse(qrc_file)
                     root = tree.getroot()

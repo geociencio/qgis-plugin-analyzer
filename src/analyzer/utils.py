@@ -58,6 +58,25 @@ def setup_logger(output_dir: pathlib.Path) -> logging.Logger:
 
     return logger
 
+def safe_path_resolve(base_path: pathlib.Path, target_path_str: str) -> pathlib.Path:
+    """
+    Resolves a target path relative to a base path and ensures it stays within it.
+    Prevents path traversal attacks.
+    """
+    base_abs = base_path.resolve()
+    target_abs = (base_path / target_path_str).resolve()
+
+    # Check if target is still within base
+    try:
+        target_abs.relative_to(base_abs)
+    except (ValueError, RuntimeError):
+        raise ValueError(
+            f"Path traversal detected: '{target_path_str}' is outside base '{base_path}'"
+        )
+
+    return target_abs
+
+
 # Global logger instance (will be configured in cli.py or engine.py)
 logger = logging.getLogger("qgis_analyzer")
 

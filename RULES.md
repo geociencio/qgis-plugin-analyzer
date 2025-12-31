@@ -32,7 +32,7 @@ This document details the automatic audit rules implemented in the analyzer to e
 
 | Rule ID | Severity | Description | Recommendation |
 | :--- | :--- | :--- | :--- |
-| `SPATIAL_INDEX` | 🔴 High | Iteration over features without using a spatial index on heavy layers. | Use `QgsSpatialIndex` to optimize spatial queries. |
+| `SPATIAL_INDEX` | 🔴 High | Iteration over features using `getFeatures()` without a filter (spatial or attribute) on potentially heavy layers. | Use `QgsSpatialIndex` and `QgsFeatureRequest.setFilterRect()` to optimize spatial queries. |
 
 ## 6. Architecture
 
