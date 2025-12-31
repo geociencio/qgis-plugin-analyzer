@@ -47,7 +47,7 @@ def calculate_package_size(
             # Skip if matches ignore pattern
             if ignore_matcher:
                 rel_path = str(file_path.relative_to(project_path))
-                if ignore_matcher.should_ignore(rel_path):
+                if ignore_matcher.is_ignored(file_path):
                     continue
             
             total_size += file_path.stat().st_size
@@ -104,29 +104,35 @@ def validate_plugin_structure(project_path: pathlib.Path) -> Dict[str, any]:
     Validates required plugin structure.
     
     Checks for:
-    - __init__.py
+    - __init__.py (and classFactory)
     - metadata.txt
-    - At least one .py file
+    - LICENSE
     """
-    required_files = {
-        "__init__.py": project_path / "__init__.py",
-        "metadata.txt": project_path / "metadata.txt",
-    }
+    mandatory = ["metadata.txt", "__init__.py", "LICENSE"]
+    found = {f: (project_path / f).exists() for f in mandatory}
     
-    missing = []
-    for name, path in required_files.items():
-        if not path.exists():
-            missing.append(name)
+    # Check classFactory in __init__.py
+    init_file = project_path / "__init__.py"
+    has_factory = False
+    if init_file.exists():
+        try:
+            content = init_file.read_text(encoding="utf-8", errors="replace")
+            has_factory = "def classFactory" in content
+        except Exception:
+            has_factory = False
     
-    # Check for at least one Python file
+    missing = [f for f, exists in found.items() if not exists]
     py_files = list(project_path.glob("*.py"))
     has_python = len(py_files) > 0
-    
+
     return {
-        "is_valid": len(missing) == 0 and has_python,
+        "files": found,
         "missing_files": missing,
+        "has_class_factory": has_factory,
         "has_python_files": has_python,
+        "is_valid": all(found.values()) and has_factory and has_python,
     }
+
 
 
 def validate_metadata(metadata_path: pathlib.Path) -> Dict[str, any]:

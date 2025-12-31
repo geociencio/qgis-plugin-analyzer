@@ -121,11 +121,9 @@ def _minimal_toml_load(file_obj) -> Dict[str, Any]:
                     val = True
                 elif val.lower() == "false":
                     val = False
-                elif val.isdigit():
+                elif re.match(r'^-?\d+$', val):
                     val = int(val)
-                elif val.startswith('"') and val.endswith('"'):
-                    val = val[1:-1]
-                elif val.startswith("'") and val.endswith("'"):
+                elif (val.startswith('"') and val.endswith('"')) or (val.startswith("'") and val.endswith("'")):
                     val = val[1:-1]
                 
                 if in_rules_section:

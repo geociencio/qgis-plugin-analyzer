@@ -29,14 +29,14 @@ from .reporters import generate_html_report, generate_markdown_summary, save_jso
 from .scanner import (
     analyze_module_worker,
     audit_qgis_standards,
-    validate_metadata,
-    validate_plugin_structure,
 )
 from .semantic import DependencyGraph, ResourceValidator
 from .validators import (
     scan_for_binaries,
     calculate_package_size,
     validate_metadata_urls,
+    validate_metadata,
+    validate_plugin_structure,
 )
 from .utils import (
     IgnoreMatcher,
@@ -133,16 +133,16 @@ class ProjectAnalyzer:
         ruff_findings = self.run_ruff_audit()
 
         # QGIS compliance analysis
-        compliance = audit_qgis_standards(modules_data, self.project_path)
+        compliance = audit_qgis_standards(modules_data, self.project_path, rules_config=rules_config)
 
         # Official repository audit
         structure = validate_plugin_structure(self.project_path)
-        metadata = validate_metadata(self.project_path)
+        metadata = validate_metadata(self.project_path / "metadata.txt")
 
         # Repository Compliance Checks
         logger.info("Running repository compliance checks...")
         binaries = scan_for_binaries(self.project_path)
-        package_size = calculate_package_size(self.project_path, self.ignore_matcher)
+        package_size = calculate_package_size(self.project_path, self.matcher)
         url_status = {}
         if metadata.get("is_valid") and "metadata" in metadata:
             url_status = validate_metadata_urls(metadata["metadata"])

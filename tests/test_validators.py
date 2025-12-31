@@ -60,8 +60,9 @@ class TestValidators(unittest.TestCase):
 
     def test_validate_plugin_structure(self):
         # Valid structure
-        (self.test_dir / "__init__.py").write_text("")
-        (self.test_dir / "metadata.txt").write_text("")
+        (self.test_dir / "__init__.py").write_text("def classFactory(): pass")
+        (self.test_dir / "metadata.txt").write_text("name=Test")
+        (self.test_dir / "LICENSE").write_text("GPL")
         (self.test_dir / "plugin.py").write_text("")
 
         result = validate_plugin_structure(self.test_dir)

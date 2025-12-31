@@ -6,6 +6,7 @@
 
 import pathlib
 import re
+import xml.etree.ElementTree as ET
 from typing import Any, Dict, List, Set, Tuple
 
 
@@ -120,18 +121,9 @@ class ResourceValidator:
         # Strategy: Parse .qrc files primarily as they are the source of truth
         # Regex to find <file>path/to/icon.png</file> inside <qresource prefix="/plugins/myplugin">
         
-        qrc_pattern = re.compile(r'<qresource\s+prefix="([^"]+)">')
-        file_pattern = re.compile(r"<file>([^<]+)</file>")
-
         for qrc_file in self.project_path.rglob("*.qrc"):
             try:
-                content = qrc_file.read_text(encoding="utf-8", errors="replace")
-                prefix = "/"  # Default prefix
-                
-                # Check for prefix, simplified for QGIS plugins usually one prefix per file or block
-                # A robust XML parser would be better, but we want zero-dependencies if possible
-                # or just use standard xml.etree.ElementTree
-                import xml.etree.ElementTree as ET
+                # Use standard xml.etree.ElementTree for robust parsing
                 try:
                     tree = ET.parse(qrc_file)
                     root = tree.getroot()

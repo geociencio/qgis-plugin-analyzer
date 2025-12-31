@@ -2,7 +2,8 @@ import unittest
 import pathlib
 import tempfile
 import shutil
-from src.analyzer.scanner import audit_qgis_standards, validate_metadata, validate_plugin_structure
+from src.analyzer.scanner import audit_qgis_standards
+from src.analyzer.validators import validate_metadata, validate_plugin_structure
 
 
 class TestScanner(unittest.TestCase):
@@ -45,7 +46,7 @@ email=test@test.com
         meta_file = self.test_dir / "metadata.txt"
         meta_file.write_text(metadata_content, encoding="utf-8")
 
-        result = validate_metadata(self.test_dir)
+        result = validate_metadata(self.test_dir / "metadata.txt")
         self.assertTrue(result["is_valid"])
         self.assertEqual(len(result["missing"]), 0)
 
@@ -70,7 +71,7 @@ print("debug")
         results = audit_qgis_standards(modules_data, self.test_dir)
 
         issue_types = [i["type"] for i in results["issues"]]
-        self.assertIn("UNPRECISE_LAYER_LOOKUP", issue_types)
+        self.assertIn("UNPRECISE_LAYER", issue_types)
         self.assertIn("MANUAL_RESOURCE_PATH", issue_types)
         self.assertIn("PRINT_STATEMENT", issue_types)
 

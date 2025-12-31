@@ -7,6 +7,8 @@
 import pathlib
 import subprocess
 import difflib
+import tempfile
+import shutil
 from abc import ABC, abstractmethod
 from typing import Dict, List, Any
 from .transformers import (
@@ -215,8 +217,6 @@ class AutoFixer:
 
                 if interactive and not self.dry_run:
                     # Show diff preview
-                    import tempfile
-                    import shutil
                     
                     # Create temp file to test transformation
                     with tempfile.NamedTemporaryFile(mode='w', suffix='.py', delete=False) as tmp:

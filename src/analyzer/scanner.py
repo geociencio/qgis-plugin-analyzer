@@ -28,38 +28,38 @@ def get_qgis_audit_rules() -> List[Dict[str, Any]]:
     """Returns the QGIS audit rule catalog."""
     return [
         {
-            "id": "UNPRECISE_LAYER_LOOKUP",
-            "pattern": r"mapLayersByName\(",
+            "id": "UNPRECISE_LAYER",
+            "pattern": re.compile(r"mapLayersByName\("),
             "message": "mapLayersByName() can be imprecise. Consider mapLayers() or unique IDs.",
             "severity": "medium",
         },
         {
             "id": "UNSAFE_THREAD",
-            "pattern": r"\bthreading\.Thread\(",
+            "pattern": re.compile(r"\bthreading\.Thread\("),
             "message": "threading.Thread usage detected. Prefer QgsTask or QThread.",
             "severity": "high",
         },
         {
             "id": "MANUAL_RESOURCE_PATH",
-            "pattern": r"QIcon\(\s*['\"](?!\s*:\/)[^'\"]*?(?:icons|images|ui)/",
+            "pattern": re.compile(r"QIcon\(\s*['\"](?!\s*:\/)[^'\"]*?(?:icons|images|ui)/"),
             "message": "Manual resource path detected. Use :/plugins/...",
             "severity": "medium",
         },
         {
             "id": "PRINT_STATEMENT",
-            "pattern": r"^[^#]*\bprint\(",
+            "pattern": re.compile(r"^[^#]*\bprint\("),
             "message": "print() usage detected. Use QgsMessageLog.",
             "severity": "low",
         },
         {
             "id": "OBSOLETE_VARIANT",
-            "pattern": r"QVariant\.(?:String|Int|Double|LongLong|Bool|Date|Time|DateTime)",
+            "pattern": re.compile(r"QVariant\.(?:String|Int|Double|LongLong|Bool|Date|Time|DateTime)"),
             "message": "Obsolete QVariant type constants detected. Use QMetaType or native types.",
             "severity": "medium",
         },
         {
             "id": "SPATIAL_INDEX",
-            "pattern": r"for\s+\w+\s+in\s+.*?\.getFeatures\(\):\n\s+(?!.*?QgsSpatialIndex)",
+            "pattern": re.compile(r"for\s+\w+\s+in\s+.*?\.getFeatures\(\):\n\s+(?!.*?QgsSpatialIndex)"),
             "message": "Iteration over features without spatial index detected on potentially heavy loop.",
             "severity": "high",
         },
@@ -100,29 +100,21 @@ class QGISASTVisitor(ast.NodeVisitor):
         }
         return severity_map.get(config_severity, "medium")
 
-    def visit_ClassDef(self, node: ast.ClassDef):
-        """Track methods defined in the current class context."""
-        methods = {
-            item.name for item in node.body 
-            if isinstance(item, (ast.FunctionDef, ast.AsyncFunctionDef))
-        }
-        self.class_methods_stack.append(methods)
-        self.generic_visit(node)
-        self.class_methods_stack.pop()
 
     def visit_Call(self, node: ast.Call):
         # 1. Detect OBSOLETE_API (writeAsVectorFormat)
         if isinstance(node.func, ast.Attribute) and node.func.attr == "writeAsVectorFormat":
-            self.issues.append(
-                {
-                    "file": self.rel_path,
-                    "line": node.lineno,
-                    "type": "OBSOLETE_API",
-                    "severity": "high",
-                    "message": "Obsolete writeAsVectorFormat() usage. Use writeAsVectorFormatV3().",
-                    "code": ast.unparse(node),
-                }
-            )
+            if self._should_report("OBSOLETE_API"):
+                self.issues.append(
+                    {
+                        "file": self.rel_path,
+                        "line": node.lineno,
+                        "type": "OBSOLETE_API",
+                        "severity": self._get_severity("OBSOLETE_API"),
+                        "message": "Obsolete writeAsVectorFormat() usage. Use writeAsVectorFormatV3().",
+                        "code": ast.unparse(node),
+                    }
+                )
 
         # 2. Detect MISSING_I18N
         if isinstance(node.func, ast.Attribute) and node.func.attr in self.i18n_methods:
@@ -135,16 +127,17 @@ class QGISASTVisitor(ast.NodeVisitor):
                 val = node.args[0].value
                 # Ignore empty strings or strings starting with % (placeholders)
                 if val.strip() and not val.startswith("%"):
-                    self.issues.append(
-                        {
-                            "file": self.rel_path,
-                            "line": node.lineno,
-                            "type": "MISSING_I18N",
-                            "severity": "high",
-                            "message": f"Untranslated UI text string in '{node.func.attr}': '{val}'. Use self.tr().",
-                            "code": ast.unparse(node),
-                        }
-                    )
+                    if self._should_report("MISSING_I18N"):
+                        self.issues.append(
+                            {
+                                "file": self.rel_path,
+                                "line": node.lineno,
+                                "type": "MISSING_I18N",
+                                "severity": self._get_severity("MISSING_I18N"),
+                                "message": f"Untranslated UI text string in '{node.func.attr}': '{val}'. Use self.tr().",
+                                "code": ast.unparse(node),
+                            }
+                        )
 
         # Detect POTENTIAL_MISSING_SLOT (Signal Safety)
         if isinstance(node.func, ast.Attribute) and node.func.attr == 'connect':
@@ -156,14 +149,15 @@ class QGISASTVisitor(ast.NodeVisitor):
                      if self.class_methods_stack:
                          current_methods = self.class_methods_stack[-1]
                          if slot not in current_methods:
-                             self.issues.append({
-                                 "file": self.rel_path,
-                                 "line": node.lineno,
-                                 "type": "POTENTIAL_MISSING_SLOT",
-                                 "severity": "medium",
-                                 "message": f"Connected slot 'self.{slot}' not found in class definitions. Verify it is defined or inherited.",
-                                 "id": "POTENTIAL_MISSING_SLOT"
-                             })
+                             if self._should_report("POTENTIAL_MISSING_SLOT"):
+                                 self.issues.append({
+                                     "file": self.rel_path,
+                                     "line": node.lineno,
+                                     "type": "POTENTIAL_MISSING_SLOT",
+                                     "severity": self._get_severity("POTENTIAL_MISSING_SLOT"),
+                                     "message": f"Connected slot 'self.{slot}' not found in class definitions. Verify it is defined or inherited.",
+                                     "id": "POTENTIAL_MISSING_SLOT"
+                                 })
 
         self.generic_visit(node)
 
@@ -183,16 +177,17 @@ class QGISASTVisitor(ast.NodeVisitor):
         has_unload = any(isinstance(m, ast.FunctionDef) and m.name == "unload" for m in node.body)
 
         if has_init_gui and not has_unload:
-            self.issues.append(
-                {
-                    "file": self.rel_path,
-                    "line": node.lineno,
-                    "type": "MANDATORY_CLEANUP",
-                    "severity": "high",
-                    "message": f"Class '{node.name}' implements 'initGui()' but is missing 'unload()'. Mandatory for cleanup.",
-                    "code": f"class {node.name}...",
-                }
-            )
+            if self._should_report("MANDATORY_CLEANUP"):
+                self.issues.append(
+                    {
+                        "file": self.rel_path,
+                        "line": node.lineno,
+                        "type": "MANDATORY_CLEANUP",
+                        "severity": self._get_severity("MANDATORY_CLEANUP"),
+                        "message": f"Class '{node.name}' implements 'initGui()' but is missing 'unload()'. Mandatory for cleanup.",
+                        "code": f"class {node.name}...",
+                    }
+                )
         self.generic_visit(node)
         self.class_methods_stack.pop()
 
@@ -202,115 +197,123 @@ class QGISASTVisitor(ast.NodeVisitor):
         for arg in node.args.args:
             if arg.annotation and isinstance(arg.annotation, ast.Name):
                 if arg.annotation.id == "QgisInterface":
-                    self.issues.append(
-                        {
-                            "file": self.rel_path,
-                            "line": node.lineno,
-                            "type": "IFACE_AS_ARGUMENT",
-                            "severity": "medium",
-                            "message": f"Function '{node.name}' receives 'QgisInterface' as an argument. Use the global 'iface' or Singleton pattern.",
-                            "code": ast.unparse(node).split("\n")[0],
-                        }
-                    )
+                    if self._should_report("IFACE_AS_ARGUMENT"):
+                        self.issues.append(
+                            {
+                                "file": self.rel_path,
+                                "line": node.lineno,
+                                "type": "IFACE_AS_ARGUMENT",
+                                "severity": self._get_severity("IFACE_AS_ARGUMENT"),
+                                "message": f"Function '{node.name}' receives 'QgisInterface' as an argument. Use the global 'iface' or Singleton pattern.",
+                                "code": ast.unparse(node).split("\n")[0],
+                            }
+                        )
         self.generic_visit(node)
 
     def visit_Import(self, node: ast.Import):
         for alias in node.names:
             # 5. Detect QGIS_PROTECTED_MEMBER (QGS101/102)
             if alias.name.startswith("qgis._") and not alias.name.startswith("qgis._3d"):
-                self.issues.append(
-                    {
-                        "file": self.rel_path,
-                        "line": node.lineno,
-                        "type": "QGIS_PROTECTED_MEMBER",
-                        "severity": "high",
-                        "message": f"Protected member import detected: '{alias.name}'. Protected members are unstable.",
-                        "code": ast.unparse(node),
-                    }
-                )
+                if self._should_report("QGIS_PROTECTED_MEMBER"):
+                    self.issues.append(
+                        {
+                            "file": self.rel_path,
+                            "line": node.lineno,
+                            "type": "QGIS_PROTECTED_MEMBER",
+                            "severity": self._get_severity("QGIS_PROTECTED_MEMBER"),
+                            "message": f"Protected member import detected: '{alias.name}'. Protected members are unstable.",
+                            "code": ast.unparse(node),
+                        }
+                    )
             # 6. Detect GDAL_DIRECT_IMPORT (QGS106)
             if alias.name == "gdal":
-                self.issues.append(
-                    {
-                        "file": self.rel_path,
-                        "line": node.lineno,
-                        "type": "GDAL_DIRECT_IMPORT",
-                        "severity": "medium",
-                        "message": "Direct 'gdal' import detected. Use 'from osgeo import gdal'.",
-                        "code": ast.unparse(node),
-                    }
-                )
+                if self._should_report("GDAL_DIRECT_IMPORT"):
+                    self.issues.append(
+                        {
+                            "file": self.rel_path,
+                            "line": node.lineno,
+                            "type": "GDAL_DIRECT_IMPORT",
+                            "severity": self._get_severity("GDAL_DIRECT_IMPORT"),
+                            "message": "Direct 'gdal' import detected. Use 'from osgeo import gdal'.",
+                            "code": ast.unparse(node),
+                        }
+                    )
             # QGIS_LEGACY_IMPORT (already existing)
             if alias.name.startswith(("PyQt4", "PyQt5")):
-                self.issues.append(
-                    {
-                        "file": self.rel_path,
-                        "line": node.lineno,
-                        "type": "QGIS_LEGACY_IMPORT",
-                        "severity": "high",
-                        "message": f"Legacy import detected: '{alias.name}'. Use 'qgis.PyQt' for compatibility.",
-                        "code": ast.unparse(node),
-                    }
-                )
+                if self._should_report("QGIS_LEGACY_IMPORT"):
+                    self.issues.append(
+                        {
+                            "file": self.rel_path,
+                            "line": node.lineno,
+                            "type": "QGIS_LEGACY_IMPORT",
+                            "severity": self._get_severity("QGIS_LEGACY_IMPORT"),
+                            "message": f"Legacy import detected: '{alias.name}'. Use 'qgis.PyQt' for compatibility.",
+                            "code": ast.unparse(node),
+                        }
+                    )
         self.generic_visit(node)
 
     def visit_ImportFrom(self, node: ast.ImportFrom):
         if node.module:
             # Detect QGIS_PROTECTED_MEMBER
             if node.module.startswith("qgis._") and not node.module.startswith("qgis._3d"):
-                self.issues.append(
-                    {
-                        "file": self.rel_path,
-                        "line": node.lineno,
-                        "type": "QGIS_PROTECTED_MEMBER",
-                        "severity": "high",
-                        "message": f"Protected member import detected: 'from {node.module} import ...'. Protected members are unstable.",
-                        "code": ast.unparse(node),
-                    }
-                )
+                if self._should_report("QGIS_PROTECTED_MEMBER"):
+                    self.issues.append(
+                        {
+                            "file": self.rel_path,
+                            "line": node.lineno,
+                            "type": "QGIS_PROTECTED_MEMBER",
+                            "severity": self._get_severity("QGIS_PROTECTED_MEMBER"),
+                            "message": f"Protected member import detected: 'from {node.module} import ...'. Protected members are unstable.",
+                            "code": ast.unparse(node),
+                        }
+                    )
             # Detect GDAL_DIRECT_IMPORT
             if node.module == "gdal":
-                self.issues.append(
-                    {
-                        "file": self.rel_path,
-                        "line": node.lineno,
-                        "type": "GDAL_DIRECT_IMPORT",
-                        "severity": "medium",
-                        "message": "Direct 'gdal' import detected. Use 'from osgeo import gdal'.",
-                        "code": ast.unparse(node),
-                    }
-                )
+                if self._should_report("GDAL_DIRECT_IMPORT"):
+                    self.issues.append(
+                        {
+                            "file": self.rel_path,
+                            "line": node.lineno,
+                            "type": "GDAL_DIRECT_IMPORT",
+                            "severity": self._get_severity("GDAL_DIRECT_IMPORT"),
+                            "message": "Direct 'gdal' import detected. Use 'from osgeo import gdal'.",
+                            "code": ast.unparse(node),
+                        }
+                    )
             # QGIS_LEGACY_IMPORT
             if node.module.startswith(("PyQt4", "PyQt5")):
-                self.issues.append(
-                    {
-                        "file": self.rel_path,
-                        "line": node.lineno,
-                        "type": "QGIS_LEGACY_IMPORT",
-                        "severity": "high",
-                        "message": f"Legacy import detected: 'from {node.module} import ...'. Use 'qgis.PyQt' for compatibility.",
-                        "code": ast.unparse(node),
-                    }
-                )
+                if self._should_report("QGIS_LEGACY_IMPORT"):
+                    self.issues.append(
+                        {
+                            "file": self.rel_path,
+                            "line": node.lineno,
+                            "type": "QGIS_LEGACY_IMPORT",
+                            "severity": self._get_severity("QGIS_LEGACY_IMPORT"),
+                            "message": f"Legacy import detected: 'from {node.module} import ...'. Use 'qgis.PyQt' for compatibility.",
+                            "code": ast.unparse(node),
+                        }
+                    )
             # 7. Detect HEAVY_LOGIC_UI (QGS107)
             heavy_libs = {"pandas", "numpy", "scipy", "sklearn", "matplotlib"}
             is_ui_file = "gui" in self.rel_path.lower() or "ui" in self.rel_path.lower()
             if is_ui_file and (node.module in heavy_libs or node.module.split(".")[0] in heavy_libs):
-                self.issues.append(
-                    {
-                        "file": self.rel_path,
-                        "line": node.lineno,
-                        "type": "HEAVY_LOGIC_UI",
-                        "severity": "medium",
-                        "message": f"Heavy dependency '{node.module}' detected in UI file. Move logic to core.",
-                        "code": ast.unparse(node),
-                    }
-                )
+                if self._should_report("HEAVY_LOGIC_UI"):
+                    self.issues.append(
+                        {
+                            "file": self.rel_path,
+                            "line": node.lineno,
+                            "type": "HEAVY_LOGIC_UI",
+                            "severity": self._get_severity("HEAVY_LOGIC_UI"),
+                            "message": f"Heavy dependency '{node.module}' detected in UI file. Move logic to core.",
+                            "code": ast.unparse(node),
+                        }
+                    )
         self.generic_visit(node)
 
 
 def analyze_module_worker(
-    py_file: pathlib.Path, project_path: pathlib.Path, cached_data: Optional[Dict] = None
+    py_file: pathlib.Path, project_path: pathlib.Path, cached_data: Optional[Dict] = None, rules_config: dict = None
 ) -> Optional[Dict]:
     """Worker for module analysis (executed in sub-processes)."""
     try:
@@ -371,7 +374,7 @@ def analyze_module_worker(
                                 has_main = True
 
         # Custom AST Audit
-        visitor = QGISASTVisitor(rel_path)
+        visitor = QGISASTVisitor(rel_path, rules_config=rules_config)
         visitor.visit(tree)
 
         return {
@@ -394,7 +397,7 @@ def analyze_module_worker(
         return None
 
 
-def audit_qgis_standards(modules_data: List[Dict], project_path: pathlib.Path) -> Dict[str, Any]:
+def audit_qgis_standards(modules_data: List[Dict], project_path: pathlib.Path, rules_config: dict = None) -> Dict[str, Any]:
     """Executes regex-based QGIS standards audit."""
     rules = get_qgis_audit_rules()
     results = {"issues": [], "issues_count": 0}
@@ -415,14 +418,23 @@ def audit_qgis_standards(modules_data: List[Dict], project_path: pathlib.Path) -
         try:
             content = full_path.read_text(encoding="utf-8", errors="replace")
             for rule in rules:
-                for match in re.finditer(rule["pattern"], content, re.MULTILINE):
+                rule_id = rule["id"]
+                severity_val = rules_config.get(rule_id, "warning") if rules_config else "warning"
+                if severity_val == "ignore":
+                    continue
+                
+                # Map config severity to internal severity
+                severity_map = {"error": "high", "warning": "medium", "info": "low"}
+                internal_severity = severity_map.get(severity_val, rule["severity"])
+
+                for match in rule["pattern"].finditer(content):
                     line_no = content.count("\n", 0, match.start()) + 1
                     results["issues"].append(
                         {
                             "file": path,
                             "line": line_no,
                             "type": rule["id"],
-                            "severity": rule["severity"],
+                            "severity": internal_severity,
                             "message": rule["message"],
                             "code": content[match.start() : match.end() + 20].strip(),
                         }
@@ -434,37 +446,3 @@ def audit_qgis_standards(modules_data: List[Dict], project_path: pathlib.Path) -
     return results
 
 
-def validate_plugin_structure(project_path: pathlib.Path) -> Dict[str, Any]:
-    """Verifies presence of mandatory files."""
-    mandatory = ["metadata.txt", "__init__.py", "LICENSE"]
-    found = {f: (project_path / f).exists() for f in mandatory}
-
-    # Check classFactory in __init__.py
-    init_file = project_path / "__init__.py"
-    has_factory = False
-    if init_file.exists():
-        has_factory = "def classFactory" in init_file.read_text(encoding="utf-8", errors="replace")
-
-    return {
-        "files": found,
-        "has_class_factory": has_factory,
-        "is_valid": all(found.values()) and has_factory,
-    }
-
-
-def validate_metadata(project_path: pathlib.Path) -> Dict[str, Any]:
-    """Validates metadata.txt content."""
-    metadata_path = project_path / "metadata.txt"
-    required = ["name", "description", "version", "qgisMinimumVersion", "author", "email"]
-
-    if not metadata_path.exists():
-        return {"is_valid": False, "missing": required}
-
-    content = metadata_path.read_text(encoding="utf-8", errors="replace").lower()
-    missing = [f for f in required if f.lower() + "=" not in content]
-
-    return {
-        "is_valid": len(missing) == 0,
-        "missing": missing,
-        "fields_found": [f for f in required if f not in missing],
-    }

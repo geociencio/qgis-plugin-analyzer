@@ -59,6 +59,9 @@ def main():
         "--auto-approve", action="store_true", help="Apply all fixes without confirmation"
     )
     fix_parser.add_argument(
+        "-p", "--profile", help="Configuration profile from pyproject.toml", default="default"
+    )
+    fix_parser.add_argument(
         "--rules",
         type=str,
         help="Comma-separated list of rule IDs to fix",
@@ -88,7 +91,7 @@ def main():
 
             # Run analysis first
             print("🔍 Analyzing project for fixable issues...")
-            analyzer = ProjectAnalyzer(str(project_path), args.output if hasattr(args, 'output') else "./analysis_results", "strict")
+            analyzer = ProjectAnalyzer(str(project_path), args.output if hasattr(args, 'output') else "./analysis_results", args.profile if hasattr(args, 'profile') else "default")
             analyzer.run()
 
             # Load issues
@@ -123,8 +126,6 @@ def main():
         elif args.command == "analyze":
             analyzer = ProjectAnalyzer(args.project_path, args.output, args.profile)
             success = analyzer.run()
-            if not success:
-                sys.exit(1)
         else:
             parser.print_help()
 
