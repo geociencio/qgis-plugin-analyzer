@@ -26,7 +26,7 @@ This document details the automatic audit rules implemented in the analyzer to e
 
 | Rule ID | Severity | Description | Recommendation |
 | :--- | :--- | :--- | :--- |
-| `MANUAL_PATH` | 🟡 Medium | Manual paths for icons or UI files (e.g., `icons/ico.png`). | Use the Qt resource system with the `:/plugins/...` prefix. |
+| `MANUAL_RESOURCE_PATH` | 🟡 Medium | Manual paths for icons or UI files (e.g., `icons/ico.png`). | Use the Qt resource system with the `:/plugins/...` prefix. |
 
 ## 5. Performance
 

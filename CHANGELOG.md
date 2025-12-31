@@ -5,6 +5,26 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.5.1] - 2025-12-31
+
+### Fixed
+- **Consistency & Stability**:
+  - Unified Rule IDs across AST and Regex engines (e.g., `UNPRECISE_LAYER`, `MANUAL_RESOURCE_PATH`).
+  - Fixed undefined attribute `self.ignore_matcher` (renamed to `self.matcher`) in `ProjectAnalyzer`.
+  - Corrected method call `ignore_matcher.is_ignored()` in package size calculator.
+  - Fixed missing imports (`tempfile`, `shutil`, `ET`) in `fixer.py` and `semantic.py`.
+  - Corrected `validate_metadata` path handling in `engine.py`.
+- **CLI Improvements**:
+  - Added `-p/--profile` support to `fix` command, allowing fixes to respect custom rule configurations.
+- **Performance**:
+  - Pre-compiled regex patterns in `scanner.py` for faster auditing.
+
+### Changed
+- **Refactoring**:
+  - Consolidated plugin structure and metadata validation logic into `validators.py`.
+  - Improved robustness of the minimal TOML parser for better numeric and string handling.
+  - `analyze_module_worker` now consistently accepts and passes `rules_config` to workers.
+
 ## [0.5.0] - 2025-12-30
 
 ### Added
