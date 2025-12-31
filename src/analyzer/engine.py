@@ -112,10 +112,16 @@ class ProjectAnalyzer:
         tracker = ProgressTracker(len(files))
         modules_data = []
 
+        # Get rules configuration
+        rules_config = self.config.get("rules", {})
+
         # Parallel analysis
         with ProcessPoolExecutor(max_workers=self.max_workers) as executor:
             futures = {
-                executor.submit(analyze_module_worker, f, self.project_path): f for f in files
+                executor.submit(
+                    analyze_module_worker, f, self.project_path, None, rules_config
+                ): f
+                for f in files
             }
             for future in as_completed(futures):
                 res = future.result()

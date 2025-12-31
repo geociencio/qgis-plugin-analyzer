@@ -66,13 +66,15 @@ def _minimal_toml_load(file_obj) -> Dict[str, Any]:
     """
     EXTREMELY minimal TOML parser focused ONLY on extracting 
     [tool.qgis-analyzer.profiles] from pyproject.toml.
-    Does not handle nested structures or full TOML spec.
+    Now supports nested [tool.qgis-analyzer.profiles.NAME.rules] sections.
     """
     data = {"tool": {"qgis-analyzer": {"profiles": {}}}}
-    current_section = None
+    current_profile = None
+    in_rules_section = False
     
-    # Simple regex to catch [tool.qgis-analyzer.profiles.NAME]
+    # Regex patterns
     profile_regex = re.compile(r'^\[tool\.qgis-analyzer\.profiles\.([\w-]+)\]')
+    rules_regex = re.compile(r'^\[tool\.qgis-analyzer\.profiles\.([\w-]+)\.rules\]')
     
     try:
         content = file_obj.read().decode("utf-8")
@@ -81,18 +83,35 @@ def _minimal_toml_load(file_obj) -> Dict[str, Any]:
             if not line or line.startswith("#"):
                 continue
             
-            # Check for section header
+            # Check for section headers
             if line.startswith("[") and line.endswith("]"):
-                match = profile_regex.match(line)
-                if match:
-                    current_section = match.group(1)
-                    data["tool"]["qgis-analyzer"]["profiles"][current_section] = {}
-                else:
-                    current_section = None
+                # Check for rules section first
+                rules_match = rules_regex.match(line)
+                if rules_match:
+                    current_profile = rules_match.group(1)
+                    in_rules_section = True
+                    if current_profile not in data["tool"]["qgis-analyzer"]["profiles"]:
+                        data["tool"]["qgis-analyzer"]["profiles"][current_profile] = {}
+                    if "rules" not in data["tool"]["qgis-analyzer"]["profiles"][current_profile]:
+                        data["tool"]["qgis-analyzer"]["profiles"][current_profile]["rules"] = {}
+                    continue
+                
+                # Check for profile section
+                profile_match = profile_regex.match(line)
+                if profile_match:
+                    current_profile = profile_match.group(1)
+                    in_rules_section = False
+                    if current_profile not in data["tool"]["qgis-analyzer"]["profiles"]:
+                        data["tool"]["qgis-analyzer"]["profiles"][current_profile] = {}
+                    continue
+                
+                # Other section, reset
+                current_profile = None
+                in_rules_section = False
                 continue
             
             # Key-value pair
-            if current_section and "=" in line:
+            if current_profile and "=" in line:
                 key, val = line.split("=", 1)
                 key = key.strip()
                 val = val.strip()
@@ -109,7 +128,10 @@ def _minimal_toml_load(file_obj) -> Dict[str, Any]:
                 elif val.startswith("'") and val.endswith("'"):
                     val = val[1:-1]
                 
-                data["tool"]["qgis-analyzer"]["profiles"][current_section][key] = val
+                if in_rules_section:
+                    data["tool"]["qgis-analyzer"]["profiles"][current_profile]["rules"][key] = val
+                else:
+                    data["tool"]["qgis-analyzer"]["profiles"][current_profile][key] = val
     except Exception as e:
         logger.error(f"Error in minimal TOML parser: {e}")
         
@@ -274,7 +296,12 @@ def load_profile_config(
 ) -> Dict[str, Any]:
     """Loads a specific profile configuration from pyproject.toml."""
     pyproject = project_path / "pyproject.toml"
-    default_config = {"strict": False, "generate_html": True, "fail_on_error": False}
+    default_config = {
+        "strict": False,
+        "generate_html": True,
+        "fail_on_error": False,
+        "rules": {},
+    }
 
     if not pyproject.exists():
         return default_config
@@ -294,7 +321,14 @@ def load_profile_config(
                 logger.warning(f"Profile '{profile_name}' not found. Using default values.")
             return default_config
 
-        return {**default_config, **profile_data}
+        # Extract rules configuration
+        rules_config = profile_data.get("rules", {})
+
+        return {
+            **default_config,
+            **profile_data,
+            "rules": rules_config,
+        }
     except Exception as e:
         logger.error(f"Error loading profile: {e}")
         return default_config

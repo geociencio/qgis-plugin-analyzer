@@ -69,11 +69,12 @@ def get_qgis_audit_rules() -> List[Dict[str, Any]]:
 class QGISASTVisitor(ast.NodeVisitor):
     """AST visitor to detect QGIS-specific issues."""
 
-    def __init__(self, rel_path: str):
+    def __init__(self, rel_path: str, rules_config: dict = None):
         self.rel_path = rel_path
         self.issues = []
         self.resource_usages = []  # Stores found ":/..." paths
         self.class_methods_stack = [] # Stack of sets containing method names for current class context
+        self.rules_config = rules_config or {}
         self.i18n_methods = {
             "setText",
             "setWindowTitle",
@@ -82,6 +83,22 @@ class QGISASTVisitor(ast.NodeVisitor):
             "setPlaceholderText",
             "setTabText",
         }
+
+    def _should_report(self, rule_id: str) -> bool:
+        """Check if rule should be reported based on config."""
+        severity = self.rules_config.get(rule_id, "warning")
+        return severity != "ignore"
+
+    def _get_severity(self, rule_id: str) -> str:
+        """Get configured severity for rule (maps to 'high', 'medium', 'low')."""
+        config_severity = self.rules_config.get(rule_id, "warning")
+        # Map config severity to internal severity
+        severity_map = {
+            "error": "high",
+            "warning": "medium",
+            "info": "low",
+        }
+        return severity_map.get(config_severity, "medium")
 
     def visit_ClassDef(self, node: ast.ClassDef):
         """Track methods defined in the current class context."""
