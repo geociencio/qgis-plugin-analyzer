@@ -5,6 +5,44 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.5.0] - 2025-12-30
+
+### Added
+- **Deep Semantic Analysis** (Roadmap Point 1)
+  - Dependency graph with circular import detection
+  - Resource validation (Qt `.qrc` files)
+  - Signal/Slot safety checks for missing slot methods
+  - Module coupling metrics (fan-in/fan-out)
+- **Interactive Auto-Fix Mode** (Roadmap Point 2)
+  - `fix` command with dry-run mode by default
+  - AST-based transformers for code corrections:
+    - `GDALImportFixer`: `import gdal` → `from osgeo import gdal`
+    - `LegacyImportFixer`: `PyQt4/PyQt5` → `qgis.PyQt`
+    - `PrintToLogFixer`: `print()` → `QgsMessageLog.logMessage()`
+    - `I18nFixer`: Wrap hardcoded strings in `self.tr()`
+  - Safety features: git status check, interactive diff preview, confirmation prompts
+  - Rule filtering with `--rules` flag
+- **Repository Compliance Suite** (Roadmap Point 3)
+  - Binary scanner: Detect prohibited `.exe`, `.dll`, `.so` files
+  - Package size calculator with 20MB limit warning
+  - URL validator for `metadata.txt` links (homepage, tracker, repository)
+  - Integration into scoring system with penalties
+- **Enhanced Configuration Profiles** (Roadmap Point 4)
+  - Rule-level configuration in `pyproject.toml`
+  - Custom severity levels: `error`, `warning`, `info`, `ignore`
+  - Nested TOML section support: `[tool.qgis-analyzer.profiles.NAME.rules]`
+  - Backward compatible (works without rules config)
+
+### Changed
+- Updated `load_profile_config()` to parse `rules` section
+- Enhanced minimal TOML parser for nested sections
+- `QGISASTVisitor` now accepts `rules_config` parameter
+- Scoring system penalizes binaries (-50 pts) and size violations (-10 pts)
+
+### Documentation
+- Created `COMPETITIVE_ANALYSIS.md` comparing with flake8-qgis and pylint-plugin-utils
+- Updated walkthrough artifacts for each feature
+
 ## [0.4.0] - 2025-12-29
 ### Changed
 - **Zero Runtime Dependencies**: Removed all external runtime dependencies (`tomli`, `dominate`). The analyzer now uses a built-in minimal TOML generator and manual HTML reporting.
