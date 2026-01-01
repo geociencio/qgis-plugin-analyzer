@@ -260,12 +260,22 @@ def timeout_manager(seconds: int):
         signal.alarm(0)
 
 
+# Default patterns to ignore if not specified
+DEFAULT_EXCLUDE = {
+    ".venv/", "venv/", "__pycache__/", ".git/", ".github/", 
+    "build/", "dist/", ".pytest_cache/", ".ruff_cache/", ".mypy_cache/",
+    ".analyzerignore", "analysis_results/"
+}
+
 class IgnoreMatcher:
     """Handles .analyzerignore patterns using fnmatch."""
 
     def __init__(self, root_path: pathlib.Path, patterns: List[str]):
         self.root_path = root_path
-        self.patterns = [p.strip() for p in patterns if p.strip() and not p.startswith("#")]
+        # Combine user patterns with defaults
+        all_patterns = set(p.strip() for p in patterns if p.strip() and not p.startswith("#"))
+        all_patterns.update(DEFAULT_EXCLUDE)
+        self.patterns = list(all_patterns)
         self._cache = {}
 
     def is_ignored(self, path: pathlib.Path) -> bool:
@@ -285,18 +295,44 @@ class IgnoreMatcher:
 
     def _check_patterns(self, str_rel_path: str, name: str) -> bool:
         for pattern in self.patterns:
+            # Handle anchored patterns (starting with /)
+            is_anchored = pattern.startswith("/")
+            clean_pattern = pattern.lstrip("/")
+            
             # Handle directory-specific patterns (ending in /)
-            if pattern.endswith("/"):
-                # If the pattern is 'dir/', match any path that starts with 'dir/'
-                clean_pattern = pattern.rstrip("/")
-                if str_rel_path.startswith(clean_pattern + os.sep) or str_rel_path == clean_pattern:
-                    return True
-            # Standard glob matching
-            if fnmatch.fnmatch(str_rel_path, pattern):
-                return True
-            # Match basename if pattern doesn't contain a slash
-            if "/" not in pattern and fnmatch.fnmatch(name, pattern):
-                return True
+            is_dir_pattern = clean_pattern.endswith("/")
+            clean_pattern = clean_pattern.rstrip("/")
+            
+            if is_dir_pattern:
+                # If it's a directory pattern:
+                # 1. it matches if str_rel_path is exactly the directory
+                # 2. it matches if str_rel_path starts with directory + os.sep
+                if is_anchored:
+                    # Anchored: must be at the root of rel_path
+                    if str_rel_path == clean_pattern or str_rel_path.startswith(clean_pattern + os.sep):
+                        return True
+                else:
+                    # Non-anchored: can be anywhere in rel_path
+                    parts = str_rel_path.split(os.sep)
+                    if clean_pattern in parts:
+                        return True
+            else:
+                # Standard pattern (file or dir without trailing /)
+                if is_anchored:
+                    if fnmatch.fnmatch(str_rel_path, clean_pattern):
+                        return True
+                else:
+                    # Match rel_path directly (glob)
+                    if fnmatch.fnmatch(str_rel_path, clean_pattern):
+                        return True
+                    # Match basename (like gitignore for simple names)
+                    if "/" not in clean_pattern and fnmatch.fnmatch(name, clean_pattern):
+                        return True
+                    # Fallback for patterns that might be deep: check if any part of the path matches
+                    # e.g. "docs/*.md" matching "src/docs/ref.md" -> not standard gitignore but common expectation
+                    # Actually gitignore "docs/*.md" only matches root docs/*.md.
+                    # But "**/docs/*.md" would match deep. 
+                    # Let's stick to standard fnmatch on rel_path first.
         return False
 
 

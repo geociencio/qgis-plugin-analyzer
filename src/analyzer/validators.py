@@ -17,7 +17,7 @@ from typing import Dict, List, Tuple
 BINARY_EXTENSIONS = {".exe", ".dll", ".so", ".dylib", ".pyd", ".bin", ".a", ".lib"}
 
 
-def scan_for_binaries(project_path: pathlib.Path) -> List[str]:
+def scan_for_binaries(project_path: pathlib.Path, ignore_matcher=None) -> List[str]:
     """
     Scans project for prohibited binary files.
     
@@ -27,6 +27,10 @@ def scan_for_binaries(project_path: pathlib.Path) -> List[str]:
     
     for file_path in project_path.rglob("*"):
         if file_path.is_file():
+            # Skip if matches ignore pattern
+            if ignore_matcher and ignore_matcher.is_ignored(file_path):
+                continue
+
             if file_path.suffix.lower() in BINARY_EXTENSIONS:
                 rel_path = str(file_path.relative_to(project_path))
                 binaries.append(rel_path)

@@ -1,6 +1,6 @@
 [project]
 name = "qgis-plugin-analyzer"
-version = "0.6.0"
+version = "0.6.1"
 description = "Un analizador estático profesional para plugins de QGIS (PyQGIS)"
 readme = "README.md"
 requires-python = ">=3.8"

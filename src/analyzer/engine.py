@@ -74,14 +74,13 @@ class ProjectAnalyzer:
 
     def get_python_files(self) -> List[pathlib.Path]:
         """Scans Python files ignoring common folders and .analyzerignore patterns."""
-        exclude = {"venv", ".venv", "__pycache__", ".git", "build", "dist"}
         python_files = []
         for root, dirs, files in os.walk(self.project_path):
             root_path = pathlib.Path(root)
 
             # Filter directories
             dirs[:] = [
-                d for d in dirs if d not in exclude and not self.matcher.is_ignored(root_path / d)
+                d for d in dirs if not self.matcher.is_ignored(root_path / d)
             ]
 
             for file in files:
@@ -143,7 +142,7 @@ class ProjectAnalyzer:
 
         # Repository Compliance Checks
         logger.info("Running repository compliance checks...")
-        binaries = scan_for_binaries(self.project_path)
+        binaries = scan_for_binaries(self.project_path, self.matcher)
         package_size = calculate_package_size(self.project_path, self.matcher)
         url_status = {}
         if metadata.get("is_valid") and "metadata" in metadata:
@@ -152,7 +151,7 @@ class ProjectAnalyzer:
         # Semantic Analysis
         dep_graph = DependencyGraph()
         res_validator = ResourceValidator(self.project_path)
-        res_validator.scan_project_resources()
+        res_validator.scan_project_resources(self.matcher)
         
         all_resource_usages = []
 

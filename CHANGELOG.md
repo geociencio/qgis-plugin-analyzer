@@ -5,6 +5,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.6.1] - 2025-12-31
+
+### Added
+- **Default Scrutiny Exclusions**: Added a robust set of default ignored patterns (`.venv`, `venv`, `__pycache__`, `.git`, `.github`, `build`, `dist`, etc.) that are now automatically excluded from all scanning phases (AST, binaries, package size).
+
+### Fixed
+- **Ignore Logic Engine**:
+  - Improved `.analyzerignore` pattern matching to support non-anchored directory patterns (e.g., `dist/` now matches at any depth).
+  - Added support for anchored patterns (starting with `/`) for precise exclusion.
+  - Resolved a regression where `scan_for_binaries` and `ResourceValidator` bypassed ignore rules, causing false positives in quality scores.
+
 ## [0.6.0] - 2025-12-31
 
 ### Added

@@ -116,12 +116,16 @@ class ResourceValidator:
         self.project_path = project_path
         self.available_resources: Set[str] = set()
 
-    def scan_project_resources(self):
+    def scan_project_resources(self, ignore_matcher=None):
         """Scans .qrc files (and potentially converted _rc.py) to find valid resource paths."""
         # Strategy: Parse .qrc files primarily as they are the source of truth
         # Regex to find <file>path/to/icon.png</file> inside <qresource prefix="/plugins/myplugin">
         
         for qrc_file in self.project_path.rglob("*.qrc"):
+            # Skip if matches ignore pattern
+            if ignore_matcher and ignore_matcher.is_ignored(qrc_file):
+                continue
+
             try:
                 # Use standard xml.etree.ElementTree for robust parsing
                 # Note: ElementTree is safe against XXE by default in Python 3.x
