@@ -170,6 +170,9 @@ The development of this analyzer is based on official QGIS community guidelines,
 - **[Documentation Folder](docs/)**: Historical release notes, competitive analysis, and modernization guides.
 
 ## 🛠️ Contributing
+
+Contributions are welcome! Please refer to our **[Contributing Guide](CONTRIBUTING.md)** to learn how to report bugs, propose rules, and submit code changes.
+
 Audit rules are located in `src/analyzer/scanner.py`. Feel free to add new rules following the existing pattern!
 
 ---
