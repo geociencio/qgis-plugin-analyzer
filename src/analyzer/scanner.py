@@ -60,6 +60,15 @@ def get_qgis_audit_rules() -> List[Dict[str, Any]]:
     ]
 
 
+def _calculate_complexity(node: ast.AST) -> int:
+    """Calculates Cyclomatic Complexity for a node."""
+    complexity = 1
+    for child in ast.walk(node):
+            if isinstance(child, (ast.If, ast.For, ast.While, ast.And, ast.Or, ast.ExceptHandler, ast.With, ast.AsyncWith)):
+                complexity += 1
+    return complexity
+
+
 class QGISASTVisitor(ast.NodeVisitor):
     """AST visitor to detect QGIS-specific issues."""
 
@@ -231,6 +240,22 @@ class QGISASTVisitor(ast.NodeVisitor):
                                 "code": ast.unparse(node).split("\n")[0],
                             }
                         )
+
+        # 5. Detect HIGH_COMPLEXITY
+        complexity = _calculate_complexity(node)
+        if complexity > 15:
+            if self._should_report("HIGH_COMPLEXITY"):
+                self.issues.append(
+                    {
+                        "file": self.rel_path,
+                        "line": node.lineno,
+                        "type": "HIGH_COMPLEXITY",
+                        "severity": self._get_severity("HIGH_COMPLEXITY"),
+                        "message": f"Function '{node.name}' is too complex (CC={complexity} > 15). Consider extracting methods to improve maintainability.",
+                        "code": f"def {node.name}...",
+                    }
+                )
+
         self.generic_visit(node)
 
     def visit_Import(self, node: ast.Import):
@@ -371,12 +396,20 @@ def analyze_module_worker(
         functions = []
         classes = []
         imports = []
-        complexity = 1
+        module_complexity = 1
         has_main = False
 
         for node in ast.walk(tree):
-            if isinstance(node, ast.FunctionDef):
-                functions.append(f"{node.name}({len(node.args.args)} args)")
+            if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)):
+                func_complexity = _calculate_complexity(node)
+                functions.append({
+                    "name": node.name,
+                    "args": [arg.arg for arg in node.args.args],
+                    "line": node.lineno,
+                    "end_line": getattr(node, "end_lineno", node.lineno),
+                    "complexity": func_complexity,
+                    "docstring": ast.get_docstring(node) is not None
+                })
             elif isinstance(node, ast.ClassDef):
                 bases = [ast.unparse(b) for b in node.bases]
                 classes.append(f"{node.name}({', '.join(bases)})" if bases else node.name)
@@ -386,7 +419,7 @@ def analyze_module_worker(
                 if node.module:
                     imports.append(node.module)
             elif isinstance(node, (ast.If, ast.For, ast.While, ast.And, ast.Or, ast.ExceptHandler)):
-                complexity += 1
+                module_complexity += 1
 
             # Check main guard
             if isinstance(node, ast.If) and not has_main:
@@ -406,7 +439,7 @@ def analyze_module_worker(
             "functions": functions,
             "classes": classes,
             "imports": sorted(set(imports)),
-            "complexity": complexity,
+            "complexity": module_complexity,
             "has_main": has_main,
             "docstrings": {
                 "module": ast.get_docstring(tree) is not None,

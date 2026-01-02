@@ -1,8 +1,8 @@
 # 📋 Project Analysis Report: qgis_plugin_analyzer
-*Generated on: 2026-01-02 01:33:00*
+*Generated on: 2026-01-02 08:32:40*
 
 ## 📊 Quality Indicators
-- **Overall Quality Score**: `47.1/100`
+- **Overall Quality Score**: `43.2/100`
 
 
 ## 🧠 Semantic Analysis
@@ -10,5 +10,5 @@
 - All resource paths validated.
 
 ## 📈 General Metrics
-- **Total Files**: 21
-- **Total Lines**: 3057
+- **Total Files**: 20
+- **Total Lines**: 3150

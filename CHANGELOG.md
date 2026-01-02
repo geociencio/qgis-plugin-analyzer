@@ -5,6 +5,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.6.2] - 2026-01-02
+
+### Added
+- **Per-Function Complexity Metrics**: `project_context.json` now includes detailed complexity scores for each function object, enabling precise monitoring of refactoring efforts.
+- **Automatic Complexity Warning**: New `HIGH_COMPLEXITY` rule in scanner that flags functions with Cyclomatic Complexity > 15.
+
+### Improved
+- **Structured Data Models**: Refactored `ModuleAnalysis` to store functions as rich objects instead of simple ID strings.
+
 ## [0.6.1] - 2025-12-31
 
 ### Added

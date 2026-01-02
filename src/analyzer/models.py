@@ -28,7 +28,7 @@ class ModuleAnalysis:
 
     path: str
     lines: int
-    functions: List[str]
+    functions: List[Dict[str, Any]]
     classes: List[str]
     imports: List[str]
     complexity: int
