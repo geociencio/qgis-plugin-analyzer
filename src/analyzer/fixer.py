@@ -165,6 +165,89 @@ class AutoFixer:
                     break
         return fixable
 
+    def _check_git_status_with_prompt(self, interactive: bool) -> bool:
+        """Checks git status and prompts user if needed. Returns True to continue."""
+        if self.dry_run:
+            return True
+
+        is_clean = check_git_status(self.project_path)
+        if not is_clean:
+            print("\n⚠️  WARNING: Working directory has uncommitted changes.")
+            print(
+                "   It's recommended to commit or stash changes before applying fixes."
+            )
+            if interactive:
+                response = input("   Continue anyway? [y/N]: ").lower()
+                if response != "y":
+                    print("Aborted by user.")
+                    return False
+            print()
+        return True
+
+    def _group_issues_by_file(
+        self, issues: List[Dict[str, Any]]
+    ) -> Dict[str, List[Dict[str, Any]]]:
+        """Groups issues by file path."""
+        by_file: Dict[str, List[Dict[str, Any]]] = {}
+        for issue in issues:
+            file_path = issue.get("file", "")
+            if file_path not in by_file:
+                by_file[file_path] = []
+            by_file[file_path].append(issue)
+        return by_file
+
+    def _apply_single_fix(
+        self,
+        file_path: pathlib.Path,
+        issue: Dict[str, Any],
+        original_content: str,
+        interactive: bool,
+        stats: Dict[str, int],
+    ) -> bool:
+        """Applies a single fix and updates stats. Returns True to continue, False to abort."""
+        fixer: FixStrategy = issue["fixer"]
+        description = fixer.get_description(issue)
+
+        print(f"  Line {issue.get('line', '?')}: {description}")
+
+        if interactive and not self.dry_run:
+            # Show diff preview
+            with tempfile.NamedTemporaryFile(
+                mode="w", suffix=".py", delete=False
+            ) as tmp:
+                tmp.write(original_content)
+                tmp_path = pathlib.Path(tmp.name)
+
+            try:
+                fixer.apply_fix(tmp_path, issue)
+                new_content = tmp_path.read_text(encoding="utf-8")
+
+                if new_content != original_content:
+                    show_diff(file_path, original_content, new_content)
+            finally:
+                tmp_path.unlink()
+
+            response = input("    Apply fix? [y/n/q]: ").lower()
+            if response == "q":
+                print("Aborted by user.")
+                return False
+            if response != "y":
+                stats["skipped"] += 1
+                return True
+
+        if not self.dry_run:
+            success = fixer.apply_fix(file_path, issue)
+            if success:
+                stats["applied"] += 1
+                print("    ✅ Applied")
+            else:
+                stats["failed"] += 1
+                print("    ❌ Failed")
+        else:
+            stats["applied"] += 1  # Count as "would apply"
+
+        return True
+
     def apply_fixes(
         self, issues: List[Dict[str, Any]], interactive: bool = True
     ) -> Dict[str, int]:
@@ -176,29 +259,14 @@ class AutoFixer:
         stats = {"applied": 0, "skipped": 0, "failed": 0}
 
         # Git status check
-        if not self.dry_run:
-            is_clean = check_git_status(self.project_path)
-            if not is_clean:
-                print("\n⚠️  WARNING: Working directory has uncommitted changes.")
-                print("   It's recommended to commit or stash changes before applying fixes.")
-                if interactive:
-                    response = input("   Continue anyway? [y/N]: ").lower()
-                    if response != "y":
-                        print("Aborted by user.")
-                        return stats
-                print()
+        if not self._check_git_status_with_prompt(interactive):
+            return stats
 
         # Group by file
-        by_file: Dict[str, List[Dict[str, Any]]] = {}
-        for issue in issues:
-            file_path = issue.get("file", "")
-            if file_path not in by_file:
-                by_file[file_path] = []
-            by_file[file_path].append(issue)
+        by_file = self._group_issues_by_file(issues)
 
         for file_rel, file_issues in by_file.items():
             file_path = self.project_path / file_rel
-
             print(f"\n📄 {file_rel}")
 
             # Read original content for diff
@@ -210,45 +278,9 @@ class AutoFixer:
                 continue
 
             for issue in file_issues:
-                fixer: FixStrategy = issue["fixer"]
-                description = fixer.get_description(issue)
-
-                print(f"  Line {issue.get('line', '?')}: {description}")
-
-                if interactive and not self.dry_run:
-                    # Show diff preview
-
-                    # Create temp file to test transformation
-                    with tempfile.NamedTemporaryFile(mode='w', suffix='.py', delete=False) as tmp:
-                        tmp.write(original_content)
-                        tmp_path = pathlib.Path(tmp.name)
-
-                    try:
-                        fixer.apply_fix(tmp_path, issue)
-                        new_content = tmp_path.read_text(encoding="utf-8")
-
-                        if new_content != original_content:
-                            show_diff(file_path, original_content, new_content)
-                    finally:
-                        tmp_path.unlink()
-
-                    response = input("    Apply fix? [y/n/q]: ").lower()
-                    if response == "q":
-                        print("Aborted by user.")
-                        return stats
-                    if response != "y":
-                        stats["skipped"] += 1
-                        continue
-
-                if not self.dry_run:
-                    success = fixer.apply_fix(file_path, issue)
-                    if success:
-                        stats["applied"] += 1
-                        print("    ✅ Applied")
-                    else:
-                        stats["failed"] += 1
-                        print("    ❌ Failed")
-                else:
-                    stats["applied"] += 1  # Count as "would apply"
+                if not self._apply_single_fix(
+                    file_path, issue, original_content, interactive, stats
+                ):
+                    return stats
 
         return stats

@@ -1,8 +1,9 @@
 # 📋 Project Analysis Report: qgis_plugin_analyzer
-*Generated on: 2026-01-02 08:38:16*
+*Generated on: 2026-01-02 09:36:50*
 
 ## 📊 Quality Indicators
-- **Overall Quality Score**: `43.2/100`
+- **Module Stability Score**: `40.6/100` (Based on file-level complexity)
+- **Code Maintainability Score**: `83.0/100` (Based on function-level complexity)
 
 
 ## 🧠 Semantic Analysis
@@ -10,5 +11,6 @@
 - All resource paths validated.
 
 ## 📈 General Metrics
-- **Total Files**: 20
-- **Total Lines**: 3151
+- **Total Files**: 21
+- **Total Lines**: 3733
+- **Maintainability Score**: 83.0

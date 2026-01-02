@@ -25,7 +25,11 @@ import subprocess
 from concurrent.futures import ProcessPoolExecutor, as_completed
 from typing import Any, Dict, List, Optional
 
-from .reporters import generate_html_report, generate_markdown_summary, save_json_context
+from .reporters import (
+    generate_html_report,
+    generate_markdown_summary,
+    save_json_context,
+)
 from .scanner import (
     analyze_module_worker,
     audit_qgis_standards,
@@ -51,7 +55,10 @@ from .validators import (
 
 class ProjectAnalyzer:
     def __init__(
-        self, project_path: str, output_dir: Optional[str] = None, profile: str = "default"
+        self,
+        project_path: str,
+        output_dir: Optional[str] = None,
+        profile: str = "default",
     ):
         self.project_path = pathlib.Path(project_path).resolve()
         self.output_dir = pathlib.Path(output_dir or "./analysis_results").resolve()
@@ -87,16 +94,16 @@ class ProjectAnalyzer:
             root_path = pathlib.Path(root)
 
             # Filter directories
-            dirs[:] = [
-                d for d in dirs if not self.matcher.is_ignored(root_path / d)
-            ]
+            dirs[:] = [d for d in dirs if not self.matcher.is_ignored(root_path / d)]
 
             for file in files:
                 file_path = root_path / file
                 if file.endswith(".py") and not self.matcher.is_ignored(file_path):
                     # Skip very large files to avoid OOM
                     if file_path.stat().st_size > self.max_file_size_kb * 1024:
-                        logger.warning(f"⚠️ Skipping large file: {file_path.name} (> {self.max_file_size_kb}KB)")
+                        logger.warning(
+                            f"⚠️ Skipping large file: {file_path.name} (> {self.max_file_size_kb}KB)"
+                        )
                         continue
                     python_files.append(file_path)
         return sorted(python_files)
@@ -104,7 +111,14 @@ class ProjectAnalyzer:
     def run_ruff_audit(self) -> List[Dict[str, Any]]:
         """Executes Ruff via subprocess and returns findings."""
         try:
-            cmd = ["ruff", "check", str(self.project_path), "--format", "json", "--quiet"]
+            cmd = [
+                "ruff",
+                "check",
+                str(self.project_path),
+                "--format",
+                "json",
+                "--quiet",
+            ]
             result = subprocess.run(cmd, capture_output=True, text=True, check=False)
             if result.stdout:
                 return json.loads(result.stdout)
@@ -113,17 +127,13 @@ class ProjectAnalyzer:
             logger.error(f"Error running Ruff: {e}")
             return []
 
-    def run(self):
-        """Runs the analysis pipeline."""
-        logger.info(f"🔍 Analyzing: {self.project_path}")
-        files = self.get_python_files()
+    def _run_parallel_analysis(
+        self, files: List[pathlib.Path], rules_config: dict
+    ) -> List[Dict[str, Any]]:
+        """Runs parallel analysis on all Python files."""
         tracker = ProgressTracker(len(files))
         modules_data = []
 
-        # Get rules configuration
-        rules_config = self.config.get("rules", {})
-
-        # Parallel analysis
         with ProcessPoolExecutor(max_workers=self.max_workers) as executor:
             futures = {
                 executor.submit(
@@ -137,75 +147,94 @@ class ProjectAnalyzer:
                     modules_data.append(res)
                 tracker.update(futures[future], 0)
 
-        # Ruff audit
-        ruff_findings = self.run_ruff_audit()
+        tracker.complete()
+        return modules_data
 
-        # Initialize analysis components
-        compliance = {"issues": [], "issues_count": 0}
-        structure = {"is_valid": True}
-        metadata = {"is_valid": True}
-        binaries = []
-        package_size = 0
+    def _run_qgis_specific_checks(
+        self, modules_data: List[Dict[str, Any]], rules_config: dict
+    ) -> tuple:
+        """Runs QGIS-specific validation checks."""
+        compliance = audit_qgis_standards(
+            modules_data, self.project_path, rules_config=rules_config
+        )
+
+        # Official repository audit
+        metadata_path = safe_path_resolve(self.project_path, "metadata.txt")
+        structure = validate_plugin_structure(self.project_path)
+        metadata = validate_metadata(metadata_path)
+
+        # Repository Compliance Checks
+        logger.info("Running QGIS repository compliance checks...")
+        binaries = scan_for_binaries(self.project_path, self.matcher)
+        package_size = calculate_package_size(self.project_path, self.matcher)
         url_status = {}
-        missing_resources = []
+        if metadata.get("is_valid") and "metadata" in metadata:
+            url_status = validate_metadata_urls(metadata["metadata"])
 
-        # QGIS-specific checks
-        if self.project_type == "qgis":
-            # QGIS compliance analysis
-            compliance = audit_qgis_standards(modules_data, self.project_path, rules_config=rules_config)
+        return compliance, structure, metadata, binaries, package_size, url_status
 
-            # Official repository audit
-            metadata_path = safe_path_resolve(self.project_path, "metadata.txt")
-            structure = validate_plugin_structure(self.project_path)
-            metadata = validate_metadata(metadata_path)
-
-            # Repository Compliance Checks
-            logger.info("Running QGIS repository compliance checks...")
-            binaries = scan_for_binaries(self.project_path, self.matcher)
-            package_size = calculate_package_size(self.project_path, self.matcher)
-            if metadata.get("is_valid") and "metadata" in metadata:
-                url_status = validate_metadata_urls(metadata["metadata"])
-
-        # Semantic Analysis (Generic but with resource validation for QGIS)
+    def _run_semantic_analysis(self, modules_data: List[Dict[str, Any]]) -> tuple:
+        """Runs semantic analysis (dependencies, resources)."""
         dep_graph = DependencyGraph()
         all_resource_usages = []
+        res_validator = None
 
         if self.project_type == "qgis":
             res_validator = ResourceValidator(self.project_path)
             res_validator.scan_project_resources(self.matcher)
 
         for m in modules_data:
-             dep_graph.add_node(m["path"], m)
-             if self.project_type == "qgis" and "resource_usages" in m:
-                 all_resource_usages.extend(m["resource_usages"])
+            dep_graph.add_node(m["path"], m)
+            if self.project_type == "qgis" and "resource_usages" in m:
+                all_resource_usages.extend(m["resource_usages"])
 
         dep_graph.build_edges(self.project_path)
         cycles = dep_graph.detect_cycles()
         metrics = dep_graph.get_coupling_metrics()
 
-        if self.project_type == "qgis":
+        missing_resources = []
+        if self.project_type == "qgis" and res_validator:
             missing_resources = res_validator.validate_usage(all_resource_usages)
 
-        # Calculate basic metrics
-        code_score, qgis_score = self._calculate_scores(
-            modules_data, compliance, structure, metadata, cycles, missing_resources, binaries, package_size
-        )
+        return cycles, metrics, missing_resources
 
+    def _build_analysis_results(
+        self,
+        files,
+        modules_data,
+        ruff_findings,
+        code_score,
+        maint_score,
+        qgis_score,
+        compliance,
+        structure,
+        metadata,
+        cycles,
+        metrics,
+        missing_resources,
+        binaries,
+        package_size,
+        url_status,
+    ) -> Dict[str, Any]:
+        """Builds the analysis results dictionary."""
         metrics_summary = {
             "total_files": len(files),
             "total_lines": sum(m["lines"] for m in modules_data),
-            "quality_score": round((code_score * 0.5) + (qgis_score * 0.5), 1) if self.project_type == "qgis" else round(code_score, 1),
+            "quality_score": round(code_score, 1),
+            "maintainability_score": round(maint_score, 1),
         }
+
+        if self.project_type == "qgis":
+            metrics_summary["overall_score"] = round(
+                (code_score * 0.5) + (qgis_score * 0.5), 1
+            )
 
         analyses = {
             "project_name": self.project_path.name,
             "project_type": self.project_type,
             "metrics": metrics_summary,
             "ruff_findings": ruff_findings,
-            "semantic": {
-                "circular_dependencies": cycles,
-                "coupling_metrics": metrics
-            },
+            "semantic": {"circular_dependencies": cycles, "coupling_metrics": metrics},
             "modules": modules_data,
         }
 
@@ -223,43 +252,130 @@ class ProjectAnalyzer:
                 "is_compliant": len(binaries) == 0 and package_size <= 20,
             }
 
-        # Save reports
+        return analyses
+
+    def _save_reports(self, analyses: Dict[str, Any]):
+        """Saves all analysis reports."""
         generate_markdown_summary(analyses, self.output_dir / "PROJECT_SUMMARY.md")
         if self.config.get("generate_html", True):
             generate_html_report(analyses, self.output_dir / "PROJECT_SUMMARY.html")
         save_json_context(analyses, self.output_dir / "project_context.json")
 
-        tracker.complete()
+    def run(self):
+        """Runs the analysis pipeline."""
+        logger.info(f"🔍 Analyzing: {self.project_path}")
+        files = self.get_python_files()
+        rules_config = self.config.get("rules", {})
+
+        # Parallel analysis
+        modules_data = self._run_parallel_analysis(files, rules_config)
+
+        # Ruff audit
+        ruff_findings = self.run_ruff_audit()
+
+        # Initialize defaults
+        compliance = {"issues": [], "issues_count": 0}
+        structure = {"is_valid": True}
+        metadata = {"is_valid": True}
+        binaries = []
+        package_size = 0
+        url_status = {}
+
+        # QGIS-specific checks
+        if self.project_type == "qgis":
+            compliance, structure, metadata, binaries, package_size, url_status = (
+                self._run_qgis_specific_checks(modules_data, rules_config)
+            )
+
+        # Semantic Analysis
+        cycles, metrics, missing_resources = self._run_semantic_analysis(modules_data)
+
+        # Calculate scores
+        code_score, maint_score, qgis_score = self._calculate_scores(
+            modules_data,
+            compliance,
+            structure,
+            metadata,
+            cycles,
+            missing_resources,
+            binaries,
+            package_size,
+        )
+
+        # Build results
+        analyses = self._build_analysis_results(
+            files,
+            modules_data,
+            ruff_findings,
+            code_score,
+            maint_score,
+            qgis_score,
+            compliance,
+            structure,
+            metadata,
+            cycles,
+            metrics,
+            missing_resources,
+            binaries,
+            package_size,
+            url_status,
+        )
+
+        # Save reports
+        self._save_reports(analyses)
+
         logger.info(f"✅ Analysis completed. Reports in: {self.output_dir}")
 
-        # Fail on error if strict mode is on and there are issues
-        if self.config.get("fail_on_error"):
-            if self.project_type == "qgis":
-                if (compliance.get("issues_count", 0) > 0
-                    or not structure["is_valid"]
-                    or not metadata["is_valid"]):
-                    logger.error("❌ Strict Mode: Critical QGIS compliance issues detected. Failing analysis.")
-                    return False
-            # For non-qgis, maybe check ruff or cycles later if needed
+        # Fail on error if strict mode is on
+        if self.config.get("fail_on_error") and self.project_type == "qgis":
+            if (
+                compliance.get("issues_count", 0) > 0
+                or not structure["is_valid"]
+                or not metadata["is_valid"]
+            ):
+                logger.error(
+                    "❌ Strict Mode: Critical QGIS compliance issues detected. Failing analysis."
+                )
+                return False
 
         return True
 
     def _calculate_scores(
-        self, modules_data, compliance, structure, metadata, cycles, missing_resources, binaries, package_size
+        self,
+        modules_data,
+        compliance,
+        structure,
+        metadata,
+        cycles,
+        missing_resources,
+        binaries,
+        package_size,
     ) -> tuple:
         """Calculates scores based on project type."""
         if not modules_data:
             return 0.0, 0.0
 
-        # 1. Base Code Quality
-        avg_comp = sum(m["complexity"] for m in modules_data) / len(modules_data)
-        code_score = max(0, 100 - (avg_comp * 3))
+        # 1. Base Code Quality (Module-based)
+        avg_mod_comp = sum(m["complexity"] for m in modules_data) / len(modules_data)
+        module_score = max(0, 100 - (avg_mod_comp * 3))
 
-        # Penalty for circular dependencies (major design flaw)
-        code_score -= len(cycles) * 10
+        # 2. Maintainability (Function-based)
+        all_func_comp = []
+        for m in modules_data:
+            for f in m.get("functions", []):
+                all_func_comp.append(f["complexity"])
+
+        avg_func_comp = (
+            sum(all_func_comp) / len(all_func_comp) if all_func_comp else 1.0
+        )
+        maintainability_score = max(0, 100 - (avg_func_comp * 5))
+
+        # Penalty for circular dependencies
+        module_score -= len(cycles) * 10
+        maintainability_score -= len(cycles) * 5
 
         if self.project_type == "generic":
-            return max(0, code_score), 0.0
+            return max(0, module_score), max(0, maintainability_score), 0.0
 
         # 2. QGIS Standards (only if QGIS project)
         qgis_score = 100
@@ -279,4 +395,4 @@ class ProjectAnalyzer:
         if package_size > 20:
             qgis_score -= 10  # Warning: size exceeds limit
 
-        return max(0, code_score), max(0, qgis_score)
+        return max(0, module_score), max(0, maintainability_score), max(0, qgis_score)

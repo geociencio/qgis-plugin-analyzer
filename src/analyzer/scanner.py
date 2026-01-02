@@ -41,7 +41,9 @@ def get_qgis_audit_rules() -> List[Dict[str, Any]]:
         },
         {
             "id": "MANUAL_RESOURCE_PATH",
-            "pattern": re.compile(r"QIcon\(\s*['\"](?!\s*:\/)[^'\"]*?(?:icons|images|ui)/"),
+            "pattern": re.compile(
+                r"QIcon\(\s*['\"](?!\s*:\/)[^'\"]*?(?:icons|images|ui)/"
+            ),
             "message": "Manual resource path detected. Use :/plugins/...",
             "severity": "medium",
         },
@@ -53,7 +55,9 @@ def get_qgis_audit_rules() -> List[Dict[str, Any]]:
         },
         {
             "id": "OBSOLETE_VARIANT",
-            "pattern": re.compile(r"QVariant\.(?:String|Int|Double|LongLong|Bool|Date|Time|DateTime)"),
+            "pattern": re.compile(
+                r"QVariant\.(?:String|Int|Double|LongLong|Bool|Date|Time|DateTime)"
+            ),
             "message": "Obsolete QVariant type constants detected. Use QMetaType or native types.",
             "severity": "medium",
         },
@@ -64,8 +68,20 @@ def _calculate_complexity(node: ast.AST) -> int:
     """Calculates Cyclomatic Complexity for a node."""
     complexity = 1
     for child in ast.walk(node):
-            if isinstance(child, (ast.If, ast.For, ast.While, ast.And, ast.Or, ast.ExceptHandler, ast.With, ast.AsyncWith)):
-                complexity += 1
+        if isinstance(
+            child,
+            (
+                ast.If,
+                ast.For,
+                ast.While,
+                ast.And,
+                ast.Or,
+                ast.ExceptHandler,
+                ast.With,
+                ast.AsyncWith,
+            ),
+        ):
+            complexity += 1
     return complexity
 
 
@@ -76,7 +92,9 @@ class QGISASTVisitor(ast.NodeVisitor):
         self.rel_path = rel_path
         self.issues = []
         self.resource_usages = []  # Stores found ":/..." paths
-        self.class_methods_stack = [] # Stack of sets containing method names for current class context
+        self.class_methods_stack = (
+            []
+        )  # Stack of sets containing method names for current class context
         self.rules_config = rules_config or {}
         self.i18n_methods = {
             "setText",
@@ -103,10 +121,12 @@ class QGISASTVisitor(ast.NodeVisitor):
         }
         return severity_map.get(config_severity, "medium")
 
-
-    def visit_Call(self, node: ast.Call):
-        # 1. Detect OBSOLETE_API (writeAsVectorFormat)
-        if isinstance(node.func, ast.Attribute) and node.func.attr == "writeAsVectorFormat":
+    def _check_obsolete_api(self, node: ast.Call):
+        """Detects obsolete API usage."""
+        if (
+            isinstance(node.func, ast.Attribute)
+            and node.func.attr == "writeAsVectorFormat"
+        ):
             if self._should_report("OBSOLETE_API"):
                 self.issues.append(
                     {
@@ -119,16 +139,15 @@ class QGISASTVisitor(ast.NodeVisitor):
                     }
                 )
 
-        # 2. Detect MISSING_I18N
+    def _check_missing_i18n(self, node: ast.Call):
+        """Detects untranslated UI strings."""
         if isinstance(node.func, ast.Attribute) and node.func.attr in self.i18n_methods:
-            # Check if the first argument is a literal string and NOT wrapped in self.tr() or similar
             if (
                 node.args
                 and isinstance(node.args[0], ast.Constant)
                 and isinstance(node.args[0].value, str)
             ):
                 val = node.args[0].value
-                # Ignore empty strings or strings starting with % (placeholders)
                 if val.strip() and not val.startswith("%"):
                     if self._should_report("MISSING_I18N"):
                         self.issues.append(
@@ -142,32 +161,46 @@ class QGISASTVisitor(ast.NodeVisitor):
                             }
                         )
 
-        # Detect POTENTIAL_MISSING_SLOT (Signal Safety)
-        if isinstance(node.func, ast.Attribute) and node.func.attr == 'connect':
-             if node.args:
+    def _check_missing_slot(self, node: ast.Call):
+        """Detects potentially missing signal slots."""
+        if isinstance(node.func, ast.Attribute) and node.func.attr == "connect":
+            if node.args:
                 arg = node.args[0]
-                # Check for self.method_name pattern
-                if isinstance(arg, ast.Attribute) and isinstance(arg.value, ast.Name) and arg.value.id == "self":
-                     slot = arg.attr
-                     if self.class_methods_stack:
-                         current_methods = self.class_methods_stack[-1]
-                         if slot not in current_methods:
-                             if self._should_report("POTENTIAL_MISSING_SLOT"):
-                                 self.issues.append({
-                                     "file": self.rel_path,
-                                     "line": node.lineno,
-                                     "type": "POTENTIAL_MISSING_SLOT",
-                                     "severity": self._get_severity("POTENTIAL_MISSING_SLOT"),
-                                     "message": f"Connected slot 'self.{slot}' not found in class definitions. Verify it is defined or inherited.",
-                                     "id": "POTENTIAL_MISSING_SLOT"
-                                 })
+                if (
+                    isinstance(arg, ast.Attribute)
+                    and isinstance(arg.value, ast.Name)
+                    and arg.value.id == "self"
+                ):
+                    slot = arg.attr
+                    if self.class_methods_stack:
+                        current_methods = self.class_methods_stack[-1]
+                        if slot not in current_methods:
+                            if self._should_report("POTENTIAL_MISSING_SLOT"):
+                                self.issues.append(
+                                    {
+                                        "file": self.rel_path,
+                                        "line": node.lineno,
+                                        "type": "POTENTIAL_MISSING_SLOT",
+                                        "severity": self._get_severity(
+                                            "POTENTIAL_MISSING_SLOT"
+                                        ),
+                                        "message": f"Connected slot 'self.{slot}' not found in class definitions. Verify it is defined or inherited.",
+                                        "id": "POTENTIAL_MISSING_SLOT",
+                                    }
+                                )
 
+    def visit_Call(self, node: ast.Call):
+        self._check_obsolete_api(node)
+        self._check_missing_i18n(node)
+        self._check_missing_slot(node)
         self.generic_visit(node)
 
     def visit_For(self, node: ast.For):
         # Detect SPATIAL_INDEX (Looping features without filter)
         # Check if iterating over .getFeatures()
-        if isinstance(node.iter, ast.Call) and isinstance(node.iter.func, ast.Attribute):
+        if isinstance(node.iter, ast.Call) and isinstance(
+            node.iter.func, ast.Attribute
+        ):
             if node.iter.func.attr == "getFeatures":
                 # If getFeatures() has no arguments or is passed QgsFeatureRequest() with no filter,
                 # it's potentially heavy.
@@ -177,26 +210,33 @@ class QGISASTVisitor(ast.NodeVisitor):
                 elif len(node.iter.args) == 1:
                     arg = node.iter.args[0]
                     # Check if it's a blank QgsFeatureRequest()
-                    if isinstance(arg, ast.Call) and isinstance(arg.func, ast.Name) and arg.func.id == "QgsFeatureRequest":
+                    if (
+                        isinstance(arg, ast.Call)
+                        and isinstance(arg.func, ast.Name)
+                        and arg.func.id == "QgsFeatureRequest"
+                    ):
                         if not arg.args and not arg.keywords:
                             warn = True
 
                 if warn and self._should_report("SPATIAL_INDEX"):
-                    self.issues.append({
-                        "file": self.rel_path,
-                        "line": node.lineno,
-                        "type": "SPATIAL_INDEX",
-                        "severity": self._get_severity("SPATIAL_INDEX"),
-                        "message": "Iteration over features with getFeatures() and no filter. Use a spatial index and QgsFeatureRequest for large layers.",
-                        "code": ast.unparse(node.iter)
-                    })
+                    self.issues.append(
+                        {
+                            "file": self.rel_path,
+                            "line": node.lineno,
+                            "type": "SPATIAL_INDEX",
+                            "severity": self._get_severity("SPATIAL_INDEX"),
+                            "message": "Iteration over features with getFeatures() and no filter. Use a spatial index and QgsFeatureRequest for large layers.",
+                            "code": ast.unparse(node.iter),
+                        }
+                    )
 
         self.generic_visit(node)
 
     def visit_ClassDef(self, node: ast.ClassDef):
         # Track methods defined in the current class context
         methods = {
-            item.name for item in node.body
+            item.name
+            for item in node.body
             if isinstance(item, (ast.FunctionDef, ast.AsyncFunctionDef))
         }
         self.class_methods_stack.append(methods)
@@ -206,7 +246,9 @@ class QGISASTVisitor(ast.NodeVisitor):
         has_init_gui = any(
             isinstance(m, ast.FunctionDef) and m.name == "initGui" for m in node.body
         )
-        has_unload = any(isinstance(m, ast.FunctionDef) and m.name == "unload" for m in node.body)
+        has_unload = any(
+            isinstance(m, ast.FunctionDef) and m.name == "unload" for m in node.body
+        )
 
         if has_init_gui and not has_unload:
             if self._should_report("MANDATORY_CLEANUP"):
@@ -261,7 +303,9 @@ class QGISASTVisitor(ast.NodeVisitor):
     def visit_Import(self, node: ast.Import):
         for alias in node.names:
             # 5. Detect QGIS_PROTECTED_MEMBER (QGS101/102)
-            if alias.name.startswith("qgis._") and not alias.name.startswith("qgis._3d"):
+            if alias.name.startswith("qgis._") and not alias.name.startswith(
+                "qgis._3d"
+            ):
                 if self._should_report("QGIS_PROTECTED_MEMBER"):
                     self.issues.append(
                         {
@@ -304,7 +348,9 @@ class QGISASTVisitor(ast.NodeVisitor):
     def visit_ImportFrom(self, node: ast.ImportFrom):
         if node.module:
             # Detect QGIS_PROTECTED_MEMBER
-            if node.module.startswith("qgis._") and not node.module.startswith("qgis._3d"):
+            if node.module.startswith("qgis._") and not node.module.startswith(
+                "qgis._3d"
+            ):
                 if self._should_report("QGIS_PROTECTED_MEMBER"):
                     self.issues.append(
                         {
@@ -345,7 +391,9 @@ class QGISASTVisitor(ast.NodeVisitor):
             # 7. Detect HEAVY_LOGIC_UI (QGS107)
             heavy_libs = {"pandas", "numpy", "scipy", "sklearn", "matplotlib"}
             is_ui_file = "gui" in self.rel_path.lower() or "ui" in self.rel_path.lower()
-            if is_ui_file and (node.module in heavy_libs or node.module.split(".")[0] in heavy_libs):
+            if is_ui_file and (
+                node.module in heavy_libs or node.module.split(".")[0] in heavy_libs
+            ):
                 if self._should_report("HEAVY_LOGIC_UI"):
                     self.issues.append(
                         {
@@ -360,8 +408,80 @@ class QGISASTVisitor(ast.NodeVisitor):
         self.generic_visit(node)
 
 
+# Helper functions for AST extraction
+
+
+def _extract_functions_from_ast(tree):
+    """Extracts function information from AST."""
+    functions = []
+    for node in ast.walk(tree):
+        if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)):
+            func_complexity = _calculate_complexity(node)
+            functions.append(
+                {
+                    "name": node.name,
+                    "args": [arg.arg for arg in node.args.args],
+                    "line": node.lineno,
+                    "end_line": getattr(node, "end_lineno", node.lineno),
+                    "complexity": func_complexity,
+                    "docstring": ast.get_docstring(node) is not None,
+                }
+            )
+    return functions
+
+
+def _extract_classes_from_ast(tree):
+    """Extracts class information from AST."""
+    classes = []
+    for node in ast.walk(tree):
+        if isinstance(node, ast.ClassDef):
+            bases = [ast.unparse(b) for b in node.bases]
+            classes.append(f"{node.name}({', '.join(bases)})" if bases else node.name)
+    return classes
+
+
+def _extract_imports_from_ast(tree):
+    """Extracts import information from AST."""
+    imports = []
+    for node in ast.walk(tree):
+        if isinstance(node, ast.Import):
+            imports.extend(n.name for n in node.names)
+        elif isinstance(node, ast.ImportFrom):
+            if node.module:
+                imports.append(node.module)
+    return sorted(set(imports))
+
+
+def _calculate_module_complexity(tree):
+    """Calculates module-level complexity."""
+    complexity = 1
+    for node in ast.walk(tree):
+        if isinstance(
+            node, (ast.If, ast.For, ast.While, ast.And, ast.Or, ast.ExceptHandler)
+        ):
+            complexity += 1
+    return complexity
+
+
+def _check_main_guard(tree):
+    """Checks if module has __name__ == '__main__' guard."""
+    for node in ast.walk(tree):
+        if isinstance(node, ast.If):
+            if isinstance(node.test, ast.Compare) and isinstance(
+                node.test.left, ast.Name
+            ):
+                if node.test.left.id == "__name__":
+                    for cmp in node.test.comparators:
+                        if isinstance(cmp, ast.Constant) and cmp.value == "__main__":
+                            return True
+    return False
+
+
 def analyze_module_worker(
-    py_file: pathlib.Path, project_path: pathlib.Path, cached_data: Optional[Dict] = None, rules_config: dict = None
+    py_file: pathlib.Path,
+    project_path: pathlib.Path,
+    cached_data: Optional[Dict] = None,
+    rules_config: dict = None,
 ) -> Optional[Dict]:
     """Worker for module analysis (executed in sub-processes)."""
     try:
@@ -392,42 +512,12 @@ def analyze_module_worker(
                 "ast_issues": [],
             }
 
-        # Info extraction
-        functions = []
-        classes = []
-        imports = []
-        module_complexity = 1
-        has_main = False
-
-        for node in ast.walk(tree):
-            if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)):
-                func_complexity = _calculate_complexity(node)
-                functions.append({
-                    "name": node.name,
-                    "args": [arg.arg for arg in node.args.args],
-                    "line": node.lineno,
-                    "end_line": getattr(node, "end_lineno", node.lineno),
-                    "complexity": func_complexity,
-                    "docstring": ast.get_docstring(node) is not None
-                })
-            elif isinstance(node, ast.ClassDef):
-                bases = [ast.unparse(b) for b in node.bases]
-                classes.append(f"{node.name}({', '.join(bases)})" if bases else node.name)
-            elif isinstance(node, ast.Import):
-                imports.extend(n.name for n in node.names)
-            elif isinstance(node, ast.ImportFrom):
-                if node.module:
-                    imports.append(node.module)
-            elif isinstance(node, (ast.If, ast.For, ast.While, ast.And, ast.Or, ast.ExceptHandler)):
-                module_complexity += 1
-
-            # Check main guard
-            if isinstance(node, ast.If) and not has_main:
-                if isinstance(node.test, ast.Compare) and isinstance(node.test.left, ast.Name):
-                    if node.test.left.id == "__name__":
-                        for cmp in node.test.comparators:
-                            if isinstance(cmp, ast.Constant) and cmp.value == "__main__":
-                                has_main = True
+        # Extract information using helper functions
+        functions = _extract_functions_from_ast(tree)
+        classes = _extract_classes_from_ast(tree)
+        imports = _extract_imports_from_ast(tree)
+        module_complexity = _calculate_module_complexity(tree)
+        has_main = _check_main_guard(tree)
 
         # Custom AST Audit
         visitor = QGISASTVisitor(rel_path, rules_config=rules_config)
@@ -438,7 +528,7 @@ def analyze_module_worker(
             "lines": content.count("\n") + 1,
             "functions": functions,
             "classes": classes,
-            "imports": sorted(set(imports)),
+            "imports": imports,
             "complexity": module_complexity,
             "has_main": has_main,
             "docstrings": {
@@ -454,7 +544,9 @@ def analyze_module_worker(
         return None
 
 
-def audit_qgis_standards(modules_data: List[Dict], project_path: pathlib.Path, rules_config: dict = None) -> Dict[str, Any]:
+def audit_qgis_standards(
+    modules_data: List[Dict], project_path: pathlib.Path, rules_config: dict = None
+) -> Dict[str, Any]:
     """Executes regex-based QGIS standards audit."""
     rules = get_qgis_audit_rules()
     results = {"issues": [], "issues_count": 0}
@@ -469,19 +561,21 @@ def audit_qgis_standards(modules_data: List[Dict], project_path: pathlib.Path, r
         content = module.get("content")
 
         if content is None and path:
-             full_path = project_path / path
-             if full_path.exists():
-                 try:
-                     content = full_path.read_text(encoding="utf-8", errors="replace")
-                 except Exception:
-                     continue
+            full_path = project_path / path
+            if full_path.exists():
+                try:
+                    content = full_path.read_text(encoding="utf-8", errors="replace")
+                except Exception:
+                    continue
 
         if content is None:
             continue
 
         for rule in rules:
             rule_id = rule["id"]
-            severity_val = rules_config.get(rule_id, "warning") if rules_config else "warning"
+            severity_val = (
+                rules_config.get(rule_id, "warning") if rules_config else "warning"
+            )
             if severity_val == "ignore":
                 continue
 
@@ -506,3 +600,67 @@ def audit_qgis_standards(modules_data: List[Dict], project_path: pathlib.Path, r
     return results
 
 
+def _extract_functions_from_ast(tree):
+    """Extracts function information from AST."""
+    functions = []
+    for node in ast.walk(tree):
+        if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)):
+            func_complexity = _calculate_complexity(node)
+            functions.append(
+                {
+                    "name": node.name,
+                    "args": [arg.arg for arg in node.args.args],
+                    "line": node.lineno,
+                    "end_line": getattr(node, "end_lineno", node.lineno),
+                    "complexity": func_complexity,
+                    "docstring": ast.get_docstring(node) is not None,
+                }
+            )
+    return functions
+
+
+def _extract_classes_from_ast(tree):
+    """Extracts class information from AST."""
+    classes = []
+    for node in ast.walk(tree):
+        if isinstance(node, ast.ClassDef):
+            bases = [ast.unparse(b) for b in node.bases]
+            classes.append(f"{node.name}({', '.join(bases)})" if bases else node.name)
+    return classes
+
+
+def _extract_imports_from_ast(tree):
+    """Extracts import information from AST."""
+    imports = []
+    for node in ast.walk(tree):
+        if isinstance(node, ast.Import):
+            imports.extend(n.name for n in node.names)
+        elif isinstance(node, ast.ImportFrom):
+            if node.module:
+                imports.append(node.module)
+    return sorted(set(imports))
+
+
+def _calculate_module_complexity(tree):
+    """Calculates module-level complexity."""
+    complexity = 1
+    for node in ast.walk(tree):
+        if isinstance(
+            node, (ast.If, ast.For, ast.While, ast.And, ast.Or, ast.ExceptHandler)
+        ):
+            complexity += 1
+    return complexity
+
+
+def _check_main_guard(tree):
+    """Checks if module has __name__ == '__main__' guard."""
+    for node in ast.walk(tree):
+        if isinstance(node, ast.If):
+            if isinstance(node.test, ast.Compare) and isinstance(
+                node.test.left, ast.Name
+            ):
+                if node.test.left.id == "__name__":
+                    for cmp in node.test.comparators:
+                        if isinstance(cmp, ast.Constant) and cmp.value == "__main__":
+                            return True
+    return False

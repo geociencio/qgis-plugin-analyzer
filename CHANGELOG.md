@@ -5,6 +5,21 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.7.0] - 2026-01-02
+
+### Added
+- **Dual Scoring System**: Introduced "Module Stability Score" (file-level) and "Code Maintainability Score" (function-level) for a more nuanced view of project health.
+- **Maintainability Metrics**: Function-level complexity is now explicitly tracked and weighted in the overall quality report.
+
+### Improved
+- **Extreme Refactoring**: Successfully refactored all 8 high-complexity functions identified in the core engine, CLI, and reporting layers, reducing their individual cyclomatic complexity by up to 80%.
+- **Zero High Complexity**: Achieved a 100% reduction in `HIGH_COMPLEXITY` violations (>15 CC) across the entire codebase.
+- **Modular Reporting**: Refactored `reporters.py` into a modular assembly pipeline, making HTML and Markdown generation significantly more maintainable.
+- **English Documentation**: Updated project metadata and descriptions to English to align with international standards.
+
+### Fixed
+- **Score Reporting**: Fixed "Score: N/A" issue in `parse_report.py` by correctly extracting metrics from nested JSON objects.
+
 ## [0.6.2] - 2026-01-02
 
 ### Added

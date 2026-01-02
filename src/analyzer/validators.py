@@ -37,9 +37,7 @@ def scan_for_binaries(project_path: pathlib.Path, ignore_matcher=None) -> List[s
     return binaries
 
 
-def calculate_package_size(
-    project_path: pathlib.Path, ignore_matcher=None
-) -> float:
+def calculate_package_size(project_path: pathlib.Path, ignore_matcher=None) -> float:
     """
     Calculates total package size in MB.
 
@@ -186,7 +184,6 @@ def validate_plugin_structure(project_path: pathlib.Path) -> Dict[str, any]:
         "has_python_files": has_python,
         "is_valid": all(found.values()) and has_factory and has_python,
     }
-
 
 
 def validate_metadata(metadata_path: pathlib.Path) -> Dict[str, any]:

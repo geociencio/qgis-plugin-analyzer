@@ -27,20 +27,31 @@ from .engine import ProjectAnalyzer
 from .utils import logger, setup_logger
 
 
-def main():
+def _setup_argument_parser():
+    """Sets up and returns the argument parser with all subcommands."""
     parser = argparse.ArgumentParser(
         description="QGIS Plugin Analyzer - A guardian for your PyQGIS code"
     )
     subparsers = parser.add_subparsers(dest="command", help="Command to execute")
 
     # Analyze Command
-    analyze_parser = subparsers.add_parser("analyze", help="Analyze an existing QGIS plugin")
-    analyze_parser.add_argument("project_path", help="Path to the QGIS project to analyze")
-    analyze_parser.add_argument(
-        "-o", "--output", help="Output directory for reports", default="./analysis_results"
+    analyze_parser = subparsers.add_parser(
+        "analyze", help="Analyze an existing QGIS plugin"
     )
     analyze_parser.add_argument(
-        "-p", "--profile", help="Configuration profile from pyproject.toml", default="default"
+        "project_path", help="Path to the QGIS project to analyze"
+    )
+    analyze_parser.add_argument(
+        "-o",
+        "--output",
+        help="Output directory for reports",
+        default="./analysis_results",
+    )
+    analyze_parser.add_argument(
+        "-p",
+        "--profile",
+        help="Configuration profile from pyproject.toml",
+        default="default",
     )
 
     # Fix Command
@@ -56,10 +67,15 @@ def main():
         "--apply", action="store_true", help="Apply fixes (disables dry-run)"
     )
     fix_parser.add_argument(
-        "--auto-approve", action="store_true", help="Apply all fixes without confirmation"
+        "--auto-approve",
+        action="store_true",
+        help="Apply all fixes without confirmation",
     )
     fix_parser.add_argument(
-        "-p", "--profile", help="Configuration profile from pyproject.toml", default="default"
+        "-p",
+        "--profile",
+        help="Configuration profile from pyproject.toml",
+        default="default",
     )
     fix_parser.add_argument(
         "--rules",
@@ -73,8 +89,105 @@ def main():
     # Init Command
     subparsers.add_parser("init", help="Initialize a new .analyzerignore with defaults")
 
+    return parser
+
+
+def _handle_fix_command(args):
+    """Handles the fix command."""
+    import json
+
+    from .fixer import AutoFixer
+
+    project_path = pathlib.Path(args.path).resolve()
+    if not project_path.exists():
+        print(f"❌ Path not found: {project_path}")
+        return False
+
+    # Run analysis first
+    print("🔍 Analyzing project for fixable issues...")
+    analyzer = ProjectAnalyzer(
+        str(project_path),
+        args.output if hasattr(args, "output") else "./analysis_results",
+        args.profile if hasattr(args, "profile") else "default",
+    )
+    analyzer.run()
+
+    # Load issues
+    context_file = analyzer.output_dir / "project_context.json"
+    with open(context_file) as f:
+        context = json.load(f)
+
+    all_issues = []
+    for module in context.get("modules", []):
+        all_issues.extend(module.get("ast_issues", []))
+
+    if args.rules:
+        rule_ids = [r.strip() for r in args.rules.split(",")]
+        all_issues = [i for i in all_issues if i.get("type") in rule_ids]
+
+    fixer = AutoFixer(project_path, dry_run=not args.apply)
+    fixable = fixer.get_fixable_issues(all_issues)
+
+    if not fixable:
+        print("✅ No fixable issues found!")
+        return True
+
+    print(f"\n📋 Found {len(fixable)} fixable issue(s)")
+    if not args.apply:
+        print("\n⚠️  DRY RUN MODE (use --apply to execute changes)\n")
+
+    stats = fixer.apply_fixes(fixable, interactive=not args.auto_approve)
+    print(
+        f"\n📊 Summary: Applied: {stats['applied']}, Skipped: {stats['skipped']}, Failed: {stats['failed']}"
+    )
+    return True
+
+
+def _handle_analyze_command(args):
+    """Handles the analyze command."""
+    analyzer = ProjectAnalyzer(args.project_path, args.output, args.profile)
+    analyzer.run()
+
+
+def _handle_list_rules_command():
+    """Handles the list-rules command."""
+    from .scanner import get_qgis_audit_rules
+
+    rules = get_qgis_audit_rules()
+    print("\n📋 QGIS Audit Rules Catalog:")
+    print("=" * 30)
+    for r in rules:
+        print(f"- [{r['severity'].upper()}] {r['id']}: {r['message']}")
+    print(f"\nTotal: {len(rules)} rules.\n")
+
+
+def _handle_init_command():
+    """Handles the init command."""
+    from .utils import DEFAULT_EXCLUDES
+
+    ignore_file = pathlib.Path(".analyzerignore")
+    if ignore_file.exists():
+        print("⚠️  .analyzerignore already exists. Skipping.")
+    else:
+        with open(ignore_file, "w") as f:
+            f.write("# QGIS Plugin Analyzer Ignore File\n")
+            for p in DEFAULT_EXCLUDES:
+                f.write(f"{p}\n")
+        print("✅ Created .analyzerignore with default excludes.")
+
+
+def main():
+    parser = _setup_argument_parser()
+
     # Legacy support / default to analyze if no command provided
-    if len(sys.argv) > 1 and sys.argv[1] not in ["analyze", "fix", "list-rules", "init", "-h", "--help"]:
+    if len(sys.argv) > 1 and sys.argv[1] not in [
+        "analyze",
+        "fix",
+        "list-rules",
+        "init",
+        "-h",
+        "--help",
+    ]:
         # If the first argument is a path (doesn't start with -), assume 'analyze'
         if not sys.argv[1].startswith("-"):
             sys.argv.insert(1, "analyze")
@@ -88,69 +201,13 @@ def main():
 
     try:
         if args.command == "fix":
-            from .fixer import AutoFixer
-
-            project_path = pathlib.Path(args.path).resolve()
-            if not project_path.exists():
-                print(f"❌ Path not found: {project_path}")
-                return False
-
-            # Run analysis first
-            print("🔍 Analyzing project for fixable issues...")
-            analyzer = ProjectAnalyzer(str(project_path), args.output if hasattr(args, 'output') else "./analysis_results", args.profile if hasattr(args, 'profile') else "default")
-            analyzer.run()
-
-            # Load issues
-            import json
-            context_file = analyzer.output_dir / "project_context.json"
-            with open(context_file) as f:
-                context = json.load(f)
-
-            all_issues = []
-            for module in context.get("modules", []):
-                all_issues.extend(module.get("ast_issues", []))
-
-            if args.rules:
-                rule_ids = [r.strip() for r in args.rules.split(",")]
-                all_issues = [i for i in all_issues if i.get("type") in rule_ids]
-
-            fixer = AutoFixer(project_path, dry_run=not args.apply)
-            fixable = fixer.get_fixable_issues(all_issues)
-
-            if not fixable:
-                print("✅ No fixable issues found!")
-                return True
-
-            print(f"\n📋 Found {len(fixable)} fixable issue(s)")
-            if not args.apply:
-                print("\n⚠️  DRY RUN MODE (use --apply to execute changes)\n")
-
-            stats = fixer.apply_fixes(fixable, interactive=not args.auto_approve)
-            print(f"\n📊 Summary: Applied: {stats['applied']}, Skipped: {stats['skipped']}, Failed: {stats['failed']}")
-            return True
-
+            _handle_fix_command(args)
         elif args.command == "analyze":
-            analyzer = ProjectAnalyzer(args.project_path, args.output, args.profile)
-            analyzer.run()
+            _handle_analyze_command(args)
         elif args.command == "list-rules":
-            from .scanner import get_qgis_audit_rules
-            rules = get_qgis_audit_rules()
-            print("\n📋 QGIS Audit Rules Catalog:")
-            print("=" * 30)
-            for r in rules:
-                print(f"- [{r['severity'].upper()}] {r['id']}: {r['message']}")
-            print(f"\nTotal: {len(rules)} rules.\n")
+            _handle_list_rules_command()
         elif args.command == "init":
-            ignore_file = pathlib.Path(".analyzerignore")
-            if ignore_file.exists():
-                print("⚠️  .analyzerignore already exists. Skipping.")
-            else:
-                from .utils import DEFAULT_EXCLUDES
-                with open(ignore_file, "w") as f:
-                    f.write("# QGIS Plugin Analyzer Ignore File\n")
-                    for p in DEFAULT_EXCLUDES:
-                        f.write(f"{p}\n")
-                print("✅ Created .analyzerignore with default excludes.")
+            _handle_init_command()
         else:
             parser.print_help()
 

@@ -59,6 +59,7 @@ def setup_logger(output_dir: pathlib.Path) -> logging.Logger:
 
     return logger
 
+
 def safe_path_resolve(base_path: pathlib.Path, target_path_str: str) -> pathlib.Path:
     """
     Resolves a target path relative to a base path and ensures it stays within it.
@@ -82,6 +83,46 @@ def safe_path_resolve(base_path: pathlib.Path, target_path_str: str) -> pathlib.
 logger = logging.getLogger("qgis_analyzer")
 
 
+def _parse_toml_value(val_str: str) -> Any:
+    """Converts a TOML value string to appropriate Python type."""
+    if val_str.lower() == "true":
+        return True
+    elif val_str.lower() == "false":
+        return False
+    elif re.match(r"^-?\d+$", val_str):
+        return int(val_str)
+    elif (val_str.startswith('"') and val_str.endswith('"')) or (
+        val_str.startswith("'") and val_str.endswith("'")
+    ):
+        return val_str[1:-1]
+    return val_str
+
+
+def _process_section_header(line: str, profile_regex, rules_regex) -> tuple:
+    """Processes a TOML section header. Returns (profile_name, is_rules_section)."""
+    rules_match = rules_regex.match(line)
+    if rules_match:
+        return rules_match.group(1), True
+
+    profile_match = profile_regex.match(line)
+    if profile_match:
+        return profile_match.group(1), False
+
+    return None, False
+
+
+def _ensure_profile_structure(data: dict, profile_name: str, is_rules: bool):
+    """Ensures the profile structure exists in the data dictionary."""
+    if profile_name not in data["tool"]["qgis-analyzer"]["profiles"]:
+        data["tool"]["qgis-analyzer"]["profiles"][profile_name] = {}
+
+    if (
+        is_rules
+        and "rules" not in data["tool"]["qgis-analyzer"]["profiles"][profile_name]
+    ):
+        data["tool"]["qgis-analyzer"]["profiles"][profile_name]["rules"] = {}
+
+
 def _minimal_toml_load(file_obj) -> Dict[str, Any]:
     """
     EXTREMELY minimal TOML parser focused ONLY on extracting
@@ -93,8 +134,8 @@ def _minimal_toml_load(file_obj) -> Dict[str, Any]:
     in_rules_section = False
 
     # Regex patterns
-    profile_regex = re.compile(r'^\[tool\.qgis-analyzer\.profiles\.([\w-]+)\]')
-    rules_regex = re.compile(r'^\[tool\.qgis-analyzer\.profiles\.([\w-]+)\.rules\]')
+    profile_regex = re.compile(r"^\[tool\.qgis-analyzer\.profiles\.([\w-]+)\]")
+    rules_regex = re.compile(r"^\[tool\.qgis-analyzer\.profiles\.([\w-]+)\.rules\]")
 
     try:
         content = file_obj.read().decode("utf-8")
@@ -105,51 +146,33 @@ def _minimal_toml_load(file_obj) -> Dict[str, Any]:
 
             # Check for section headers
             if line.startswith("[") and line.endswith("]"):
-                # Check for rules section first
-                rules_match = rules_regex.match(line)
-                if rules_match:
-                    current_profile = rules_match.group(1)
-                    in_rules_section = True
-                    if current_profile not in data["tool"]["qgis-analyzer"]["profiles"]:
-                        data["tool"]["qgis-analyzer"]["profiles"][current_profile] = {}
-                    if "rules" not in data["tool"]["qgis-analyzer"]["profiles"][current_profile]:
-                        data["tool"]["qgis-analyzer"]["profiles"][current_profile]["rules"] = {}
-                    continue
-
-                # Check for profile section
-                profile_match = profile_regex.match(line)
-                if profile_match:
-                    current_profile = profile_match.group(1)
+                profile_name, is_rules = _process_section_header(
+                    line, profile_regex, rules_regex
+                )
+                if profile_name:
+                    current_profile = profile_name
+                    in_rules_section = is_rules
+                    _ensure_profile_structure(data, current_profile, in_rules_section)
+                else:
+                    # Other section, reset
+                    current_profile = None
                     in_rules_section = False
-                    if current_profile not in data["tool"]["qgis-analyzer"]["profiles"]:
-                        data["tool"]["qgis-analyzer"]["profiles"][current_profile] = {}
-                    continue
-
-                # Other section, reset
-                current_profile = None
-                in_rules_section = False
                 continue
 
             # Key-value pair
             if current_profile and "=" in line:
                 key, val = line.split("=", 1)
                 key = key.strip()
-                val = val.strip()
-
-                # Basic type conversion
-                if val.lower() == "true":
-                    val = True
-                elif val.lower() == "false":
-                    val = False
-                elif re.match(r'^-?\d+$', val):
-                    val = int(val)
-                elif (val.startswith('"') and val.endswith('"')) or (val.startswith("'") and val.endswith("'")):
-                    val = val[1:-1]
+                val = _parse_toml_value(val.strip())
 
                 if in_rules_section:
-                    data["tool"]["qgis-analyzer"]["profiles"][current_profile]["rules"][key] = val
+                    data["tool"]["qgis-analyzer"]["profiles"][current_profile]["rules"][
+                        key
+                    ] = val
                 else:
-                    data["tool"]["qgis-analyzer"]["profiles"][current_profile][key] = val
+                    data["tool"]["qgis-analyzer"]["profiles"][current_profile][
+                        key
+                    ] = val
     except Exception as e:
         logger.error(f"Error in minimal TOML parser: {e}")
 
@@ -263,10 +286,20 @@ def timeout_manager(seconds: int):
 
 # Default patterns to ignore if not specified
 DEFAULT_EXCLUDE = {
-    ".venv/", "venv/", "__pycache__/", ".git/", ".github/",
-    "build/", "dist/", ".pytest_cache/", ".ruff_cache/", ".mypy_cache/",
-    ".analyzerignore", "analysis_results/"
+    ".venv/",
+    "venv/",
+    "__pycache__/",
+    ".git/",
+    ".github/",
+    "build/",
+    "dist/",
+    ".pytest_cache/",
+    ".ruff_cache/",
+    ".mypy_cache/",
+    ".analyzerignore",
+    "analysis_results/",
 }
+
 
 class IgnoreMatcher:
     """Handles .analyzerignore patterns using fnmatch."""
@@ -274,7 +307,9 @@ class IgnoreMatcher:
     def __init__(self, root_path: pathlib.Path, patterns: List[str]):
         self.root_path = root_path
         # Combine user patterns with defaults
-        all_patterns = set(p.strip() for p in patterns if p.strip() and not p.startswith("#"))
+        all_patterns = set(
+            p.strip() for p in patterns if p.strip() and not p.startswith("#")
+        )
         all_patterns.update(DEFAULT_EXCLUDE)
         self.patterns = list(all_patterns)
         self._cache = {}
@@ -310,7 +345,9 @@ class IgnoreMatcher:
                 # 2. it matches if str_rel_path starts with directory + os.sep
                 if is_anchored:
                     # Anchored: must be at the root of rel_path
-                    if str_rel_path == clean_pattern or str_rel_path.startswith(clean_pattern + os.sep):
+                    if str_rel_path == clean_pattern or str_rel_path.startswith(
+                        clean_pattern + os.sep
+                    ):
                         return True
                 else:
                     # Non-anchored: can be anywhere in rel_path
@@ -327,7 +364,9 @@ class IgnoreMatcher:
                     if fnmatch.fnmatch(str_rel_path, clean_pattern):
                         return True
                     # Match basename (like gitignore for simple names)
-                    if "/" not in clean_pattern and fnmatch.fnmatch(name, clean_pattern):
+                    if "/" not in clean_pattern and fnmatch.fnmatch(
+                        name, clean_pattern
+                    ):
                         return True
                     # Fallback for patterns that might be deep: check if any part of the path matches
                     # e.g. "docs/*.md" matching "src/docs/ref.md" -> not standard gitignore but common expectation
@@ -372,7 +411,9 @@ def load_profile_config(
 
         if not profile_data:
             if profile_name != "default":
-                logger.warning(f"Profile '{profile_name}' not found. Using default values.")
+                logger.warning(
+                    f"Profile '{profile_name}' not found. Using default values."
+                )
             return default_config
 
         # Extract rules configuration
