@@ -5,7 +5,20 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [0.7.0] - 2026-01-02
+## [0.8.0] - 2026-01-02
+
+### Added
+- **Standardized Scoring System**: Implemented objective, industry-standard metrics for project evaluation.
+    - **Maintainability Index (MI)**: Integrated the standard SEI formula for code health assessment.
+    - **Pylint-Style Weighted Scoring**: Integrated Ruff findings with severity-based weighting (Errors: 5x, Others: 1x).
+- **Official Scoring Documentation**: Added `docs/SCORING_STANDARDS.md` to formally define project rating criteria.
+
+### Improved
+- **High-Contrast UI**: Fixed "lost letters" issue in HTML report score cards by ensuring high contrast between text and background.
+- **Reporting Labels**: Added explicit labels to score cards in the HTML summary for better scannability.
+
+### Fixed
+- **Contrast Legibility**: Resolved low-contrast text rendering in the project summary dashboard.
 
 ### Added
 - **Dual Scoring System**: Introduced "Module Stability Score" (file-level) and "Code Maintainability Score" (function-level) for a more nuanced view of project health.

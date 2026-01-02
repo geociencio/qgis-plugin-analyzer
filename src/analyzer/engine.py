@@ -19,6 +19,7 @@
 #  ***************************************************************************/
 
 import json
+import math
 import os
 import pathlib
 import subprocess
@@ -293,6 +294,7 @@ class ProjectAnalyzer:
         # Calculate scores
         code_score, maint_score, qgis_score = self._calculate_scores(
             modules_data,
+            ruff_findings,
             compliance,
             structure,
             metadata,
@@ -343,6 +345,7 @@ class ProjectAnalyzer:
     def _calculate_scores(
         self,
         modules_data,
+        ruff_findings,
         compliance,
         structure,
         metadata,
@@ -351,15 +354,22 @@ class ProjectAnalyzer:
         binaries,
         package_size,
     ) -> tuple:
-        """Calculates scores based on project type."""
+        """Calculates scores based on project type and standardized metrics."""
         if not modules_data:
-            return 0.0, 0.0
+            return 0.0, 0.0, 0.0
 
-        # 1. Base Code Quality (Module-based)
-        avg_mod_comp = sum(m["complexity"] for m in modules_data) / len(modules_data)
-        module_score = max(0, 100 - (avg_mod_comp * 3))
+        # 1. Module stability based on Maintainability Index (MI)
+        # Formula: MI = max(0, (171 - 0.23 * CC - 16.2 * ln(SLOC)) * 100 / 171)
+        mi_scores = []
+        for m in modules_data:
+            cc = m.get("complexity", 1)
+            sloc = max(1, m.get("lines", 1))
+            mi = (171 - 0.23 * cc - 16.2 * math.log(sloc)) * 100 / 171
+            mi_scores.append(max(0, mi))
 
-        # 2. Maintainability (Function-based)
+        module_score = sum(mi_scores) / len(mi_scores) if mi_scores else 0.0
+
+        # 2. Maintainability based on Function Complexity
         all_func_comp = []
         for m in modules_data:
             for f in m.get("functions", []):
@@ -368,17 +378,37 @@ class ProjectAnalyzer:
         avg_func_comp = (
             sum(all_func_comp) / len(all_func_comp) if all_func_comp else 1.0
         )
-        maintainability_score = max(0, 100 - (avg_func_comp * 5))
+        # Function complexity score: 100 is perfect, -5 per point over 10
+        func_score = max(0, 100 - (max(0, avg_func_comp - 10) * 5))
 
-        # Penalty for circular dependencies
-        module_score -= len(cycles) * 10
-        maintainability_score -= len(cycles) * 5
+        # 3. Lint Scoring (Pylint style)
+        # 10 - ((5*E + W + R + C) / statements) * 10
+        total_lines = sum(m.get("lines", 0) for m in modules_data)
+        errors = 0
+        others = 0
+        for find in ruff_findings:
+            code = find.get("code", "")
+            if code.startswith(("E", "F")):
+                errors += 1
+            else:
+                others += 1
+
+        lint_penalty = ((5 * errors + others) / max(1, total_lines / 10)) * 10
+        lint_score = max(0, 100 - lint_penalty)
+
+        # Composite Maintainability Score
+        maintainability_score = (func_score * 0.7) + (lint_score * 0.3)
+
+        # Global penalties
+        penalty = len(cycles) * 10
+        module_score = max(0, module_score - penalty)
+        maintainability_score = max(0, maintainability_score - penalty)
 
         if self.project_type == "generic":
-            return max(0, module_score), max(0, maintainability_score), 0.0
+            return round(module_score, 1), round(maintainability_score, 1), 0.0
 
-        # 2. QGIS Standards (only if QGIS project)
-        qgis_score = 100
+        # 4. QGIS Standards (only if QGIS project)
+        qgis_score = 100.0
         # Penalty for technical findings
         qgis_score -= compliance.get("issues_count", 0) * 2
         # Penalty for repository missing files/metadata
@@ -386,13 +416,15 @@ class ProjectAnalyzer:
             qgis_score -= 20
         if not metadata.get("is_valid", True):
             qgis_score -= 10
-
         # Penalty for missing resources
         qgis_score -= len(missing_resources) * 5
-
         # Repository compliance penalties
-        qgis_score -= len(binaries) * 50  # Critical: binaries prohibited
+        qgis_score -= len(binaries) * 50
         if package_size > 20:
-            qgis_score -= 10  # Warning: size exceeds limit
+            qgis_score -= 10
 
-        return max(0, module_score), max(0, maintainability_score), max(0, qgis_score)
+        return (
+            round(module_score, 1),
+            round(maintainability_score, 1),
+            round(max(0, qgis_score), 1),
+        )
