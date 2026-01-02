@@ -10,9 +10,12 @@ The **QGIS Plugin Analyzer** is a static analysis tool designed specifically for
 
 ## ✨ Main Features
 
+- **High-Performance Engine**: Parallel analysis powered by `ProcessPoolExecutor` for ultra-fast execution on multi-core systems.
+- **Project Auto-Detection**: Intelligently distinguishes between official QGIS Plugins and Generic Python Projects, tailoring validation logic accordingly.
 - **Deep Semantic Analysis**: Cross-file dependency graphing, circular import detection, and module coupling metrics.
 - **Interactive Auto-Fix Mode**: Automatically fix common QGIS issues (GDAL imports, PyQt bridge, logging, i18n) with safety checks.
 - **Official Repository Compliance**: Proactive validation of binaries, package size, and metadata URLs.
+- **Real-time Progress**: CLI feedback with a progress bar and ETA tracking.
 - **Enhanced Configuration Profiles**: Rule-level severity control (`error`, `warning`, `info`, `ignore`) via `pyproject.toml`.
 - **Integrated Ruff Analysis**: Combines custom QGIS rules with the fastest linter in the Python ecosystem.
 - **Qt Resource Validation**: Detect missing or broken resource paths (`:/plugins/...`) in your code.
@@ -36,7 +39,7 @@ The **QGIS Plugin Analyzer** is a static analysis tool designed specifically for
 
 ### Key Differentiators
 
-1.  **Hybrid AST & Semantic Engine**: Deep understanding of cross-file relationships and Qt-specific patterns.
+1.  **High-Performance Hybrid Engine**: Combines multi-core AST processing with deep understanding of cross-file relationships and Qt-specific patterns.
 2.  **Safety-First Auto-Fixing**: AST-based transformations with Git status verification and interactive diff previews.
 3.  **Repository Compliance**: Local pre-checks to ensure your plugin passes the Official QGIS Repository policies.
 4.  **Zero Runtime Stack**: Minimal footprint, ultra-fast execution, and easy CI integration.
