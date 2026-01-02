@@ -5,6 +5,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.9.0] - 2026-01-02
+
+### Added
+- **Standardized Project Style**: Applied Google-style docstrings and strict type hinting (>90% coverage) project-wide for enhanced maintainability and safety.
+
+### Improved
+- **Structural Decomposition**: Decomposed the monolithic `utils.py` into specialized modules (`logging_utils`, `config_utils`, `path_utils`, `performance_utils`, `ast_utils`) and unified package facades.
+- **Modernized Test Suite**: Standardized the entire `tests/` directory with consistent imports and Google-style documentation.
+
 ## [0.8.0] - 2026-01-02
 
 ### Added
@@ -12,7 +21,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     - **Maintainability Index (MI)**: Integrated the standard SEI formula for code health assessment.
     - **Pylint-Style Weighted Scoring**: Integrated Ruff findings with severity-based weighting (Errors: 5x, Others: 1x).
 - **Official Scoring Documentation**: Added `docs/SCORING_STANDARDS.md` to formally define project rating criteria.
-- **Standardized Project Style**: Applied Google-style docstrings and strict type hinting (>90% coverage) project-wide for enhanced maintainability and safety.
 
 ### Improved
 - **High-Contrast UI**: Fixed "lost letters" issue in HTML report score cards by ensuring high contrast between text and background.
