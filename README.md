@@ -12,6 +12,7 @@ The **QGIS Plugin Analyzer** is a static analysis tool designed specifically for
 
 - **High-Performance Engine**: Parallel analysis powered by `ProcessPoolExecutor` for ultra-fast execution on multi-core systems.
 - **Project Auto-Detection**: Intelligently distinguishes between official QGIS Plugins and Generic Python Projects, tailoring validation logic accordingly.
+- **Advanced Ignore Engine**: Robust `.analyzerignore` support with non-anchored patterns and smart default excludes (`.venv`, `build`, etc.).
 - **Deep Semantic Analysis**: Cross-file dependency graphing, circular import detection, and module coupling metrics.
 - **Interactive Auto-Fix Mode**: Automatically fix common QGIS issues (GDAL imports, PyQt bridge, logging, i18n) with safety checks.
 - **Official Repository Compliance**: Proactive validation of binaries, package size, and metadata URLs.
