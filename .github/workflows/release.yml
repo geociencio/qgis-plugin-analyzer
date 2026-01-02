@@ -1,15 +1,19 @@
-name: Draft Release
+name: Release Configuration
 
 on:
   push:
     tags:
       - 'v*'
+  release:
+    types: [published]
 
 permissions:
   contents: write
 
 jobs:
+  # 1. Create Draft Release on Tag Push
   draft-release:
+    if: github.event_name == 'push' && startswith(github.ref, 'refs/tags/v')
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -20,6 +24,29 @@ jobs:
         with:
           draft: true
           name: "Release ${{ github.ref_name }}"
+          # Tries to use the specific release note file if it exists, otherwise falls back to template or empty
           body_path: docs/GITHUB_RELEASE_${{ github.ref_name }}.md
+          fail_on_unmatched_files: false
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  # 2. Publish to PyPI only when Release is Published
+  publish-pypi:
+    needs: draft-release
+    if: github.event_name == 'release' && github.event.action == 'published'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Install uv
+        uses: astral-sh/setup-uv@v3
+        with:
+          enable-cache: true
+
+      - name: Build distribution
+        run: uv build
+
+      - name: Publish to PyPI
+        run: uv publish
+        env:
+          UV_PUBLISH_TOKEN: ${{ secrets.PYPI_TOKEN }}
