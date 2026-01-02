@@ -1,13 +1,14 @@
-import unittest
 import ast
 import pathlib
-import tempfile
 import shutil
+import tempfile
+import unittest
+
 from analyzer.transformers import (
     GDALImportTransformer,
+    I18nTransformer,
     LegacyImportTransformer,
     PrintToLogTransformer,
-    I18nTransformer,
     apply_transformation,
 )
 
@@ -24,7 +25,7 @@ class TestTransformers(unittest.TestCase):
         tree = ast.parse(code)
         transformer = GDALImportTransformer()
         new_tree = transformer.visit(tree)
-        
+
         self.assertTrue(transformer.changes_made)
         new_code = ast.unparse(new_tree)
         self.assertIn("from osgeo import gdal", new_code)
@@ -36,7 +37,7 @@ class TestTransformers(unittest.TestCase):
         tree = ast.parse(code)
         transformer = LegacyImportTransformer()
         new_tree = transformer.visit(tree)
-        
+
         self.assertTrue(transformer.changes_made)
         new_code = ast.unparse(new_tree)
         self.assertIn("from qgis.PyQt.QtCore import Qt", new_code)
@@ -46,7 +47,7 @@ class TestTransformers(unittest.TestCase):
         tree = ast.parse(code)
         transformer = PrintToLogTransformer()
         new_tree = transformer.visit(tree)
-        
+
         self.assertTrue(transformer.changes_made)
         self.assertTrue(transformer.needs_import)
         new_code = ast.unparse(new_tree)
@@ -62,7 +63,7 @@ class MyDialog:
         tree = ast.parse(code)
         transformer = I18nTransformer()
         new_tree = transformer.visit(tree)
-        
+
         self.assertTrue(transformer.changes_made)
         new_code = ast.unparse(new_tree)
         self.assertIn("self.tr('Click Me')", new_code)
@@ -72,10 +73,10 @@ class MyDialog:
     def test_apply_transformation_to_file(self):
         test_file = self.test_dir / "test.py"
         test_file.write_text("import gdal\n")
-        
+
         transformer = GDALImportTransformer()
         result = apply_transformation(test_file, transformer)
-        
+
         self.assertTrue(result)
         new_content = test_file.read_text()
         self.assertIn("from osgeo import gdal", new_content)
@@ -85,7 +86,7 @@ class MyDialog:
         tree = ast.parse(code)
         transformer = GDALImportTransformer()
         transformer.visit(tree)
-        
+
         self.assertFalse(transformer.changes_made)
 
 

@@ -1,7 +1,8 @@
-import unittest
 import pathlib
-import tempfile
 import shutil
+import tempfile
+import unittest
+
 from src.analyzer.scanner import audit_qgis_standards
 from src.analyzer.validators import validate_metadata, validate_plugin_structure
 

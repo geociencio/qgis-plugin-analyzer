@@ -1,16 +1,15 @@
-import unittest
-import pathlib
 import io
-import tempfile
+import pathlib
 import shutil
 import sys
-import os
+import tempfile
+import unittest
 
 # Add src to path
 sys.path.append(str(pathlib.Path(__file__).parent.parent / "src"))
 
-from analyzer.utils import _minimal_toml_load
 from analyzer.reporters import generate_html_report
+from analyzer.utils import _minimal_toml_load
 
 
 class TestAnalyzer(unittest.TestCase):

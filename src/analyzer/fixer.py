@@ -4,18 +4,18 @@
 #  Auto-fix engine for applying code corrections.
 #  ***************************************************************************/
 
+import difflib
 import pathlib
 import subprocess
-import difflib
 import tempfile
-import shutil
 from abc import ABC, abstractmethod
-from typing import Dict, List, Any
+from typing import Any, Dict, List
+
 from .transformers import (
     GDALImportTransformer,
+    I18nTransformer,
     LegacyImportTransformer,
     PrintToLogTransformer,
-    I18nTransformer,
     apply_transformation,
 )
 
@@ -48,7 +48,7 @@ def show_diff(file_path: pathlib.Path, original_content: str, new_content: str):
         tofile=f"b/{file_path.name}",
         lineterm="",
     )
-    
+
     print("    " + "─" * 60)
     for line in diff:
         line = line.rstrip()
@@ -170,7 +170,7 @@ class AutoFixer:
     ) -> Dict[str, int]:
         """
         Applies fixes to the given issues.
-        
+
         Returns a dict with counts: {'applied': N, 'skipped': M, 'failed': K}
         """
         stats = {"applied": 0, "skipped": 0, "failed": 0}
@@ -200,7 +200,7 @@ class AutoFixer:
             file_path = self.project_path / file_rel
 
             print(f"\n📄 {file_rel}")
-            
+
             # Read original content for diff
             try:
                 original_content = file_path.read_text(encoding="utf-8")
@@ -217,16 +217,16 @@ class AutoFixer:
 
                 if interactive and not self.dry_run:
                     # Show diff preview
-                    
+
                     # Create temp file to test transformation
                     with tempfile.NamedTemporaryFile(mode='w', suffix='.py', delete=False) as tmp:
                         tmp.write(original_content)
                         tmp_path = pathlib.Path(tmp.name)
-                    
+
                     try:
                         fixer.apply_fix(tmp_path, issue)
                         new_content = tmp_path.read_text(encoding="utf-8")
-                        
+
                         if new_content != original_content:
                             show_diff(file_path, original_content, new_content)
                     finally:

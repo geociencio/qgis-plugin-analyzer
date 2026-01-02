@@ -27,40 +27,47 @@ from typing import Any, Dict
 def generate_markdown_summary(analyses: Dict[str, Any], output_path: pathlib.Path):
     """Generates a professional PROJECT_SUMMARY.md report."""
     metrics = analyses.get("metrics", {})
-    compliance = analyses.get("qgis_compliance", {})
+    project_type = analyses.get("project_type", "qgis")
     score = metrics.get("quality_score", 0)
-    qgis_score = compliance.get("compliance_score", 0)
+
+    project_label = "QGIS Plugin" if project_type == "qgis" else "Python Project"
 
     lines = [
-        f"# 📋 Project Analysis Report: {analyses.get('project_name', 'QGIS Plugin')}",
+        f"# 📋 Project Analysis Report: {analyses.get('project_name', project_label)}",
         f"*Generated on: {datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}*",
         "",
         "## 📊 Quality Indicators",
-        f"- **Code Score**: `{score}/100`",
-        f"- **QGIS Compliance**: `{qgis_score}/100`",
-        "",
+        f"- **Overall Quality Score**: `{score}/100`",
     ]
-    # Technical findings
-    best_practices = compliance.get("best_practices", {})
-    lines.append("## 🛠️ QGIS Standard Findings")
-    lines.append(f"Detected **{best_practices.get('issues_count', 0)}** technical deviations.")
 
-    for issue in best_practices.get("issues", []):
-        icon = "🔴" if issue["severity"] == "high" else "🟡"
-        lines.append(f"- {icon} `{issue['file']}:{issue['line']}`: {issue['message']}")
+    if project_type == "qgis":
+        compliance = analyses.get("qgis_compliance", {})
+        qgis_score = compliance.get("compliance_score", 0)
+        lines.append(f"- **QGIS Compliance**: `{qgis_score}/100`")
 
-    repo_stats = compliance.get("repository_standards", {})
-    meta = repo_stats.get("metadata", {})
-    status_meta = "✅ OK" if meta.get("is_valid") else "🛠️ Needs Attention"
-    lines.append(f"- **Metadata (metadata.txt)**: {status_meta}")
-    if not meta.get("is_valid"):
-        lines.append(f"  - Missing fields: `{', '.join(meta.get('missing', []))}`")
-        
+    lines.append("")
+    if project_type == "qgis":
+        compliance = analyses.get("qgis_compliance", {})
+        best_practices = compliance.get("best_practices", {})
+        lines.append("## 🛠️ QGIS Standard Findings")
+        lines.append(f"Detected **{best_practices.get('issues_count', 0)}** technical deviations.")
+
+        for issue in best_practices.get("issues", []):
+            icon = "🔴" if issue["severity"] == "high" else "🟡"
+            lines.append(f"- {icon} `{issue['file']}:{issue['line']}`: {issue['message']}")
+
+        repo_stats = compliance.get("repository_standards", {})
+        meta = repo_stats.get("metadata", {})
+        status_meta = "✅ OK" if meta.get("is_valid") else "🛠️ Needs Attention"
+        lines.append(f"- **Metadata (metadata.txt)**: {status_meta}")
+        if not meta.get("is_valid"):
+            lines.append(f"  - Missing fields: `{', '.join(meta.get('missing', []))}`")
+
     # Semantic Findings
     semantic = analyses.get("semantic", {})
     cycles = semantic.get("circular_dependencies", [])
     missing_res = semantic.get("missing_resources", [])
-    
+
     lines.append("\n## 🧠 Semantic Analysis")
     if cycles:
         lines.append("🔴 **Circular Import Cycles Detected:**")
@@ -77,24 +84,26 @@ def generate_markdown_summary(analyses: Dict[str, Any], output_path: pathlib.Pat
              lines.append(f"  - ... ({len(missing_res) - 10} more)")
     else:
         lines.append("- All resource paths validated.")
-        
-    lines.append("\n## 📦 Official Repository Standards")
-    
-    struct = repo_stats.get("structure", {})
-    status = "✅ OK" if struct.get("is_valid") else "❌ Incomplete"
-    lines.append(f"- **File Structure**: {status}")
-    if not struct.get("is_valid"):
-        missing_files = [f for f, found in struct.get("files", {}).items() if not found]
-        if missing_files:
-            lines.append(f"  - Missing: `{', '.join(missing_files)}`")
-        if not struct.get("has_class_factory"):
-            lines.append("  - Missing `classFactory` in `__init__.py`")
 
-    meta = repo_stats.get("metadata", {})
-    status_meta = "✅ OK" if meta.get("is_valid") else "🛠️ Needs Attention"
-    lines.append(f"- **Metadata (metadata.txt)**: {status_meta}")
-    if not meta.get("is_valid"):
-        lines.append(f"  - Missing fields: `{', '.join(meta.get('missing', []))}`")
+    if project_type == "qgis":
+        lines.append("\n## 📦 Official Repository Standards")
+        compliance = analyses.get("qgis_compliance", {})
+        repo_stats = compliance.get("repository_standards", {})
+        struct = repo_stats.get("structure", {})
+        status = "✅ OK" if struct.get("is_valid") else "❌ Incomplete"
+        lines.append(f"- **File Structure**: {status}")
+        if not struct.get("is_valid"):
+            missing_files = [f for f, found in struct.get("files", {}).items() if not found]
+            if missing_files:
+                lines.append(f"  - Missing: `{', '.join(missing_files)}`")
+            if not struct.get("has_class_factory"):
+                lines.append("  - Missing `classFactory` in `__init__.py`")
+
+        meta = repo_stats.get("metadata", {})
+        status_meta = "✅ OK" if meta.get("is_valid") else "🛠️ Needs Attention"
+        lines.append(f"- **Metadata (metadata.txt)**: {status_meta}")
+        if not meta.get("is_valid"):
+            lines.append(f"  - Missing fields: `{', '.join(meta.get('missing', []))}`")
 
     lines.append("\n## 📈 General Metrics")
     for k, v in metrics.items():
@@ -113,16 +122,21 @@ def save_json_context(analyses: Dict[str, Any], output_path: pathlib.Path):
 def generate_html_report(analyses: Dict[str, Any], output_path: pathlib.Path):
     """Generates a professional HTML report without external dependencies."""
     metrics = analyses.get("metrics", {})
-    compliance = analyses.get("qgis_compliance", {})
     ruff_findings = analyses.get("ruff_findings", [])
-    project_name = analyses.get("project_name", "QGIS Plugin")
+    project_type = analyses.get("project_type", "qgis")
+    project_label = "QGIS Plugin" if project_type == "qgis" else "Python"
+    project_name = analyses.get("project_name", project_label)
     now = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
     q_score = metrics.get("quality_score", 0)
     cls_q = "high" if q_score >= 80 else "medium" if q_score >= 50 else "low"
-    
-    c_score = compliance.get("compliance_score", 0)
-    cls_c = "high" if c_score >= 80 else "medium" if c_score >= 50 else "low"
+
+    c_score = 0
+    cls_c = "low"
+    if project_type == "qgis":
+        compliance = analyses.get("qgis_compliance", {})
+        c_score = compliance.get("compliance_score", 0)
+        cls_c = "high" if c_score >= 80 else "medium" if c_score >= 50 else "low"
 
     html = [
         "<!DOCTYPE html>",
@@ -133,9 +147,9 @@ def generate_html_report(analyses: Dict[str, Any], output_path: pathlib.Path):
         ".card { background: white; padding: 20px; border-radius: 8px; margin-bottom: 20px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }",
         ".score-container { display: flex; gap: 20px; margin-top: 20px; }",
         ".score-box { flex: 1; text-align: center; padding: 15px; border-radius: 8px; background: #ecf0f1; border-bottom: 4px solid #bdc3c7; }",
-        f".score-box.high {{ border-color: #27ae60; }}",
-        f".score-box.medium {{ border-color: #f1c40f; }}",
-        f".score-box.low {{ border-color: #e74c3c; }}",
+        ".score-box.high { border-color: #27ae60; }",
+        ".score-box.medium { border-color: #f1c40f; }",
+        ".score-box.low { border-color: #e74c3c; }",
         ".score-value { font-size: 2em; font-weight: bold; display: block; }",
         ".issue { border-left: 4px solid #eee; padding-left: 15px; margin-bottom: 10px; }",
         ".issue.high { border-color: #e74c3c; }",
@@ -147,36 +161,42 @@ def generate_html_report(analyses: Dict[str, Any], output_path: pathlib.Path):
         "h2 { color: #2c3e50; border-bottom: 2px solid #eee; padding-bottom: 10px; }",
         "</style></head><body>",
         "<div class='header'>",
-        f"<h1>📊 QGIS Plugin Analysis: {project_name}</h1>",
+        f"<h1>📊 {project_label} Analysis: {project_name}</h1>",
         f"<p>Generated on: {now}</p>",
         "<div class='score-container'>",
-        f"<div class='score-box {cls_q}'><span class='score-label'>Overall Score</span><span class='score-value'>{q_score}/100</span></div>",
-        f"<div class='score-box {cls_c}'><span class='score-label'>QGIS Compliance</span><span class='score-value'>{c_score}/100</span></div>",
-        "</div></div>",
-        "<div class='card'><h2>🛠️ QGIS Standard Findings</h2>"
+        f"<div class='score-box {cls_q}'><span class='score-label'>Overall Score</span><span class='score-value'>{q_score}/100</span></div>"
     ]
 
-    best_practices = compliance.get("best_practices", {})
-    issues = best_practices.get("issues", [])
-    if not issues:
-        html.append("<p>✅ No major QGIS standard deviations found.</p>")
-    else:
-        for issue in issues:
-            severity = issue.get("severity", "medium")
-            html.append(f"<div class='issue {severity}'>")
-            html.append(f"<span class='severity'>{severity}</span> - {issue['message']}<br>")
-            html.append(f"<span class='file-path'>{issue['file']}:{issue['line']}</span>")
-            if issue.get("code"):
-                html.append(f"<pre>{issue['code']}</pre>")
-            html.append("</div>")
-    
-    html.append("</div>")
+    if project_type == "qgis":
+        html.append(f"<div class='score-box {cls_c}'><span class='score-label'>QGIS Compliance</span><span class='score-value'>{c_score}/100</span></div>")
+
+    html.extend([
+        "</div></div>"
+    ])
+
+    if project_type == "qgis":
+        html.append("<div class='card'><h2>🛠️ QGIS Standard Findings</h2>")
+        compliance = analyses.get("qgis_compliance", {})
+        best_practices = compliance.get("best_practices", {})
+        issues = best_practices.get("issues", [])
+        if not issues:
+            html.append("<p>✅ No major QGIS standard deviations found.</p>")
+        else:
+            for issue in issues:
+                severity = issue.get("severity", "medium")
+                html.append(f"<div class='issue {severity}'>")
+                html.append(f"<span class='severity'>{severity}</span> - {issue['message']}<br>")
+                html.append(f"<span class='file-path'>{issue['file']}:{issue['line']}</span>")
+                if issue.get("code"):
+                    html.append(f"<pre>{issue['code']}</pre>")
+                html.append("</div>")
+        html.append("</div>")
 
     # Semantic Section
     semantic = analyses.get("semantic", {})
     if semantic:
         html.append("<div class='card'><h2>🧠 Semantic Analysis</h2>")
-        
+
         # Circular Imports
         cycles = semantic.get("circular_dependencies", [])
         if cycles:
@@ -185,7 +205,7 @@ def generate_html_report(analyses: Dict[str, Any], output_path: pathlib.Path):
             for cycle in cycles:
                 html.append(f"<li><code>{' -> '.join(cycle)}</code></li>")
             html.append("</ul></div>")
-        
+
         # Missing Resources
         missing_res = semantic.get("missing_resources", [])
         if missing_res:
@@ -213,9 +233,9 @@ def generate_html_report(analyses: Dict[str, Any], output_path: pathlib.Path):
     if repo_comp:
         is_compliant = repo_comp.get("is_compliant", False)
         status_icon = "✅" if is_compliant else "⚠️"
-        
+
         html.append(f"<div class='card'><h2>{status_icon} Repository Compliance</h2>")
-        
+
         # Binaries
         binaries = repo_comp.get("binaries", [])
         if binaries:
@@ -228,14 +248,14 @@ def generate_html_report(analyses: Dict[str, Any], output_path: pathlib.Path):
             html.append("</ul>")
         else:
             html.append("<div class='info'>✅ No prohibited binaries found</div>")
-        
+
         # Package Size
         package_size = repo_comp.get("package_size_mb", 0)
         if package_size > 20:
             html.append(f"<div class='issue medium'><b>Package Size:</b> {package_size:.2f} MB (exceeds 20MB limit)</div>")
         else:
             html.append(f"<div class='info'><b>Package Size:</b> {package_size:.2f} MB</div>")
-        
+
         # URL Validation
         url_status = repo_comp.get("url_validation", {})
         if url_status:
@@ -250,7 +270,7 @@ def generate_html_report(analyses: Dict[str, Any], output_path: pathlib.Path):
                     if status != "ok":
                         html.append(f"<li>{url}: <code>{status}</code></li>")
                 html.append("</ul>")
-        
+
         html.append("</div>")
 
     if ruff_findings:

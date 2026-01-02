@@ -30,11 +30,12 @@ from collections import OrderedDict
 from contextlib import contextmanager
 from typing import Any, Dict, List
 
+
 def setup_logger(output_dir: pathlib.Path) -> logging.Logger:
     """Configures the global logger with console and file handlers."""
     logger = logging.getLogger("qgis_analyzer")
     logger.setLevel(logging.DEBUG)
-    
+
     # Avoid duplicate handlers
     if logger.handlers:
         return logger
@@ -72,7 +73,7 @@ def safe_path_resolve(base_path: pathlib.Path, target_path_str: str) -> pathlib.
     except (ValueError, RuntimeError):
         raise ValueError(
             f"Path traversal detected: '{target_path_str}' is outside base '{base_path}'"
-        )
+        ) from None
 
     return target_abs
 
@@ -83,25 +84,25 @@ logger = logging.getLogger("qgis_analyzer")
 
 def _minimal_toml_load(file_obj) -> Dict[str, Any]:
     """
-    EXTREMELY minimal TOML parser focused ONLY on extracting 
+    EXTREMELY minimal TOML parser focused ONLY on extracting
     [tool.qgis-analyzer.profiles] from pyproject.toml.
     Now supports nested [tool.qgis-analyzer.profiles.NAME.rules] sections.
     """
     data = {"tool": {"qgis-analyzer": {"profiles": {}}}}
     current_profile = None
     in_rules_section = False
-    
+
     # Regex patterns
     profile_regex = re.compile(r'^\[tool\.qgis-analyzer\.profiles\.([\w-]+)\]')
     rules_regex = re.compile(r'^\[tool\.qgis-analyzer\.profiles\.([\w-]+)\.rules\]')
-    
+
     try:
         content = file_obj.read().decode("utf-8")
         for line in content.splitlines():
             line = line.strip()
             if not line or line.startswith("#"):
                 continue
-            
+
             # Check for section headers
             if line.startswith("[") and line.endswith("]"):
                 # Check for rules section first
@@ -114,7 +115,7 @@ def _minimal_toml_load(file_obj) -> Dict[str, Any]:
                     if "rules" not in data["tool"]["qgis-analyzer"]["profiles"][current_profile]:
                         data["tool"]["qgis-analyzer"]["profiles"][current_profile]["rules"] = {}
                     continue
-                
+
                 # Check for profile section
                 profile_match = profile_regex.match(line)
                 if profile_match:
@@ -123,18 +124,18 @@ def _minimal_toml_load(file_obj) -> Dict[str, Any]:
                     if current_profile not in data["tool"]["qgis-analyzer"]["profiles"]:
                         data["tool"]["qgis-analyzer"]["profiles"][current_profile] = {}
                     continue
-                
+
                 # Other section, reset
                 current_profile = None
                 in_rules_section = False
                 continue
-            
+
             # Key-value pair
             if current_profile and "=" in line:
                 key, val = line.split("=", 1)
                 key = key.strip()
                 val = val.strip()
-                
+
                 # Basic type conversion
                 if val.lower() == "true":
                     val = True
@@ -144,14 +145,14 @@ def _minimal_toml_load(file_obj) -> Dict[str, Any]:
                     val = int(val)
                 elif (val.startswith('"') and val.endswith('"')) or (val.startswith("'") and val.endswith("'")):
                     val = val[1:-1]
-                
+
                 if in_rules_section:
                     data["tool"]["qgis-analyzer"]["profiles"][current_profile]["rules"][key] = val
                 else:
                     data["tool"]["qgis-analyzer"]["profiles"][current_profile][key] = val
     except Exception as e:
         logger.error(f"Error in minimal TOML parser: {e}")
-        
+
     return data
 
 
@@ -217,7 +218,7 @@ class ProgressTracker:
             self.avg_time = processing_time
         else:
             self.avg_time = (self.avg_time * 0.9) + (processing_time * 0.1)
-            
+
         current_time = time.time()
         if self.processed % 10 == 0 or current_time - self.last_update > 2:
             self._display_progress()
@@ -262,7 +263,7 @@ def timeout_manager(seconds: int):
 
 # Default patterns to ignore if not specified
 DEFAULT_EXCLUDE = {
-    ".venv/", "venv/", "__pycache__/", ".git/", ".github/", 
+    ".venv/", "venv/", "__pycache__/", ".git/", ".github/",
     "build/", "dist/", ".pytest_cache/", ".ruff_cache/", ".mypy_cache/",
     ".analyzerignore", "analysis_results/"
 }
@@ -283,7 +284,7 @@ class IgnoreMatcher:
         str_path = str(path)
         if str_path in self._cache:
             return self._cache[str_path]
-            
+
         try:
             rel_path = path.relative_to(self.root_path)
             str_rel_path = str(rel_path)
@@ -298,11 +299,11 @@ class IgnoreMatcher:
             # Handle anchored patterns (starting with /)
             is_anchored = pattern.startswith("/")
             clean_pattern = pattern.lstrip("/")
-            
+
             # Handle directory-specific patterns (ending in /)
             is_dir_pattern = clean_pattern.endswith("/")
             clean_pattern = clean_pattern.rstrip("/")
-            
+
             if is_dir_pattern:
                 # If it's a directory pattern:
                 # 1. it matches if str_rel_path is exactly the directory
@@ -331,7 +332,7 @@ class IgnoreMatcher:
                     # Fallback for patterns that might be deep: check if any part of the path matches
                     # e.g. "docs/*.md" matching "src/docs/ref.md" -> not standard gitignore but common expectation
                     # Actually gitignore "docs/*.md" only matches root docs/*.md.
-                    # But "**/docs/*.md" would match deep. 
+                    # But "**/docs/*.md" would match deep.
                     # Let's stick to standard fnmatch on rel_path first.
         return False
 

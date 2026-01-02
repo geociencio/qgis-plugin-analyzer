@@ -31,21 +31,21 @@ from .scanner import (
     audit_qgis_standards,
 )
 from .semantic import DependencyGraph, ResourceValidator
-from .validators import (
-    scan_for_binaries,
-    calculate_package_size,
-    validate_metadata_urls,
-    validate_metadata,
-    validate_plugin_structure,
-)
 from .utils import (
     IgnoreMatcher,
     ProgressTracker,
     load_ignore_patterns,
     load_profile_config,
     logger,
-    setup_logger,
     safe_path_resolve,
+    setup_logger,
+)
+from .validators import (
+    calculate_package_size,
+    scan_for_binaries,
+    validate_metadata,
+    validate_metadata_urls,
+    validate_plugin_structure,
 )
 
 
@@ -56,16 +56,24 @@ class ProjectAnalyzer:
         self.project_path = pathlib.Path(project_path).resolve()
         self.output_dir = pathlib.Path(output_dir or "./analysis_results").resolve()
         self.output_dir.mkdir(parents=True, exist_ok=True)
-        
+
         # Initialize logging
         setup_logger(self.output_dir)
-        
+
         # Limit workers to 4 or cpu count, whichever is smaller, to prevent OOM
         self.max_workers = min(os.cpu_count() or 4, 4)
         self.max_file_size_kb = 500
 
         # Load profile config
         self.config = load_profile_config(self.project_path, profile)
+
+        # Detect project type
+        self.project_type = self.config.get("project_type", "auto")
+        if self.project_type == "auto":
+            metadata_file = self.project_path / "metadata.txt"
+            self.project_type = "qgis" if metadata_file.exists() else "generic"
+
+        logger.info(f"📁 Project type: {self.project_type.upper()}")
 
         # Load .analyzerignore
         ignore_file = self.project_path / ".analyzerignore"
@@ -132,38 +140,51 @@ class ProjectAnalyzer:
         # Ruff audit
         ruff_findings = self.run_ruff_audit()
 
-        # QGIS compliance analysis
-        compliance = audit_qgis_standards(modules_data, self.project_path, rules_config=rules_config)
-
-        # Official repository audit
-        metadata_path = safe_path_resolve(self.project_path, "metadata.txt")
-        structure = validate_plugin_structure(self.project_path)
-        metadata = validate_metadata(metadata_path)
-
-        # Repository Compliance Checks
-        logger.info("Running repository compliance checks...")
-        binaries = scan_for_binaries(self.project_path, self.matcher)
-        package_size = calculate_package_size(self.project_path, self.matcher)
+        # Initialize analysis components
+        compliance = {"issues": [], "issues_count": 0}
+        structure = {"is_valid": True}
+        metadata = {"is_valid": True}
+        binaries = []
+        package_size = 0
         url_status = {}
-        if metadata.get("is_valid") and "metadata" in metadata:
-            url_status = validate_metadata_urls(metadata["metadata"])
+        missing_resources = []
 
-        # Semantic Analysis
+        # QGIS-specific checks
+        if self.project_type == "qgis":
+            # QGIS compliance analysis
+            compliance = audit_qgis_standards(modules_data, self.project_path, rules_config=rules_config)
+
+            # Official repository audit
+            metadata_path = safe_path_resolve(self.project_path, "metadata.txt")
+            structure = validate_plugin_structure(self.project_path)
+            metadata = validate_metadata(metadata_path)
+
+            # Repository Compliance Checks
+            logger.info("Running QGIS repository compliance checks...")
+            binaries = scan_for_binaries(self.project_path, self.matcher)
+            package_size = calculate_package_size(self.project_path, self.matcher)
+            if metadata.get("is_valid") and "metadata" in metadata:
+                url_status = validate_metadata_urls(metadata["metadata"])
+
+        # Semantic Analysis (Generic but with resource validation for QGIS)
         dep_graph = DependencyGraph()
-        res_validator = ResourceValidator(self.project_path)
-        res_validator.scan_project_resources(self.matcher)
-        
         all_resource_usages = []
+
+        if self.project_type == "qgis":
+            res_validator = ResourceValidator(self.project_path)
+            res_validator.scan_project_resources(self.matcher)
 
         for m in modules_data:
              dep_graph.add_node(m["path"], m)
-             if "resource_usages" in m:
+             if self.project_type == "qgis" and "resource_usages" in m:
                  all_resource_usages.extend(m["resource_usages"])
 
         dep_graph.build_edges(self.project_path)
         cycles = dep_graph.detect_cycles()
         metrics = dep_graph.get_coupling_metrics()
-        missing_resources = res_validator.validate_usage(all_resource_usages)
+
+        if self.project_type == "qgis":
+            missing_resources = res_validator.validate_usage(all_resource_usages)
 
         # Calculate basic metrics
         code_score, qgis_score = self._calculate_scores(
@@ -173,31 +194,34 @@ class ProjectAnalyzer:
         metrics_summary = {
             "total_files": len(files),
             "total_lines": sum(m["lines"] for m in modules_data),
-            "quality_score": round((code_score * 0.5) + (qgis_score * 0.5), 1),
+            "quality_score": round((code_score * 0.5) + (qgis_score * 0.5), 1) if self.project_type == "qgis" else round(code_score, 1),
         }
 
         analyses = {
             "project_name": self.project_path.name,
+            "project_type": self.project_type,
             "metrics": metrics_summary,
-            "qgis_compliance": {
-                "compliance_score": round(qgis_score, 1),
-                "best_practices": compliance,
-                "repository_standards": {"structure": structure, "metadata": metadata},
-            },
             "ruff_findings": ruff_findings,
             "semantic": {
                 "circular_dependencies": cycles,
-                "missing_resources": missing_resources,
                 "coupling_metrics": metrics
             },
-            "repository_compliance": {
+            "modules": modules_data,
+        }
+
+        if self.project_type == "qgis":
+            analyses["qgis_compliance"] = {
+                "compliance_score": round(qgis_score, 1),
+                "best_practices": compliance,
+                "repository_standards": {"structure": structure, "metadata": metadata},
+            }
+            analyses["semantic"]["missing_resources"] = missing_resources
+            analyses["repository_compliance"] = {
                 "binaries": binaries,
                 "package_size_mb": round(package_size, 2),
                 "url_validation": url_status,
                 "is_compliant": len(binaries) == 0 and package_size <= 20,
-            },
-            "modules": modules_data,
-        }
+            }
 
         # Save reports
         generate_markdown_summary(analyses, self.output_dir / "PROJECT_SUMMARY.md")
@@ -209,40 +233,44 @@ class ProjectAnalyzer:
         logger.info(f"✅ Analysis completed. Reports in: {self.output_dir}")
 
         # Fail on error if strict mode is on and there are issues
-        if self.config.get("fail_on_error") and (
-            compliance.get("issues_count", 0) > 0
-            or not structure["is_valid"]
-            or not metadata["is_valid"]
-        ):
-            logger.error("❌ Strict Mode: Critical QGIS compliance issues detected. Failing analysis.")
-            return False
+        if self.config.get("fail_on_error"):
+            if self.project_type == "qgis":
+                if (compliance.get("issues_count", 0) > 0
+                    or not structure["is_valid"]
+                    or not metadata["is_valid"]):
+                    logger.error("❌ Strict Mode: Critical QGIS compliance issues detected. Failing analysis.")
+                    return False
+            # For non-qgis, maybe check ruff or cycles later if needed
 
         return True
 
     def _calculate_scores(
         self, modules_data, compliance, structure, metadata, cycles, missing_resources, binaries, package_size
     ) -> tuple:
-        """Calculates scores based on QGIS standards and code quality."""
+        """Calculates scores based on project type."""
         if not modules_data:
             return 0.0, 0.0
 
-        # 1. Base Code Quality (50%)
+        # 1. Base Code Quality
         avg_comp = sum(m["complexity"] for m in modules_data) / len(modules_data)
         code_score = max(0, 100 - (avg_comp * 3))
 
         # Penalty for circular dependencies (major design flaw)
-        code_score -= len(cycles) * 10 
+        code_score -= len(cycles) * 10
 
-        # 2. QGIS Standards (50%)
+        if self.project_type == "generic":
+            return max(0, code_score), 0.0
+
+        # 2. QGIS Standards (only if QGIS project)
         qgis_score = 100
         # Penalty for technical findings
         qgis_score -= compliance.get("issues_count", 0) * 2
         # Penalty for repository missing files/metadata
-        if not structure["is_valid"]:
+        if not structure.get("is_valid", True):
             qgis_score -= 20
-        if not metadata["is_valid"]:
+        if not metadata.get("is_valid", True):
             qgis_score -= 10
-        
+
         # Penalty for missing resources
         qgis_score -= len(missing_resources) * 5
 

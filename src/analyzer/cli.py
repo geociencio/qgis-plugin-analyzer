@@ -97,7 +97,7 @@ def main():
             # Load issues
             import json
             context_file = analyzer.output_dir / "project_context.json"
-            with open(context_file, "r") as f:
+            with open(context_file) as f:
                 context = json.load(f)
 
             all_issues = []
@@ -122,10 +122,10 @@ def main():
             stats = fixer.apply_fixes(fixable, interactive=not args.auto_approve)
             print(f"\n📊 Summary: Applied: {stats['applied']}, Skipped: {stats['skipped']}, Failed: {stats['failed']}")
             return True
-        
+
         elif args.command == "analyze":
             analyzer = ProjectAnalyzer(args.project_path, args.output, args.profile)
-            success = analyzer.run()
+            analyzer.run()
         else:
             parser.print_help()
 

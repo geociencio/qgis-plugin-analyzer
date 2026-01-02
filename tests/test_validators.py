@@ -1,13 +1,14 @@
-import unittest
 import pathlib
-import tempfile
 import shutil
+import tempfile
+import unittest
+
 from analyzer.validators import (
-    scan_for_binaries,
     calculate_package_size,
+    scan_for_binaries,
+    validate_metadata,
     validate_metadata_urls,
     validate_plugin_structure,
-    validate_metadata,
 )
 
 

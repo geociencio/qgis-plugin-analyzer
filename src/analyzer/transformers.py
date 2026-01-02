@@ -142,7 +142,7 @@ def apply_transformation(
 ) -> bool:
     """
     Applies an AST transformer to a file and writes back the result.
-    
+
     Returns True if changes were made, False otherwise.
     """
     try:

@@ -1,9 +1,11 @@
 
-import unittest
 import pathlib
-import tempfile
 import shutil
+import tempfile
+import unittest
+
 from analyzer.semantic import DependencyGraph, ResourceValidator
+
 
 class TestSemanticAnalysis(unittest.TestCase):
     def setUp(self):
@@ -17,7 +19,7 @@ class TestSemanticAnalysis(unittest.TestCase):
         # A -> B -> A
         self.graph.add_node("a.py", {"imports": ["b"]})
         self.graph.add_node("b.py", {"imports": ["a"]})
-        
+
         # Mock file system resolution
         # We manually build edges to bypass file system check for this unit test
         self.graph.adjacency_list["a.py"] = {"b.py"}
@@ -25,7 +27,7 @@ class TestSemanticAnalysis(unittest.TestCase):
 
         cycles = self.graph.detect_cycles()
         self.assertGreaterEqual(len(cycles), 1) # A->B->A cycle detected
-        
+
         # Verify cycle content
         self.assertTrue(any("a.py" in c and "b.py" in c for c in cycles))
 
@@ -39,9 +41,9 @@ class TestSemanticAnalysis(unittest.TestCase):
         }
         # Populate nodes keys
         self.graph.nodes = {"a": {}, "b": {}, "c": {}}
-        
+
         metrics = self.graph.get_coupling_metrics()
-        
+
         self.assertEqual(metrics["a"]["fan_out"], 2)
         self.assertEqual(metrics["c"]["fan_in"], 2)
         self.assertEqual(metrics["b"]["fan_in"], 1)
@@ -55,18 +57,18 @@ class TestSemanticAnalysis(unittest.TestCase):
             </qresource>
         </RCC>"""
         (self.test_dir / "resources.qrc").write_text(qrc_content)
-        
+
         validator = ResourceValidator(self.test_dir)
         validator.scan_project_resources()
-        
+
         self.assertIn(":/plugins/test/icon.png", validator.available_resources)
         self.assertIn(":/plugins/test/images/logo.svg", validator.available_resources)
-        
+
         missing = validator.validate_usage([
             ":/plugins/test/icon.png",
             ":/plugins/test/missing.png"
         ])
-        
+
         self.assertEqual(len(missing), 1)
         self.assertEqual(missing[0], ":/plugins/test/missing.png")
 

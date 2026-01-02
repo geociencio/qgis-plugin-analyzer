@@ -1,10 +1,12 @@
 
-import unittest
 import ast
+import unittest
+
 from analyzer.scanner import QGISASTVisitor
 
+
 class TestSignalSafety(unittest.TestCase):
-    
+
     def test_missing_slot_detection(self):
         code = """
 class MyDialog:
@@ -18,10 +20,10 @@ class MyDialog:
         tree = ast.parse(code)
         visitor = QGISASTVisitor("dummy.py")
         visitor.visit(tree)
-        
+
         issues = visitor.issues
         missing_slots = [i for i in issues if i["id"] == "POTENTIAL_MISSING_SLOT"]
-        
+
         self.assertEqual(len(missing_slots), 1)
         self.assertIn("missing_slot", missing_slots[0]["message"])
         self.assertNotIn("existing_slot", [i["message"] for i in missing_slots])
@@ -37,7 +39,7 @@ class Child(Parent):
         tree = ast.parse(code)
         visitor = QGISASTVisitor("dummy.py")
         visitor.visit(tree)
-        
+
         # It should warn because 'inherited_method' is not in Child
         issues = visitor.issues
         self.assertTrue(any("inherited_method" in i["message"] for i in issues))

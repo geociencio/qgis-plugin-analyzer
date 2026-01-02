@@ -171,7 +171,7 @@ class QGISASTVisitor(ast.NodeVisitor):
                     if isinstance(arg, ast.Call) and isinstance(arg.func, ast.Name) and arg.func.id == "QgsFeatureRequest":
                         if not arg.args and not arg.keywords:
                             warn = True
-                
+
                 if warn and self._should_report("SPATIAL_INDEX"):
                     self.issues.append({
                         "file": self.rel_path,
@@ -187,7 +187,7 @@ class QGISASTVisitor(ast.NodeVisitor):
     def visit_ClassDef(self, node: ast.ClassDef):
         # Track methods defined in the current class context
         methods = {
-            item.name for item in node.body 
+            item.name for item in node.body
             if isinstance(item, (ast.FunctionDef, ast.AsyncFunctionDef))
         }
         self.class_methods_stack.append(methods)
@@ -434,7 +434,7 @@ def audit_qgis_standards(modules_data: List[Dict], project_path: pathlib.Path, r
         # Use cached content if available
         path = module.get("path")
         content = module.get("content")
-        
+
         if content is None and path:
              full_path = project_path / path
              if full_path.exists():
@@ -451,7 +451,7 @@ def audit_qgis_standards(modules_data: List[Dict], project_path: pathlib.Path, r
             severity_val = rules_config.get(rule_id, "warning") if rules_config else "warning"
             if severity_val == "ignore":
                 continue
-            
+
             # Map config severity to internal severity
             severity_map = {"error": "high", "warning": "medium", "info": "low"}
             internal_severity = severity_map.get(severity_val, rule["severity"])

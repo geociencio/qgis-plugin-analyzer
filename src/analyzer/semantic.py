@@ -5,9 +5,8 @@
 #  ***************************************************************************/
 
 import pathlib
-import re
 import xml.etree.ElementTree as ET
-from typing import Any, Dict, List, Set, Tuple
+from typing import Any, Dict, List, Set
 
 
 class DependencyGraph:
@@ -120,7 +119,7 @@ class ResourceValidator:
         """Scans .qrc files (and potentially converted _rc.py) to find valid resource paths."""
         # Strategy: Parse .qrc files primarily as they are the source of truth
         # Regex to find <file>path/to/icon.png</file> inside <qresource prefix="/plugins/myplugin">
-        
+
         for qrc_file in self.project_path.rglob("*.qrc"):
             # Skip if matches ignore pattern
             if ignore_matcher and ignore_matcher.is_ignored(qrc_file):
@@ -137,7 +136,7 @@ class ResourceValidator:
                         prefix = qresource.get("prefix", "/")
                         if not prefix.startswith("/"):
                             prefix = "/" + prefix
-                        
+
                         for file_elem in qresource.findall("file"):
                             if file_elem.text:
                                 clean_path = file_elem.text.strip()
@@ -154,7 +153,7 @@ class ResourceValidator:
         """Returns a list of resource paths used in code but missing in definition."""
         missing = []
         for res in resource_matches:
-            # Simple exact match check. 
+            # Simple exact match check.
             # Note: Alias handling is complex without compilation, ignoring for now.
             if res not in self.available_resources:
                 missing.append(res)
