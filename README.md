@@ -1,7 +1,7 @@
 # QGIS Plugin Analyzer 🛡️
 ![GitHub release (latest by date)](https://img.shields.io/github/v/release/geociencio/qgis-plugin-analyzer?color=blue&logo=github)
 ![Python Version](https://img.shields.io/badge/python-3.8%2B-blue?logo=python)
-![License](https://img.shields.io/badge/license-GPL--3.0-green)
+![License](https://img.shields.io/badge/License-GPLv3-blue.svg)
 ![Maintenance](https://img.shields.io/badge/Maintained%3F-yes-green.svg)
 ![Conventional Commits](https://img.shields.io/badge/Conventional%20Commits-1.0.0-yellow.svg?logo=git)
 ![Quality Score](https://img.shields.io/badge/Module%20Stability-55.6%2F100-yellow)
@@ -171,6 +171,11 @@ The development of this analyzer is based on official QGIS community guidelines,
 
 ## 🛠️ Contributing
 Audit rules are located in `src/analyzer/scanner.py`. Feel free to add new rules following the existing pattern!
+
+---
+## ⚖️ License
+
+This project is licensed under the **GNU General Public License v3 (GPL v3)**. See the [LICENSE](LICENSE) file for details.
 
 ---
 *Developed for the SecInterp team and the QGIS community.*
