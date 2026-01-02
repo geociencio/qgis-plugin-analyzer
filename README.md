@@ -141,6 +141,8 @@ The development of this analyzer is based on official QGIS community guidelines,
 ### Industry & Community Standards
 - **[flake8-qgis Rules](https://github.com/qgis/flake8-qgis)**: Community-driven linting rules for PyQGIS (QGS101-106).
 - **[PEP 8 Style Guide](https://peps.python.org/pep-0008/)**: The fundamental style guide for Python code.
+- **[PEP 257 Docstring Conventions](https://peps.python.org/pep-0257/)**: Standards for docstring structure and content.
+- **[Maintainability Index (SEI)](https://learn.microsoft.com/en-us/visualstudio/code-quality/code-metrics-maintainability-index-range-and-meaning)**: Methodology for measuring software maintainability.
 - **[Conventional Commits](https://www.conventionalcommits.org/)**: Standard for clear, machine-readable commit history.
 - **[Keep a Changelog](https://keepachangelog.com/)**: Best practices for maintainable version history.
 
