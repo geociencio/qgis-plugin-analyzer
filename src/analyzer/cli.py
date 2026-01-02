@@ -87,6 +87,24 @@ def _setup_argument_parser() -> argparse.ArgumentParser:
     # Init Command
     subparsers.add_parser("init", help="Initialize a new .analyzerignore with defaults")
 
+    # Summary Command
+    summary_parser = subparsers.add_parser(
+        "summary", help="Show a quick terminal summary of analysis results"
+    )
+    summary_parser.add_argument(
+        "-i",
+        "--input",
+        help="Path to the research JSON file",
+        default="analysis_results/project_context.json",
+    )
+    summary_parser.add_argument(
+        "-b",
+        "--by",
+        choices=["total", "modules", "functions", "classes"],
+        default="total",
+        help="Granularity of the summary (default: total)",
+    )
+
     return parser
 
 
@@ -185,6 +203,18 @@ def _handle_init_command() -> None:
         print("✅ Created .analyzerignore with default excludes.")
 
 
+def _handle_summary_command(args: argparse.Namespace) -> None:
+    """Handles the 'summary' command by displaying a terminal report.
+
+    Args:
+        args: Parsed command line arguments.
+    """
+    from .reporters.summary_reporter import report_summary
+
+    input_path = pathlib.Path(args.input).resolve()
+    report_summary(input_path, by=args.by)
+
+
 def main() -> None:
     """Main entry point for the QGIS Plugin Analyzer CLI.
 
@@ -199,6 +229,7 @@ def main() -> None:
         "fix",
         "list-rules",
         "init",
+        "summary",
         "-h",
         "--help",
     ]:
@@ -222,6 +253,8 @@ def main() -> None:
             _handle_list_rules_command()
         elif args.command == "init":
             _handle_init_command()
+        elif args.command == "summary":
+            _handle_summary_command(args)
         else:
             parser.print_help()
 

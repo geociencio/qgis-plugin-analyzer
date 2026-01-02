@@ -5,10 +5,21 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.0] - 2026-01-02
+
+### Added
+- **Professional `summary` CLI**: Integrated a high-performance terminal reporter (`qgis-analyzer summary`) with ANSI color support and granular filtering (`--by {total,modules,functions,classes}`).
+- **Granular Complexity Heatmaps**: Terminal-based visibility into file and function complexity, identifying technical debt instantly.
+
+### Improved
+- **Core Excellence Standard**: Finalized the project-wide standardization of docstrings and type safety, achieving a professional baseline for all future development.
+- **Reporting Architecture**: Refactored reporting layers to be fully modular, allowing for easy extension of terminal and file-based outputs.
+
 ## [0.9.0] - 2026-01-02
 
 ### Added
 - **Standardized Project Style**: Applied Google-style docstrings and strict type hinting (>90% coverage) project-wide for enhanced maintainability and safety.
+- **`summary` Command**: Integrated an enhanced terminal-based reporting tool to provide quick, colored insights into project quality.
 
 ### Improved
 - **Structural Decomposition**: Decomposed the monolithic `utils.py` into specialized modules (`logging_utils`, `config_utils`, `path_utils`, `performance_utils`, `ast_utils`) and unified package facades.
