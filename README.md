@@ -111,6 +111,23 @@ Automatically fix common QGIS issues identified during analysis.
 | `--rules` | Comma-separated list of rule IDs to fix. | Fix all |
 | `-o`, `--output` | Directory to read previous analysis from. | `./analysis_results` |
 
+### `qgis-analyzer summary`
+Shows a professional, color-coded summary of findings directly in your terminal.
+
+| Argument | Description | Default |
+| :--- | :--- | :--- |
+| `-b`, `--by` | Granularity of the summary: `total`, `modules`, `functions`, `classes`. | `total` |
+| `-i`, `--input` | Path to the `project_context.json` file to summarize. | `analysis_results/project_context.json` |
+
+**Example:**
+```bash
+# Executive summary
+qgis-analyzer summary
+
+# Identify high-complexity functions
+qgis-analyzer summary --by functions
+```
+
 ### `qgis-analyzer list-rules`
 Displays the full catalog of implemented QGIS audit rules with their severity and descriptions.
 
