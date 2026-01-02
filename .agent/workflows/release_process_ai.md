@@ -53,7 +53,7 @@ Before starting any release, you must verify the state of the project.
 ## Phase 4: Git Operations
 1. **Staging & Commit**: 
    Stage all documents and use a descriptive commit message following Conventional Commits.
-   Example: `docs: release v0.5.0 Modernization & UI Enhancements`
+   Example: `docs: release v1.1.0 Security & Licensing Suite`
 
 2. **Create Tag**: 
    Create an annotated tag with the version and title.
@@ -62,3 +62,24 @@ Before starting any release, you must verify the state of the project.
 3. **Push to Origin**: 
    Push both the branch and the specifically created tag.
    `git push origin main && git push origin vX.Y.Z`
+
+## Phase 5: Artifacts & GitHub Release
+1. **Build Artifacts**:
+   `uv build`
+2. **Publish (Optional)**:
+   `uv publish`
+3. **Create GitHub Release**:
+   Use the `gh` CLI with the template:
+   `gh release create v{version} --title "v{version}" --notes-file .github/release_template.md dist/*`
+
+---
+
+## 🏁 Quick Release Checklist
+- [ ] Tests pass (Local: `uv run python -m unittest discover tests`)
+- [ ] `CHANGELOG.md` updated with latest changes.
+- [ ] `pyproject.toml` version updated matching the tag.
+- [ ] Quality Badges in `README.md` updated.
+- [ ] Git Tag created and pushed to origin.
+- [ ] Artifacts built (`uv build`) and verified.
+- [ ] GitHub Release created using the template.
+- [ ] Files `CONTRIBUTING.md` and `.github/release_template.md` are in `main`.
