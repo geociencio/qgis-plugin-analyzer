@@ -97,6 +97,22 @@ You can run `qgis-plugin-analyzer` automatically before every commit to ensure q
     rev: v1.1.0  # Use the latest tag
     hooks:
       - id: qgis-plugin-analyzer
+      - id: qgis-plugin-analyzer
+```
+
+## 🤖 GitHub Action
+
+Use it directly in your CI/CD workflows:
+
+```yaml
+steps:
+  - uses: actions/checkout@v4
+  - name: Run QGIS Quality Check
+    uses: geociencio/qgis-plugin-analyzer@main
+    with:
+      path: .
+      output: quality_report
+      args: --profile release
 ```
 
 ## ⌨️ Full CLI Reference
