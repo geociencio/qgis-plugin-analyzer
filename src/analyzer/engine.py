@@ -390,10 +390,13 @@ class ProjectAnalyzer:
             )
 
         # Semantic Analysis
-        cycles, metrics, missing_resources = self._run_semantic_analysis(modules_data)
+        semantic_res = self._run_semantic_analysis(modules_data)
+        cycles = semantic_res[0] if len(semantic_res) > 0 else []
+        metrics = semantic_res[1] if len(semantic_res) > 1 else {}
+        missing_resources = semantic_res[2] if len(semantic_res) > 2 else []
 
         # Calculate scores
-        code_score, maint_score, qgis_score = self._calculate_scores(
+        scores = self._calculate_scores(
             modules_data,
             ruff_findings,
             compliance,
@@ -404,6 +407,10 @@ class ProjectAnalyzer:
             binaries,
             package_size,
         )
+        # Handle potential return length mismatches gracefully (Robustness v1.0.0+)
+        code_score = scores[0] if len(scores) > 0 else 0.0
+        maint_score = scores[1] if len(scores) > 1 else 0.0
+        qgis_score = scores[2] if len(scores) > 2 else 0.0
 
         # Build results
         analyses = self._build_analysis_results(

@@ -5,6 +5,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.0] - 2026-01-02
+
+### Added
+- **Security & Safety Audit Suite**: Implemented advanced rules for detecting vulnerabilities and performance bottlenecks:
+    - `UNSAFE_SUBPROCESS`: Detects dangerous command execution with `shell=True` or variable interpolation.
+    - `BLOCKING_NETWORK_CALL`: Flags synchronous network requests in UI code to prevent freezing the QGIS interface.
+- **GPL v3 Licensing**: Officially adopted the GNU General Public License v3 for the project.
+
+### Fixed
+- **Rule Message Accuracy**: Improved clarity and precision of audit rule messages.
+- **Vulnerability Testing**: Added specialized unit tests for security-related rules.
+
 ## [1.0.0] - 2026-01-02
 
 ### Added

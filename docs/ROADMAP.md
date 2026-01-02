@@ -40,12 +40,12 @@ The current profile system only affects failure conditions. It should control th
 - **Custom Rule Sets**:
     - Allow users to define custom rule sets and severity levels in `pyproject.toml`.
 
-## 5. Security & Safety (Priority: Low)
+## 5. ✅ Security & Safety (Completed)
 
 - **Subprocess Auditing**:
-    - Flag usage of `subprocess` with unsanitized inputs.
+    - Flag usage of `subprocess` with unsanitized inputs or `shell=True`.
 - **Network Calls**:
-    - Detect purely sychronous network calls (e.g., `requests.get`) inside the main thread (GUI blocking).
+    - Detect synchronous network calls (e.g., `requests.get`) inside the main thread (GUI blocking).
 
 ## 6. Integration Improvements
 

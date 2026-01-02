@@ -22,25 +22,32 @@ This document details the automatic audit rules implemented in the analyzer to e
 | :--- | :--- | :--- | :--- |
 | `UNSAFE_THREAD` | 🔴 High | Use of standard Python `threading.Thread`. | Use `QgsTask` or `QThread` to safely interact with the QGIS main thread. |
 
-## 4. Resource Management
+## 4. Security & Safety
+
+| Rule ID | Severity | Description | Recommendation |
+| :--- | :--- | :--- | :--- |
+| `UNSAFE_SUBPROCESS` | 🔴 High | Use of `subprocess` with `shell=True` or variable interpolation in command strings. | Avoid `shell=True` and pass arguments as a list to prevent command injection. |
+| `BLOCKING_NETWORK_CALL` | 🔴 High | Synchronous network calls (requests, urllib) in UI-related files. | Use `QgsTask` or `QNetworkAccessManager` to prevent freezing the QGIS interface. |
+
+## 5. Resource Management
 
 | Rule ID | Severity | Description | Recommendation |
 | :--- | :--- | :--- | :--- |
 | `MANUAL_RESOURCE_PATH` | 🟡 Medium | Manual paths for icons or UI files (e.g., `icons/ico.png`). | Use the Qt resource system with the `:/plugins/...` prefix. |
 
-## 5. Performance
+## 6. Performance
 
 | Rule ID | Severity | Description | Recommendation |
 | :--- | :--- | :--- | :--- |
 | `SPATIAL_INDEX` | 🔴 High | Iteration over features using `getFeatures()` without a filter (spatial or attribute) on potentially heavy layers. | Use `QgsSpatialIndex` and `QgsFeatureRequest.setFilterRect()` to optimize spatial queries. |
 
-## 6. Architecture
+## 7. Architecture
 
 | Rule ID | Severity | Description | Recommendation |
 | :--- | :--- | :--- | :--- |
 | `HEAVY_LOGIC_UI` | 🟡 Medium | Complex logic or heavy dependencies detected within graphical interface (GUI) files. | Move business logic to `core/services/` or `core/logic/`. |
 
-## 7. QGIS Specific Standards (flake8-qgis inspired)
+## 8. QGIS Specific Standards (flake8-qgis inspired)
 
 | Rule ID | Severity | Description | Recommendation |
 | :--- | :--- | :--- | :--- |
@@ -51,7 +58,7 @@ This document details the automatic audit rules implemented in the analyzer to e
 | `MANDATORY_CLEANUP` | 🔴 High | `initGui()` implemented but `unload()` is missing. | Always implement `unload()` to prevent memory leaks and UI artifacts. |
 | `HEAVY_LOGIC_UI` | 🟡 Medium | Heavy dependencies (pandas, numpy) or complex logic in UI files. | Move heavy logic and dependencies to core modules. |
 
-## 8. General Python Best Practices (QGIS Context)
+## 9. General Python Best Practices (QGIS Context)
 
 | Rule ID | Severity | Description | Recommendation |
 | :--- | :--- | :--- | :--- |

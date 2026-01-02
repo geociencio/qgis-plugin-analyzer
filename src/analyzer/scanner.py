@@ -189,6 +189,122 @@ class QGISASTVisitor(ast.NodeVisitor):
                                     }
                                 )
 
+    def _check_unsafe_subprocess(self, node: ast.Call) -> None:
+        """Detects potentially unsafe subprocess usage.
+
+        Args:
+            node: The function call node to analyze.
+        """
+        # Targets: subprocess.run, call, Popen, check_call, check_output
+        is_subprocess = False
+        if isinstance(node.func, ast.Attribute) and isinstance(node.func.value, ast.Name):
+            if node.func.value.id == "subprocess" and node.func.attr in {
+                "run",
+                "call",
+                "Popen",
+                "check_call",
+                "check_output",
+            }:
+                is_subprocess = True
+
+        if not is_subprocess:
+            return
+
+        # 1. Check for shell=True
+        shell_true = False
+        for kw in node.keywords:
+            if kw.arg == "shell" and isinstance(kw.value, ast.Constant) and kw.value.value is True:
+                shell_true = True
+                break
+
+        if shell_true:
+            if self._should_report("UNSAFE_SUBPROCESS"):
+                self.issues.append(
+                    {
+                        "file": self.rel_path,
+                        "line": node.lineno,
+                        "type": "UNSAFE_SUBPROCESS",
+                        "severity": self._get_severity("UNSAFE_SUBPROCESS"),
+                        "message": "Subprocess called with 'shell=True'. This is a security risk if input is unsanitized.",
+                        "code": ast.unparse(node),
+                    }
+                )
+            return
+
+        # 2. Check for unquoted variable interpolation in the command string (heuristic)
+        # If the first argument is a string (not a list) and contains % or {} or f-string
+        if node.args:
+            cmd_arg = node.args[0]
+            if isinstance(cmd_arg, (ast.JoinedStr, ast.BinOp)):
+                if self._should_report("UNSAFE_SUBPROCESS"):
+                    self.issues.append(
+                        {
+                            "file": self.rel_path,
+                            "line": node.lineno,
+                            "type": "UNSAFE_SUBPROCESS",
+                            "severity": self._get_severity("UNSAFE_SUBPROCESS"),
+                            "message": "Possible unquoted variable injection in subprocess command. Use a list of arguments instead.",
+                            "code": ast.unparse(node),
+                        }
+                    )
+
+    def _check_blocking_network(self, node: ast.Call) -> None:
+        """Detects synchronous network calls in UI-related files.
+
+        Args:
+            node: The function call node to analyze.
+        """
+        is_network = False
+        # requests.get/post...
+        if isinstance(node.func, ast.Attribute) and isinstance(node.func.value, ast.Name):
+            if node.func.value.id == "requests" and node.func.attr in {
+                "get",
+                "post",
+                "put",
+                "delete",
+                "patch",
+            }:
+                is_network = True
+
+        # urllib.request.urlopen (can be deep)
+        # Note: urllib.request.urlopen(...) or urlopen(...) if from urllib.request import urlopen
+        # current AST logic check: urllib.request.urlopen
+        if not is_network:
+            attr_chain = []
+            curr = node.func
+            while isinstance(curr, ast.Attribute):
+                attr_chain.append(curr.attr)
+                curr = curr.value
+            if isinstance(curr, ast.Name):
+                attr_chain.append(curr.id)
+
+            # Chain is reversed: ['urlopen', 'request', 'urllib']
+            if attr_chain == ["urlopen", "request", "urllib"]:
+                is_network = True
+            elif attr_chain == ["urlopen"] and isinstance(node.func, ast.Name) and node.func.id == "urlopen":
+                # This would need tracking imports, but let's stick to full path for now as per plan
+                # Or check if it's just 'urlopen'
+                is_network = True
+
+        if not is_network:
+            return
+
+        # Check if it's a UI/GUI file
+        is_ui_file = any(kw in self.rel_path.lower() for kw in ["gui", "ui", "dialog", "widget"])
+
+        if is_ui_file:
+            if self._should_report("BLOCKING_NETWORK_CALL"):
+                self.issues.append(
+                    {
+                        "file": self.rel_path,
+                        "line": node.lineno,
+                        "type": "BLOCKING_NETWORK_CALL",
+                        "severity": self._get_severity("BLOCKING_NETWORK_CALL"),
+                        "message": "Synchronous network call detected in UI file. This will freeze QGIS. Use QgsTask or QNetworkAccessManager.",
+                        "code": ast.unparse(node),
+                    }
+                )
+
     def visit_Call(self, node: ast.Call) -> None:
         """Analyzes function call nodes for multiple QGIS-specific rules.
 
@@ -198,6 +314,8 @@ class QGISASTVisitor(ast.NodeVisitor):
         self._check_obsolete_api(node)
         self._check_missing_i18n(node)
         self._check_missing_slot(node)
+        self._check_unsafe_subprocess(node)
+        self._check_blocking_network(node)
         self.generic_visit(node)
 
     def visit_For(self, node: ast.For) -> None:

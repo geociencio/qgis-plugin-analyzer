@@ -48,6 +48,18 @@ def get_qgis_audit_rules() -> List[Dict[str, Any]]:
             "message": "Obsolete QVariant type constants detected. Use QMetaType or native types.",
             "severity": "medium",
         },
+        {
+            "id": "UNSAFE_SUBPROCESS",
+            "pattern": re.compile(r"\bsubprocess\.(?:run|call|Popen|check_call|check_output)\("),
+            "message": "Potential unsafe subprocess usage. Avoid shell=True and ensure arguments are properly quoted.",
+            "severity": "high",
+        },
+        {
+            "id": "BLOCKING_NETWORK_CALL",
+            "pattern": re.compile(r"\b(?:requests\.(?:get|post|put|delete|patch)|urllib\.request\.urlopen)\("),
+            "message": "Synchronous network call detected. UI blocking risk. Use QgsTask or QNetworkAccessManager.",
+            "severity": "high",
+        },
     ]
 
 

@@ -1,10 +1,10 @@
 # QGIS Plugin Analyzer 🛡️
 ![GitHub release (latest by date)](https://img.shields.io/github/v/release/geociencio/qgis-plugin-analyzer?color=blue&logo=github)
 ![Python Version](https://img.shields.io/badge/python-3.8%2B-blue?logo=python)
-![License](https://img.shields.io/github/license/geociencio/qgis-plugin-analyzer?color=green)
+![License](https://img.shields.io/badge/license-GPL--3.0-green)
 ![Maintenance](https://img.shields.io/badge/Maintained%3F-yes-green.svg)
 ![Conventional Commits](https://img.shields.io/badge/Conventional%20Commits-1.0.0-yellow.svg?logo=git)
-![Quality Score](https://img.shields.io/badge/Module%20Stability-55.7%2F100-yellow)
+![Quality Score](https://img.shields.io/badge/Module%20Stability-55.6%2F100-yellow)
 ![Maintainability](https://img.shields.io/badge/Maintainability-100.0%2F100-brightgreen)
 
 The **QGIS Plugin Analyzer** is a static analysis tool designed specifically for QGIS (PyQGIS) plugin developers. Its goal is to elevate plugin quality by ensuring they follow community best practices and are optimized for AI-assisted development.
