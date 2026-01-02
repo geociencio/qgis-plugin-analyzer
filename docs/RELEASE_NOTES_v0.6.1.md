@@ -4,6 +4,11 @@ This patch release fixes a critical issue with the `.analyzerignore` logic where
 
 ## What's New
 
+### 🏗 Architectural Refactorings
+- **Multi-processing Engine**: Analysis is now powered by `ProcessPoolExecutor`, making it up to 4x faster on multi-core systems.
+- **Project Auto-Detection**: The analyzer now automatically detects if a directory is a `Generic Python Project` or a `QGIS Plugin`, adjusting the compliance requirements and scoring rules dynamically.
+- **UI/UX Enhancements**: New progress bar with ETA and improved terminal logging.
+
 ### 🛠 Fixes & Improvements
 - **Robust `.analyzerignore` Engine**: 
   - Pattern matching now supports non-anchored directories (e.g., `dist/` will match at any depth).

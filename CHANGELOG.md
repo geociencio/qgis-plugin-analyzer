@@ -9,6 +9,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 - **Default Scrutiny Exclusions**: Added a robust set of default ignored patterns (`.venv`, `venv`, `__pycache__`, `.git`, `.github`, `build`, `dist`, etc.) that are now automatically excluded from all scanning phases (AST, binaries, package size).
+- **Project Type Detection**: The engine now distinguishes between a `QGIS Plugin` and a `Generic Python Project`, tailoring scoring and validation logic accordingly.
+
+### Improved
+- **Multi-processing Engine**: Replaced sequential scanning with `ProcessPoolExecutor`, significantly reducing analysis time for large projects.
+- **Real-time UX**: Added a CLI `ProgressTracker` with ETA and file counts.
+- **Reporting Architecture**: Refactored `reporters.py` to handle different project types and improved the HTML report layout.
 
 ### Fixed
 - **Ignore Logic Engine**:
@@ -19,9 +25,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.6.0] - 2025-12-31
 
 ### Added
-- **Security Hardening**:
-  - Implemented SSRF protection in metadata URL validation to prevent internal network probing.
-  - Added Path Traversal protection using `safe_path_resolve` for all file operations.
+- **Security Hardening**: Implemented SSRF protection for metadata URLs, XXE mitigation for XML parsing, and Path Traversal prevention for file operations.
+- **SPATIAL_INDEX Rule**: New AST-based rule to detect missing spatial indexes in QGIS layers.
+
+### Improved
+- **Caching & Performance**: Integrated `LRUCache` for repeated file lookups and optimized AST traversals.
+- **Professional Logging**: Replaced print statements with a structured logging system (`analyzer.log`).
+- **Resilient Parsing**: Added a minimal TOML parser fallback for systems without `tomllib`.
+
+### Fixed
+- Syntax error in `scanner.py`.
   - Implemented security-focused unit tests covering SSRF and traversal scenarios.
 - **Improved Scans**:
   - Refactored `SPATIAL_INDEX` as an AST-based rule for high-precision detection of unoptimized loops.

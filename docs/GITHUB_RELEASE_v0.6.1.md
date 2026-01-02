@@ -5,8 +5,9 @@ This patch release focuses on fixing critical issues with the `.analyzerignore` 
 ### 🚀 Key Highlights
 
 - **Universal Ignore Engine**: Fixed a regression where binary scanning and package size calculations were ignoring user-defined `.analyzerignore` rules.
+- **High-Performance Engine**: Now utilizes multi-processing (`ProcessPoolExecutor`) for faster analysis and features a real-time progress bar.
 - **Smart Default Excludes**: Automatically skips `.venv`, `__pycache__`, `.git`, and build directories across all analysis phases. 
-- **Non-Anchored Patterns**: Improved pattern matching to support intuitive directory ignoring (e.g., `dist/` matches at any depth).
+- **Project Detection**: Intelligently switches between QGIS and Generic Python modes for tailored scoring.
 - **Accurate Scoring**: Your Quality Score will no longer be penalized by files inside your virtual environment!
 
 ### 📋 Changelog Summary
