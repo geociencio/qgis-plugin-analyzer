@@ -88,6 +88,17 @@ The default command remains analysis if no subcommand is specified:
 qgis-analyzer /path/to/your/plugin
 ```
 
+## 🔄 Pre-commit Hook
+
+You can run `qgis-plugin-analyzer` automatically before every commit to ensure quality. Add this to your `.pre-commit-config.yaml`:
+
+```yaml
+  - repo: https://github.com/geociencio/qgis-plugin-analyzer
+    rev: v1.1.0  # Use the latest tag
+    hooks:
+      - id: qgis-plugin-analyzer
+```
+
 ## ⌨️ Full CLI Reference
 
 ### `qgis-analyzer analyze`

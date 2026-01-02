@@ -1,0 +1,9 @@
+-   id: qgis-plugin-analyzer
+    name: QGIS Plugin Analyzer
+    description: A professional static analysis tool for QGIS (PyQGIS) plugins.
+    entry: qgis-analyzer
+    language: python
+    types: [python]
+    pass_filenames: false
+    args: ["."]
+    additional_dependencies: []
