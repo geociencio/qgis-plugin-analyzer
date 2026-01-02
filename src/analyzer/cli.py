@@ -67,8 +67,14 @@ def main():
         help="Comma-separated list of rule IDs to fix",
     )
 
+    # List Rules Command
+    subparsers.add_parser("list-rules", help="List all available QGIS audit rules")
+
+    # Init Command
+    subparsers.add_parser("init", help="Initialize a new .analyzerignore with defaults")
+
     # Legacy support / default to analyze if no command provided
-    if len(sys.argv) > 1 and sys.argv[1] not in ["analyze", "fix", "-h", "--help"]:
+    if len(sys.argv) > 1 and sys.argv[1] not in ["analyze", "fix", "list-rules", "init", "-h", "--help"]:
         # If the first argument is a path (doesn't start with -), assume 'analyze'
         if not sys.argv[1].startswith("-"):
             sys.argv.insert(1, "analyze")
@@ -126,6 +132,25 @@ def main():
         elif args.command == "analyze":
             analyzer = ProjectAnalyzer(args.project_path, args.output, args.profile)
             analyzer.run()
+        elif args.command == "list-rules":
+            from .scanner import get_qgis_audit_rules
+            rules = get_qgis_audit_rules()
+            print("\n📋 QGIS Audit Rules Catalog:")
+            print("=" * 30)
+            for r in rules:
+                print(f"- [{r['severity'].upper()}] {r['id']}: {r['message']}")
+            print(f"\nTotal: {len(rules)} rules.\n")
+        elif args.command == "init":
+            ignore_file = pathlib.Path(".analyzerignore")
+            if ignore_file.exists():
+                print("⚠️  .analyzerignore already exists. Skipping.")
+            else:
+                from .utils import DEFAULT_EXCLUDES
+                with open(ignore_file, "w") as f:
+                    f.write("# QGIS Plugin Analyzer Ignore File\n")
+                    for p in DEFAULT_EXCLUDES:
+                        f.write(f"{p}\n")
+                print("✅ Created .analyzerignore with default excludes.")
         else:
             parser.print_help()
 

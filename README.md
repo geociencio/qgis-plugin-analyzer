@@ -110,6 +110,12 @@ Automatically fix common QGIS issues identified during analysis.
 | `--rules` | Comma-separated list of rule IDs to fix. | Fix all |
 | `-o`, `--output` | Directory to read previous analysis from. | `./analysis_results` |
 
+### `qgis-analyzer list-rules`
+Displays the full catalog of implemented QGIS audit rules with their severity and descriptions.
+
+### `qgis-analyzer init`
+Initializes a recommended `.analyzerignore` file in the current directory with common Python and QGIS development exclusions.
+
 
 ## 📊 Generated Reports
 
@@ -139,6 +145,8 @@ The development of this analyzer is based on official QGIS community guidelines,
 
 ### Internal Resources
 - **[Detailed Rules Catalog](RULES.md)**: Full documentation of all audit rules implemented in this analyzer.
+- **[Project Roadmap](docs/ROADMAP.md)**: Current status and future plans for the analyzer.
+- **[Documentation Folder](docs/)**: Historical release notes, competitive analysis, and modernization guides.
 
 ## 🛠️ Contributing
 Audit rules are located in `src/analyzer/scanner.py`. Feel free to add new rules following the existing pattern!
