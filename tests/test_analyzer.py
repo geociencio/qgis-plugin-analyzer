@@ -13,10 +13,14 @@ from analyzer.utils import _minimal_toml_load
 
 
 class TestAnalyzer(unittest.TestCase):
-    def setUp(self):
+    """Unit tests for the core ProjectAnalyzer logic and TOML configuration."""
+
+    def setUp(self) -> None:
+        """Sets up a temporary directory for each test."""
         self.test_dir = pathlib.Path(tempfile.mkdtemp())
 
-    def tearDown(self):
+    def tearDown(self) -> None:
+        """Cleans up temporary resources after each test."""
         shutil.rmtree(self.test_dir)
 
     def test_minimal_toml(self):
@@ -46,22 +50,29 @@ count = 42
     def test_html_report(self):
         analyses = {
             "project_name": "TestProject",
-            "metrics": {
-                "quality_score": 85,
-                "total_files": 10,
-                "total_lines": 1000
-            },
+            "metrics": {"quality_score": 85, "total_files": 10, "total_lines": 1000},
             "qgis_compliance": {
                 "compliance_score": 90,
                 "best_practices": {
                     "issues": [
-                        {"severity": "high", "message": "Critical issue", "file": "main.py", "line": 10, "code": "print('bad')"}
+                        {
+                            "severity": "high",
+                            "message": "Critical issue",
+                            "file": "main.py",
+                            "line": 10,
+                            "code": "print('bad')",
+                        }
                     ]
-                }
+                },
             },
             "ruff_findings": [
-                {"code": "E501", "message": "Line too long", "filename": "main.py", "location": {"row": 1}}
-            ]
+                {
+                    "code": "E501",
+                    "message": "Line too long",
+                    "filename": "main.py",
+                    "location": {"row": 1},
+                }
+            ],
         }
         report_path = self.test_dir / "report.html"
         generate_html_report(analyses, report_path)

@@ -14,10 +14,14 @@ from analyzer.transformers import (
 
 
 class TestTransformers(unittest.TestCase):
-    def setUp(self):
+    """Unit tests for AST-based code transformers."""
+
+    def setUp(self) -> None:
+        """Sets up a temporary directory for each test."""
         self.test_dir = pathlib.Path(tempfile.mkdtemp())
 
-    def tearDown(self):
+    def tearDown(self) -> None:
+        """Cleans up temporary resources after each test."""
         shutil.rmtree(self.test_dir)
 
     def test_gdal_import_transformer(self):
@@ -30,7 +34,9 @@ class TestTransformers(unittest.TestCase):
         new_code = ast.unparse(new_tree)
         self.assertIn("from osgeo import gdal", new_code)
         # Verify it's not a standalone "import gdal" statement
-        self.assertNotRegex(new_code, r'^\s*import gdal\s*$', msg="Should not have standalone 'import gdal'")
+        self.assertNotRegex(
+            new_code, r"^\s*import gdal\s*$", msg="Should not have standalone 'import gdal'"
+        )
 
     def test_legacy_import_transformer(self):
         code = "from PyQt5.QtCore import Qt\n"
@@ -55,11 +61,11 @@ class TestTransformers(unittest.TestCase):
         self.assertNotIn("print", new_code)
 
     def test_i18n_transformer(self):
-        code = '''
+        code = """
 class MyDialog:
     def setup_ui(self):
         self.button.setText("Click Me")
-'''
+"""
         tree = ast.parse(code)
         transformer = I18nTransformer()
         new_tree = transformer.visit(tree)

@@ -3,17 +3,19 @@ import shutil
 import tempfile
 import unittest
 
-from src.analyzer.scanner import audit_qgis_standards
-from src.analyzer.validators import validate_metadata, validate_plugin_structure
+from analyzer.scanner import audit_qgis_standards
+from analyzer.validators import validate_metadata, validate_plugin_structure
 
 
 class TestScanner(unittest.TestCase):
-    def setUp(self):
-        # Create a temporary directory for each test
+    """Unit tests for the QGIS standards audit scanner and structure validators."""
+
+    def setUp(self) -> None:
+        """Sets up a temporary directory for each test."""
         self.test_dir = pathlib.Path(tempfile.mkdtemp())
 
-    def tearDown(self):
-        # Remove the directory after the test
+    def tearDown(self) -> None:
+        """Cleans up temporary resources after each test."""
         shutil.rmtree(self.test_dir)
 
     def test_validate_plugin_structure(self):

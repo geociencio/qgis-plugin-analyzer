@@ -10,9 +10,13 @@ from typing import Optional
 
 
 class GDALImportTransformer(ast.NodeTransformer):
-    """Transforms 'import gdal' to 'from osgeo import gdal'."""
+    """AST transformer that replaces direct GDAL imports with the OSGeo version.
 
-    def __init__(self):
+    Transforms 'import gdal' into 'from osgeo import gdal'.
+    """
+
+    def __init__(self) -> None:
+        """Initializes the transformer state."""
         self.changes_made = False
 
     def visit_Import(self, node: ast.Import) -> Optional[ast.ImportFrom]:
@@ -29,9 +33,14 @@ class GDALImportTransformer(ast.NodeTransformer):
 
 
 class LegacyImportTransformer(ast.NodeTransformer):
-    """Transforms PyQt4/PyQt5 imports to qgis.PyQt."""
+    """AST transformer that modernizes PyQt4/PyQt5 imports to qgis.PyQt.
 
-    def __init__(self):
+    Attributes:
+        changes_made: Boolean flag indicating if any changes were applied.
+    """
+
+    def __init__(self) -> None:
+        """Initializes the transformer state."""
         self.changes_made = False
 
     def visit_Import(self, node: ast.Import) -> ast.Import:
@@ -39,25 +48,27 @@ class LegacyImportTransformer(ast.NodeTransformer):
             if alias.name.startswith(("PyQt4", "PyQt5")):
                 self.changes_made = True
                 # Replace PyQt5.QtCore -> qgis.PyQt.QtCore
-                new_name = alias.name.replace("PyQt5", "qgis.PyQt").replace(
-                    "PyQt4", "qgis.PyQt"
-                )
+                new_name = alias.name.replace("PyQt5", "qgis.PyQt").replace("PyQt4", "qgis.PyQt")
                 alias.name = new_name
         return node
 
     def visit_ImportFrom(self, node: ast.ImportFrom) -> ast.ImportFrom:
         if node.module and node.module.startswith(("PyQt4", "PyQt5")):
             self.changes_made = True
-            node.module = node.module.replace("PyQt5", "qgis.PyQt").replace(
-                "PyQt4", "qgis.PyQt"
-            )
+            node.module = node.module.replace("PyQt5", "qgis.PyQt").replace("PyQt4", "qgis.PyQt")
         return node
 
 
 class PrintToLogTransformer(ast.NodeTransformer):
-    """Transforms print() calls to QgsMessageLog.logMessage()."""
+    """AST transformer that replaces print() calls with QgsMessageLog.logMessage().
 
-    def __init__(self):
+    Attributes:
+        changes_made: Boolean flag indicating if any changes were applied.
+        needs_import: Boolean flag indicating if a new import is required.
+    """
+
+    def __init__(self) -> None:
+        """Initializes the transformer state."""
         self.changes_made = False
         self.needs_import = False
 
@@ -99,9 +110,15 @@ class PrintToLogTransformer(ast.NodeTransformer):
 
 
 class I18nTransformer(ast.NodeTransformer):
-    """Wraps hardcoded UI strings in self.tr() for internationalization."""
+    """AST transformer that wraps UI strings in self.tr() for internationalization.
 
-    def __init__(self):
+    Attributes:
+        changes_made: Boolean flag indicating if any changes were applied.
+        i18n_methods: Set of method names that accept strings for UI display.
+    """
+
+    def __init__(self) -> None:
+        """Initializes the transformer state."""
         self.changes_made = False
         self.i18n_methods = {
             "setText",
@@ -137,13 +154,15 @@ class I18nTransformer(ast.NodeTransformer):
         return node
 
 
-def apply_transformation(
-    file_path: pathlib.Path, transformer: ast.NodeTransformer
-) -> bool:
-    """
-    Applies an AST transformer to a file and writes back the result.
+def apply_transformation(file_path: pathlib.Path, transformer: ast.NodeTransformer) -> bool:
+    """Applies an AST transformation to a file and writes back the modified code.
 
-    Returns True if changes were made, False otherwise.
+    Args:
+        file_path: Path to the Python file to transform.
+        transformer: The AST node transformer to apply.
+
+    Returns:
+        True if the file was modified, False otherwise.
     """
     try:
         content = file_path.read_text(encoding="utf-8")
@@ -160,9 +179,7 @@ def apply_transformation(
             # Add necessary imports if needed
             if hasattr(transformer, "needs_import") and transformer.needs_import:
                 if "from qgis.core import QgsMessageLog, Qgis" not in new_code:
-                    new_code = (
-                        "from qgis.core import QgsMessageLog, Qgis\n\n" + new_code
-                    )
+                    new_code = "from qgis.core import QgsMessageLog, Qgis\n\n" + new_code
 
             file_path.write_text(new_code, encoding="utf-8")
             return True

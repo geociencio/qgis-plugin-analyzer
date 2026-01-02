@@ -1,4 +1,3 @@
-
 import pathlib
 import shutil
 import tempfile
@@ -8,11 +7,15 @@ from analyzer.semantic import DependencyGraph, ResourceValidator
 
 
 class TestSemanticAnalysis(unittest.TestCase):
-    def setUp(self):
+    """Unit tests for semantic analysis (dependency graph and resource validation)."""
+
+    def setUp(self) -> None:
+        """Sets up the test environment for semantic analysis."""
         self.test_dir = pathlib.Path(tempfile.mkdtemp())
         self.graph = DependencyGraph()
 
-    def tearDown(self):
+    def tearDown(self) -> None:
+        """Cleans up temporary resources."""
         shutil.rmtree(self.test_dir)
 
     def test_cycle_detection(self):
@@ -26,7 +29,7 @@ class TestSemanticAnalysis(unittest.TestCase):
         self.graph.adjacency_list["b.py"] = {"a.py"}
 
         cycles = self.graph.detect_cycles()
-        self.assertGreaterEqual(len(cycles), 1) # A->B->A cycle detected
+        self.assertGreaterEqual(len(cycles), 1)  # A->B->A cycle detected
 
         # Verify cycle content
         self.assertTrue(any("a.py" in c and "b.py" in c for c in cycles))
@@ -34,11 +37,7 @@ class TestSemanticAnalysis(unittest.TestCase):
     def test_coupling_metrics(self):
         # A imports B and C
         # B imports C
-        self.graph.adjacency_list = {
-            "a": {"b", "c"},
-            "b": {"c"},
-            "c": set()
-        }
+        self.graph.adjacency_list = {"a": {"b", "c"}, "b": {"c"}, "c": set()}
         # Populate nodes keys
         self.graph.nodes = {"a": {}, "b": {}, "c": {}}
 
@@ -64,13 +63,13 @@ class TestSemanticAnalysis(unittest.TestCase):
         self.assertIn(":/plugins/test/icon.png", validator.available_resources)
         self.assertIn(":/plugins/test/images/logo.svg", validator.available_resources)
 
-        missing = validator.validate_usage([
-            ":/plugins/test/icon.png",
-            ":/plugins/test/missing.png"
-        ])
+        missing = validator.validate_usage(
+            [":/plugins/test/icon.png", ":/plugins/test/missing.png"]
+        )
 
         self.assertEqual(len(missing), 1)
         self.assertEqual(missing[0], ":/plugins/test/missing.png")
+
 
 if __name__ == "__main__":
     unittest.main()

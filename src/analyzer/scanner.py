@@ -23,87 +23,81 @@ import pathlib
 import re
 from typing import Any, Dict, List, Optional
 
-
-def get_qgis_audit_rules() -> List[Dict[str, Any]]:
-    """Returns the QGIS audit rule catalog."""
-    return [
-        {
-            "id": "UNPRECISE_LAYER",
-            "pattern": re.compile(r"mapLayersByName\("),
-            "message": "mapLayersByName() can be imprecise. Consider mapLayers() or unique IDs.",
-            "severity": "medium",
-        },
-        {
-            "id": "UNSAFE_THREAD",
-            "pattern": re.compile(r"\bthreading\.Thread\("),
-            "message": "threading.Thread usage detected. Prefer QgsTask or QThread.",
-            "severity": "high",
-        },
-        {
-            "id": "MANUAL_RESOURCE_PATH",
-            "pattern": re.compile(
-                r"QIcon\(\s*['\"](?!\s*:\/)[^'\"]*?(?:icons|images|ui)/"
-            ),
-            "message": "Manual resource path detected. Use :/plugins/...",
-            "severity": "medium",
-        },
-        {
-            "id": "PRINT_STATEMENT",
-            "pattern": re.compile(r"^[^#]*\bprint\("),
-            "message": "print() usage detected. Use QgsMessageLog.",
-            "severity": "low",
-        },
-        {
-            "id": "OBSOLETE_VARIANT",
-            "pattern": re.compile(
-                r"QVariant\.(?:String|Int|Double|LongLong|Bool|Date|Time|DateTime)"
-            ),
-            "message": "Obsolete QVariant type constants detected. Use QMetaType or native types.",
-            "severity": "medium",
-        },
-    ]
-
-
-def _calculate_complexity(node: ast.AST) -> int:
-    """Calculates Cyclomatic Complexity for a node."""
-    complexity = 1
-    for child in ast.walk(node):
-        if isinstance(
-            child,
-            (
-                ast.If,
-                ast.For,
-                ast.While,
-                ast.And,
-                ast.Or,
-                ast.ExceptHandler,
-                ast.With,
-                ast.AsyncWith,
-            ),
-        ):
-            complexity += 1
-    return complexity
+from .rules.qgis_rules import I18N_METHODS, get_qgis_audit_rules
+from .utils.ast_utils import (
+    calculate_complexity,
+    calculate_module_complexity,
+    check_main_guard,
+    extract_classes_from_ast,
+    extract_functions_from_ast,
+    extract_imports_from_ast,
+)
 
 
 class QGISASTVisitor(ast.NodeVisitor):
     """AST visitor to detect QGIS-specific issues."""
 
-    def __init__(self, rel_path: str, rules_config: dict = None):
+    def __init__(self, rel_path: str, rules_config: Optional[Dict[str, Any]] = None) -> None:
+        """Initializes the AST visitor for a specific file.
+
+        Args:
+            rel_path: Relative path to the file being analyzed.
+            rules_config: Optional configuration for audit rules and severities.
+        """
         self.rel_path = rel_path
         self.issues = []
-        self.resource_usages = []  # Stores found ":/..." paths
-        self.class_methods_stack = (
-            []
-        )  # Stack of sets containing method names for current class context
         self.rules_config = rules_config or {}
-        self.i18n_methods = {
-            "setText",
-            "setWindowTitle",
-            "setTitle",
-            "setToolTip",
-            "setPlaceholderText",
-            "setTabText",
+        self.class_methods_stack = []
+
+        # New metrics for research-based scoring
+        self.docstring_styles = []  # List of detected styles (Google, NumPy)
+        self.type_hint_stats = {
+            "total_parameters": 0,
+            "annotated_parameters": 0,
+            "has_return_hint": 0,
+            "total_functions": 0,
         }
+        self.docstring_stats = {"total_public_items": 0, "has_docstring": 0}
+        self.i18n_methods = I18N_METHODS
+
+    def _check_docstring_style(self, doc: Optional[str]) -> None:
+        """Identifies Google or NumPy docstring styles within a string.
+
+        Args:
+            doc: The docstring content to analyze.
+        """
+        if not doc:
+            return
+        # Google: Args: or Returns: or Raises: as headers
+        if re.search(r"\n\s*(Args|Returns|Raises|Yields):\s*\n", doc):
+            self.docstring_styles.append("Google")
+        # NumPy: Underlined headers
+        elif re.search(r"\n(Parameters|Returns|Raises|Yields)\n\s*-{3,}", doc):
+            self.docstring_styles.append("NumPy")
+
+    def visit_Module(self, node: ast.Module) -> None:
+        """Analyzes a module-level AST node for docstrings and other metrics.
+
+        Args:
+            node: The module node to analyze.
+        """
+        doc = ast.get_docstring(node)
+        self.docstring_stats["total_public_items"] += 1
+        if doc:
+            self.docstring_stats["has_docstring"] += 1
+            self._check_docstring_style(doc)
+        elif self._should_report("MISSING_DOCSTRING"):
+            self.issues.append(
+                {
+                    "file": self.rel_path,
+                    "line": 1,
+                    "type": "MISSING_DOCSTRING",
+                    "severity": self._get_severity("MISSING_DOCSTRING"),
+                    "message": "Module is missing a docstring (PEP 257).",
+                    "code": "Module: " + self.rel_path,
+                }
+            )
+        self.generic_visit(node)
 
     def _should_report(self, rule_id: str) -> bool:
         """Check if rule should be reported based on config."""
@@ -121,12 +115,13 @@ class QGISASTVisitor(ast.NodeVisitor):
         }
         return severity_map.get(config_severity, "medium")
 
-    def _check_obsolete_api(self, node: ast.Call):
-        """Detects obsolete API usage."""
-        if (
-            isinstance(node.func, ast.Attribute)
-            and node.func.attr == "writeAsVectorFormat"
-        ):
+    def _check_obsolete_api(self, node: ast.Call) -> None:
+        """Detects usage of obsolete QGIS APIs.
+
+        Args:
+            node: The function call node to analyze.
+        """
+        if isinstance(node.func, ast.Attribute) and node.func.attr == "writeAsVectorFormat":
             if self._should_report("OBSOLETE_API"):
                 self.issues.append(
                     {
@@ -139,8 +134,12 @@ class QGISASTVisitor(ast.NodeVisitor):
                     }
                 )
 
-    def _check_missing_i18n(self, node: ast.Call):
-        """Detects untranslated UI strings."""
+    def _check_missing_i18n(self, node: ast.Call) -> None:
+        """Detects untranslated UI strings in common PyQGIS methods.
+
+        Args:
+            node: The function call node to analyze.
+        """
         if isinstance(node.func, ast.Attribute) and node.func.attr in self.i18n_methods:
             if (
                 node.args
@@ -161,8 +160,12 @@ class QGISASTVisitor(ast.NodeVisitor):
                             }
                         )
 
-    def _check_missing_slot(self, node: ast.Call):
-        """Detects potentially missing signal slots."""
+    def _check_missing_slot(self, node: ast.Call) -> None:
+        """Heuristically detects potentially missing signal slots in signal connections.
+
+        Args:
+            node: The function call node to analyze.
+        """
         if isinstance(node.func, ast.Attribute) and node.func.attr == "connect":
             if node.args:
                 arg = node.args[0]
@@ -181,26 +184,31 @@ class QGISASTVisitor(ast.NodeVisitor):
                                         "file": self.rel_path,
                                         "line": node.lineno,
                                         "type": "POTENTIAL_MISSING_SLOT",
-                                        "severity": self._get_severity(
-                                            "POTENTIAL_MISSING_SLOT"
-                                        ),
+                                        "severity": self._get_severity("POTENTIAL_MISSING_SLOT"),
                                         "message": f"Connected slot 'self.{slot}' not found in class definitions. Verify it is defined or inherited.",
-                                        "id": "POTENTIAL_MISSING_SLOT",
                                     }
                                 )
 
-    def visit_Call(self, node: ast.Call):
+    def visit_Call(self, node: ast.Call) -> None:
+        """Analyzes function call nodes for multiple QGIS-specific rules.
+
+        Args:
+            node: The call node to analyze.
+        """
         self._check_obsolete_api(node)
         self._check_missing_i18n(node)
         self._check_missing_slot(node)
         self.generic_visit(node)
 
-    def visit_For(self, node: ast.For):
+    def visit_For(self, node: ast.For) -> None:
+        """Analyzes loop nodes for performance (spatial indexing) and Pythonic patterns.
+
+        Args:
+            node: The loop node to analyze.
+        """
         # Detect SPATIAL_INDEX (Looping features without filter)
         # Check if iterating over .getFeatures()
-        if isinstance(node.iter, ast.Call) and isinstance(
-            node.iter.func, ast.Attribute
-        ):
+        if isinstance(node.iter, ast.Call) and isinstance(node.iter.func, ast.Attribute):
             if node.iter.func.attr == "getFeatures":
                 # If getFeatures() has no arguments or is passed QgsFeatureRequest() with no filter,
                 # it's potentially heavy.
@@ -230,9 +238,31 @@ class QGISASTVisitor(ast.NodeVisitor):
                         }
                     )
 
+        # Non-Pythonic Loop Detection (check for manual counters like i += 1)
+        for body_node in ast.walk(node):
+            if isinstance(body_node, ast.AugAssign) and isinstance(body_node.op, ast.Add):
+                if isinstance(body_node.target, ast.Name):
+                    if isinstance(body_node.value, ast.Constant) and body_node.value.value == 1:
+                        if self._should_report("NON_PYTHONIC_LOOP"):
+                            self.issues.append(
+                                {
+                                    "file": self.rel_path,
+                                    "line": body_node.lineno,
+                                    "type": "NON_PYTHONIC_LOOP",
+                                    "severity": self._get_severity("NON_PYTHONIC_LOOP"),
+                                    "message": f"Manual counter '{body_node.target.id} += 1' detected inside loop. Use enumerate() instead.",
+                                    "code": ast.unparse(body_node),
+                                }
+                            )
+
         self.generic_visit(node)
 
-    def visit_ClassDef(self, node: ast.ClassDef):
+    def visit_ClassDef(self, node: ast.ClassDef) -> None:
+        """Analyzes class definitions for mandatory methods and documentation.
+
+        Args:
+            node: The class definition node to analyze.
+        """
         # Track methods defined in the current class context
         methods = {
             item.name
@@ -246,9 +276,7 @@ class QGISASTVisitor(ast.NodeVisitor):
         has_init_gui = any(
             isinstance(m, ast.FunctionDef) and m.name == "initGui" for m in node.body
         )
-        has_unload = any(
-            isinstance(m, ast.FunctionDef) and m.name == "unload" for m in node.body
-        )
+        has_unload = any(isinstance(m, ast.FunctionDef) and m.name == "unload" for m in node.body)
 
         if has_init_gui and not has_unload:
             if self._should_report("MANDATORY_CLEANUP"):
@@ -262,10 +290,35 @@ class QGISASTVisitor(ast.NodeVisitor):
                         "code": f"class {node.name}...",
                     }
                 )
+
+        # Research recommendation: Missing Docstring for Classes
+        if not node.name.startswith("_"):
+            doc = ast.get_docstring(node)
+            self.docstring_stats["total_public_items"] += 1
+            if doc:
+                self.docstring_stats["has_docstring"] += 1
+                self._check_docstring_style(doc)
+            elif self._should_report("MISSING_DOCSTRING"):
+                self.issues.append(
+                    {
+                        "file": self.rel_path,
+                        "line": node.lineno,
+                        "type": "MISSING_DOCSTRING",
+                        "severity": self._get_severity("MISSING_DOCSTRING"),
+                        "message": f"Public class '{node.name}' is missing a docstring.",
+                        "code": f"class {node.name}...",
+                    }
+                )
+
         self.generic_visit(node)
         self.class_methods_stack.pop()
 
-    def visit_FunctionDef(self, node: ast.FunctionDef):
+    def visit_FunctionDef(self, node: ast.FunctionDef) -> None:
+        """Analyzes function definitions for best practices and research-based metrics.
+
+        Args:
+            node: The function definition node to analyze.
+        """
         # 4. Detect IFACE_AS_ARGUMENT (QGS105)
         # Avoid passing QgisInterface as an argument
         for arg in node.args.args:
@@ -284,7 +337,7 @@ class QGISASTVisitor(ast.NodeVisitor):
                         )
 
         # 5. Detect HIGH_COMPLEXITY
-        complexity = _calculate_complexity(node)
+        complexity = calculate_complexity(node)
         if complexity > 15:
             if self._should_report("HIGH_COMPLEXITY"):
                 self.issues.append(
@@ -298,14 +351,60 @@ class QGISASTVisitor(ast.NodeVisitor):
                     }
                 )
 
+        # Research recommendation: Missing Docstring and Type Hints
+        if not node.name.startswith("_") and node.name != "__init__":
+            doc = ast.get_docstring(node)
+            self.docstring_stats["total_public_items"] += 1
+            if doc:
+                self.docstring_stats["has_docstring"] += 1
+                self._check_docstring_style(doc)
+            elif self._should_report("MISSING_DOCSTRING"):
+                self.issues.append(
+                    {
+                        "file": self.rel_path,
+                        "line": node.lineno,
+                        "type": "MISSING_DOCSTRING",
+                        "severity": self._get_severity("MISSING_DOCSTRING"),
+                        "message": f"Public function '{node.name}' is missing a docstring.",
+                        "code": f"def {node.name}...",
+                    }
+                )
+
+        # Type Hint Stats (PEP 484)
+        if node.name != "__init__":
+            self.type_hint_stats["total_functions"] += 1
+            params = [a for a in node.args.args if a.arg != "self" and a.arg != "cls"]
+            self.type_hint_stats["total_parameters"] += len(params)
+            annotated = [a for a in params if a.annotation]
+            self.type_hint_stats["annotated_parameters"] += len(annotated)
+            if node.returns:
+                self.type_hint_stats["has_return_hint"] += 1
+
+            # Rule: MISSING_TYPE_HINTS (if zero hints in a function with params)
+            if params and not annotated and not node.returns:
+                if self._should_report("MISSING_TYPE_HINTS"):
+                    self.issues.append(
+                        {
+                            "file": self.rel_path,
+                            "line": node.lineno,
+                            "type": "MISSING_TYPE_HINTS",
+                            "severity": self._get_severity("MISSING_TYPE_HINTS"),
+                            "message": f"Function '{node.name}' has no type annotations.",
+                            "code": f"def {node.name}...",
+                        }
+                    )
+
         self.generic_visit(node)
 
-    def visit_Import(self, node: ast.Import):
+    def visit_Import(self, node: ast.Import) -> None:
+        """Analyzes import nodes for protected members, legacy PyQt, and GDAL usage.
+
+        Args:
+            node: The import node to analyze.
+        """
         for alias in node.names:
             # 5. Detect QGIS_PROTECTED_MEMBER (QGS101/102)
-            if alias.name.startswith("qgis._") and not alias.name.startswith(
-                "qgis._3d"
-            ):
+            if alias.name.startswith("qgis._") and not alias.name.startswith("qgis._3d"):
                 if self._should_report("QGIS_PROTECTED_MEMBER"):
                     self.issues.append(
                         {
@@ -345,12 +444,17 @@ class QGISASTVisitor(ast.NodeVisitor):
                     )
         self.generic_visit(node)
 
-    def visit_ImportFrom(self, node: ast.ImportFrom):
+    def visit_ImportFrom(self, node: ast.ImportFrom) -> None:
+        """Analyzes 'from import' nodes for protected members, legacy PyQt, and GDAL.
+
+        Also detects heavy dependencies in UI-related files.
+
+        Args:
+            node: The import-from node to analyze.
+        """
         if node.module:
             # Detect QGIS_PROTECTED_MEMBER
-            if node.module.startswith("qgis._") and not node.module.startswith(
-                "qgis._3d"
-            ):
+            if node.module.startswith("qgis._") and not node.module.startswith("qgis._3d"):
                 if self._should_report("QGIS_PROTECTED_MEMBER"):
                     self.issues.append(
                         {
@@ -408,82 +512,27 @@ class QGISASTVisitor(ast.NodeVisitor):
         self.generic_visit(node)
 
 
-# Helper functions for AST extraction
-
-
-def _extract_functions_from_ast(tree):
-    """Extracts function information from AST."""
-    functions = []
-    for node in ast.walk(tree):
-        if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)):
-            func_complexity = _calculate_complexity(node)
-            functions.append(
-                {
-                    "name": node.name,
-                    "args": [arg.arg for arg in node.args.args],
-                    "line": node.lineno,
-                    "end_line": getattr(node, "end_lineno", node.lineno),
-                    "complexity": func_complexity,
-                    "docstring": ast.get_docstring(node) is not None,
-                }
-            )
-    return functions
-
-
-def _extract_classes_from_ast(tree):
-    """Extracts class information from AST."""
-    classes = []
-    for node in ast.walk(tree):
-        if isinstance(node, ast.ClassDef):
-            bases = [ast.unparse(b) for b in node.bases]
-            classes.append(f"{node.name}({', '.join(bases)})" if bases else node.name)
-    return classes
-
-
-def _extract_imports_from_ast(tree):
-    """Extracts import information from AST."""
-    imports = []
-    for node in ast.walk(tree):
-        if isinstance(node, ast.Import):
-            imports.extend(n.name for n in node.names)
-        elif isinstance(node, ast.ImportFrom):
-            if node.module:
-                imports.append(node.module)
-    return sorted(set(imports))
-
-
-def _calculate_module_complexity(tree):
-    """Calculates module-level complexity."""
-    complexity = 1
-    for node in ast.walk(tree):
-        if isinstance(
-            node, (ast.If, ast.For, ast.While, ast.And, ast.Or, ast.ExceptHandler)
-        ):
-            complexity += 1
-    return complexity
-
-
-def _check_main_guard(tree):
-    """Checks if module has __name__ == '__main__' guard."""
-    for node in ast.walk(tree):
-        if isinstance(node, ast.If):
-            if isinstance(node.test, ast.Compare) and isinstance(
-                node.test.left, ast.Name
-            ):
-                if node.test.left.id == "__name__":
-                    for cmp in node.test.comparators:
-                        if isinstance(cmp, ast.Constant) and cmp.value == "__main__":
-                            return True
-    return False
+# The helper functions previously here have been moved to src/analyzer/utils/ast_utils.py
 
 
 def analyze_module_worker(
     py_file: pathlib.Path,
     project_path: pathlib.Path,
-    cached_data: Optional[Dict] = None,
-    rules_config: dict = None,
-) -> Optional[Dict]:
-    """Worker for module analysis (executed in sub-processes)."""
+    cached_data: Optional[Dict[str, Any]] = None,
+    rules_config: Optional[Dict[str, Any]] = None,
+) -> Optional[Dict[str, Any]]:
+    """Worker function for module analysis, intended for parallel execution.
+
+    Args:
+        py_file: Path to the Python file to analyze.
+        project_path: Root path of the project.
+        cached_data: Optional previously cached analysis results.
+        rules_config: Optional rule configuration overrides.
+
+    Returns:
+        A dictionary containing the analysis results, or None if the file
+        could not be processed.
+    """
     try:
         rel_path = str(py_file.relative_to(project_path))
 
@@ -510,14 +559,24 @@ def analyze_module_worker(
                 "has_main": False,
                 "docstrings": {"module": False},
                 "ast_issues": [],
+                "research_metrics": {
+                    "docstring_styles": [],
+                    "type_hint_stats": {
+                        "total_parameters": 0,
+                        "annotated_parameters": 0,
+                        "has_return_hint": 0,
+                        "total_functions": 0,
+                    },
+                    "docstring_stats": {"total_public_items": 0, "has_docstring": 0},
+                },
             }
 
         # Extract information using helper functions
-        functions = _extract_functions_from_ast(tree)
-        classes = _extract_classes_from_ast(tree)
-        imports = _extract_imports_from_ast(tree)
-        module_complexity = _calculate_module_complexity(tree)
-        has_main = _check_main_guard(tree)
+        functions = extract_functions_from_ast(tree)
+        classes = extract_classes_from_ast(tree)
+        imports = extract_imports_from_ast(tree)
+        module_complexity = calculate_module_complexity(tree)
+        has_main = check_main_guard(tree)
 
         # Custom AST Audit
         visitor = QGISASTVisitor(rel_path, rules_config=rules_config)
@@ -537,7 +596,12 @@ def analyze_module_worker(
             "file_size_kb": py_file.stat().st_size / 1024,
             "syntax_error": False,
             "ast_issues": visitor.issues,
-            "resource_usages": visitor.resource_usages,
+            "resource_usages": getattr(visitor, "resource_usages", []),
+            "research_metrics": {
+                "docstring_styles": list(set(visitor.docstring_styles)),
+                "type_hint_stats": visitor.type_hint_stats,
+                "docstring_stats": visitor.docstring_stats,
+            },
             "content": content,
         }
     except Exception:
@@ -545,9 +609,20 @@ def analyze_module_worker(
 
 
 def audit_qgis_standards(
-    modules_data: List[Dict], project_path: pathlib.Path, rules_config: dict = None
+    modules_data: List[Dict[str, Any]],
+    project_path: pathlib.Path,
+    rules_config: Optional[Dict[str, Any]] = None,
 ) -> Dict[str, Any]:
-    """Executes regex-based QGIS standards audit."""
+    """Executes a comprehensive QGIS standards audit using regex and AST results.
+
+    Args:
+        modules_data: List of already analyzed module data.
+        project_path: Root path of the project.
+        rules_config: Optional rule configuration overrides.
+
+    Returns:
+        A dictionary consolidating all detected issues and the total issue count.
+    """
     rules = get_qgis_audit_rules()
     results = {"issues": [], "issues_count": 0}
 
@@ -573,9 +648,7 @@ def audit_qgis_standards(
 
         for rule in rules:
             rule_id = rule["id"]
-            severity_val = (
-                rules_config.get(rule_id, "warning") if rules_config else "warning"
-            )
+            severity_val = rules_config.get(rule_id, "warning") if rules_config else "warning"
             if severity_val == "ignore":
                 continue
 
@@ -600,67 +673,4 @@ def audit_qgis_standards(
     return results
 
 
-def _extract_functions_from_ast(tree):
-    """Extracts function information from AST."""
-    functions = []
-    for node in ast.walk(tree):
-        if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)):
-            func_complexity = _calculate_complexity(node)
-            functions.append(
-                {
-                    "name": node.name,
-                    "args": [arg.arg for arg in node.args.args],
-                    "line": node.lineno,
-                    "end_line": getattr(node, "end_lineno", node.lineno),
-                    "complexity": func_complexity,
-                    "docstring": ast.get_docstring(node) is not None,
-                }
-            )
-    return functions
-
-
-def _extract_classes_from_ast(tree):
-    """Extracts class information from AST."""
-    classes = []
-    for node in ast.walk(tree):
-        if isinstance(node, ast.ClassDef):
-            bases = [ast.unparse(b) for b in node.bases]
-            classes.append(f"{node.name}({', '.join(bases)})" if bases else node.name)
-    return classes
-
-
-def _extract_imports_from_ast(tree):
-    """Extracts import information from AST."""
-    imports = []
-    for node in ast.walk(tree):
-        if isinstance(node, ast.Import):
-            imports.extend(n.name for n in node.names)
-        elif isinstance(node, ast.ImportFrom):
-            if node.module:
-                imports.append(node.module)
-    return sorted(set(imports))
-
-
-def _calculate_module_complexity(tree):
-    """Calculates module-level complexity."""
-    complexity = 1
-    for node in ast.walk(tree):
-        if isinstance(
-            node, (ast.If, ast.For, ast.While, ast.And, ast.Or, ast.ExceptHandler)
-        ):
-            complexity += 1
-    return complexity
-
-
-def _check_main_guard(tree):
-    """Checks if module has __name__ == '__main__' guard."""
-    for node in ast.walk(tree):
-        if isinstance(node, ast.If):
-            if isinstance(node.test, ast.Compare) and isinstance(
-                node.test.left, ast.Name
-            ):
-                if node.test.left.id == "__name__":
-                    for cmp in node.test.comparators:
-                        if isinstance(cmp, ast.Constant) and cmp.value == "__main__":
-                            return True
-    return False
+# End of scanner.py

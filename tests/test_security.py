@@ -1,11 +1,13 @@
 import pathlib
 import unittest
 
-from src.analyzer.utils import safe_path_resolve
-from src.analyzer.validators import is_ssrf_safe
+from analyzer.utils import safe_path_resolve
+from analyzer.validators import is_ssrf_safe
 
 
 class TestSecurity(unittest.TestCase):
+    """Unit tests for security-related features like SSRF protection and path resolve."""
+
     def test_ssrf_safe_urls(self):
         # Public URLs should be safe
         self.assertTrue(is_ssrf_safe("https://google.com"))
@@ -17,7 +19,7 @@ class TestSecurity(unittest.TestCase):
         self.assertFalse(is_ssrf_safe("http://192.168.1.1"))
         self.assertFalse(is_ssrf_safe("http://10.0.0.1"))
         self.assertFalse(is_ssrf_safe("http://172.16.0.1"))
-        self.assertFalse(is_ssrf_safe("http://169.254.169.254")) # AWS Meta-data
+        self.assertFalse(is_ssrf_safe("http://169.254.169.254"))  # AWS Meta-data
         self.assertFalse(is_ssrf_safe("http://[::1]"))
 
     def test_path_traversal_protection(self):
@@ -25,7 +27,9 @@ class TestSecurity(unittest.TestCase):
 
         # Safe paths
         self.assertEqual(safe_path_resolve(base, "metadata.txt"), base / "metadata.txt")
-        self.assertEqual(safe_path_resolve(base, "src/analyzer/engine.py"), base / "src/analyzer/engine.py")
+        self.assertEqual(
+            safe_path_resolve(base, "src/analyzer/engine.py"), base / "src/analyzer/engine.py"
+        )
 
         # Traversal attempts
         with self.assertRaises(ValueError):
@@ -36,6 +40,7 @@ class TestSecurity(unittest.TestCase):
 
         with self.assertRaises(ValueError):
             safe_path_resolve(base, "/etc/passwd")
+
 
 if __name__ == "__main__":
     unittest.main()

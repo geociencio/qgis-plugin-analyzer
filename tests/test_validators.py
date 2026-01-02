@@ -13,10 +13,14 @@ from analyzer.validators import (
 
 
 class TestValidators(unittest.TestCase):
-    def setUp(self):
+    """Unit tests for QGIS artifact validators and package metrics."""
+
+    def setUp(self) -> None:
+        """Sets up a temporary directory for each test."""
         self.test_dir = pathlib.Path(tempfile.mkdtemp())
 
-    def tearDown(self):
+    def tearDown(self) -> None:
+        """Cleans up temporary resources."""
         shutil.rmtree(self.test_dir)
 
     def test_scan_for_binaries(self):

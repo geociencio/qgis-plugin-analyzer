@@ -10,21 +10,36 @@ from typing import Any, Dict, List, Set
 
 
 class DependencyGraph:
-    """Builds and analyzes the module dependency graph."""
+    """Builds and analyzes the module dependency graph to detect circular imports.
 
-    def __init__(self):
+    Attributes:
+        adjacency_list: Maps module path to the set of imported module paths.
+        nodes: Maps module path to its extracted metadata.
+    """
+
+    def __init__(self) -> None:
+        """Initializes an empty dependency graph."""
         # Maps module path -> set of imported module paths
         self.adjacency_list: Dict[str, Set[str]] = {}
         # Maps module path -> metadata (imports, functions, etc.)
         self.nodes: Dict[str, Dict[str, Any]] = {}
 
-    def add_node(self, module_path: str, data: Dict[str, Any]):
-        """Adds a module node to the graph."""
+    def add_node(self, module_path: str, data: Dict[str, Any]) -> None:
+        """Adds a module node to the graph.
+
+        Args:
+            module_path: Relative path to the module file.
+            data: Metadata dictionary for the module.
+        """
         self.nodes[module_path] = data
         self.adjacency_list[module_path] = set()
 
-    def build_edges(self, project_path: pathlib.Path):
-        """Resolves imports to build edges between nodes."""
+    def build_edges(self, project_path: pathlib.Path) -> None:
+        """Resolves module imports and builds edges between nodes.
+
+        Args:
+            project_path: Root path of the project.
+        """
         for module_path, data in self.nodes.items():
             current_file = project_path / module_path
             current_dir = current_file.parent
@@ -37,7 +52,16 @@ class DependencyGraph:
     def _resolve_import(
         self, import_name: str, current_dir: pathlib.Path, project_path: pathlib.Path
     ) -> str:
-        """Attempts to resolve a Python import string to a file path in the project."""
+        """Attempts to resolve a Python import string to a relative file path.
+
+        Args:
+            import_name: The name of the imported module or package.
+            current_dir: Directory containing the importing file.
+            project_path: Root directory of the project.
+
+        Returns:
+            The relative path to the resolved module, or an empty string if not found.
+        """
         # Handle relative imports (e.g., .utils)
         if import_name.startswith("."):
             # This is a simplification. Ideally AST gives better level info.
@@ -68,7 +92,11 @@ class DependencyGraph:
         return ""
 
     def detect_cycles(self) -> List[List[str]]:
-        """Detects circular import cycles using DFS."""
+        """Detects circular import cycles using Depth First Search (DFS).
+
+        Returns:
+            A list of dependency cycles, where each cycle is a list of module paths.
+        """
         visited = set()
         recursion_stack = set()
         cycles = []
@@ -96,7 +124,11 @@ class DependencyGraph:
         return cycles
 
     def get_coupling_metrics(self) -> Dict[str, Dict[str, int]]:
-        """Calculates Fan-In and Fan-Out for each module."""
+        """Calculates Fan-In and Fan-Out metrics for each module in the graph.
+
+        Returns:
+            A dictionary mapping module paths to their coupling metrics.
+        """
         metrics = {node: {"fan_in": 0, "fan_out": 0} for node in self.nodes}
 
         for source, targets in self.adjacency_list.items():
@@ -109,14 +141,28 @@ class DependencyGraph:
 
 
 class ResourceValidator:
-    """Validates Qt resource usage against available qrc/py files."""
+    """Validates Qt resource (QRC) usage against available definitions.
 
-    def __init__(self, project_path: pathlib.Path):
+    Attributes:
+        project_path: Path to the root of the project.
+        available_resources: A set of detected resource strings (e.g., ':/plugins/...').
+    """
+
+    def __init__(self, project_path: pathlib.Path) -> None:
+        """Initializes the resource validator.
+
+        Args:
+            project_path: Root path of the project.
+        """
         self.project_path = project_path
         self.available_resources: Set[str] = set()
 
-    def scan_project_resources(self, ignore_matcher=None):
-        """Scans .qrc files (and potentially converted _rc.py) to find valid resource paths."""
+    def scan_project_resources(self, ignore_matcher: Any = None) -> None:
+        """Scans the project for .qrc files and extracts available resource paths.
+
+        Args:
+            ignore_matcher: Optional object to determine if a path should be ignored.
+        """
         # Strategy: Parse .qrc files primarily as they are the source of truth
         # Regex to find <file>path/to/icon.png</file> inside <qresource prefix="/plugins/myplugin">
 
@@ -150,7 +196,14 @@ class ResourceValidator:
                 pass
 
     def validate_usage(self, resource_matches: List[str]) -> List[str]:
-        """Returns a list of resource paths used in code but missing in definition."""
+        """Identifies resource paths used in code that are missing from definition files.
+
+        Args:
+            resource_matches: List of resource strings extracted from the code.
+
+        Returns:
+            A list of unique, missing resource strings.
+        """
         missing = []
         for res in resource_matches:
             # Simple exact match check.

@@ -3,14 +3,18 @@ import shutil
 import tempfile
 import unittest
 
-from src.analyzer.scanner import analyze_module_worker
+from analyzer.scanner import analyze_module_worker
 
 
 class TestScannerHighComplexity(unittest.TestCase):
-    def setUp(self):
+    """Unit tests for the high complexity rule detection."""
+
+    def setUp(self) -> None:
+        """Sets up a temporary directory for each test."""
         self.test_dir = pathlib.Path(tempfile.mkdtemp())
 
-    def tearDown(self):
+    def tearDown(self) -> None:
+        """Cleans up temporary resources."""
         shutil.rmtree(self.test_dir)
 
     def test_high_complexity_rule(self):
@@ -35,7 +39,8 @@ def complex_f(x):
         high_complexity_issues = [i for i in issues if i["type"] == "HIGH_COMPLEXITY"]
         self.assertEqual(len(high_complexity_issues), 1)
         self.assertIn("too complex", high_complexity_issues[0]["message"])
-        self.assertIn("CC=21", high_complexity_issues[0]["message"]) # 1 (base) + 20 (ifs)
+        self.assertIn("CC=21", high_complexity_issues[0]["message"])  # 1 (base) + 20 (ifs)
+
 
 if __name__ == "__main__":
     unittest.main()

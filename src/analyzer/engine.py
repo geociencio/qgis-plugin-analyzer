@@ -60,7 +60,14 @@ class ProjectAnalyzer:
         project_path: str,
         output_dir: Optional[str] = None,
         profile: str = "default",
-    ):
+    ) -> None:
+        """Initializes the Project Analyzer.
+
+        Args:
+            project_path: Root path of the project to analyze.
+            output_dir: Directory to save analysis reports. Defaults to "./analysis_results".
+            profile: Configuration profile name from pyproject.toml. Defaults to "default".
+        """
         self.project_path = pathlib.Path(project_path).resolve()
         self.output_dir = pathlib.Path(output_dir or "./analysis_results").resolve()
         self.output_dir.mkdir(parents=True, exist_ok=True)
@@ -89,7 +96,11 @@ class ProjectAnalyzer:
         self.matcher = IgnoreMatcher(self.project_path, patterns)
 
     def get_python_files(self) -> List[pathlib.Path]:
-        """Scans Python files ignoring common folders and .analyzerignore patterns."""
+        """Scans Python files ignoring common folders and .analyzerignore patterns.
+
+        Returns:
+            A sorted list of pathlib.Path objects for all detected Python files.
+        """
         python_files = []
         for root, dirs, files in os.walk(self.project_path):
             root_path = pathlib.Path(root)
@@ -110,7 +121,12 @@ class ProjectAnalyzer:
         return sorted(python_files)
 
     def run_ruff_audit(self) -> List[Dict[str, Any]]:
-        """Executes Ruff via subprocess and returns findings."""
+        """Executes Ruff linting via subprocess.
+
+        Returns:
+            A list of dictionaries representing Ruff findings. Returns an empty
+            list if Ruff is not available or errors occur.
+        """
         try:
             cmd = [
                 "ruff",
@@ -131,15 +147,21 @@ class ProjectAnalyzer:
     def _run_parallel_analysis(
         self, files: List[pathlib.Path], rules_config: dict
     ) -> List[Dict[str, Any]]:
-        """Runs parallel analysis on all Python files."""
+        """Runs parallel analysis on all Python files.
+
+        Args:
+            files: List of paths to analyze.
+            rules_config: Rule-specific configuration overrides.
+
+        Returns:
+            A list of module analysis results.
+        """
         tracker = ProgressTracker(len(files))
         modules_data = []
 
         with ProcessPoolExecutor(max_workers=self.max_workers) as executor:
             futures = {
-                executor.submit(
-                    analyze_module_worker, f, self.project_path, None, rules_config
-                ): f
+                executor.submit(analyze_module_worker, f, self.project_path, None, rules_config): f
                 for f in files
             }
             for future in as_completed(futures):
@@ -154,7 +176,15 @@ class ProjectAnalyzer:
     def _run_qgis_specific_checks(
         self, modules_data: List[Dict[str, Any]], rules_config: dict
     ) -> tuple:
-        """Runs QGIS-specific validation checks."""
+        """Runs QGIS-specific validation checks.
+
+        Args:
+            modules_data: List of already analyzed module data.
+            rules_config: Rule-specific configuration overrides.
+
+        Returns:
+            A tuple of (compliance, structure, metadata, binaries, package_size, url_status).
+        """
         compliance = audit_qgis_standards(
             modules_data, self.project_path, rules_config=rules_config
         )
@@ -175,7 +205,14 @@ class ProjectAnalyzer:
         return compliance, structure, metadata, binaries, package_size, url_status
 
     def _run_semantic_analysis(self, modules_data: List[Dict[str, Any]]) -> tuple:
-        """Runs semantic analysis (dependencies, resources)."""
+        """Runs semantic analysis including dependencies and resources.
+
+        Args:
+            modules_data: List of analyzed module entries.
+
+        Returns:
+            A tuple of (cycles, metrics, missing_resources).
+        """
         dep_graph = DependencyGraph()
         all_resource_usages = []
         res_validator = None
@@ -201,23 +238,44 @@ class ProjectAnalyzer:
 
     def _build_analysis_results(
         self,
-        files,
-        modules_data,
-        ruff_findings,
-        code_score,
-        maint_score,
-        qgis_score,
-        compliance,
-        structure,
-        metadata,
-        cycles,
-        metrics,
-        missing_resources,
-        binaries,
-        package_size,
-        url_status,
+        files: List[pathlib.Path],
+        modules_data: List[Dict[str, Any]],
+        ruff_findings: List[Dict[str, Any]],
+        code_score: float,
+        maint_score: float,
+        qgis_score: float,
+        compliance: Dict[str, Any],
+        structure: Dict[str, Any],
+        metadata: Dict[str, Any],
+        cycles: List[List[str]],
+        metrics: Dict[str, Any],
+        missing_resources: List[str],
+        binaries: List[str],
+        package_size: float,
+        url_status: Dict[str, str],
     ) -> Dict[str, Any]:
-        """Builds the analysis results dictionary."""
+        """Consolidates analysis results into a single dictionary.
+
+        Args:
+            files: List of analyzed files.
+            modules_data: Detailed analysis for each module.
+            ruff_findings: Results from Ruff linting.
+            code_score: Calculated module stability score.
+            maint_score: Calculated maintainability score.
+            qgis_score: Calculated QGIS compliance score.
+            compliance: Detailed QGIS compliance findings.
+            structure: Plugin structure validation results.
+            metadata: Metadata validation results.
+            cycles: Detected circular dependency cycles.
+            metrics: Coupling and complexity metrics.
+            missing_resources: List of missing QRC resources.
+            binaries: List of prohibited binary files.
+            package_size: Size of the plugin package in MB.
+            url_status: Status of URLs in metadata.txt.
+
+        Returns:
+            The final analysis results dictionary.
+        """
         metrics_summary = {
             "total_files": len(files),
             "total_lines": sum(m["lines"] for m in modules_data),
@@ -226,9 +284,7 @@ class ProjectAnalyzer:
         }
 
         if self.project_type == "qgis":
-            metrics_summary["overall_score"] = round(
-                (code_score * 0.5) + (qgis_score * 0.5), 1
-            )
+            metrics_summary["overall_score"] = round((code_score * 0.5) + (qgis_score * 0.5), 1)
 
         analyses = {
             "project_name": self.project_path.name,
@@ -237,6 +293,42 @@ class ProjectAnalyzer:
             "ruff_findings": ruff_findings,
             "semantic": {"circular_dependencies": cycles, "coupling_metrics": metrics},
             "modules": modules_data,
+        }
+
+        # Aggregate research metrics for summary
+        total_functions = 0
+        total_params = 0
+        annotated_params = 0
+        has_return_hint = 0
+        has_docstring_count = 0
+        total_public_items = 0
+        detected_styles = set()
+
+        for m in modules_data:
+            r_metrics = m.get("research_metrics", {})
+            d_stats = r_metrics.get("docstring_stats", {})
+            total_public_items += d_stats.get("total_public_items", 0)
+            has_docstring_count += d_stats.get("has_docstring", 0)
+
+            t_stats = r_metrics.get("type_hint_stats", {})
+            total_functions += t_stats.get("total_functions", 0)
+            total_params += t_stats.get("total_parameters", 0)
+            annotated_params += t_stats.get("annotated_parameters", 0)
+            has_return_hint += t_stats.get("has_return_hint", 0)
+
+            detected_styles.update(r_metrics.get("docstring_styles", []))
+
+        analyses["research_summary"] = {
+            "type_hint_coverage": round((annotated_params / max(1, total_params)) * 100, 1)
+            if total_params > 0
+            else 0.0,
+            "return_hint_coverage": (
+                round((has_return_hint / total_functions) * 100, 1) if total_functions > 0 else 0.0
+            ),
+            "docstring_coverage": round((has_docstring_count / max(1, total_public_items)) * 100, 1)
+            if total_public_items > 0
+            else 0.0,
+            "detected_docstring_styles": list(detected_styles),
         }
 
         if self.project_type == "qgis":
@@ -255,15 +347,24 @@ class ProjectAnalyzer:
 
         return analyses
 
-    def _save_reports(self, analyses: Dict[str, Any]):
-        """Saves all analysis reports."""
+    def _save_reports(self, analyses: Dict[str, Any]) -> None:
+        """Saves all generated analysis reports to the output directory.
+
+        Args:
+            analyses: The consolidated analysis results dictionary.
+        """
         generate_markdown_summary(analyses, self.output_dir / "PROJECT_SUMMARY.md")
         if self.config.get("generate_html", True):
             generate_html_report(analyses, self.output_dir / "PROJECT_SUMMARY.html")
         save_json_context(analyses, self.output_dir / "project_context.json")
 
-    def run(self):
-        """Runs the analysis pipeline."""
+    def run(self) -> bool:
+        """Executes the complete analysis pipeline.
+
+        Returns:
+            True if analysis completed successfully (even if issues were found),
+            False if it failed due to critical system errors or strict mode violations.
+        """
         logger.info(f"🔍 Analyzing: {self.project_path}")
         files = self.get_python_files()
         rules_config = self.config.get("rules", {})
@@ -344,17 +445,32 @@ class ProjectAnalyzer:
 
     def _calculate_scores(
         self,
-        modules_data,
-        ruff_findings,
-        compliance,
-        structure,
-        metadata,
-        cycles,
-        missing_resources,
-        binaries,
-        package_size,
+        modules_data: List[Dict[str, Any]],
+        ruff_findings: List[Dict[str, Any]],
+        compliance: Dict[str, Any],
+        structure: Dict[str, Any],
+        metadata: Dict[str, Any],
+        cycles: List[List[str]],
+        missing_resources: List[str],
+        binaries: List[str],
+        package_size: float,
     ) -> tuple:
-        """Calculates scores based on project type and standardized metrics."""
+        """Calculates project quality scores based on industry-standard formulas.
+
+        Args:
+            modules_data: Detailed analysis results for each module.
+            ruff_findings: List of Ruff linting findings.
+            compliance: Findings from QGIS standard audit.
+            structure: Results of plugin structure validation.
+            metadata: Results of metadata.txt validation.
+            cycles: List of circular dependency cycles.
+            missing_resources: List of missing QRC resource paths.
+            binaries: List of prohibited binary files.
+            package_size: Size of the plugin package in MB.
+
+        Returns:
+            A tuple of (module_stability, maintainability, qgis_compliance) scores out of 100.
+        """
         if not modules_data:
             return 0.0, 0.0, 0.0
 
@@ -375,9 +491,7 @@ class ProjectAnalyzer:
             for f in m.get("functions", []):
                 all_func_comp.append(f["complexity"])
 
-        avg_func_comp = (
-            sum(all_func_comp) / len(all_func_comp) if all_func_comp else 1.0
-        )
+        avg_func_comp = sum(all_func_comp) / len(all_func_comp) if all_func_comp else 1.0
         # Function complexity score: 100 is perfect, -5 per point over 10
         func_score = max(0, 100 - (max(0, avg_func_comp - 10) * 5))
 
@@ -399,6 +513,44 @@ class ProjectAnalyzer:
         # Composite Maintainability Score
         maintainability_score = (func_score * 0.7) + (lint_score * 0.3)
 
+        # 4. Research-based Bonuses & Modernization
+        total_public_items = 0
+        has_docstring_count = 0
+        total_functions = 0
+        total_params = 0
+        annotated_params = 0
+        has_return_hint = 0
+        detected_styles = set()
+
+        for m in modules_data:
+            metrics = m.get("research_metrics", {})
+            d_stats = metrics.get("docstring_stats", {})
+            total_public_items += d_stats.get("total_public_items", 0)
+            has_docstring_count += d_stats.get("has_docstring", 0)
+
+            t_stats = metrics.get("type_hint_stats", {})
+            total_functions += t_stats.get("total_functions", 0)
+            total_params += t_stats.get("total_parameters", 0)
+            annotated_params += t_stats.get("annotated_parameters", 0)
+            has_return_hint += t_stats.get("has_return_hint", 0)
+
+            detected_styles.update(metrics.get("docstring_styles", []))
+
+        # Bonuses
+        modernization_bonus = 0.0
+        # Type Hint Bonus: > 80% coverage on params and returns
+        if total_params > 0 or total_functions > 0:
+            param_cov = annotated_params / max(1, total_params)
+            ret_cov = has_return_hint / max(1, total_functions)
+            if param_cov >= 0.8 and ret_cov >= 0.8:
+                modernization_bonus += 5.0
+
+        # Docstring Style Bonus: Standardized formats (Google/NumPy)
+        if detected_styles:
+            modernization_bonus += 2.0
+
+        maintainability_score = min(100.0, maintainability_score + modernization_bonus)
+
         # Global penalties
         penalty = len(cycles) * 10
         module_score = max(0, module_score - penalty)
@@ -407,18 +559,14 @@ class ProjectAnalyzer:
         if self.project_type == "generic":
             return round(module_score, 1), round(maintainability_score, 1), 0.0
 
-        # 4. QGIS Standards (only if QGIS project)
+        # ... (qgis_score logic remains same) ...
         qgis_score = 100.0
-        # Penalty for technical findings
         qgis_score -= compliance.get("issues_count", 0) * 2
-        # Penalty for repository missing files/metadata
         if not structure.get("is_valid", True):
             qgis_score -= 20
         if not metadata.get("is_valid", True):
             qgis_score -= 10
-        # Penalty for missing resources
         qgis_score -= len(missing_resources) * 5
-        # Repository compliance penalties
         qgis_score -= len(binaries) * 50
         if package_size > 20:
             qgis_score -= 10

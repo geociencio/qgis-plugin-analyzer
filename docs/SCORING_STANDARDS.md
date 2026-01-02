@@ -45,7 +45,19 @@ For QGIS plugins, the score reflects adherence to the [Official QGIS Plugin Stan
 | **Best Practices (i18n, icons)** | Low | -5 pts |
 | **Repository Structure** | Critical | -30 pts |
 
-## 4. Grading Scale
+## 4. Modernization & Research Bonuses
+
+Inspired by research into organizations like Google, Microsoft, and Spotify, the tool awards **Modernization Bonuses** to projects that adopt industrial-grade Python practices:
+
+| Practice | Bonus | Description |
+| :--- | :--- | :--- |
+| **Industrial Type Hinting** | +5.0 pts | Awarded if both parameter and return type hint coverage is > 80% (following Microsoft/Dropbox patterns). |
+| **Standardized Docstrings** | +2.0 pts | Awarded if Google or NumPy docstring styles are detected (vocalized by Google/Scientific community). |
+
+> [!NOTE]
+> **Pythonic Penalties**: We also apply a small penalty (-2.0 pts) for non-Pythonic patterns like manual loop counters (`i += 1`) instead of using `enumerate()`.
+
+## 5. Grading Scale
 
 Regardless of the project, we adhere to the standard academic/industry grading scale:
 

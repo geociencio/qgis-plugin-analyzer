@@ -10,17 +10,21 @@ import socket
 import urllib.error
 import urllib.parse
 import urllib.request
-from typing import Dict, List
+from typing import Any, Dict, List
 
 # Prohibited binary extensions per QGIS repository policy
 BINARY_EXTENSIONS = {".exe", ".dll", ".so", ".dylib", ".pyd", ".bin", ".a", ".lib"}
 
 
-def scan_for_binaries(project_path: pathlib.Path, ignore_matcher=None) -> List[str]:
-    """
-    Scans project for prohibited binary files.
+def scan_for_binaries(project_path: pathlib.Path, ignore_matcher: Any = None) -> List[str]:
+    """Scans the project for prohibited binary files per QGIS policies.
 
-    Returns list of relative paths to binary files found.
+    Args:
+        project_path: Root path of the project.
+        ignore_matcher: Optional object to determine if a path should be ignored.
+
+    Returns:
+        A list of relative paths to any binary files found.
     """
     binaries = []
 
@@ -37,12 +41,15 @@ def scan_for_binaries(project_path: pathlib.Path, ignore_matcher=None) -> List[s
     return binaries
 
 
-def calculate_package_size(project_path: pathlib.Path, ignore_matcher=None) -> float:
-    """
-    Calculates total package size in MB.
+def calculate_package_size(project_path: pathlib.Path, ignore_matcher: Any = None) -> float:
+    """Calculates the total package size in Megabytes (MB).
 
-    Respects ignore patterns if provided.
-    Returns size in megabytes (MB).
+    Args:
+        project_path: Root path of the project.
+        ignore_matcher: Optional object to determine if a path should be ignored.
+
+    Returns:
+        The total size of the plugin package in MB.
     """
     total_size = 0
 
@@ -61,9 +68,16 @@ def calculate_package_size(project_path: pathlib.Path, ignore_matcher=None) -> f
 
 
 def is_ssrf_safe(url: str) -> bool:
-    """
-    Checks if a URL is safe from SSRF.
-    Ensures the hostname does not resolve to private, loopback, or local IP ranges.
+    """Checks if a URL is safe from Server-Side Request Forgery (SSRF).
+
+    Validates that the hostname does not resolve to private, loopback, or
+    local IP ranges.
+
+    Args:
+        url: The URL string to validate.
+
+    Returns:
+        True if the URL is considered safe for outbound requests, False otherwise.
     """
     try:
         parsed = urllib.parse.urlparse(url)
@@ -104,11 +118,13 @@ def is_ssrf_safe(url: str) -> bool:
 
 
 def validate_metadata_urls(metadata: Dict[str, str]) -> Dict[str, str]:
-    """
-    Validates URLs from metadata.txt.
+    """Validates the accessibility of URLs defined in the plugin metadata.
 
-    Checks: homepage, tracker, repository
-    Returns dict: {url: status} where status is 'ok', 'error', or 'timeout'
+    Args:
+        metadata: A dictionary containing metadata fields and their values.
+
+    Returns:
+        A dictionary mapping each URL to its validation status (e.g., 'ok', 'error').
     """
     url_fields = ["homepage", "tracker", "repository"]
     results = {}
@@ -151,14 +167,14 @@ def validate_metadata_urls(metadata: Dict[str, str]) -> Dict[str, str]:
     return results
 
 
-def validate_plugin_structure(project_path: pathlib.Path) -> Dict[str, any]:
-    """
-    Validates required plugin structure.
+def validate_plugin_structure(project_path: pathlib.Path) -> Dict[str, Any]:
+    """Validates that the plugin following the required QGIS file structure.
 
-    Checks for:
-    - __init__.py (and classFactory)
-    - metadata.txt
-    - LICENSE
+    Args:
+        project_path: Root path of the plugin project.
+
+    Returns:
+        A dictionary containing the validation results and overall status.
     """
     mandatory = ["metadata.txt", "__init__.py", "LICENSE"]
     found = {f: (project_path / f).exists() for f in mandatory}
@@ -186,11 +202,14 @@ def validate_plugin_structure(project_path: pathlib.Path) -> Dict[str, any]:
     }
 
 
-def validate_metadata(metadata_path: pathlib.Path) -> Dict[str, any]:
-    """
-    Validates metadata.txt content.
+def validate_metadata(metadata_path: pathlib.Path) -> Dict[str, Any]:
+    """Validates the content of the metadata.txt file against QGIS requirements.
 
-    Checks for required fields per QGIS repository requirements.
+    Args:
+        metadata_path: Path to the metadata.txt file.
+
+    Returns:
+        A dictionary containing validation details and mandatory/recommended missing fields.
     """
     required_fields = [
         "name",
@@ -234,9 +253,7 @@ def validate_metadata(metadata_path: pathlib.Path) -> Dict[str, any]:
         }
 
     missing = [f for f in required_fields if f not in metadata or not metadata[f]]
-    recommended_missing = [
-        f for f in recommended_fields if f not in metadata or not metadata[f]
-    ]
+    recommended_missing = [f for f in recommended_fields if f not in metadata or not metadata[f]]
 
     return {
         "is_valid": len(missing) == 0,

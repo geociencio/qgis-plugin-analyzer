@@ -27,20 +27,20 @@ from .engine import ProjectAnalyzer
 from .utils import logger, setup_logger
 
 
-def _setup_argument_parser():
-    """Sets up and returns the argument parser with all subcommands."""
+def _setup_argument_parser() -> argparse.ArgumentParser:
+    """Sets up and returns the argument parser with all subcommands.
+
+    Returns:
+        A configured ArgumentParser instance.
+    """
     parser = argparse.ArgumentParser(
         description="QGIS Plugin Analyzer - A guardian for your PyQGIS code"
     )
     subparsers = parser.add_subparsers(dest="command", help="Command to execute")
 
     # Analyze Command
-    analyze_parser = subparsers.add_parser(
-        "analyze", help="Analyze an existing QGIS plugin"
-    )
-    analyze_parser.add_argument(
-        "project_path", help="Path to the QGIS project to analyze"
-    )
+    analyze_parser = subparsers.add_parser("analyze", help="Analyze an existing QGIS plugin")
+    analyze_parser.add_argument("project_path", help="Path to the QGIS project to analyze")
     analyze_parser.add_argument(
         "-o",
         "--output",
@@ -63,9 +63,7 @@ def _setup_argument_parser():
         default=True,
         help="Show proposed changes without applying (default: True)",
     )
-    fix_parser.add_argument(
-        "--apply", action="store_true", help="Apply fixes (disables dry-run)"
-    )
+    fix_parser.add_argument("--apply", action="store_true", help="Apply fixes (disables dry-run)")
     fix_parser.add_argument(
         "--auto-approve",
         action="store_true",
@@ -92,8 +90,15 @@ def _setup_argument_parser():
     return parser
 
 
-def _handle_fix_command(args):
-    """Handles the fix command."""
+def _handle_fix_command(args: argparse.Namespace) -> bool:
+    """Handles the execution of the 'fix' command.
+
+    Args:
+        args: Parsed command line arguments.
+
+    Returns:
+        True if the fix process completed successfully, False otherwise.
+    """
     import json
 
     from .fixer import AutoFixer
@@ -143,15 +148,19 @@ def _handle_fix_command(args):
     return True
 
 
-def _handle_analyze_command(args):
-    """Handles the analyze command."""
+def _handle_analyze_command(args: argparse.Namespace) -> None:
+    """Handles the execution of the 'analyze' command.
+
+    Args:
+        args: Parsed command line arguments.
+    """
     analyzer = ProjectAnalyzer(args.project_path, args.output, args.profile)
     analyzer.run()
 
 
-def _handle_list_rules_command():
-    """Handles the list-rules command."""
-    from .scanner import get_qgis_audit_rules
+def _handle_list_rules_command() -> None:
+    """Handles the 'list-rules' command by displaying available audit rules."""
+    from .rules import get_qgis_audit_rules
 
     rules = get_qgis_audit_rules()
     print("\n📋 QGIS Audit Rules Catalog:")
@@ -161,9 +170,9 @@ def _handle_list_rules_command():
     print(f"\nTotal: {len(rules)} rules.\n")
 
 
-def _handle_init_command():
-    """Handles the init command."""
-    from .utils import DEFAULT_EXCLUDES
+def _handle_init_command() -> None:
+    """Handles the 'init' command by creating a default .analyzerignore file."""
+    from .utils import DEFAULT_EXCLUDE
 
     ignore_file = pathlib.Path(".analyzerignore")
     if ignore_file.exists():
@@ -171,12 +180,17 @@ def _handle_init_command():
     else:
         with open(ignore_file, "w") as f:
             f.write("# QGIS Plugin Analyzer Ignore File\n")
-            for p in DEFAULT_EXCLUDES:
+            for p in DEFAULT_EXCLUDE:
                 f.write(f"{p}\n")
         print("✅ Created .analyzerignore with default excludes.")
 
 
-def main():
+def main() -> None:
+    """Main entry point for the QGIS Plugin Analyzer CLI.
+
+    Orchestrates the command execution based on parsed arguments and
+    sets up the global logging environment.
+    """
     parser = _setup_argument_parser()
 
     # Legacy support / default to analyze if no command provided

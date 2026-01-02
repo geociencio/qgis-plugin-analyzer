@@ -21,9 +21,14 @@ from .transformers import (
 
 
 def check_git_status(project_path: pathlib.Path) -> bool:
-    """
-    Checks if the working directory is clean.
-    Returns True if clean, False if there are uncommitted changes.
+    """Checks if the Git working directory is clean.
+
+    Args:
+        project_path: Root path of the Git project.
+
+    Returns:
+        True if there are no uncommitted changes, False otherwise.
+        Returns True if Git is not available.
     """
     try:
         result = subprocess.run(
@@ -39,8 +44,14 @@ def check_git_status(project_path: pathlib.Path) -> bool:
         return True  # Don't block if git is not available
 
 
-def show_diff(file_path: pathlib.Path, original_content: str, new_content: str):
-    """Displays a unified diff between original and new content."""
+def show_diff(file_path: pathlib.Path, original_content: str, new_content: str) -> None:
+    """Displays a colorized unified diff between original and new content.
+
+    Args:
+        file_path: Path to the file being compared.
+        original_content: The original content of the file.
+        new_content: The modified content of the file.
+    """
     diff = difflib.unified_diff(
         original_content.splitlines(keepends=True),
         new_content.splitlines(keepends=True),
@@ -66,7 +77,7 @@ def show_diff(file_path: pathlib.Path, original_content: str, new_content: str):
 
 
 class FixStrategy(ABC):
-    """Abstract base class for fix strategies."""
+    """Abstract base class for all auto-fix strategies."""
 
     @abstractmethod
     def can_fix(self, issue: Dict[str, Any]) -> bool:
@@ -142,9 +153,21 @@ class I18nFixer(FixStrategy):
 
 
 class AutoFixer:
-    """Orchestrates the auto-fix process."""
+    """Orchestrates the identification and application of auto-fixes.
 
-    def __init__(self, project_path: pathlib.Path, dry_run: bool = True):
+    Attributes:
+        project_path: Root path of the project.
+        dry_run: If True, changes are proposed but not written.
+        strategies: List of available fix strategies.
+    """
+
+    def __init__(self, project_path: pathlib.Path, dry_run: bool = True) -> None:
+        """Initializes the auto-fixer.
+
+        Args:
+            project_path: Root path of the project.
+            dry_run: Whether to run in simulation mode.
+        """
         self.project_path = project_path
         self.dry_run = dry_run
         self.strategies: List[FixStrategy] = [
@@ -155,7 +178,14 @@ class AutoFixer:
         ]
 
     def get_fixable_issues(self, issues: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
-        """Filters issues to only those that can be auto-fixed."""
+        """Filters a list of issues to identify those that can be auto-fixed.
+
+        Args:
+            issues: A list of issue dictionaries.
+
+        Returns:
+            A list of fixable issues, each enriched with a 'fixer' strategy.
+        """
         fixable = []
         for issue in issues:
             for strategy in self.strategies:
@@ -173,9 +203,7 @@ class AutoFixer:
         is_clean = check_git_status(self.project_path)
         if not is_clean:
             print("\n⚠️  WARNING: Working directory has uncommitted changes.")
-            print(
-                "   It's recommended to commit or stash changes before applying fixes."
-            )
+            print("   It's recommended to commit or stash changes before applying fixes.")
             if interactive:
                 response = input("   Continue anyway? [y/N]: ").lower()
                 if response != "y":
@@ -212,9 +240,7 @@ class AutoFixer:
 
         if interactive and not self.dry_run:
             # Show diff preview
-            with tempfile.NamedTemporaryFile(
-                mode="w", suffix=".py", delete=False
-            ) as tmp:
+            with tempfile.NamedTemporaryFile(mode="w", suffix=".py", delete=False) as tmp:
                 tmp.write(original_content)
                 tmp_path = pathlib.Path(tmp.name)
 
@@ -248,13 +274,15 @@ class AutoFixer:
 
         return True
 
-    def apply_fixes(
-        self, issues: List[Dict[str, Any]], interactive: bool = True
-    ) -> Dict[str, int]:
-        """
-        Applies fixes to the given issues.
+    def apply_fixes(self, issues: List[Dict[str, Any]], interactive: bool = True) -> Dict[str, int]:
+        """Applies fixes to identified issues, grouping by file.
 
-        Returns a dict with counts: {'applied': N, 'skipped': M, 'failed': K}
+        Args:
+            issues: List of issues to fix.
+            interactive: Whether to prompt for confirmation and show diffs.
+
+        Returns:
+            A dictionary containing processing statistics (applied, skipped, failed).
         """
         stats = {"applied": 0, "skipped": 0, "failed": 0}
 
