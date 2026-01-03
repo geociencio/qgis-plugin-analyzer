@@ -45,12 +45,12 @@ class QGISASTVisitor(ast.NodeVisitor):
             rules_config: Optional configuration for audit rules and severities.
         """
         self.rel_path = rel_path
-        self.issues = []
+        self.issues: List[Dict[str, Any]] = []
         self.rules_config = rules_config or {}
-        self.class_methods_stack = []
+        self.class_methods_stack: List[Any] = []  # Actually Set[str] but allows flexibility
 
         # New metrics for research-based scoring
-        self.docstring_styles = []  # List of detected styles (Google, NumPy)
+        self.docstring_styles: List[str] = []  # List of detected styles (Google, NumPy)
         self.type_hint_stats = {
             "total_parameters": 0,
             "annotated_parameters": 0,
@@ -102,7 +102,7 @@ class QGISASTVisitor(ast.NodeVisitor):
     def _should_report(self, rule_id: str) -> bool:
         """Check if rule should be reported based on config."""
         severity = self.rules_config.get(rule_id, "warning")
-        return severity != "ignore"
+        return bool(severity != "ignore")
 
     def _get_severity(self, rule_id: str) -> str:
         """Get configured severity for rule (maps to 'high', 'medium', 'low')."""
@@ -742,7 +742,7 @@ def audit_qgis_standards(
         A dictionary consolidating all detected issues and the total issue count.
     """
     rules = get_qgis_audit_rules()
-    results = {"issues": [], "issues_count": 0}
+    results: Dict[str, Any] = {"issues": [], "issues_count": 0}
 
     for module in modules_data:
         # Add issues found via AST

@@ -48,6 +48,12 @@ def _setup_argument_parser() -> argparse.ArgumentParser:
         default="./analysis_results",
     )
     analyze_parser.add_argument(
+        "-r",
+        "--report",
+        action="store_true",
+        help="Generate detailed HTML/Markdown reports",
+    )
+    analyze_parser.add_argument(
         "-p",
         "--profile",
         help="Configuration profile from pyproject.toml",
@@ -172,8 +178,36 @@ def _handle_analyze_command(args: argparse.Namespace) -> None:
     Args:
         args: Parsed command line arguments.
     """
+    # Force generate_html based on flag, overriding profile if necessary for CLI usage
+    # We pass it via a temporary config override or modify the analyzer init
+    # For now, let's pass it to the analyzer constructor or modify config after init
+
     analyzer = ProjectAnalyzer(args.project_path, args.output, args.profile)
-    analyzer.run()
+
+    # Override config based on CLI flag
+    if hasattr(args, "report") and args.report:
+        analyzer.config["generate_html"] = True
+    else:
+        analyzer.config["generate_html"] = False
+
+    success = analyzer.run()
+
+    # Always show terminal summary
+    from .reporters.summary_reporter import report_summary
+
+    # If we didn't generate reports, we might still want to show the summary
+    # using the in-memory data or the context file if it was saved.
+    # Engine saves json context by default? Let's check engine.py.
+    # Assuming engine saves project_context.json always or we need to access results directly.
+    # To keep it simple, we depend on the engine saving the context or returning it.
+    # Current engine.run retuns bool.
+
+    context_path = analyzer.output_dir / "project_context.json"
+    if context_path.exists():
+        report_summary(context_path)
+
+    if not success:
+        sys.exit(1)
 
 
 def _handle_list_rules_command() -> None:

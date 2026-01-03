@@ -3,7 +3,7 @@
 import fnmatch
 import os
 import pathlib
-from typing import List
+from typing import Dict, List
 
 # Default patterns to ignore if not specified
 DEFAULT_EXCLUDE = {
@@ -64,7 +64,7 @@ class IgnoreMatcher:
         all_patterns = set(p.strip() for p in patterns if p.strip() and not p.startswith("#"))
         all_patterns.update(DEFAULT_EXCLUDE)
         self.patterns = list(all_patterns)
-        self._cache = {}
+        self._cache: Dict[str, bool] = {}
 
     def is_ignored(self, path: pathlib.Path) -> bool:
         """Checks if a path matches any ignore pattern.

@@ -1,85 +1,109 @@
 ---
-description: Standardized Release Workflow for AI Agents
+description: Unified Release Workflow (Quality + Automation)
 ---
 
 # Release Workflow for QGIS Plugin Manager
 
-This document serves as the master guide for AI agents to perform a project release. Follow these steps sequentially to ensure consistency, quality, and documentation accuracy.
+This document is the master guide for performing a project release. It combines rigorous Quality Assurance steps with automated CLI tools (`uv`, `sed`, `gh`) to ensure a robust and efficient process.
 
-## Phase 1: Quality Analysis
-Before starting any release, you must verify the state of the project.
+## Phase 1: Quality & Readiness
+Before touching version numbers, valid the project state.
 
-1. **Run QGIS Plugin Analyzer**: 
+1. **Run QGIS Plugin Analyzer**:
    // turbo
    `uv run qgis-analyzer . -o analysis_results`
    > [!NOTE]
-   > For this CLI tool, some scores might be lower than 100% due to missing plugin-specific files (like `metadata.txt` at root). This is expected.
+   > Scores may range <100% due to missing root files (e.g. metadata.txt). This is expected.
 
-2. **Update Quality Badge**: 
-   Extract the `Code Score` from `analysis_results/PROJECT_SUMMARY.md` and update the badge in `README.md`.
+2. **Update Quality Badge**:
+   - Check `analysis_results/PROJECT_SUMMARY.md`.
+   - Update `Code Score` badge in `README.md`.
 
 ## Phase 2: Versioning & Documentation
-1. **Determine Version**: 
-   Check `pyproject.toml` for current version and decide on the next version (Semantic Versioning).
-   - Major: Breaking changes.
-   - Minor: New features or major refactors (e.g., v0.5.0 Modernization & UI).
-   - Patch: Bug fixes.
+1. **Determine Version**:
+   - Check `pyproject.toml` and `ROADMAP.md`.
+   - Decide next SemVer (Major/Minor/Patch).
 
-2. **Update pyproject.toml**: 
-   Update the `version` field.
+2. **Bump Version (pyproject.toml)**:
+   **Option A: Automated (sed)**
+   ```bash
+   # Example: 1.1.0 -> 1.2.0
+   sed -i 's/^version = "1.1.0"/version = "1.2.0"/' pyproject.toml
+   ```
+   **Option B: Manual**
+   - Edit `pyproject.toml` directly.
 
-3. **Update CHANGELOG.md**: 
-   Follow the [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) format. Group changes by:
-   - `Added`
-   - `Improved` (UI/UX & Refactor)
-   - `Fixed`
+3. **Update CHANGELOG.md**:
+   - Move `[Unreleased]` content to `[X.Y.Z] - YYYY-MM-DD`.
+   - Ensure specific sections (`Added`, `Fixed`) are correct.
 
-4. **Generate Release Notes**: 
-   - Create `docs/RELEASE_NOTES_vX.Y.Z.md`.
-   - Create `docs/GITHUB_RELEASE_vX.Y.Z.md`.
-   - Include a descriptive title (e.g., "The Modernization Release").
+4. **Generate Release Notes**:
+   ```bash
+   VERSION=1.2.0
+   DATE=$(date +%F)
+   sed -e "s/{version}/$VERSION/g" -e "s/{date}/$DATE/g" .github/release_template.md > /tmp/release_notes.md
+   ```
+   > **Review**: Check `/tmp/release_notes.md` and fill in any placeholders.
 
 ## Phase 3: Verification
-1. **Run Linting**: 
+Ensure the codebase is clean and functional before tagging.
+
+1. **Run Linting**:
    // turbo
    `uv run ruff check .`
-   Fix all errors, especially `E501 Line too long` which often blocks commits.
+   - Fix any errors (especially formatting/imports).
 
-2. **Run Tests**: 
+2. **Run Tests**:
    // turbo
-   `make test` (or `uv run python -m unittest discover tests`).
-   Ensure 100% pass rate.
+   `uv run python -m unittest discover tests`
+   - **Requirement**: 100% Pass Rate.
 
 ## Phase 4: Git Operations
-1. **Staging & Commit**: 
-   Stage all documents and use a descriptive commit message following Conventional Commits.
-   Example: `docs: release v1.1.0 Security & Licensing Suite`
+1. **Commit Changes**:
+   ```bash
+   git add pyproject.toml CHANGELOG.md README.md
+   git commit -m "chore(release): prepare v$VERSION"
+   ```
 
-2. **Create Tag**: 
-   Create an annotated tag with the version and title.
-   `git tag -a vX.Y.Z -m "vX.Y.Z: [Title]"`
+2. **Create Tag**:
+   ```bash
+   git tag -a "v$VERSION" -m "Release v$VERSION"
+   ```
 
-3. **Push to Origin**: 
-   Push both the branch and the specifically created tag.
-   `git push origin main && git push origin vX.Y.Z`
+3. **Push to Origin**:
+   ```bash
+   git push origin main
+   git push origin "v$VERSION"
+   ```
 
-## Phase 5: Artifacts & GitHub Release
+## Phase 5: Build & Distribution
 1. **Build Artifacts**:
-   `uv build`
-2. **Publish (Optional)**:
-   `uv publish`
-3. **Create GitHub Release**:
-   Use the `gh` CLI with the template:
-   `gh release create v{version} --title "v{version}" --notes-file .github/release_template.md dist/*`
+   ```bash
+   uv build
+   # Verify output in dist/
+   ls -la dist/
+   ```
+
+2. **Create GitHub Release**:
+   Use `gh` to create a Draft Release with assets attached.
+   ```bash
+   gh release create "v$VERSION" --title "v$VERSION" --notes-file /tmp/release_notes.md --draft
+   gh release upload "v$VERSION" dist/* --clobber
+   ```
+
+3. **Publish (PyPI)**:
+   - Go to GitHub -> Releases.
+   - Edit the Draft.
+   - Click **"Publish release"**.
+   - *Note: This triggers the `release.yml` workflow to upload to PyPI automatically.*
 
 ---
 
-## 🏁 Quick Release Checklist
-- [ ] Tests pass (Local: `uv run python -m unittest discover tests`)
-- [ ] `CHANGELOG.md` updated with latest changes.
-- [ ] `pyproject.toml` version updated matching the tag.
-- [ ] Quality Badges in `README.md` updated.
-- [ ] Git Tag created and pushed to origin.
-- [ ] Artifacts built (`uv build`) and verified.
-- [ ] GitHub Release created using the template.
-- [ ] Files `CONTRIBUTING.md` and `.github/release_template.md` are in `main`.
+## ✅ Quick Checklist
+- [ ] Quality Analysis run & Badge updated.
+- [ ] Version bumped in `pyproject.toml`.
+- [ ] `CHANGELOG.md` finalized.
+- [ ] Tests and Linter passed.
+- [ ] Git Tag created and pushed.
+- [ ] Artifacts built (`uv build`).
+- [ ] GitHub Draft Release created (with assets).

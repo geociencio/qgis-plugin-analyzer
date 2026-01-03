@@ -47,7 +47,7 @@ def _ensure_profile_structure(data: dict, profile_name: str, is_rules: bool) -> 
 
 def _minimal_toml_load(file_obj) -> Dict[str, Any]:
     """EXTREMELY minimal TOML parser for pyproject.toml."""
-    data = {"tool": {"qgis-analyzer": {"profiles": {}}}}
+    data: Dict[str, Any] = {"tool": {"qgis-analyzer": {"profiles": {}}}}
     current_profile = None
     in_rules_section = False
 
@@ -108,7 +108,7 @@ def load_profile_config(
     pyproject = project_path / "pyproject.toml"
     default_config = {
         "strict": False,
-        "generate_html": True,
+        "generate_html": False,
         "fail_on_error": False,
         "rules": {},
     }

@@ -88,7 +88,7 @@ def extract_imports_from_ast(tree: ast.AST) -> List[str]:
     Returns:
         A sorted list of imported module names.
     """
-    imports = []
+    imports: list[str] = []
     for node in ast.walk(tree):
         if isinstance(node, ast.Import):
             imports.extend(n.name for n in node.names)

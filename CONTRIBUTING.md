@@ -59,10 +59,13 @@ uv sync
   - `docs: Update documentation`
   - `chore: Maintenance tasks`
 
-### 4. Running Tests & Linter
+### 4. Running Tests & Linting
 Before submitting your PR, ensure everything passes:
 
 ```bash
+# Run Type Checking
+uv run mypy .
+
 # Run the full test suite
 uv run python -m unittest discover tests
 

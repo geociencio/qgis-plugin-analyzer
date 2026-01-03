@@ -19,7 +19,7 @@ class GDALImportTransformer(ast.NodeTransformer):
         """Initializes the transformer state."""
         self.changes_made = False
 
-    def visit_Import(self, node: ast.Import) -> Optional[ast.ImportFrom]:
+    def visit_Import(self, node: ast.Import) -> Optional[ast.AST]:
         for alias in node.names:
             if alias.name == "gdal":
                 self.changes_made = True

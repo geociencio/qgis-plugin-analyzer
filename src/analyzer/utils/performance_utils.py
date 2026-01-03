@@ -18,7 +18,7 @@ class LRUCache:
     """
 
     def __init__(self, maxsize: int = 256):
-        self.cache = OrderedDict()
+        self.cache: OrderedDict[str, Any] = OrderedDict()
         self._lock = threading.Lock()
         self.maxsize = maxsize
         self.hits = 0
@@ -83,7 +83,7 @@ class ProgressTracker:
         self.processed = 0
         self.start_time = time.time()
         self.avg_time = 0.0
-        self.last_update = 0
+        self.last_update = 0.0
 
     def update(self, file_path: pathlib.Path, processing_time: float) -> None:
         """Updates the progress status.

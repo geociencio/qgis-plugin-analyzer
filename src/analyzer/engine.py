@@ -138,7 +138,8 @@ class ProjectAnalyzer:
             ]
             result = subprocess.run(cmd, capture_output=True, text=True, check=False)
             if result.stdout:
-                return json.loads(result.stdout)
+                data: List[Dict[str, Any]] = json.loads(result.stdout)
+                return data
             return []
         except Exception as e:
             logger.error(f"Error running Ruff: {e}")
@@ -376,10 +377,10 @@ class ProjectAnalyzer:
         ruff_findings = self.run_ruff_audit()
 
         # Initialize defaults
-        compliance = {"issues": [], "issues_count": 0}
-        structure = {"is_valid": True}
-        metadata = {"is_valid": True}
-        binaries = []
+        compliance: Dict[str, Any] = {"issues": [], "issues_count": 0}
+        structure: Dict[str, Any] = {"is_valid": True}
+        metadata: Dict[str, Any] = {"is_valid": True}
+        binaries: List[str] = []
         package_size = 0
         url_status = {}
 
@@ -439,7 +440,7 @@ class ProjectAnalyzer:
         # Fail on error if strict mode is on
         if self.config.get("fail_on_error") and self.project_type == "qgis":
             if (
-                compliance.get("issues_count", 0) > 0
+                int(compliance.get("issues_count", 0)) > 0
                 or not structure["is_valid"]
                 or not metadata["is_valid"]
             ):

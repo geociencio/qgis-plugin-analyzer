@@ -5,11 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [1.3.0] - 2026-01-03
 
-### Planned
-- **Type Checking**: Integration with `mypy` for static type analysis.
-- **GitHub Marketplace**: Official listing for the GitHub Action.
+### Added
+- **Type Checking**: Full integration with `mypy` and `qgis-stubs` for static type analysis and improved code reliability.
+- **CLI Output Control**:
+    - Default behavior is now **Screen-Only** (linter style), significantly cleaner for CI/CD.
+    - Added `--report` (or `-r`) flag to explicitly generate HTML/Markdown reports.
 
 ## [1.2.0] - 2026-01-02
 
