@@ -1,6 +1,6 @@
-# Release v1.3.0: The "Reliability & Experience" Update
+# Release v1.4.0: The "Reliability & Experience" Update
 
-We are proud to announce **QGIS Plugin Analyzer v1.3.0**! This release significantly matures the development ecosystem by introducing strict type checking and optimizing the CLI experience for professional workflows.
+We are proud to announce **QGIS Plugin Analyzer v1.4.0**! This release significantly matures the development ecosystem by introducing strict type checking and optimizing the CLI experience for professional workflows.
 
 ## 🚀 Key Highlights
 

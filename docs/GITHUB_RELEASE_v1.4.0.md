@@ -1,4 +1,4 @@
-# v1.3.0: Reliability & Experience Update
+# v1.4.0: Reliability & Experience Update
 
 ## 🚀 What's New
 
@@ -17,4 +17,4 @@ The CLI now behaves like a standard linter:
 - **Added**: Native Mypy support with `tool.mypy` configuration.
 - **Changed**: `generate_html` defaults to `False`. Reports require `--report`.
 
-**Full Diff**: https://github.com/geociencio/qgis-plugin-analyzer/compare/v1.2.0...v1.3.0
+**Full Diff**: https://github.com/geociencio/qgis-plugin-analyzer/compare/v1.3.0...v1.4.0
