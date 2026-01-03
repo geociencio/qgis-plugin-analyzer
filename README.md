@@ -1,4 +1,6 @@
 # QGIS Plugin Analyzer 🛡️
+
+👉 **[View Full Rules Catalog (RULES.md)](RULES.md)**
 ![GitHub release (latest by date)](https://img.shields.io/github/v/release/geociencio/qgis-plugin-analyzer?color=blue&logo=github)
 ![Python Version](https://img.shields.io/badge/python-3.8%2B-blue?logo=python)
 ![License](https://img.shields.io/badge/License-GPLv3-blue.svg)
@@ -58,6 +60,11 @@ If you have [uv](https://github.com/astral-sh/uv) installed, you can install the
 uv tool install git+https://github.com/geociencio/qgis-plugin-analyzer.git
 ```
 
+**2. Standard pip installation (Git):**
+```bash
+pip install git+https://github.com/geociencio/qgis-plugin-analyzer.git
+```
+
 **2. Local installation for development:**
 ```bash
 git clone https://github.com/geociencio/qgis-plugin-analyzer
@@ -94,9 +101,8 @@ You can run `qgis-plugin-analyzer` automatically before every commit to ensure q
 
 ```yaml
   - repo: https://github.com/geociencio/qgis-plugin-analyzer
-    rev: v1.1.0  # Use the latest tag
+    rev: v1.4.0  # Use the latest tag
     hooks:
-      - id: qgis-plugin-analyzer
       - id: qgis-plugin-analyzer
 ```
 
@@ -115,7 +121,37 @@ steps:
       args: --profile release
 ```
 
+## ⚙️ Configuration (`pyproject.toml`)
+
+You can customize the analyzer's behavior using a `[tool.qgis-analyzer]` section in your `pyproject.toml`.
+
+```toml
+[tool.qgis-analyzer]
+# Profiles allow different settings for CI vs Local
+[tool.qgis-analyzer.profiles.default]
+strict = false
+generate_html = false  # CLI default
+
+[tool.qgis-analyzer.profiles.release]
+strict = true
+fail_on_error = true
+
+[tool.qgis-analyzer.profiles.default.rules]
+QGS101 = "error"    # Ban specific module imports
+QGS105 = "warning"  # Warn on iface usage
+QGS303 = "ignore"   # Ignore resource path checks
+```
+
+## ⚠️ Technical Limitations
+
+This tool performs **Static Analysis** (AST & Regex parsing). It does **not** execute your code or load QGIS libraries.
+- **Dynamic Imports**: Imports inside functions or conditional blocks might be analyzed differently than top-level imports.
+- **Runtime Validation**: Checks like "Missing Resources" rely on static string analysis of `.qrc` files and path strings. It cannot verify resources loaded dynamically at runtime.
+- **False Positives**: While we strive for accuracy, complex meta-programming or unusual patterns might trigger false positives. Use `# noqa` or `.analyzerignore` to handle these cases.
+
 ## ⌨️ Full CLI Reference
+
+> **Note**: The Python package is named `qgis-plugin-analyzer`, but the command-line tool is installed as `qgis-analyzer`.
 
 ### `qgis-analyzer analyze`
 Audits an existing QGIS plugin repository.
