@@ -4,7 +4,41 @@ El **QGIS Plugin Analyzer** es una herramienta de auditoría avanzada diseñada 
 
 ---
 
-## 📋 Referencia de Comandos CLI
+## � Instalación
+
+Puedes instalar el **QGIS Plugin Analyzer** de varias formas, dependiendo de tu flujo de trabajo:
+
+### A. Usando `uv` (Recomendado - Aislado y Rápido)
+Si usas [uv](https://github.com/astral-sh/uv), puedes instalarlo como una herramienta global aislada:
+
+```bash
+# Instalación global (recomendado para uso frecuente)
+uv tool install git+https://github.com/geociencio/qgis-plugin-analyzer.git
+```
+
+### B. Usando `pip`
+Ideal para entornos virtuales estándar o instalaciones directas:
+
+```bash
+# Desde el repositorio de GitHub
+pip install git+https://github.com/geociencio/qgis-plugin-analyzer.git
+
+# Si tienes el código descargado localmente
+pip install .
+```
+
+### C. Instalación para Desarrollo (Local)
+Si deseas contribuir o modificar el código:
+
+```bash
+git clone https://github.com/geociencio/qgis-plugin-analyzer
+cd qgis-plugin-analyzer
+uv sync
+```
+
+---
+
+## �📋 Referencia de Comandos CLI
 
 El comando principal es `qgis-analyzer`. A continuación, se detallan sus subcomandos:
 
