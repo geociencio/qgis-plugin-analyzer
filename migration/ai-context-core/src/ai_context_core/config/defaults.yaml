@@ -1,0 +1,23 @@
+
+quality_weights:
+  docstrings: 30
+  complexity_low: 20
+  size_small: 15
+  has_main: 5
+  no_syntax_error: 30
+  complexity_medium: 10
+  complexity_high: -10
+  size_medium: 10
+
+thresholds:
+  complexity_low: 5
+  complexity_medium: 15
+  complexity_high: 25
+  size_small: 200
+  size_medium: 500
+
+patterns:
+  qgis_compliance:
+    enabled: false
+  linter:
+    enabled: true

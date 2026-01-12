@@ -1,0 +1,192 @@
+[
+  {
+    "timestamp": 1768183994.9687474,
+    "file": "migration/ai-context-core/src/ai_context_core/analyzer/dependencies.py",
+    "error_message": "Error lectura: 'str' object has no attribute 'stat'"
+  },
+  {
+    "timestamp": 1768183994.9691648,
+    "file": "src/analyzer/__init__.py",
+    "error_message": "Error lectura: 'str' object has no attribute 'stat'"
+  },
+  {
+    "timestamp": 1768183994.9722378,
+    "file": "migration/ai-context-core/src/ai_context_core/analyzer/fs_utils.py",
+    "error_message": "Error lectura: 'str' object has no attribute 'stat'"
+  },
+  {
+    "timestamp": 1768183994.9727352,
+    "file": "migration/ai-context-core/src/ai_context_core/__init__.py",
+    "error_message": "Error lectura: 'str' object has no attribute 'stat'"
+  },
+  {
+    "timestamp": 1768183994.9730551,
+    "file": "src/analyzer/utils/__init__.py",
+    "error_message": "Error lectura: 'str' object has no attribute 'stat'"
+  },
+  {
+    "timestamp": 1768183994.9735494,
+    "file": "migration/ai-context-core/src/ai_context_core/analyzer/metrics.py",
+    "error_message": "Error lectura: 'str' object has no attribute 'stat'"
+  },
+  {
+    "timestamp": 1768183994.9738183,
+    "file": "migration/ai-context-core/src/ai_context_core/analyzer/ast_utils.py",
+    "error_message": "Error lectura: 'str' object has no attribute 'stat'"
+  },
+  {
+    "timestamp": 1768183994.9743178,
+    "file": "migration/ai-context-core/src/ai_context_core/analyzer/engine.py",
+    "error_message": "Error lectura: 'str' object has no attribute 'stat'"
+  },
+  {
+    "timestamp": 1768183994.9744434,
+    "file": "src/analyzer/scanner.py",
+    "error_message": "Error lectura: 'str' object has no attribute 'stat'"
+  },
+  {
+    "timestamp": 1768183994.9745638,
+    "file": "src/analyzer/transformers.py",
+    "error_message": "Error lectura: 'str' object has no attribute 'stat'"
+  },
+  {
+    "timestamp": 1768183994.9746664,
+    "file": "src/analyzer/semantic.py",
+    "error_message": "Error lectura: 'str' object has no attribute 'stat'"
+  },
+  {
+    "timestamp": 1768183994.9747372,
+    "file": "src/analyzer/reporters/markdown_reporter.py",
+    "error_message": "Error lectura: 'str' object has no attribute 'stat'"
+  },
+  {
+    "timestamp": 1768183994.9748304,
+    "file": "migration/ai-context-core/src/ai_context_core/analyzer/reporting.py",
+    "error_message": "Error lectura: 'str' object has no attribute 'stat'"
+  },
+  {
+    "timestamp": 1768183994.9749656,
+    "file": "src/analyzer/utils/ast_utils.py",
+    "error_message": "Error lectura: 'str' object has no attribute 'stat'"
+  },
+  {
+    "timestamp": 1768183994.9752805,
+    "file": "migration/ai-context-core/src/ai_context_core/analyzer/issues.py",
+    "error_message": "Error lectura: 'str' object has no attribute 'stat'"
+  },
+  {
+    "timestamp": 1768183994.9755123,
+    "file": "src/analyzer/models/__init__.py",
+    "error_message": "Error lectura: 'str' object has no attribute 'stat'"
+  },
+  {
+    "timestamp": 1768183994.975681,
+    "file": ".ai-context/ai_workflow.py",
+    "error_message": "Error lectura: 'str' object has no attribute 'stat'"
+  },
+  {
+    "timestamp": 1768183994.9758406,
+    "file": ".ai-context/analyze_project_optfixed.py",
+    "error_message": "Error lectura: 'str' object has no attribute 'stat'"
+  },
+  {
+    "timestamp": 1768183994.9759297,
+    "file": "src/analyzer/engine.py",
+    "error_message": "Error lectura: 'str' object has no attribute 'stat'"
+  },
+  {
+    "timestamp": 1768183994.9760427,
+    "file": "src/analyzer/rules/__init__.py",
+    "error_message": "Error lectura: 'str' object has no attribute 'stat'"
+  },
+  {
+    "timestamp": 1768183994.9762428,
+    "file": "src/analyzer/rules/qgis_rules.py",
+    "error_message": "Error lectura: 'str' object has no attribute 'stat'"
+  },
+  {
+    "timestamp": 1768183994.9763587,
+    "file": "migration/ai-context-core/src/ai_context_core/cli.py",
+    "error_message": "Error lectura: 'str' object has no attribute 'stat'"
+  },
+  {
+    "timestamp": 1768183994.976481,
+    "file": "src/analyzer/reporters/html_reporter.py",
+    "error_message": "Error lectura: 'str' object has no attribute 'stat'"
+  },
+  {
+    "timestamp": 1768183994.9765606,
+    "file": "migration/ai-context-core/src/ai_context_core/config/loader.py",
+    "error_message": "Error lectura: 'str' object has no attribute 'stat'"
+  },
+  {
+    "timestamp": 1768183994.9767206,
+    "file": "src/analyzer/fixer.py",
+    "error_message": "Error lectura: 'str' object has no attribute 'stat'"
+  },
+  {
+    "timestamp": 1768183994.976825,
+    "file": "src/analyzer/reporters/__init__.py",
+    "error_message": "Error lectura: 'str' object has no attribute 'stat'"
+  },
+  {
+    "timestamp": 1768183994.97703,
+    "file": "src/analyzer/reporters/summary_reporter.py",
+    "error_message": "Error lectura: 'str' object has no attribute 'stat'"
+  },
+  {
+    "timestamp": 1768183994.9771438,
+    "file": "src/analyzer/utils/logging_utils.py",
+    "error_message": "Error lectura: 'str' object has no attribute 'stat'"
+  },
+  {
+    "timestamp": 1768183994.9772568,
+    "file": "src/analyzer/rules/modernization_rules.py",
+    "error_message": "Error lectura: 'str' object has no attribute 'stat'"
+  },
+  {
+    "timestamp": 1768183994.9773924,
+    "file": "src/analyzer/cli.py",
+    "error_message": "Error lectura: 'str' object has no attribute 'stat'"
+  },
+  {
+    "timestamp": 1768183994.9775424,
+    "file": "src/analyzer/models/analysis_models.py",
+    "error_message": "Error lectura: 'str' object has no attribute 'stat'"
+  },
+  {
+    "timestamp": 1768183994.977664,
+    "file": ".ai-context/context_manager.py",
+    "error_message": "Error lectura: 'str' object has no attribute 'stat'"
+  },
+  {
+    "timestamp": 1768183994.977879,
+    "file": "migration/ai-context-core/src/ai_context_core/context/manager.py",
+    "error_message": "Error lectura: 'str' object has no attribute 'stat'"
+  },
+  {
+    "timestamp": 1768183994.9780526,
+    "file": "src/__init__.py",
+    "error_message": "Error lectura: 'str' object has no attribute 'stat'"
+  },
+  {
+    "timestamp": 1768183994.9781651,
+    "file": "src/analyzer/utils/config_utils.py",
+    "error_message": "Error lectura: 'str' object has no attribute 'stat'"
+  },
+  {
+    "timestamp": 1768183994.9783237,
+    "file": "src/analyzer/utils/path_utils.py",
+    "error_message": "Error lectura: 'str' object has no attribute 'stat'"
+  },
+  {
+    "timestamp": 1768183994.9785812,
+    "file": "src/analyzer/utils/performance_utils.py",
+    "error_message": "Error lectura: 'str' object has no attribute 'stat'"
+  },
+  {
+    "timestamp": 1768183994.9786615,
+    "file": "src/analyzer/validators.py",
+    "error_message": "Error lectura: 'str' object has no attribute 'stat'"
+  }
+]

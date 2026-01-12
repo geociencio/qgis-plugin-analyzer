@@ -1,0 +1,335 @@
+2026-01-11 21:13:14,204 - INFO - 🚀 Iniciando análisis optimizado...
+2026-01-11 21:13:14,204 - INFO - 📁 Proyecto: qgis_plugin_analyzer
+2026-01-11 21:13:14,204 - INFO - 🔍 Analizando proyecto: qgis_plugin_analyzer
+2026-01-11 21:13:14,204 - INFO - 📁 Ruta: /home/jmbernales/qgispluginsdev/qgis-plugin-analyzer/qgis_plugin_analyzer
+2026-01-11 21:13:14,204 - INFO - ⚡ Workers: 20
+2026-01-11 21:13:14,204 - INFO - --------------------------------------------------
+2026-01-11 21:13:14,204 - INFO - 📂 Escaneando archivos...
+2026-01-11 21:13:14,204 - DEBUG - entra _get_python_files_filtered
+2026-01-11 21:13:14,204 - INFO - 📄 Cargados 8 patrones de .analyzerignore
+2026-01-11 21:13:14,205 - DEBUG - rglob iniciado en /home/jmbernales/qgispluginsdev/qgis-plugin-analyzer/qgis_plugin_analyzer
+2026-01-11 21:13:14,267 - DEBUG - total python_files 38
+2026-01-11 21:13:14,268 - DEBUG - va a retornar 38 archivos
+2026-01-11 21:13:14,268 - INFO - 📄 Encontrados 38 archivos .py
+2026-01-11 21:13:14,268 - INFO - ⚙️ Analizando módulos...
+2026-01-11 21:13:14,268 - DEBUG - analizando ai_workflow.py
+2026-01-11 21:13:14,268 - DEBUG - lanzados 1 trabajos en este batch
+2026-01-11 21:13:14,268 - DEBUG - rel_path = .ai-context/ai_workflow.py
+2026-01-11 21:13:14,268 - DEBUG - analizando analyze_project_optfixed.py
+2026-01-11 21:13:14,269 - DEBUG - lanzados 2 trabajos en este batch
+2026-01-11 21:13:14,269 - DEBUG - cached_state MISS
+2026-01-11 21:13:14,269 - DEBUG - rel_path = .ai-context/analyze_project_optfixed.py
+2026-01-11 21:13:14,269 - DEBUG - analizando context_manager.py
+2026-01-11 21:13:14,269 - DEBUG - lanzados 3 trabajos en este batch
+2026-01-11 21:13:14,269 - DEBUG - cached_state MISS
+2026-01-11 21:13:14,269 - DEBUG - rel_path = .ai-context/context_manager.py
+2026-01-11 21:13:14,269 - DEBUG - analizando __init__.py
+2026-01-11 21:13:14,270 - DEBUG - lanzados 4 trabajos en este batch
+2026-01-11 21:13:14,299 - DEBUG - cached_state MISS
+2026-01-11 21:13:14,299 - DEBUG - rel_path = migration/ai-context-core/src/ai_context_core/__init__.py
+2026-01-11 21:13:14,338 - DEBUG - analizando ast_utils.py
+2026-01-11 21:13:14,354 - DEBUG - lanzados 5 trabajos en este batch
+2026-01-11 21:13:14,364 - DEBUG - va a retornar module_data para .ai-context/ai_workflow.py -> True
+2026-01-11 21:13:14,395 - DEBUG - cached_state MISS
+2026-01-11 21:13:14,405 - DEBUG - rel_path = migration/ai-context-core/src/ai_context_core/analyzer/ast_utils.py
+2026-01-11 21:13:14,416 - DEBUG - va a retornar module_data para .ai-context/context_manager.py -> True
+2026-01-11 21:13:14,427 - DEBUG - analizando dependencies.py
+2026-01-11 21:13:14,432 - DEBUG - lanzados 6 trabajos en este batch
+2026-01-11 21:13:14,452 - DEBUG - cached_state MISS
+2026-01-11 21:13:14,468 - DEBUG - va a retornar module_data para migration/ai-context-core/src/ai_context_core/__init__.py -> True
+2026-01-11 21:13:14,484 - DEBUG - rel_path = migration/ai-context-core/src/ai_context_core/analyzer/dependencies.py
+2026-01-11 21:13:14,499 - DEBUG - lanzados 7 trabajos en este batch
+2026-01-11 21:13:14,509 - DEBUG - analizando engine.py
+2026-01-11 21:13:14,531 - DEBUG - va a retornar module_data para .ai-context/analyze_project_optfixed.py -> True
+2026-01-11 21:13:14,546 - DEBUG - cached_state MISS
+2026-01-11 21:13:14,550 - DEBUG - va a retornar module_data para migration/ai-context-core/src/ai_context_core/analyzer/ast_utils.py -> True
+2026-01-11 21:13:14,550 - DEBUG - lanzados 8 trabajos en este batch
+2026-01-11 21:13:14,550 - DEBUG - analizando fs_utils.py
+2026-01-11 21:13:14,550 - DEBUG - rel_path = migration/ai-context-core/src/ai_context_core/analyzer/engine.py
+2026-01-11 21:13:14,562 - DEBUG - cached_state MISS
+2026-01-11 21:13:14,562 - DEBUG - analizando issues.py
+2026-01-11 21:13:14,562 - DEBUG - va a retornar module_data para migration/ai-context-core/src/ai_context_core/analyzer/dependencies.py -> True
+2026-01-11 21:13:14,562 - DEBUG - rel_path = migration/ai-context-core/src/ai_context_core/analyzer/fs_utils.py
+2026-01-11 21:13:14,574 - DEBUG - cached_state MISS
+2026-01-11 21:13:14,567 - DEBUG - rel_path = migration/ai-context-core/src/ai_context_core/analyzer/issues.py
+2026-01-11 21:13:14,574 - DEBUG - va a retornar module_data para migration/ai-context-core/src/ai_context_core/analyzer/engine.py -> True
+2026-01-11 21:13:14,556 - DEBUG - lanzados 9 trabajos en este batch
+2026-01-11 21:13:14,585 - DEBUG - cached_state MISS
+2026-01-11 21:13:14,591 - DEBUG - va a retornar module_data para migration/ai-context-core/src/ai_context_core/analyzer/fs_utils.py -> True
+2026-01-11 21:13:14,591 - DEBUG - lanzados 10 trabajos en este batch
+2026-01-11 21:13:14,591 - DEBUG - analizando metrics.py
+2026-01-11 21:13:14,602 - DEBUG - lanzados 11 trabajos en este batch
+2026-01-11 21:13:14,606 - DEBUG - analizando reporting.py
+2026-01-11 21:13:14,606 - DEBUG - va a retornar module_data para migration/ai-context-core/src/ai_context_core/analyzer/issues.py -> True
+2026-01-11 21:13:14,606 - DEBUG - rel_path = migration/ai-context-core/src/ai_context_core/analyzer/metrics.py
+2026-01-11 21:13:14,606 - DEBUG - lanzados 12 trabajos en este batch
+2026-01-11 21:13:14,606 - DEBUG - analizando cli.py
+2026-01-11 21:13:14,606 - DEBUG - rel_path = migration/ai-context-core/src/ai_context_core/analyzer/reporting.py
+2026-01-11 21:13:14,607 - DEBUG - cached_state MISS
+2026-01-11 21:13:14,607 - DEBUG - lanzados 13 trabajos en este batch
+2026-01-11 21:13:14,607 - DEBUG - lanzados 14 trabajos en este batch
+2026-01-11 21:13:14,607 - DEBUG - rel_path = migration/ai-context-core/src/ai_context_core/cli.py
+2026-01-11 21:13:14,607 - DEBUG - cached_state MISS
+2026-01-11 21:13:14,607 - DEBUG - analizando loader.py
+2026-01-11 21:13:14,612 - DEBUG - lanzados 15 trabajos en este batch
+2026-01-11 21:13:14,618 - DEBUG - analizando __init__.py
+2026-01-11 21:13:14,618 - DEBUG - analizando manager.py
+2026-01-11 21:13:14,618 - DEBUG - va a retornar module_data para migration/ai-context-core/src/ai_context_core/analyzer/metrics.py -> True
+2026-01-11 21:13:14,618 - DEBUG - cached_state MISS
+2026-01-11 21:13:14,629 - DEBUG - rel_path = migration/ai-context-core/src/ai_context_core/config/loader.py
+2026-01-11 21:13:14,639 - DEBUG - va a retornar module_data para migration/ai-context-core/src/ai_context_core/analyzer/reporting.py -> True
+2026-01-11 21:13:14,639 - DEBUG - analizando __init__.py
+2026-01-11 21:13:14,639 - DEBUG - rel_path = src/__init__.py
+2026-01-11 21:13:14,639 - DEBUG - lanzados 16 trabajos en este batch
+2026-01-11 21:13:14,639 - DEBUG - rel_path = migration/ai-context-core/src/ai_context_core/context/manager.py
+2026-01-11 21:13:14,649 - DEBUG - cached_state MISS
+2026-01-11 21:13:14,649 - DEBUG - va a retornar module_data para migration/ai-context-core/src/ai_context_core/cli.py -> True
+2026-01-11 21:13:14,650 - DEBUG - rel_path = src/analyzer/__init__.py
+2026-01-11 21:13:14,650 - DEBUG - cached_state MISS
+2026-01-11 21:13:14,650 - DEBUG - lanzados 17 trabajos en este batch
+2026-01-11 21:13:14,650 - DEBUG - analizando cli.py
+2026-01-11 21:13:14,650 - DEBUG - cached_state MISS
+2026-01-11 21:13:14,656 - DEBUG - cached_state MISS
+2026-01-11 21:13:14,656 - DEBUG - va a retornar module_data para migration/ai-context-core/src/ai_context_core/config/loader.py -> True
+2026-01-11 21:13:14,656 - DEBUG - lanzados 18 trabajos en este batch
+2026-01-11 21:13:14,657 - DEBUG - rel_path = src/analyzer/cli.py
+2026-01-11 21:13:14,657 - DEBUG - va a retornar module_data para src/__init__.py -> True
+2026-01-11 21:13:14,657 - DEBUG - analizando engine.py
+2026-01-11 21:13:14,668 - DEBUG - va a retornar module_data para migration/ai-context-core/src/ai_context_core/context/manager.py -> True
+2026-01-11 21:13:14,668 - DEBUG - lanzados 19 trabajos en este batch
+2026-01-11 21:13:14,668 - DEBUG - analizando fixer.py
+2026-01-11 21:13:14,668 - DEBUG - cached_state MISS
+2026-01-11 21:13:14,668 - DEBUG - va a retornar module_data para src/analyzer/__init__.py -> True
+2026-01-11 21:13:14,669 - DEBUG - rel_path = src/analyzer/engine.py
+2026-01-11 21:13:14,669 - DEBUG - lanzados 20 trabajos en este batch
+2026-01-11 21:13:14,669 - DEBUG - analizando __init__.py
+2026-01-11 21:13:14,669 - DEBUG - rel_path = src/analyzer/fixer.py
+2026-01-11 21:13:14,669 - DEBUG - cached_state MISS
+2026-01-11 21:13:14,669 - DEBUG - lanzados 21 trabajos en este batch
+2026-01-11 21:13:14,669 - DEBUG - analizando analysis_models.py
+2026-01-11 21:13:14,669 - DEBUG - rel_path = src/analyzer/models/__init__.py
+2026-01-11 21:13:14,669 - DEBUG - cached_state MISS
+2026-01-11 21:13:14,670 - DEBUG - lanzados 22 trabajos en este batch
+2026-01-11 21:13:14,670 - DEBUG - analizando __init__.py
+2026-01-11 21:13:14,670 - DEBUG - rel_path = src/analyzer/models/analysis_models.py
+2026-01-11 21:13:14,670 - DEBUG - cached_state MISS
+2026-01-11 21:13:14,670 - DEBUG - lanzados 23 trabajos en este batch
+2026-01-11 21:13:14,670 - DEBUG - analizando html_reporter.py
+2026-01-11 21:13:14,670 - DEBUG - rel_path = src/analyzer/reporters/__init__.py
+2026-01-11 21:13:14,670 - DEBUG - cached_state MISS
+2026-01-11 21:13:14,670 - DEBUG - analizando markdown_reporter.py
+2026-01-11 21:13:14,671 - DEBUG - rel_path = src/analyzer/reporters/html_reporter.py
+2026-01-11 21:13:14,671 - DEBUG - lanzados 24 trabajos en este batch
+2026-01-11 21:13:14,671 - DEBUG - va a retornar module_data para src/analyzer/models/__init__.py -> True
+2026-01-11 21:13:14,686 - DEBUG - cached_state MISS
+2026-01-11 21:13:14,716 - DEBUG - rel_path = src/analyzer/reporters/markdown_reporter.py
+2026-01-11 21:13:14,716 - DEBUG - va a retornar module_data para src/analyzer/cli.py -> True
+2026-01-11 21:13:14,737 - DEBUG - cached_state MISS
+2026-01-11 21:13:14,743 - DEBUG - va a retornar module_data para src/analyzer/engine.py -> True
+2026-01-11 21:13:14,745 - DEBUG - analizando summary_reporter.py
+2026-01-11 21:13:14,745 - DEBUG - va a retornar module_data para src/analyzer/fixer.py -> True
+2026-01-11 21:13:14,749 - DEBUG - va a retornar module_data para src/analyzer/models/analysis_models.py -> True
+2026-01-11 21:13:14,749 - DEBUG - lanzados 25 trabajos en este batch
+2026-01-11 21:13:14,749 - DEBUG - cached_state MISS
+2026-01-11 21:13:14,750 - DEBUG - va a retornar module_data para src/analyzer/reporters/__init__.py -> True
+2026-01-11 21:13:14,750 - DEBUG - rel_path = src/analyzer/reporters/summary_reporter.py
+2026-01-11 21:13:14,761 - DEBUG - lanzados 26 trabajos en este batch
+2026-01-11 21:13:14,771 - DEBUG - analizando __init__.py
+2026-01-11 21:13:14,771 - DEBUG - va a retornar module_data para src/analyzer/reporters/html_reporter.py -> True
+2026-01-11 21:13:14,771 - DEBUG - cached_state MISS
+2026-01-11 21:13:14,776 - DEBUG - lanzados 27 trabajos en este batch
+2026-01-11 21:13:14,786 - DEBUG - analizando modernization_rules.py
+2026-01-11 21:13:14,786 - DEBUG - va a retornar module_data para src/analyzer/reporters/markdown_reporter.py -> True
+2026-01-11 21:13:14,786 - DEBUG - rel_path = src/analyzer/rules/__init__.py
+2026-01-11 21:13:14,786 - DEBUG - lanzados 28 trabajos en este batch
+2026-01-11 21:13:14,786 - DEBUG - analizando qgis_rules.py
+2026-01-11 21:13:14,786 - DEBUG - rel_path = src/analyzer/rules/modernization_rules.py
+2026-01-11 21:13:14,786 - DEBUG - cached_state MISS
+2026-01-11 21:13:14,786 - DEBUG - lanzados 29 trabajos en este batch
+2026-01-11 21:13:14,786 - DEBUG - analizando scanner.py
+2026-01-11 21:13:14,786 - DEBUG - rel_path = src/analyzer/rules/qgis_rules.py
+2026-01-11 21:13:14,786 - DEBUG - cached_state MISS
+2026-01-11 21:13:14,787 - DEBUG - lanzados 30 trabajos en este batch
+2026-01-11 21:13:14,787 - DEBUG - analizando semantic.py
+2026-01-11 21:13:14,796 - DEBUG - rel_path = src/analyzer/scanner.py
+2026-01-11 21:13:14,802 - DEBUG - va a retornar module_data para src/analyzer/rules/__init__.py -> True
+2026-01-11 21:13:14,812 - DEBUG - cached_state MISS
+2026-01-11 21:13:14,812 - DEBUG - va a retornar module_data para src/analyzer/reporters/summary_reporter.py -> True
+2026-01-11 21:13:14,813 - DEBUG - lanzados 31 trabajos en este batch
+2026-01-11 21:13:14,813 - DEBUG - analizando transformers.py
+2026-01-11 21:13:14,813 - DEBUG - rel_path = src/analyzer/semantic.py
+2026-01-11 21:13:14,814 - DEBUG - va a retornar module_data para src/analyzer/rules/modernization_rules.py -> True
+2026-01-11 21:13:14,814 - DEBUG - cached_state MISS
+2026-01-11 21:13:14,814 - DEBUG - lanzados 32 trabajos en este batch
+2026-01-11 21:13:14,814 - DEBUG - analizando __init__.py
+2026-01-11 21:13:14,817 - DEBUG - rel_path = src/analyzer/transformers.py
+2026-01-11 21:13:14,817 - DEBUG - va a retornar module_data para src/analyzer/rules/qgis_rules.py -> True
+2026-01-11 21:13:14,817 - DEBUG - cached_state MISS
+2026-01-11 21:13:14,817 - DEBUG - lanzados 33 trabajos en este batch
+2026-01-11 21:13:14,817 - DEBUG - analizando ast_utils.py
+2026-01-11 21:13:14,817 - DEBUG - rel_path = src/analyzer/utils/__init__.py
+2026-01-11 21:13:14,817 - DEBUG - cached_state MISS
+2026-01-11 21:13:14,838 - DEBUG - lanzados 34 trabajos en este batch
+2026-01-11 21:13:14,843 - DEBUG - analizando config_utils.py
+2026-01-11 21:13:14,843 - DEBUG - rel_path = src/analyzer/utils/ast_utils.py
+2026-01-11 21:13:14,864 - DEBUG - cached_state MISS
+2026-01-11 21:13:14,864 - DEBUG - va a retornar module_data para src/analyzer/scanner.py -> True
+2026-01-11 21:13:14,875 - DEBUG - va a retornar module_data para src/analyzer/semantic.py -> True
+2026-01-11 21:13:14,875 - DEBUG - lanzados 35 trabajos en este batch
+2026-01-11 21:13:14,875 - DEBUG - analizando logging_utils.py
+2026-01-11 21:13:14,875 - DEBUG - rel_path = src/analyzer/utils/config_utils.py
+2026-01-11 21:13:14,886 - DEBUG - cached_state MISS
+2026-01-11 21:13:14,887 - DEBUG - va a retornar module_data para src/analyzer/transformers.py -> True
+2026-01-11 21:13:14,887 - DEBUG - va a retornar module_data para src/analyzer/utils/__init__.py -> True
+2026-01-11 21:13:14,888 - DEBUG - lanzados 36 trabajos en este batch
+2026-01-11 21:13:14,888 - DEBUG - analizando path_utils.py
+2026-01-11 21:13:14,888 - DEBUG - rel_path = src/analyzer/utils/logging_utils.py
+2026-01-11 21:13:14,895 - DEBUG - cached_state MISS
+2026-01-11 21:13:14,894 - DEBUG - va a retornar module_data para src/analyzer/utils/ast_utils.py -> True
+2026-01-11 21:13:14,894 - DEBUG - lanzados 37 trabajos en este batch
+2026-01-11 21:13:14,895 - DEBUG - analizando performance_utils.py
+2026-01-11 21:13:14,895 - DEBUG - rel_path = src/analyzer/utils/path_utils.py
+2026-01-11 21:13:14,888 - DEBUG - cached_state MISS
+2026-01-11 21:13:14,897 - DEBUG - va a retornar module_data para src/analyzer/utils/logging_utils.py -> True
+2026-01-11 21:13:14,897 - DEBUG - lanzados 38 trabajos en este batch
+2026-01-11 21:13:14,897 - DEBUG - analizando validators.py
+2026-01-11 21:13:14,897 - DEBUG - rel_path = src/analyzer/utils/performance_utils.py
+2026-01-11 21:13:14,898 - DEBUG - cached_state MISS
+2026-01-11 21:13:14,898 - DEBUG - empezando as_completed con 38 futures
+2026-01-11 21:13:14,898 - DEBUG - rel_path = src/analyzer/validators.py
+2026-01-11 21:13:14,898 - DEBUG - cached_state MISS
+2026-01-11 21:13:14,909 - DEBUG - va a retornar module_data para src/analyzer/utils/config_utils.py -> True
+2026-01-11 21:13:14,909 - DEBUG - future OK para /home/jmbernales/qgispluginsdev/qgis-plugin-analyzer/qgis_plugin_analyzer/migration/ai-context-core/src/ai_context_core/analyzer/dependencies.py
+2026-01-11 21:13:14,916 - DEBUG - va a retornar module_data para src/analyzer/utils/path_utils.py -> True
+2026-01-11 21:13:14,916 - DEBUG - cached_state MISS
+2026-01-11 21:13:14,916 - DEBUG - future.result OK para /home/jmbernales/qgispluginsdev/qgis-plugin-analyzer/qgis_plugin_analyzer/migration/ai-context-core/src/ai_context_core/analyzer/dependencies.py
+2026-01-11 21:13:14,916 - DEBUG - añadido a modules_data -> migration/ai-context-core/src/ai_context_core/analyzer/dependencies.py
+2026-01-11 21:13:14,921 - DEBUG - future OK para /home/jmbernales/qgispluginsdev/qgis-plugin-analyzer/qgis_plugin_analyzer/src/analyzer/__init__.py
+2026-01-11 21:13:14,925 - DEBUG - va a retornar module_data para src/analyzer/utils/performance_utils.py -> True
+2026-01-11 21:13:14,935 - DEBUG - future.result OK para /home/jmbernales/qgispluginsdev/qgis-plugin-analyzer/qgis_plugin_analyzer/src/analyzer/__init__.py
+2026-01-11 21:13:14,938 - DEBUG - va a retornar module_data para src/analyzer/validators.py -> True
+2026-01-11 21:13:14,939 - DEBUG - añadido a modules_data -> src/analyzer/__init__.py
+2026-01-11 21:13:14,939 - DEBUG - future OK para /home/jmbernales/qgispluginsdev/qgis-plugin-analyzer/qgis_plugin_analyzer/migration/ai-context-core/src/ai_context_core/analyzer/fs_utils.py
+2026-01-11 21:13:14,939 - DEBUG - future.result OK para /home/jmbernales/qgispluginsdev/qgis-plugin-analyzer/qgis_plugin_analyzer/migration/ai-context-core/src/ai_context_core/analyzer/fs_utils.py
+2026-01-11 21:13:14,939 - DEBUG - añadido a modules_data -> migration/ai-context-core/src/ai_context_core/analyzer/fs_utils.py
+2026-01-11 21:13:14,939 - DEBUG - future OK para /home/jmbernales/qgispluginsdev/qgis-plugin-analyzer/qgis_plugin_analyzer/migration/ai-context-core/src/ai_context_core/__init__.py
+2026-01-11 21:13:14,939 - DEBUG - future.result OK para /home/jmbernales/qgispluginsdev/qgis-plugin-analyzer/qgis_plugin_analyzer/migration/ai-context-core/src/ai_context_core/__init__.py
+2026-01-11 21:13:14,939 - DEBUG - añadido a modules_data -> migration/ai-context-core/src/ai_context_core/__init__.py
+2026-01-11 21:13:14,939 - DEBUG - future OK para /home/jmbernales/qgispluginsdev/qgis-plugin-analyzer/qgis_plugin_analyzer/src/analyzer/utils/__init__.py
+2026-01-11 21:13:14,939 - DEBUG - future.result OK para /home/jmbernales/qgispluginsdev/qgis-plugin-analyzer/qgis_plugin_analyzer/src/analyzer/utils/__init__.py
+2026-01-11 21:13:14,939 - DEBUG - añadido a modules_data -> src/analyzer/utils/__init__.py
+2026-01-11 21:13:14,939 - DEBUG - future OK para /home/jmbernales/qgispluginsdev/qgis-plugin-analyzer/qgis_plugin_analyzer/migration/ai-context-core/src/ai_context_core/analyzer/metrics.py
+2026-01-11 21:13:14,939 - DEBUG - future.result OK para /home/jmbernales/qgispluginsdev/qgis-plugin-analyzer/qgis_plugin_analyzer/migration/ai-context-core/src/ai_context_core/analyzer/metrics.py
+2026-01-11 21:13:14,939 - DEBUG - añadido a modules_data -> migration/ai-context-core/src/ai_context_core/analyzer/metrics.py
+2026-01-11 21:13:14,939 - DEBUG - future OK para /home/jmbernales/qgispluginsdev/qgis-plugin-analyzer/qgis_plugin_analyzer/migration/ai-context-core/src/ai_context_core/analyzer/ast_utils.py
+2026-01-11 21:13:14,939 - DEBUG - future.result OK para /home/jmbernales/qgispluginsdev/qgis-plugin-analyzer/qgis_plugin_analyzer/migration/ai-context-core/src/ai_context_core/analyzer/ast_utils.py
+2026-01-11 21:13:14,939 - DEBUG - añadido a modules_data -> migration/ai-context-core/src/ai_context_core/analyzer/ast_utils.py
+2026-01-11 21:13:14,939 - DEBUG - future OK para /home/jmbernales/qgispluginsdev/qgis-plugin-analyzer/qgis_plugin_analyzer/migration/ai-context-core/src/ai_context_core/analyzer/engine.py
+2026-01-11 21:13:14,939 - DEBUG - future.result OK para /home/jmbernales/qgispluginsdev/qgis-plugin-analyzer/qgis_plugin_analyzer/migration/ai-context-core/src/ai_context_core/analyzer/engine.py
+2026-01-11 21:13:14,939 - DEBUG - añadido a modules_data -> migration/ai-context-core/src/ai_context_core/analyzer/engine.py
+2026-01-11 21:13:14,940 - DEBUG - future OK para /home/jmbernales/qgispluginsdev/qgis-plugin-analyzer/qgis_plugin_analyzer/src/analyzer/scanner.py
+2026-01-11 21:13:14,940 - DEBUG - future.result OK para /home/jmbernales/qgispluginsdev/qgis-plugin-analyzer/qgis_plugin_analyzer/src/analyzer/scanner.py
+2026-01-11 21:13:14,940 - DEBUG - añadido a modules_data -> src/analyzer/scanner.py
+2026-01-11 21:13:14,940 - DEBUG - future OK para /home/jmbernales/qgispluginsdev/qgis-plugin-analyzer/qgis_plugin_analyzer/src/analyzer/transformers.py
+2026-01-11 21:13:14,940 - DEBUG - future.result OK para /home/jmbernales/qgispluginsdev/qgis-plugin-analyzer/qgis_plugin_analyzer/src/analyzer/transformers.py
+2026-01-11 21:13:14,940 - DEBUG - añadido a modules_data -> src/analyzer/transformers.py
+2026-01-11 21:13:14,940 - DEBUG - future OK para /home/jmbernales/qgispluginsdev/qgis-plugin-analyzer/qgis_plugin_analyzer/src/analyzer/semantic.py
+2026-01-11 21:13:14,940 - DEBUG - future.result OK para /home/jmbernales/qgispluginsdev/qgis-plugin-analyzer/qgis_plugin_analyzer/src/analyzer/semantic.py
+2026-01-11 21:13:14,940 - DEBUG - añadido a modules_data -> src/analyzer/semantic.py
+2026-01-11 21:13:14,940 - DEBUG - future OK para /home/jmbernales/qgispluginsdev/qgis-plugin-analyzer/qgis_plugin_analyzer/src/analyzer/reporters/markdown_reporter.py
+2026-01-11 21:13:14,940 - DEBUG - future.result OK para /home/jmbernales/qgispluginsdev/qgis-plugin-analyzer/qgis_plugin_analyzer/src/analyzer/reporters/markdown_reporter.py
+2026-01-11 21:13:14,940 - DEBUG - añadido a modules_data -> src/analyzer/reporters/markdown_reporter.py
+2026-01-11 21:13:14,940 - DEBUG - future OK para /home/jmbernales/qgispluginsdev/qgis-plugin-analyzer/qgis_plugin_analyzer/migration/ai-context-core/src/ai_context_core/analyzer/reporting.py
+2026-01-11 21:13:14,940 - DEBUG - future.result OK para /home/jmbernales/qgispluginsdev/qgis-plugin-analyzer/qgis_plugin_analyzer/migration/ai-context-core/src/ai_context_core/analyzer/reporting.py
+2026-01-11 21:13:14,940 - DEBUG - añadido a modules_data -> migration/ai-context-core/src/ai_context_core/analyzer/reporting.py
+2026-01-11 21:13:14,940 - DEBUG - future OK para /home/jmbernales/qgispluginsdev/qgis-plugin-analyzer/qgis_plugin_analyzer/src/analyzer/utils/ast_utils.py
+2026-01-11 21:13:14,940 - DEBUG - future.result OK para /home/jmbernales/qgispluginsdev/qgis-plugin-analyzer/qgis_plugin_analyzer/src/analyzer/utils/ast_utils.py
+2026-01-11 21:13:14,940 - DEBUG - añadido a modules_data -> src/analyzer/utils/ast_utils.py
+2026-01-11 21:13:14,940 - DEBUG - future OK para /home/jmbernales/qgispluginsdev/qgis-plugin-analyzer/qgis_plugin_analyzer/migration/ai-context-core/src/ai_context_core/analyzer/issues.py
+2026-01-11 21:13:14,940 - DEBUG - future.result OK para /home/jmbernales/qgispluginsdev/qgis-plugin-analyzer/qgis_plugin_analyzer/migration/ai-context-core/src/ai_context_core/analyzer/issues.py
+2026-01-11 21:13:14,940 - DEBUG - añadido a modules_data -> migration/ai-context-core/src/ai_context_core/analyzer/issues.py
+2026-01-11 21:13:14,940 - DEBUG - future OK para /home/jmbernales/qgispluginsdev/qgis-plugin-analyzer/qgis_plugin_analyzer/src/analyzer/models/__init__.py
+2026-01-11 21:13:14,940 - DEBUG - future.result OK para /home/jmbernales/qgispluginsdev/qgis-plugin-analyzer/qgis_plugin_analyzer/src/analyzer/models/__init__.py
+2026-01-11 21:13:14,940 - DEBUG - añadido a modules_data -> src/analyzer/models/__init__.py
+2026-01-11 21:13:14,940 - DEBUG - future OK para /home/jmbernales/qgispluginsdev/qgis-plugin-analyzer/qgis_plugin_analyzer/.ai-context/ai_workflow.py
+2026-01-11 21:13:14,940 - DEBUG - future.result OK para /home/jmbernales/qgispluginsdev/qgis-plugin-analyzer/qgis_plugin_analyzer/.ai-context/ai_workflow.py
+2026-01-11 21:13:14,940 - DEBUG - añadido a modules_data -> .ai-context/ai_workflow.py
+2026-01-11 21:13:14,940 - DEBUG - future OK para /home/jmbernales/qgispluginsdev/qgis-plugin-analyzer/qgis_plugin_analyzer/.ai-context/analyze_project_optfixed.py
+2026-01-11 21:13:14,940 - DEBUG - future.result OK para /home/jmbernales/qgispluginsdev/qgis-plugin-analyzer/qgis_plugin_analyzer/.ai-context/analyze_project_optfixed.py
+2026-01-11 21:13:14,940 - DEBUG - añadido a modules_data -> .ai-context/analyze_project_optfixed.py
+2026-01-11 21:13:14,940 - DEBUG - future OK para /home/jmbernales/qgispluginsdev/qgis-plugin-analyzer/qgis_plugin_analyzer/src/analyzer/engine.py
+2026-01-11 21:13:14,940 - DEBUG - future.result OK para /home/jmbernales/qgispluginsdev/qgis-plugin-analyzer/qgis_plugin_analyzer/src/analyzer/engine.py
+2026-01-11 21:13:14,940 - DEBUG - añadido a modules_data -> src/analyzer/engine.py
+2026-01-11 21:13:14,940 - DEBUG - future OK para /home/jmbernales/qgispluginsdev/qgis-plugin-analyzer/qgis_plugin_analyzer/src/analyzer/rules/__init__.py
+2026-01-11 21:13:14,940 - DEBUG - future.result OK para /home/jmbernales/qgispluginsdev/qgis-plugin-analyzer/qgis_plugin_analyzer/src/analyzer/rules/__init__.py
+2026-01-11 21:13:14,941 - DEBUG - añadido a modules_data -> src/analyzer/rules/__init__.py
+2026-01-11 21:13:14,941 - DEBUG - future OK para /home/jmbernales/qgispluginsdev/qgis-plugin-analyzer/qgis_plugin_analyzer/src/analyzer/rules/qgis_rules.py
+2026-01-11 21:13:14,941 - DEBUG - future.result OK para /home/jmbernales/qgispluginsdev/qgis-plugin-analyzer/qgis_plugin_analyzer/src/analyzer/rules/qgis_rules.py
+2026-01-11 21:13:14,941 - DEBUG - añadido a modules_data -> src/analyzer/rules/qgis_rules.py
+2026-01-11 21:13:14,941 - DEBUG - future OK para /home/jmbernales/qgispluginsdev/qgis-plugin-analyzer/qgis_plugin_analyzer/migration/ai-context-core/src/ai_context_core/cli.py
+2026-01-11 21:13:14,941 - DEBUG - future.result OK para /home/jmbernales/qgispluginsdev/qgis-plugin-analyzer/qgis_plugin_analyzer/migration/ai-context-core/src/ai_context_core/cli.py
+2026-01-11 21:13:14,941 - DEBUG - añadido a modules_data -> migration/ai-context-core/src/ai_context_core/cli.py
+2026-01-11 21:13:14,941 - DEBUG - future OK para /home/jmbernales/qgispluginsdev/qgis-plugin-analyzer/qgis_plugin_analyzer/src/analyzer/reporters/html_reporter.py
+2026-01-11 21:13:14,941 - DEBUG - future.result OK para /home/jmbernales/qgispluginsdev/qgis-plugin-analyzer/qgis_plugin_analyzer/src/analyzer/reporters/html_reporter.py
+2026-01-11 21:13:14,941 - DEBUG - añadido a modules_data -> src/analyzer/reporters/html_reporter.py
+2026-01-11 21:13:14,941 - DEBUG - future OK para /home/jmbernales/qgispluginsdev/qgis-plugin-analyzer/qgis_plugin_analyzer/migration/ai-context-core/src/ai_context_core/config/loader.py
+2026-01-11 21:13:14,941 - DEBUG - future.result OK para /home/jmbernales/qgispluginsdev/qgis-plugin-analyzer/qgis_plugin_analyzer/migration/ai-context-core/src/ai_context_core/config/loader.py
+2026-01-11 21:13:14,941 - DEBUG - añadido a modules_data -> migration/ai-context-core/src/ai_context_core/config/loader.py
+2026-01-11 21:13:14,941 - DEBUG - future OK para /home/jmbernales/qgispluginsdev/qgis-plugin-analyzer/qgis_plugin_analyzer/src/analyzer/fixer.py
+2026-01-11 21:13:14,941 - DEBUG - future.result OK para /home/jmbernales/qgispluginsdev/qgis-plugin-analyzer/qgis_plugin_analyzer/src/analyzer/fixer.py
+2026-01-11 21:13:14,941 - DEBUG - añadido a modules_data -> src/analyzer/fixer.py
+2026-01-11 21:13:14,941 - DEBUG - future OK para /home/jmbernales/qgispluginsdev/qgis-plugin-analyzer/qgis_plugin_analyzer/src/analyzer/reporters/__init__.py
+2026-01-11 21:13:14,941 - DEBUG - future.result OK para /home/jmbernales/qgispluginsdev/qgis-plugin-analyzer/qgis_plugin_analyzer/src/analyzer/reporters/__init__.py
+2026-01-11 21:13:14,941 - DEBUG - añadido a modules_data -> src/analyzer/reporters/__init__.py
+2026-01-11 21:13:14,941 - DEBUG - future OK para /home/jmbernales/qgispluginsdev/qgis-plugin-analyzer/qgis_plugin_analyzer/src/analyzer/reporters/summary_reporter.py
+2026-01-11 21:13:14,941 - DEBUG - future.result OK para /home/jmbernales/qgispluginsdev/qgis-plugin-analyzer/qgis_plugin_analyzer/src/analyzer/reporters/summary_reporter.py
+2026-01-11 21:13:14,941 - DEBUG - añadido a modules_data -> src/analyzer/reporters/summary_reporter.py
+2026-01-11 21:13:14,941 - DEBUG - future OK para /home/jmbernales/qgispluginsdev/qgis-plugin-analyzer/qgis_plugin_analyzer/src/analyzer/utils/logging_utils.py
+2026-01-11 21:13:14,941 - DEBUG - future.result OK para /home/jmbernales/qgispluginsdev/qgis-plugin-analyzer/qgis_plugin_analyzer/src/analyzer/utils/logging_utils.py
+2026-01-11 21:13:14,941 - DEBUG - añadido a modules_data -> src/analyzer/utils/logging_utils.py
+2026-01-11 21:13:14,941 - DEBUG - future OK para /home/jmbernales/qgispluginsdev/qgis-plugin-analyzer/qgis_plugin_analyzer/src/analyzer/rules/modernization_rules.py
+2026-01-11 21:13:14,941 - DEBUG - future.result OK para /home/jmbernales/qgispluginsdev/qgis-plugin-analyzer/qgis_plugin_analyzer/src/analyzer/rules/modernization_rules.py
+2026-01-11 21:13:14,941 - DEBUG - añadido a modules_data -> src/analyzer/rules/modernization_rules.py
+2026-01-11 21:13:14,941 - DEBUG - future OK para /home/jmbernales/qgispluginsdev/qgis-plugin-analyzer/qgis_plugin_analyzer/src/analyzer/cli.py
+2026-01-11 21:13:14,941 - DEBUG - future.result OK para /home/jmbernales/qgispluginsdev/qgis-plugin-analyzer/qgis_plugin_analyzer/src/analyzer/cli.py
+2026-01-11 21:13:14,941 - DEBUG - añadido a modules_data -> src/analyzer/cli.py
+2026-01-11 21:13:14,941 - DEBUG - future OK para /home/jmbernales/qgispluginsdev/qgis-plugin-analyzer/qgis_plugin_analyzer/src/analyzer/models/analysis_models.py
+2026-01-11 21:13:14,941 - DEBUG - future.result OK para /home/jmbernales/qgispluginsdev/qgis-plugin-analyzer/qgis_plugin_analyzer/src/analyzer/models/analysis_models.py
+2026-01-11 21:13:14,942 - DEBUG - añadido a modules_data -> src/analyzer/models/analysis_models.py
+2026-01-11 21:13:14,942 - DEBUG - future OK para /home/jmbernales/qgispluginsdev/qgis-plugin-analyzer/qgis_plugin_analyzer/.ai-context/context_manager.py
+2026-01-11 21:13:14,942 - DEBUG - future.result OK para /home/jmbernales/qgispluginsdev/qgis-plugin-analyzer/qgis_plugin_analyzer/.ai-context/context_manager.py
+2026-01-11 21:13:14,942 - DEBUG - añadido a modules_data -> .ai-context/context_manager.py
+2026-01-11 21:13:14,942 - DEBUG - future OK para /home/jmbernales/qgispluginsdev/qgis-plugin-analyzer/qgis_plugin_analyzer/migration/ai-context-core/src/ai_context_core/context/manager.py
+2026-01-11 21:13:14,942 - DEBUG - future.result OK para /home/jmbernales/qgispluginsdev/qgis-plugin-analyzer/qgis_plugin_analyzer/migration/ai-context-core/src/ai_context_core/context/manager.py
+2026-01-11 21:13:14,942 - DEBUG - añadido a modules_data -> migration/ai-context-core/src/ai_context_core/context/manager.py
+2026-01-11 21:13:14,942 - DEBUG - future OK para /home/jmbernales/qgispluginsdev/qgis-plugin-analyzer/qgis_plugin_analyzer/src/__init__.py
+2026-01-11 21:13:14,942 - DEBUG - future.result OK para /home/jmbernales/qgispluginsdev/qgis-plugin-analyzer/qgis_plugin_analyzer/src/__init__.py
+2026-01-11 21:13:14,942 - DEBUG - añadido a modules_data -> src/__init__.py
+2026-01-11 21:13:14,942 - DEBUG - future OK para /home/jmbernales/qgispluginsdev/qgis-plugin-analyzer/qgis_plugin_analyzer/src/analyzer/utils/config_utils.py
+2026-01-11 21:13:14,942 - DEBUG - future.result OK para /home/jmbernales/qgispluginsdev/qgis-plugin-analyzer/qgis_plugin_analyzer/src/analyzer/utils/config_utils.py
+2026-01-11 21:13:14,942 - DEBUG - añadido a modules_data -> src/analyzer/utils/config_utils.py
+2026-01-11 21:13:14,942 - DEBUG - future OK para /home/jmbernales/qgispluginsdev/qgis-plugin-analyzer/qgis_plugin_analyzer/src/analyzer/utils/path_utils.py
+2026-01-11 21:13:14,942 - DEBUG - future.result OK para /home/jmbernales/qgispluginsdev/qgis-plugin-analyzer/qgis_plugin_analyzer/src/analyzer/utils/path_utils.py
+2026-01-11 21:13:14,942 - DEBUG - añadido a modules_data -> src/analyzer/utils/path_utils.py
+2026-01-11 21:13:14,942 - DEBUG - future OK para /home/jmbernales/qgispluginsdev/qgis-plugin-analyzer/qgis_plugin_analyzer/src/analyzer/utils/performance_utils.py
+2026-01-11 21:13:14,942 - DEBUG - future.result OK para /home/jmbernales/qgispluginsdev/qgis-plugin-analyzer/qgis_plugin_analyzer/src/analyzer/utils/performance_utils.py
+2026-01-11 21:13:14,942 - DEBUG - añadido a modules_data -> src/analyzer/utils/performance_utils.py
+2026-01-11 21:13:14,942 - DEBUG - future OK para /home/jmbernales/qgispluginsdev/qgis-plugin-analyzer/qgis_plugin_analyzer/src/analyzer/validators.py
+2026-01-11 21:13:14,942 - DEBUG - future.result OK para /home/jmbernales/qgispluginsdev/qgis-plugin-analyzer/qgis_plugin_analyzer/src/analyzer/validators.py
+2026-01-11 21:13:14,942 - DEBUG - añadido a modules_data -> src/analyzer/validators.py
+2026-01-11 21:13:14,959 - INFO - 
+✅ Análisis de módulos completado
+2026-01-11 21:13:14,959 - INFO -    ⏱️  Tiempo total: 0.7s
+2026-01-11 21:13:14,959 - INFO -    📈 Velocidad: 0.0 archivos/segundo
+2026-01-11 21:13:14,960 - INFO - 
+📊 Procesando análisis posteriores...
+2026-01-11 21:13:15,419 - INFO - 
+💾 Guardando resultados...
+2026-01-11 21:13:15,426 - INFO - 
+==================================================
+2026-01-11 21:13:15,426 - INFO - 🎉 ANÁLISIS COMPLETADO EN 1.2 SEGUNDOS
+2026-01-11 21:13:15,426 - INFO - ==================================================
+2026-01-11 21:13:15,427 - INFO - 
+============================================================
+2026-01-11 21:13:15,427 - INFO - 🎉 ANÁLISIS COMPLETADO EN 1.2 SEGUNDOS
+2026-01-11 21:13:15,427 - INFO - ============================================================

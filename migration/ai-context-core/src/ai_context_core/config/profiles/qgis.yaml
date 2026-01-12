@@ -1,0 +1,18 @@
+
+profile_name: "qgis-plugin"
+description: "Profile optimized for QGIS Plugins development"
+
+patterns:
+  qgis_compliance:
+    enabled: true
+    mandatory_files:
+      - "metadata.txt"
+      - "__init__.py"
+    architecture:
+      check_ui_logic_mix: true
+    widgets:
+      recommend_native: true
+
+thresholds:
+  size_small: 300  # QGIS plugins tend to be slightly larger
+  size_medium: 600

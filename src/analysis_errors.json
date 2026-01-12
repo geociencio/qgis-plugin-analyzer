@@ -1,0 +1,122 @@
+[
+  {
+    "timestamp": 1768177866.6977937,
+    "file": "analyzer/utils/config_utils.py",
+    "error_message": "Error lectura: [Errno 2] No such file or directory: 'analyzer/utils/config_utils.py'"
+  },
+  {
+    "timestamp": 1768177866.6980586,
+    "file": "analyzer/reporters/summary_reporter.py",
+    "error_message": "Error lectura: [Errno 2] No such file or directory: 'analyzer/reporters/summary_reporter.py'"
+  },
+  {
+    "timestamp": 1768177866.698161,
+    "file": "analyzer/rules/qgis_rules.py",
+    "error_message": "Error lectura: [Errno 2] No such file or directory: 'analyzer/rules/qgis_rules.py'"
+  },
+  {
+    "timestamp": 1768177866.6982431,
+    "file": "analyzer/reporters/markdown_reporter.py",
+    "error_message": "Error lectura: [Errno 2] No such file or directory: 'analyzer/reporters/markdown_reporter.py'"
+  },
+  {
+    "timestamp": 1768177866.6982708,
+    "file": "analyzer/transformers.py",
+    "error_message": "Error lectura: [Errno 2] No such file or directory: 'analyzer/transformers.py'"
+  },
+  {
+    "timestamp": 1768177866.698308,
+    "file": "analyzer/rules/modernization_rules.py",
+    "error_message": "Error lectura: [Errno 2] No such file or directory: 'analyzer/rules/modernization_rules.py'"
+  },
+  {
+    "timestamp": 1768177866.698317,
+    "file": "analyzer/engine.py",
+    "error_message": "Error lectura: [Errno 2] No such file or directory: 'analyzer/engine.py'"
+  },
+  {
+    "timestamp": 1768177866.6984558,
+    "file": "__init__.py",
+    "error_message": "Error lectura: [Errno 2] No such file or directory: '__init__.py'"
+  },
+  {
+    "timestamp": 1768177866.6985145,
+    "file": "analyzer/utils/ast_utils.py",
+    "error_message": "Error lectura: [Errno 2] No such file or directory: 'analyzer/utils/ast_utils.py'"
+  },
+  {
+    "timestamp": 1768177866.69855,
+    "file": "analyzer/semantic.py",
+    "error_message": "Error lectura: [Errno 2] No such file or directory: 'analyzer/semantic.py'"
+  },
+  {
+    "timestamp": 1768177866.6986697,
+    "file": "analyzer/models/__init__.py",
+    "error_message": "Error lectura: [Errno 2] No such file or directory: 'analyzer/models/__init__.py'"
+  },
+  {
+    "timestamp": 1768177866.6987398,
+    "file": "analyzer/reporters/html_reporter.py",
+    "error_message": "Error lectura: [Errno 2] No such file or directory: 'analyzer/reporters/html_reporter.py'"
+  },
+  {
+    "timestamp": 1768177866.6987863,
+    "file": "analyzer/__init__.py",
+    "error_message": "Error lectura: [Errno 2] No such file or directory: 'analyzer/__init__.py'"
+  },
+  {
+    "timestamp": 1768177866.698837,
+    "file": "analyzer/utils/__init__.py",
+    "error_message": "Error lectura: [Errno 2] No such file or directory: 'analyzer/utils/__init__.py'"
+  },
+  {
+    "timestamp": 1768177866.6988802,
+    "file": "analyzer/fixer.py",
+    "error_message": "Error lectura: [Errno 2] No such file or directory: 'analyzer/fixer.py'"
+  },
+  {
+    "timestamp": 1768177866.699141,
+    "file": "analyzer/rules/__init__.py",
+    "error_message": "Error lectura: [Errno 2] No such file or directory: 'analyzer/rules/__init__.py'"
+  },
+  {
+    "timestamp": 1768177866.6992357,
+    "file": "analyzer/scanner.py",
+    "error_message": "Error lectura: [Errno 2] No such file or directory: 'analyzer/scanner.py'"
+  },
+  {
+    "timestamp": 1768177866.6992846,
+    "file": "analyzer/reporters/__init__.py",
+    "error_message": "Error lectura: [Errno 2] No such file or directory: 'analyzer/reporters/__init__.py'"
+  },
+  {
+    "timestamp": 1768177866.699319,
+    "file": "analyzer/cli.py",
+    "error_message": "Error lectura: [Errno 2] No such file or directory: 'analyzer/cli.py'"
+  },
+  {
+    "timestamp": 1768177866.6993327,
+    "file": "analyzer/utils/logging_utils.py",
+    "error_message": "Error lectura: [Errno 2] No such file or directory: 'analyzer/utils/logging_utils.py'"
+  },
+  {
+    "timestamp": 1768177866.699421,
+    "file": "analyzer/models/analysis_models.py",
+    "error_message": "Error lectura: [Errno 2] No such file or directory: 'analyzer/models/analysis_models.py'"
+  },
+  {
+    "timestamp": 1768177866.6994298,
+    "file": "analyzer/utils/path_utils.py",
+    "error_message": "Error lectura: [Errno 2] No such file or directory: 'analyzer/utils/path_utils.py'"
+  },
+  {
+    "timestamp": 1768177866.6995447,
+    "file": "analyzer/utils/performance_utils.py",
+    "error_message": "Error lectura: [Errno 2] No such file or directory: 'analyzer/utils/performance_utils.py'"
+  },
+  {
+    "timestamp": 1768177866.6996043,
+    "file": "analyzer/validators.py",
+    "error_message": "Error lectura: [Errno 2] No such file or directory: 'analyzer/validators.py'"
+  }
+]

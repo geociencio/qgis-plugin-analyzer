@@ -1,0 +1,1180 @@
+{
+  "structure": {
+    "tree": "./\n    .analyzer_state.json\n    AI_CONTEXT.md\n    PROJECT_SUMMARY.md\n    __init__.py\n    analysis_errors.json\n    project_context.json\n    analyzer/\n        __init__.py\n        cli.py\n        engine.py\n        fixer.py\n        scanner.py\n        semantic.py\n        transformers.py\n        validators.py\n        rules/\n            __init__.py\n            modernization_rules.py\n            qgis_rules.py\n        utils/\n            __init__.py\n            ast_utils.py\n            config_utils.py\n            logging_utils.py\n            path_utils.py\n            performance_utils.py\n        reporters/\n            __init__.py\n            html_reporter.py\n            markdown_reporter.py\n            summary_reporter.py\n        models/\n            __init__.py\n            analysis_models.py\n    qgis_plugin_analyzer.egg-info/\n        PKG-INFO\n        SOURCES.txt\n        dependency_links.txt\n        entry_points.txt\n        top_level.txt",
+    "modules_count": 24,
+    "file_types": {
+      ".pyc": 25,
+      ".py": 24,
+      ".txt": 4,
+      ".json": 3,
+      ".md": 2
+    },
+    "size_stats": {
+      "total_files": 59,
+      "total_size_mb": 0.44,
+      "python_files": 24,
+      "python_size_mb": 0.15,
+      "avg_file_size_kb": 7.63,
+      "python_percentage": 34.64
+    }
+  },
+  "entry_points": [
+    "analyzer/cli.py"
+  ],
+  "dependencies": {
+    "internal": [],
+    "external": [
+      "collections.OrderedDict",
+      "datetime",
+      "json",
+      "math",
+      "os",
+      "pathlib",
+      "re",
+      "sys",
+      "typing.Any",
+      "typing.Dict",
+      "typing.List",
+      "typing.Optional",
+      "typing.Set"
+    ],
+    "third_party": [
+      "abc.ABC",
+      "abc.abstractmethod",
+      "analysis_models.ModuleAnalysis",
+      "analysis_models.ProjectContext",
+      "argparse",
+      "ast",
+      "ast_utils.calculate_complexity",
+      "ast_utils.calculate_module_complexity",
+      "ast_utils.check_main_guard",
+      "ast_utils.extract_classes_from_ast",
+      "ast_utils.extract_functions_from_ast",
+      "ast_utils.extract_imports_from_ast",
+      "concurrent.futures.ProcessPoolExecutor",
+      "concurrent.futures.as_completed",
+      "config_utils._minimal_toml_load",
+      "config_utils.load_profile_config",
+      "contextlib.contextmanager",
+      "dataclasses.dataclass",
+      "dataclasses.field",
+      "difflib",
+      "engine.ProjectAnalyzer",
+      "fixer.AutoFixer",
+      "fnmatch",
+      "html_reporter.generate_html_report",
+      "ipaddress",
+      "logging",
+      "logging_utils.logger",
+      "logging_utils.setup_logger",
+      "markdown_reporter.generate_markdown_summary",
+      "markdown_reporter.save_json_context",
+      "modernization_rules.get_modernization_rules",
+      "path_utils.DEFAULT_EXCLUDE",
+      "path_utils.IgnoreMatcher",
+      "path_utils.load_ignore_patterns",
+      "path_utils.safe_path_resolve",
+      "performance_utils.LRUCache",
+      "performance_utils.ProgressTracker",
+      "performance_utils.timeout_manager",
+      "qgis_rules.I18N_METHODS",
+      "qgis_rules.get_qgis_audit_rules",
+      "reporters.generate_html_report",
+      "reporters.generate_markdown_summary",
+      "reporters.save_json_context",
+      "reporters.summary_reporter.report_summary",
+      "rules.get_qgis_audit_rules",
+      "rules.qgis_rules.I18N_METHODS",
+      "rules.qgis_rules.get_qgis_audit_rules",
+      "scanner.analyze_module_worker",
+      "scanner.audit_qgis_standards",
+      "semantic.DependencyGraph",
+      "semantic.ResourceValidator",
+      "signal",
+      "socket",
+      "subprocess",
+      "tempfile",
+      "threading",
+      "time",
+      "tomllib",
+      "transformers.GDALImportTransformer",
+      "transformers.I18nTransformer",
+      "transformers.LegacyImportTransformer",
+      "transformers.PrintToLogTransformer",
+      "transformers.apply_transformation",
+      "urllib.error",
+      "urllib.parse",
+      "urllib.request",
+      "utils.DEFAULT_EXCLUDE",
+      "utils.IgnoreMatcher",
+      "utils.ProgressTracker",
+      "utils.ast_utils.calculate_complexity",
+      "utils.ast_utils.calculate_module_complexity",
+      "utils.ast_utils.check_main_guard",
+      "utils.ast_utils.extract_classes_from_ast",
+      "utils.ast_utils.extract_functions_from_ast",
+      "utils.ast_utils.extract_imports_from_ast",
+      "utils.load_ignore_patterns",
+      "utils.load_profile_config",
+      "utils.logger",
+      "utils.safe_path_resolve",
+      "utils.setup_logger",
+      "validators.calculate_package_size",
+      "validators.scan_for_binaries",
+      "validators.validate_metadata",
+      "validators.validate_metadata_urls",
+      "validators.validate_plugin_structure",
+      "xml.etree.ElementTree"
+    ],
+    "files": {},
+    "import_graph": {
+      "analyzer/utils/config_utils.py": [
+        "logging",
+        "pathlib",
+        "re",
+        "typing.Any",
+        "typing.Dict",
+        "tomllib"
+      ],
+      "analyzer/reporters/summary_reporter.py": [
+        "json",
+        "pathlib",
+        "typing.Any",
+        "typing.Dict",
+        "typing.List"
+      ],
+      "analyzer/rules/qgis_rules.py": [
+        "re",
+        "typing.Any",
+        "typing.Dict",
+        "typing.List"
+      ],
+      "analyzer/reporters/markdown_reporter.py": [
+        "datetime",
+        "json",
+        "pathlib",
+        "typing.Any",
+        "typing.Dict",
+        "typing.List"
+      ],
+      "analyzer/transformers.py": [
+        "ast",
+        "pathlib",
+        "typing.Optional"
+      ],
+      "analyzer/rules/modernization_rules.py": [
+        "typing.Any",
+        "typing.Dict",
+        "typing.List"
+      ],
+      "analyzer/engine.py": [
+        "json",
+        "math",
+        "os",
+        "pathlib",
+        "subprocess",
+        "concurrent.futures.ProcessPoolExecutor",
+        "concurrent.futures.as_completed",
+        "typing.Any",
+        "typing.Dict",
+        "typing.List",
+        "typing.Optional",
+        "reporters.generate_html_report",
+        "reporters.generate_markdown_summary",
+        "reporters.save_json_context",
+        "scanner.analyze_module_worker",
+        "scanner.audit_qgis_standards",
+        "semantic.DependencyGraph",
+        "semantic.ResourceValidator",
+        "utils.IgnoreMatcher",
+        "utils.ProgressTracker",
+        "utils.load_ignore_patterns",
+        "utils.load_profile_config",
+        "utils.logger",
+        "utils.safe_path_resolve",
+        "utils.setup_logger",
+        "validators.calculate_package_size",
+        "validators.scan_for_binaries",
+        "validators.validate_metadata",
+        "validators.validate_metadata_urls",
+        "validators.validate_plugin_structure"
+      ],
+      "__init__.py": [],
+      "analyzer/utils/ast_utils.py": [
+        "ast",
+        "typing.Any",
+        "typing.Dict",
+        "typing.List"
+      ],
+      "analyzer/semantic.py": [
+        "pathlib",
+        "xml.etree.ElementTree",
+        "typing.Any",
+        "typing.Dict",
+        "typing.List",
+        "typing.Set"
+      ],
+      "analyzer/models/__init__.py": [
+        "analysis_models.ModuleAnalysis",
+        "analysis_models.ProjectContext"
+      ],
+      "analyzer/reporters/html_reporter.py": [
+        "datetime",
+        "pathlib",
+        "typing.Any",
+        "typing.Dict",
+        "typing.List"
+      ],
+      "analyzer/__init__.py": [],
+      "analyzer/utils/__init__.py": [
+        "ast_utils.calculate_complexity",
+        "ast_utils.calculate_module_complexity",
+        "ast_utils.check_main_guard",
+        "ast_utils.extract_classes_from_ast",
+        "ast_utils.extract_functions_from_ast",
+        "ast_utils.extract_imports_from_ast",
+        "config_utils._minimal_toml_load",
+        "config_utils.load_profile_config",
+        "logging_utils.logger",
+        "logging_utils.setup_logger",
+        "path_utils.DEFAULT_EXCLUDE",
+        "path_utils.IgnoreMatcher",
+        "path_utils.load_ignore_patterns",
+        "path_utils.safe_path_resolve",
+        "performance_utils.LRUCache",
+        "performance_utils.ProgressTracker",
+        "performance_utils.timeout_manager"
+      ],
+      "analyzer/fixer.py": [
+        "difflib",
+        "pathlib",
+        "subprocess",
+        "tempfile",
+        "abc.ABC",
+        "abc.abstractmethod",
+        "typing.Any",
+        "typing.Dict",
+        "typing.List",
+        "transformers.GDALImportTransformer",
+        "transformers.I18nTransformer",
+        "transformers.LegacyImportTransformer",
+        "transformers.PrintToLogTransformer",
+        "transformers.apply_transformation"
+      ],
+      "analyzer/rules/__init__.py": [
+        "modernization_rules.get_modernization_rules",
+        "qgis_rules.I18N_METHODS",
+        "qgis_rules.get_qgis_audit_rules"
+      ],
+      "analyzer/scanner.py": [
+        "ast",
+        "pathlib",
+        "re",
+        "typing.Any",
+        "typing.Dict",
+        "typing.List",
+        "typing.Optional",
+        "rules.qgis_rules.I18N_METHODS",
+        "rules.qgis_rules.get_qgis_audit_rules",
+        "utils.ast_utils.calculate_complexity",
+        "utils.ast_utils.calculate_module_complexity",
+        "utils.ast_utils.check_main_guard",
+        "utils.ast_utils.extract_classes_from_ast",
+        "utils.ast_utils.extract_functions_from_ast",
+        "utils.ast_utils.extract_imports_from_ast"
+      ],
+      "analyzer/reporters/__init__.py": [
+        "html_reporter.generate_html_report",
+        "markdown_reporter.generate_markdown_summary",
+        "markdown_reporter.save_json_context"
+      ],
+      "analyzer/cli.py": [
+        "argparse",
+        "pathlib",
+        "sys",
+        "engine.ProjectAnalyzer",
+        "utils.logger",
+        "utils.setup_logger",
+        "json",
+        "fixer.AutoFixer",
+        "reporters.summary_reporter.report_summary",
+        "rules.get_qgis_audit_rules",
+        "utils.DEFAULT_EXCLUDE"
+      ],
+      "analyzer/utils/logging_utils.py": [
+        "logging",
+        "pathlib",
+        "sys"
+      ],
+      "analyzer/models/analysis_models.py": [
+        "dataclasses.dataclass",
+        "dataclasses.field",
+        "typing.Any",
+        "typing.Dict",
+        "typing.List"
+      ],
+      "analyzer/utils/path_utils.py": [
+        "fnmatch",
+        "os",
+        "pathlib",
+        "typing.Dict",
+        "typing.List"
+      ],
+      "analyzer/utils/performance_utils.py": [
+        "pathlib",
+        "signal",
+        "sys",
+        "threading",
+        "time",
+        "collections.OrderedDict",
+        "contextlib.contextmanager",
+        "typing.Any",
+        "typing.Dict"
+      ],
+      "analyzer/validators.py": [
+        "ipaddress",
+        "pathlib",
+        "socket",
+        "urllib.error",
+        "urllib.parse",
+        "urllib.request",
+        "typing.Any",
+        "typing.Dict",
+        "typing.List"
+      ]
+    },
+    "circular_dependencies": [],
+    "graph_metrics": {
+      "nodes": 24,
+      "edges": 0,
+      "density": 0.0,
+      "is_dag": true,
+      "weakly_connected_components": 24
+    }
+  },
+  "qgis_compliance": {
+    "mandatory_files": {
+      "files": {
+        "LICENSE": false,
+        "metadata.txt": false,
+        "__init__.py": true
+      },
+      "all_present": false,
+      "has_class_factory": false
+    },
+    "metadata": {
+      "fields_found": [],
+      "missing_fields": [
+        "name",
+        "description",
+        "version",
+        "qgisMinimumVersion",
+        "author",
+        "email"
+      ],
+      "is_valid": false
+    },
+    "architecture": {
+      "violations": [],
+      "separation_clean": true
+    },
+    "widgets": {
+      "score": 1.0,
+      "recommendations": []
+    },
+    "performance": {
+      "score": 1.0,
+      "issues": []
+    },
+    "compliance_score": 50.0
+  },
+  "complexity": {
+    "total_modules": 24,
+    "total_lines": 4397,
+    "total_functions": 134,
+    "total_classes": 19,
+    "average_complexity": 26.58,
+    "max_complexity": 171,
+    "modules_without_docstrings": 9,
+    "avg_functions_per_module": 5.58,
+    "avg_classes_per_module": 0.79,
+    "lines_per_function": 32.81,
+    "most_complex_modules": [
+      [
+        "analyzer/scanner.py",
+        171
+      ],
+      [
+        "analyzer/engine.py",
+        62
+      ],
+      [
+        "analyzer/validators.py",
+        57
+      ],
+      [
+        "analyzer/semantic.py",
+        42
+      ],
+      [
+        "analyzer/reporters/summary_reporter.py",
+        40
+      ],
+      [
+        "analyzer/fixer.py",
+        39
+      ],
+      [
+        "analyzer/utils/config_utils.py",
+        38
+      ],
+      [
+        "analyzer/reporters/html_reporter.py",
+        38
+      ],
+      [
+        "analyzer/cli.py",
+        35
+      ],
+      [
+        "analyzer/transformers.py",
+        29
+      ]
+    ],
+    "complexity_distribution": {
+      "low (0-5)": 10,
+      "medium (6-15)": 1,
+      "high (16-30)": 4,
+      "very_high (31+)": 9
+    }
+  },
+  "patterns": {
+    "mvc": {
+      "detected": false,
+      "confidence": 0.1,
+      "evidence": [
+        "folder: models"
+      ]
+    },
+    "repository": {
+      "detected": false,
+      "confidence": 0.0,
+      "evidence": []
+    },
+    "factory": {
+      "detected": false,
+      "confidence": 0.0,
+      "evidence": []
+    },
+    "singleton": {
+      "detected": false,
+      "confidence": 0.0,
+      "evidence": []
+    },
+    "observer": {
+      "detected": false,
+      "confidence": 0.0,
+      "evidence": []
+    },
+    "decorator": {
+      "detected": false,
+      "confidence": 0.0,
+      "evidence": []
+    },
+    "strategy": {
+      "detected": false,
+      "confidence": 0.0,
+      "evidence": []
+    },
+    "adapter": {
+      "detected": false,
+      "confidence": 0.0,
+      "evidence": []
+    },
+    "command": {
+      "detected": false,
+      "confidence": 0.0,
+      "evidence": []
+    },
+    "template_method": {
+      "detected": false,
+      "confidence": 0.0,
+      "evidence": []
+    }
+  },
+  "debt": [
+    {
+      "module": "analyzer/engine.py",
+      "issues": [
+        {
+          "type": "alta_complejidad",
+          "severity": "alta",
+          "message": "Complejidad ciclomática muy alta (62)",
+          "value": 62
+        },
+        {
+          "type": "archivo_largo",
+          "severity": "media",
+          "message": "Archivo largo (587 líneas)",
+          "value": 587
+        },
+        {
+          "type": "sin_docstring_modulo",
+          "severity": "baja",
+          "message": "Falta docstring a nivel de módulo"
+        },
+        {
+          "type": "clases_sin_docstring",
+          "severity": "baja",
+          "message": "1 clases sin docstring"
+        }
+      ],
+      "total_issues": 4,
+      "severity_score": 7
+    },
+    {
+      "module": "analyzer/scanner.py",
+      "issues": [
+        {
+          "type": "alta_complejidad",
+          "severity": "alta",
+          "message": "Complejidad ciclomática muy alta (171)",
+          "value": 171
+        },
+        {
+          "type": "archivo_largo",
+          "severity": "media",
+          "message": "Archivo largo (795 líneas)",
+          "value": 795
+        },
+        {
+          "type": "sin_docstring_modulo",
+          "severity": "baja",
+          "message": "Falta docstring a nivel de módulo"
+        }
+      ],
+      "total_issues": 3,
+      "severity_score": 6
+    },
+    {
+      "module": "analyzer/transformers.py",
+      "issues": [
+        {
+          "type": "alta_complejidad",
+          "severity": "alta",
+          "message": "Complejidad ciclomática muy alta (29)",
+          "value": 29
+        },
+        {
+          "type": "sin_docstring_modulo",
+          "severity": "baja",
+          "message": "Falta docstring a nivel de módulo"
+        },
+        {
+          "type": "funciones_sin_docstring",
+          "severity": "baja",
+          "message": "4 funciones sin docstring"
+        }
+      ],
+      "total_issues": 3,
+      "severity_score": 5
+    },
+    {
+      "module": "analyzer/semantic.py",
+      "issues": [
+        {
+          "type": "alta_complejidad",
+          "severity": "alta",
+          "message": "Complejidad ciclomática muy alta (42)",
+          "value": 42
+        },
+        {
+          "type": "sin_docstring_modulo",
+          "severity": "baja",
+          "message": "Falta docstring a nivel de módulo"
+        },
+        {
+          "type": "funciones_sin_docstring",
+          "severity": "baja",
+          "message": "1 funciones sin docstring"
+        }
+      ],
+      "total_issues": 3,
+      "severity_score": 5
+    },
+    {
+      "module": "analyzer/fixer.py",
+      "issues": [
+        {
+          "type": "alta_complejidad",
+          "severity": "alta",
+          "message": "Complejidad ciclomática muy alta (39)",
+          "value": 39
+        },
+        {
+          "type": "sin_docstring_modulo",
+          "severity": "baja",
+          "message": "Falta docstring a nivel de módulo"
+        },
+        {
+          "type": "funciones_sin_docstring",
+          "severity": "baja",
+          "message": "3 funciones sin docstring"
+        }
+      ],
+      "total_issues": 3,
+      "severity_score": 5
+    },
+    {
+      "module": "analyzer/cli.py",
+      "issues": [
+        {
+          "type": "alta_complejidad",
+          "severity": "alta",
+          "message": "Complejidad ciclomática muy alta (35)",
+          "value": 35
+        },
+        {
+          "type": "sin_docstring_modulo",
+          "severity": "baja",
+          "message": "Falta docstring a nivel de módulo"
+        }
+      ],
+      "total_issues": 2,
+      "severity_score": 4
+    },
+    {
+      "module": "analyzer/utils/path_utils.py",
+      "issues": [
+        {
+          "type": "alta_complejidad",
+          "severity": "alta",
+          "message": "Complejidad ciclomática muy alta (23)",
+          "value": 23
+        },
+        {
+          "type": "funciones_sin_docstring",
+          "severity": "baja",
+          "message": "1 funciones sin docstring"
+        }
+      ],
+      "total_issues": 2,
+      "severity_score": 4
+    },
+    {
+      "module": "analyzer/validators.py",
+      "issues": [
+        {
+          "type": "alta_complejidad",
+          "severity": "alta",
+          "message": "Complejidad ciclomática muy alta (57)",
+          "value": 57
+        },
+        {
+          "type": "sin_docstring_modulo",
+          "severity": "baja",
+          "message": "Falta docstring a nivel de módulo"
+        }
+      ],
+      "total_issues": 2,
+      "severity_score": 4
+    },
+    {
+      "module": "analyzer/utils/config_utils.py",
+      "issues": [
+        {
+          "type": "alta_complejidad",
+          "severity": "alta",
+          "message": "Complejidad ciclomática muy alta (38)",
+          "value": 38
+        }
+      ],
+      "total_issues": 1,
+      "severity_score": 3
+    },
+    {
+      "module": "analyzer/reporters/summary_reporter.py",
+      "issues": [
+        {
+          "type": "alta_complejidad",
+          "severity": "alta",
+          "message": "Complejidad ciclomática muy alta (40)",
+          "value": 40
+        }
+      ],
+      "total_issues": 1,
+      "severity_score": 3
+    },
+    {
+      "module": "analyzer/reporters/markdown_reporter.py",
+      "issues": [
+        {
+          "type": "alta_complejidad",
+          "severity": "alta",
+          "message": "Complejidad ciclomática muy alta (25)",
+          "value": 25
+        }
+      ],
+      "total_issues": 1,
+      "severity_score": 3
+    },
+    {
+      "module": "analyzer/utils/ast_utils.py",
+      "issues": [
+        {
+          "type": "alta_complejidad",
+          "severity": "alta",
+          "message": "Complejidad ciclomática muy alta (28)",
+          "value": 28
+        }
+      ],
+      "total_issues": 1,
+      "severity_score": 3
+    },
+    {
+      "module": "analyzer/reporters/html_reporter.py",
+      "issues": [
+        {
+          "type": "alta_complejidad",
+          "severity": "alta",
+          "message": "Complejidad ciclomática muy alta (38)",
+          "value": 38
+        }
+      ],
+      "total_issues": 1,
+      "severity_score": 3
+    },
+    {
+      "module": "__init__.py",
+      "issues": [
+        {
+          "type": "sin_docstring_modulo",
+          "severity": "baja",
+          "message": "Falta docstring a nivel de módulo"
+        }
+      ],
+      "total_issues": 1,
+      "severity_score": 1
+    },
+    {
+      "module": "analyzer/__init__.py",
+      "issues": [
+        {
+          "type": "sin_docstring_modulo",
+          "severity": "baja",
+          "message": "Falta docstring a nivel de módulo"
+        }
+      ],
+      "total_issues": 1,
+      "severity_score": 1
+    },
+    {
+      "module": "analyzer/utils/performance_utils.py",
+      "issues": [
+        {
+          "type": "funciones_sin_docstring",
+          "severity": "baja",
+          "message": "3 funciones sin docstring"
+        }
+      ],
+      "total_issues": 1,
+      "severity_score": 1
+    }
+  ],
+  "optimizations": [
+    {
+      "module": "analyzer/reporters/summary_reporter.py",
+      "suggestions": [
+        {
+          "type": "refactorizacion_complejidad",
+          "priority": "alta",
+          "message": "Alta complejidad (40) con 6 funciones",
+          "suggestions": [
+            "Extraer métodos de funciones largas",
+            "Usar polimorfismo en lugar de if/else largos",
+            "Aplicar principios SOLID",
+            "Considerar usar patrones de diseño"
+          ]
+        }
+      ],
+      "priority": "alta"
+    },
+    {
+      "module": "analyzer/rules/qgis_rules.py",
+      "suggestions": [
+        {
+          "type": "funciones_demasiado_largas",
+          "priority": "media",
+          "message": "Funciones muy largas (promedio 75.0 líneas/función)",
+          "suggestions": [
+            "Refactorizar funciones > 50 líneas",
+            "Extraer lógica común a funciones helper",
+            "Usar comprehensions y generadores"
+          ]
+        }
+      ],
+      "priority": "media"
+    },
+    {
+      "module": "analyzer/reporters/markdown_reporter.py",
+      "suggestions": [
+        {
+          "type": "refactorizacion_complejidad",
+          "priority": "alta",
+          "message": "Alta complejidad (25) con 6 funciones",
+          "suggestions": [
+            "Extraer métodos de funciones largas",
+            "Usar polimorfismo en lugar de if/else largos",
+            "Aplicar principios SOLID",
+            "Considerar usar patrones de diseño"
+          ]
+        }
+      ],
+      "priority": "alta"
+    },
+    {
+      "module": "analyzer/transformers.py",
+      "suggestions": [
+        {
+          "type": "refactorizacion_complejidad",
+          "priority": "alta",
+          "message": "Alta complejidad (29) con 10 funciones",
+          "suggestions": [
+            "Extraer métodos de funciones largas",
+            "Usar polimorfismo en lugar de if/else largos",
+            "Aplicar principios SOLID",
+            "Considerar usar patrones de diseño"
+          ]
+        }
+      ],
+      "priority": "alta"
+    },
+    {
+      "module": "analyzer/engine.py",
+      "suggestions": [
+        {
+          "type": "imports_excesivos",
+          "priority": "media",
+          "message": "Muchos imports (30)",
+          "suggestions": [
+            "Agrupar imports relacionados",
+            "Usar imports locales dentro de funciones",
+            "Eliminar imports no utilizados con herramientas como autoflake"
+          ]
+        },
+        {
+          "type": "refactorizacion_complejidad",
+          "priority": "alta",
+          "message": "Alta complejidad (62) con 10 funciones",
+          "suggestions": [
+            "Extraer métodos de funciones largas",
+            "Usar polimorfismo en lugar de if/else largos",
+            "Aplicar principios SOLID",
+            "Considerar usar patrones de diseño"
+          ]
+        },
+        {
+          "type": "modulo_demasiado_grande",
+          "priority": "media",
+          "message": "Módulo muy grande (587 líneas)",
+          "suggestions": [
+            "Dividir en múltiples módulos",
+            "Agrupar funcionalidad relacionada en paquetes",
+            "Extraer clases a módulos separados"
+          ]
+        },
+        {
+          "type": "funciones_demasiado_largas",
+          "priority": "media",
+          "message": "Funciones muy largas (promedio 58.7 líneas/función)",
+          "suggestions": [
+            "Refactorizar funciones > 50 líneas",
+            "Extraer lógica común a funciones helper",
+            "Usar comprehensions y generadores"
+          ]
+        }
+      ],
+      "priority": "alta"
+    },
+    {
+      "module": "analyzer/utils/ast_utils.py",
+      "suggestions": [
+        {
+          "type": "refactorizacion_complejidad",
+          "priority": "alta",
+          "message": "Alta complejidad (28) con 6 funciones",
+          "suggestions": [
+            "Extraer métodos de funciones largas",
+            "Usar polimorfismo en lugar de if/else largos",
+            "Aplicar principios SOLID",
+            "Considerar usar patrones de diseño"
+          ]
+        }
+      ],
+      "priority": "alta"
+    },
+    {
+      "module": "analyzer/semantic.py",
+      "suggestions": [
+        {
+          "type": "refactorizacion_complejidad",
+          "priority": "alta",
+          "message": "Alta complejidad (42) con 10 funciones",
+          "suggestions": [
+            "Extraer métodos de funciones largas",
+            "Usar polimorfismo en lugar de if/else largos",
+            "Aplicar principios SOLID",
+            "Considerar usar patrones de diseño"
+          ]
+        }
+      ],
+      "priority": "alta"
+    },
+    {
+      "module": "analyzer/reporters/html_reporter.py",
+      "suggestions": [
+        {
+          "type": "refactorizacion_complejidad",
+          "priority": "alta",
+          "message": "Alta complejidad (38) con 9 funciones",
+          "suggestions": [
+            "Extraer métodos de funciones largas",
+            "Usar polimorfismo en lugar de if/else largos",
+            "Aplicar principios SOLID",
+            "Considerar usar patrones de diseño"
+          ]
+        },
+        {
+          "type": "modulo_demasiado_grande",
+          "priority": "media",
+          "message": "Módulo muy grande (389 líneas)",
+          "suggestions": [
+            "Dividir en múltiples módulos",
+            "Agrupar funcionalidad relacionada en paquetes",
+            "Extraer clases a módulos separados"
+          ]
+        }
+      ],
+      "priority": "alta"
+    },
+    {
+      "module": "analyzer/fixer.py",
+      "suggestions": [
+        {
+          "type": "refactorizacion_complejidad",
+          "priority": "alta",
+          "message": "Alta complejidad (39) con 23 funciones",
+          "suggestions": [
+            "Extraer métodos de funciones largas",
+            "Usar polimorfismo en lugar de if/else largos",
+            "Aplicar principios SOLID",
+            "Considerar usar patrones de diseño"
+          ]
+        },
+        {
+          "type": "modulo_demasiado_grande",
+          "priority": "media",
+          "message": "Módulo muy grande (315 líneas)",
+          "suggestions": [
+            "Dividir en múltiples módulos",
+            "Agrupar funcionalidad relacionada en paquetes",
+            "Extraer clases a módulos separados"
+          ]
+        }
+      ],
+      "priority": "alta"
+    },
+    {
+      "module": "analyzer/scanner.py",
+      "suggestions": [
+        {
+          "type": "refactorizacion_complejidad",
+          "priority": "alta",
+          "message": "Alta complejidad (171) con 18 funciones",
+          "suggestions": [
+            "Extraer métodos de funciones largas",
+            "Usar polimorfismo en lugar de if/else largos",
+            "Aplicar principios SOLID",
+            "Considerar usar patrones de diseño"
+          ]
+        },
+        {
+          "type": "modulo_demasiado_grande",
+          "priority": "media",
+          "message": "Módulo muy grande (795 líneas)",
+          "suggestions": [
+            "Dividir en múltiples módulos",
+            "Agrupar funcionalidad relacionada en paquetes",
+            "Extraer clases a módulos separados"
+          ]
+        }
+      ],
+      "priority": "alta"
+    },
+    {
+      "module": "analyzer/cli.py",
+      "suggestions": [
+        {
+          "type": "refactorizacion_complejidad",
+          "priority": "alta",
+          "message": "Alta complejidad (35) con 7 funciones",
+          "suggestions": [
+            "Extraer métodos de funciones largas",
+            "Usar polimorfismo en lugar de if/else largos",
+            "Aplicar principios SOLID",
+            "Considerar usar patrones de diseño"
+          ]
+        },
+        {
+          "type": "modulo_demasiado_grande",
+          "priority": "media",
+          "message": "Módulo muy grande (312 líneas)",
+          "suggestions": [
+            "Dividir en múltiples módulos",
+            "Agrupar funcionalidad relacionada en paquetes",
+            "Extraer clases a módulos separados"
+          ]
+        }
+      ],
+      "priority": "alta"
+    },
+    {
+      "module": "analyzer/validators.py",
+      "suggestions": [
+        {
+          "type": "refactorizacion_complejidad",
+          "priority": "alta",
+          "message": "Alta complejidad (57) con 6 funciones",
+          "suggestions": [
+            "Extraer métodos de funciones largas",
+            "Usar polimorfismo en lugar de if/else largos",
+            "Aplicar principios SOLID",
+            "Considerar usar patrones de diseño"
+          ]
+        }
+      ],
+      "priority": "alta"
+    }
+  ],
+  "security": [
+    {
+      "module": "analyzer/utils/config_utils.py",
+      "issues": [
+        {
+          "pattern": "open(",
+          "description": "Apertura de archivos sin validar ruta",
+          "severity": "media",
+          "line": 120,
+          "code": "with open(pyproject, \"rb\") as f:"
+        }
+      ],
+      "total_issues": 1,
+      "max_severity": "media"
+    },
+    {
+      "module": "analyzer/reporters/summary_reporter.py",
+      "issues": [
+        {
+          "pattern": "open(",
+          "description": "Apertura de archivos sin validar ruta",
+          "severity": "media",
+          "line": 52,
+          "code": "with open(input_path, encoding=\"utf-8\") as f:"
+        }
+      ],
+      "total_issues": 1,
+      "max_severity": "media"
+    },
+    {
+      "module": "analyzer/reporters/markdown_reporter.py",
+      "issues": [
+        {
+          "pattern": "open(",
+          "description": "Apertura de archivos sin validar ruta",
+          "severity": "media",
+          "line": 156,
+          "code": "with open(output_path, \"w\", encoding=\"utf-8\") as f:"
+        }
+      ],
+      "total_issues": 1,
+      "max_severity": "media"
+    },
+    {
+      "module": "analyzer/scanner.py",
+      "issues": [
+        {
+          "pattern": "open(",
+          "description": "Apertura de archivos sin validar ruta",
+          "severity": "media",
+          "line": 658,
+          "code": "with open(py_file, encoding=\"utf-8-sig\", errors=\"replace\") as f:"
+        }
+      ],
+      "total_issues": 1,
+      "max_severity": "media"
+    },
+    {
+      "module": "analyzer/cli.py",
+      "issues": [
+        {
+          "pattern": "open(",
+          "description": "Apertura de archivos sin validar ruta",
+          "severity": "media",
+          "line": 146,
+          "code": "with open(context_file) as f:"
+        }
+      ],
+      "total_issues": 1,
+      "max_severity": "media"
+    },
+    {
+      "module": "analyzer/utils/path_utils.py",
+      "issues": [
+        {
+          "pattern": "open(",
+          "description": "Apertura de archivos sin validar ruta",
+          "severity": "media",
+          "line": 134,
+          "code": "with open(ignore_file) as f:"
+        }
+      ],
+      "total_issues": 1,
+      "max_severity": "media"
+    },
+    {
+      "module": "analyzer/validators.py",
+      "issues": [
+        {
+          "pattern": "open(",
+          "description": "Apertura de archivos sin validar ruta",
+          "severity": "media",
+          "line": 152,
+          "code": "with urllib.request.urlopen(req, timeout=5) as response:"
+        }
+      ],
+      "total_issues": 1,
+      "max_severity": "media"
+    }
+  ],
+  "linter": {
+    "available": false,
+    "errors": 0
+  },
+  "metrics": {
+    "total_size_kb": 155.95,
+    "total_lines_code": 4397,
+    "avg_module_size_kb": 6.5,
+    "avg_lines_per_module": 183.21,
+    "modules_with_docstrings": 15,
+    "modules_with_main_guard": 1,
+    "modules_with_syntax_errors": 0,
+    "docstring_coverage": 62.5,
+    "type_hint_coverage": 96.25,
+    "i18n_coverage": 8.57,
+    "entry_points_count": 0,
+    "test_files_count": 0,
+    "avg_complexity": 26.58,
+    "max_complexity": 171,
+    "quality_score": 55.5
+  }
+}

@@ -1,0 +1,34 @@
+# Stack Tecnológico: qgis-plugin-analyzer
+
+python:
+  version: "3.8+"
+  testing_framework: null  # TODO: Implementar pytest
+  type_checking: "mypy"
+  formatter: "ruff"
+  linter: "ruff"
+
+core_libraries:
+  - "ast (stdlib)"
+  - "concurrent.futures (stdlib)"
+  - "pathlib (stdlib)"
+  - "json (stdlib)"
+
+external_tools:
+  - "ruff (linter externo)"
+
+target_analysis:
+  # Frameworks que el analizador DETECTA, no que USA
+  - "QGIS API (PyQGIS)"
+  - "Qt5/Qt6 (PyQt5/PyQt6)"
+
+architecture:
+  pattern: "Pipeline de Análisis"
+  parallelism: "ThreadPoolExecutor"
+  analysis_engine: "AST + Regex"
+
+key_features:
+  - "Zero Runtime Dependencies"
+  - "Parallel Processing"
+  - "Interactive Auto-Fix"
+  - "Multi-format Reports (JSON/Markdown/HTML)"
+

@@ -1,3 +1,4 @@
+
 ---
 description: Crea el comit asegurando calidad (Ruff), métricas y changelog.
 ---
@@ -20,7 +21,7 @@ Este workflow es el estándar de oro para guardar cambios. No solo hace commit, 
     Actualiza las métricas para entender cómo estos cambios afectan la complejidad del proyecto.
     // turbo
     ```bash
-    python3 .ai-context/analyze_project_optfixed.py
+    ai-ctx analyze
     ```
 
 3.  **Actualizar CHANGELOG.md**:

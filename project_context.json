@@ -1,0 +1,2141 @@
+{
+  "structure": {
+    "tree": "./\n    .analyzerignore\n    .gitignore\n    .pre-commit-hooks.yaml\n    CHANGELOG.md\n    CONTRIBUTING.md\n    LICENSE\n    README.md\n    ... (+6 más)\n    src/\n        .analyzer_state.json\n        AI_CONTEXT.md\n        PROJECT_SUMMARY.md\n        __init__.py\n        analysis_errors.json\n        project_context.json\n        analyzer/\n            __init__.py\n            cli.py\n            engine.py\n            fixer.py\n            scanner.py\n            semantic.py\n            transformers.py\n            validators.py\n            rules/\n                __init__.py\n                modernization_rules.py\n                qgis_rules.py\n            utils/\n                __init__.py\n                ast_utils.py\n                config_utils.py\n                logging_utils.py\n                path_utils.py\n                performance_utils.py\n            reporters/\n                __init__.py\n                html_reporter.py\n                markdown_reporter.py\n                summary_reporter.py\n            models/\n                __init__.py\n                analysis_models.py\n        qgis_plugin_analyzer.egg-info/\n            PKG-INFO\n            SOURCES.txt\n            dependency_links.txt\n            entry_points.txt\n            top_level.txt\n    analysis_results/\n        PROJECT_SUMMARY.html\n        PROJECT_SUMMARY.md\n        analyzer.log\n        project_context.json\n    test_sec_interp_results/\n        PROJECT_SUMMARY.md\n        project_context.json\n    tests/\n        test_analyzer.py\n        test_fixer.py\n        test_high_complexity.py\n        test_safety.py\n        test_scanner.py\n        test_security.py\n        test_semantic.py\n        ... (+1 más)\n    english_test_results/\n        PROJECT_SUMMARY.md\n        project_context.json\n    docs/\n        user_guide/\n            COMMANDS_GUIDE.md\n            GUIA_COMANDOS.md\n            TESTING_IN_QGIS.md\n        releases/\n            notes/\n                RELEASE_NOTES_v0.2.0.md\n                RELEASE_NOTES_v0.3.0.md\n                RELEASE_NOTES_v0.3.1.md\n                RELEASE_NOTES_v0.4.0.md\n                RELEASE_NOTES_v0.5.0.md\n                RELEASE_NOTES_v0.5.1.md\n                RELEASE_NOTES_v0.6.0.md\n                ... (+7 más)\n            github/\n                GITHUB_RELEASE_v0.6.1.md\n                GITHUB_RELEASE_v0.6.2.md\n                GITHUB_RELEASE_v0.7.0.md\n                GITHUB_RELEASE_v0.9.0.md\n                GITHUB_RELEASE_v1.0.0.md\n                GITHUB_RELEASE_v1.1.0.md\n                GITHUB_RELEASE_v1.2.0.md\n                GITHUB_RELEASE_v1.4.0.md\n        research/\n            COMPETITIVE_ANALYSIS.md\n            PYPI_STANDARDS_RESEARCH.md\n            PYTHON_QUALITY_RESEARCH.md\n            QWEN.md\n        development/\n            COMMIT_GUIDELINES.md\n            DEVELOPMENT_LOG.md\n            REMAINING_ISSUES.md\n            ROADMAP.md\n            SCORING_STANDARDS.md\n            SUGERENCIAS_AI_CONTEXT.md\n            SUGGESTED_IMPROVEMENTS.md\n            uv_modernization_guide.md\n        reports/\n            ANALYSIS_REPORT.md\n    debug_summary/\n    dist/\n        .gitignore\n        qgis_plugin_analyzer-1.3.0-py3-none-any.whl\n        qgis_plugin_analyzer-1.3.0.dev0-py3-none-any.whl\n        qgis_plugin_analyzer-1.3.0.dev0.tar.gz\n        qgis_plugin_analyzer-1.3.0.tar.gz\n        qgis_plugin_analyzer-1.4.0-py3-none-any.whl\n        qgis_plugin_analyzer-1.4.0.tar.gz\n    scripts/\n        run_tests_in_qgis.py\n    migration/\n        ai-context-core/\n            CHANGELOG.md\n            README.md\n            pyproject.toml\n            src/\n                ai_context_core/\n                    __init__.py\n                    cli.py\n            docs/\n                development/\n                    ARCHITECTURE.md\n                    CONTRIBUTING.md\n                releases/\n                reports/\n                    initial_extraction.md\n                research/\n                user_guide/\n                    PROFILES_GUIDE.md\n                    QUICK_START.md",
+    "modules_count": 38,
+    "file_types": {
+      ".pyi": 806,
+      ".json": 414,
+      ".py": 369,
+      ".so": 221,
+      ".md": 91,
+      ".pyc": 60,
+      ".c": 59,
+      ".yaml": 21,
+      ".sample": 14,
+      ".h": 13,
+      ".0": 12,
+      ".txt": 11,
+      ".tag": 4,
+      ".typed": 4,
+      ".gz": 3,
+      ".whl": 3,
+      ".bat": 3,
+      ".1": 3,
+      ".toml": 2,
+      ".yml": 2
+    },
+    "size_stats": {
+      "total_files": 183,
+      "total_size_mb": 1.7,
+      "python_files": 45,
+      "python_size_mb": 0.24,
+      "avg_file_size_kb": 9.51,
+      "python_percentage": 14.22
+    }
+  },
+  "entry_points": [
+    ".ai-context/ai_workflow.py",
+    ".ai-context/analyze_project_optfixed.py",
+    ".ai-context/context_manager.py",
+    ".venv/lib/python3.13/site-packages/mypy/__main__.py",
+    ".venv/lib/python3.13/site-packages/mypy/dmypy/__main__.py",
+    ".venv/lib/python3.13/site-packages/mypy/main.py",
+    ".venv/lib/python3.13/site-packages/mypy/stubgen.py",
+    ".venv/lib/python3.13/site-packages/mypy/stubgenc.py",
+    ".venv/lib/python3.13/site-packages/mypyc/__main__.py",
+    ".venv/lib/python3.13/site-packages/mypyc/irbuild/main.py",
+    ".venv/lib/python3.13/site-packages/ruff/__main__.py",
+    "migration/ai-context-core/src/ai_context_core/cli.py",
+    "src/analyzer/cli.py"
+  ],
+  "dependencies": {
+    "internal": [],
+    "external": [
+      "collections.Counter",
+      "collections.OrderedDict",
+      "datetime",
+      "datetime.datetime",
+      "json",
+      "math",
+      "os",
+      "pathlib",
+      "pathlib.Path",
+      "re",
+      "sys",
+      "typing.Any",
+      "typing.Dict",
+      "typing.List",
+      "typing.Optional",
+      "typing.Set",
+      "typing.Tuple"
+    ],
+    "third_party": [
+      "abc.ABC",
+      "abc.abstractmethod",
+      "analysis_models.ModuleAnalysis",
+      "analysis_models.ProjectContext",
+      "analyzer.engine.ProjectAnalyzer",
+      "argparse",
+      "ast",
+      "ast_utils",
+      "ast_utils.calculate_complexity",
+      "ast_utils.calculate_module_complexity",
+      "ast_utils.check_main_guard",
+      "ast_utils.extract_classes_from_ast",
+      "ast_utils.extract_functions_from_ast",
+      "ast_utils.extract_imports_from_ast",
+      "click",
+      "concurrent.futures",
+      "concurrent.futures.ProcessPoolExecutor",
+      "concurrent.futures.ThreadPoolExecutor",
+      "concurrent.futures.as_completed",
+      "config.loader.ConfigLoader",
+      "config.loader.list_profiles",
+      "config_utils._minimal_toml_load",
+      "config_utils.load_profile_config",
+      "context.manager.AIContextManager",
+      "contextlib.contextmanager",
+      "dataclasses.dataclass",
+      "dataclasses.field",
+      "dependencies",
+      "difflib",
+      "engine.ProjectAnalyzer",
+      "fixer.AutoFixer",
+      "fnmatch",
+      "fs_utils",
+      "gc",
+      "html_reporter.generate_html_report",
+      "ipaddress",
+      "issues",
+      "logging",
+      "logging_utils.logger",
+      "logging_utils.setup_logger",
+      "markdown_reporter.generate_markdown_summary",
+      "markdown_reporter.save_json_context",
+      "metrics",
+      "mmap",
+      "modernization_rules.get_modernization_rules",
+      "path_utils.DEFAULT_EXCLUDE",
+      "path_utils.IgnoreMatcher",
+      "path_utils.load_ignore_patterns",
+      "path_utils.safe_path_resolve",
+      "performance_utils.LRUCache",
+      "performance_utils.ProgressTracker",
+      "performance_utils.timeout_manager",
+      "qgis_rules.I18N_METHODS",
+      "qgis_rules.get_qgis_audit_rules",
+      "reporters.generate_html_report",
+      "reporters.generate_markdown_summary",
+      "reporters.save_json_context",
+      "reporters.summary_reporter.report_summary",
+      "reporting",
+      "rules.get_qgis_audit_rules",
+      "rules.qgis_rules.I18N_METHODS",
+      "rules.qgis_rules.get_qgis_audit_rules",
+      "scanner.analyze_module_worker",
+      "scanner.audit_qgis_standards",
+      "semantic.DependencyGraph",
+      "semantic.ResourceValidator",
+      "shutil",
+      "signal",
+      "socket",
+      "subprocess",
+      "tempfile",
+      "threading",
+      "time",
+      "tomllib",
+      "traceback",
+      "transformers.GDALImportTransformer",
+      "transformers.I18nTransformer",
+      "transformers.LegacyImportTransformer",
+      "transformers.PrintToLogTransformer",
+      "transformers.apply_transformation",
+      "unicodedata",
+      "urllib.error",
+      "urllib.parse",
+      "urllib.request",
+      "utils.DEFAULT_EXCLUDE",
+      "utils.IgnoreMatcher",
+      "utils.ProgressTracker",
+      "utils.ast_utils.calculate_complexity",
+      "utils.ast_utils.calculate_module_complexity",
+      "utils.ast_utils.check_main_guard",
+      "utils.ast_utils.extract_classes_from_ast",
+      "utils.ast_utils.extract_functions_from_ast",
+      "utils.ast_utils.extract_imports_from_ast",
+      "utils.load_ignore_patterns",
+      "utils.load_profile_config",
+      "utils.logger",
+      "utils.safe_path_resolve",
+      "utils.setup_logger",
+      "validators.calculate_package_size",
+      "validators.scan_for_binaries",
+      "validators.validate_metadata",
+      "validators.validate_metadata_urls",
+      "validators.validate_plugin_structure",
+      "xml.etree.ElementTree",
+      "yaml"
+    ],
+    "files": {
+      "pyproject.toml": "[project]\nname = \"qgis-plugin-analyzer\"\nversion = \"1.4.0\"\ndescription = \"A professional static analysis tool for QGIS (PyQGIS) plugins\"\nreadme = \"README.md\"\nrequires-python = \">=3.8\"\nauthors = [\n  {name = \"geociencio\", email = \"juanbernales@gmail.com\"}\n]\nlicense = {text = \"GPL-3.0-or-later\"}\nclassifiers = [\n    \"Development Status :: 5 - Production/Stable\",\n    \"Intended Audience :: Developers\",\n    \"Intended Audience :: Science/Research\",\n    \"License :: OSI Approved :: GNU General Public License v3 (GPLv3)\",\n    \"Topic :: Software Development :: Quality Assurance\",\n    \"Topic :: Scientific/Engineering :: GIS\",\n    \"Programming Language :: Python :: 3\",\n    \"Programming Language :: Python :: 3.8\",\n    \"Programming Language :: Python :: 3.9\",\n    \"Programming Language :: Python :: 3.10\",\n    \"Programming Language :: Python :: 3.11\",\n    \"Programming Language :: Python :: 3.12\",\n]\ndependencies = []\n\n[project.urls]\nHomepage = \"https://github.com/geociencio/qgis-plugin-analyzer\"\nDocumentation = \"https://github.com/geociencio/qgis-plugin-analyzer/tree/main/docs\"\nRepository = \"https://github.com/geociencio/qgis-plugin-analyzer.git\"\nIssues = \"https://github.com/geociencio/qgis-plugin-analyzer/issues\"\nChaneglog = \"https://github.com/geociencio/qgis-plugin-analyzer/blob/main/CHANGELOG.md\"\n\n[project.scripts]\nqgis-analyzer = \"analyzer.cli:main\"\n\n[build-system]\nrequires = [\"setuptools>=61.0\"]\nbuild-backend = \"setuptools.build_meta\"\n\n[dependency-groups]\ndev = [\n    \"ruff>=0.9.0\",\n    \"mypy>=1.0.0\",\n    \"qgis-stubs>=0.1\",\n]\n\n[tool.mypy]\npython_version = \"3.10\"\nwarn_return_any = true\nwarn_unused_configs = true\nignore_missing_imports = true\ncheck_untyped_defs = true\ndisallow_untyped_defs = false # Gradual adoption\n\n[tool.ruff]\nline-length = 100\ntarget-version = \"py38\"\nexclude = [\"src/analyzer/templates\"]\n\n[tool.ruff.lint]\nselect = [\"E\", \"F\", \"W\", \"I\", \"N\", \"UP\", \"B\"]\nignore = [\"E701\", \"E501\"] # Permite if cond: statement y líneas largas\n\n[tool.ruff.lint.per-file-ignores]\n\"src/anal"
+    },
+    "import_graph": {
+      "migration/ai-context-core/src/ai_context_core/analyzer/dependencies.py": [
+        "typing.Dict",
+        "typing.Any",
+        "typing.List",
+        "typing.Set",
+        "typing.Tuple",
+        "pathlib.Path",
+        "logging"
+      ],
+      "src/analyzer/__init__.py": [],
+      "migration/ai-context-core/src/ai_context_core/analyzer/fs_utils.py": [
+        "os",
+        "pathlib",
+        "fnmatch",
+        "mmap",
+        "subprocess",
+        "logging",
+        "typing.List",
+        "typing.Dict",
+        "typing.Any"
+      ],
+      "migration/ai-context-core/src/ai_context_core/__init__.py": [],
+      "src/analyzer/utils/__init__.py": [
+        "ast_utils.calculate_complexity",
+        "ast_utils.calculate_module_complexity",
+        "ast_utils.check_main_guard",
+        "ast_utils.extract_classes_from_ast",
+        "ast_utils.extract_functions_from_ast",
+        "ast_utils.extract_imports_from_ast",
+        "config_utils._minimal_toml_load",
+        "config_utils.load_profile_config",
+        "logging_utils.logger",
+        "logging_utils.setup_logger",
+        "path_utils.DEFAULT_EXCLUDE",
+        "path_utils.IgnoreMatcher",
+        "path_utils.load_ignore_patterns",
+        "path_utils.safe_path_resolve",
+        "performance_utils.LRUCache",
+        "performance_utils.ProgressTracker",
+        "performance_utils.timeout_manager"
+      ],
+      "migration/ai-context-core/src/ai_context_core/analyzer/metrics.py": [
+        "typing.List",
+        "typing.Dict",
+        "typing.Any"
+      ],
+      "migration/ai-context-core/src/ai_context_core/analyzer/ast_utils.py": [
+        "ast",
+        "collections.Counter",
+        "typing.Any",
+        "typing.List",
+        "typing.Dict"
+      ],
+      "migration/ai-context-core/src/ai_context_core/analyzer/engine.py": [
+        "logging",
+        "time",
+        "ast",
+        "concurrent.futures",
+        "pathlib",
+        "json",
+        "typing.Dict",
+        "typing.Any",
+        "typing.List",
+        "ast_utils",
+        "fs_utils",
+        "metrics",
+        "issues",
+        "reporting",
+        "dependencies",
+        "context.manager.AIContextManager"
+      ],
+      "src/analyzer/scanner.py": [
+        "ast",
+        "pathlib",
+        "re",
+        "typing.Any",
+        "typing.Dict",
+        "typing.List",
+        "typing.Optional",
+        "rules.qgis_rules.I18N_METHODS",
+        "rules.qgis_rules.get_qgis_audit_rules",
+        "utils.ast_utils.calculate_complexity",
+        "utils.ast_utils.calculate_module_complexity",
+        "utils.ast_utils.check_main_guard",
+        "utils.ast_utils.extract_classes_from_ast",
+        "utils.ast_utils.extract_functions_from_ast",
+        "utils.ast_utils.extract_imports_from_ast"
+      ],
+      "src/analyzer/transformers.py": [
+        "ast",
+        "pathlib",
+        "typing.Optional"
+      ],
+      "src/analyzer/semantic.py": [
+        "pathlib",
+        "xml.etree.ElementTree",
+        "typing.Any",
+        "typing.Dict",
+        "typing.List",
+        "typing.Set"
+      ],
+      "src/analyzer/reporters/markdown_reporter.py": [
+        "datetime",
+        "json",
+        "pathlib",
+        "typing.Any",
+        "typing.Dict",
+        "typing.List"
+      ],
+      "migration/ai-context-core/src/ai_context_core/analyzer/reporting.py": [
+        "pathlib",
+        "time",
+        "json",
+        "typing.Dict",
+        "typing.Any",
+        "typing.List"
+      ],
+      "src/analyzer/utils/ast_utils.py": [
+        "ast",
+        "typing.Any",
+        "typing.Dict",
+        "typing.List"
+      ],
+      "migration/ai-context-core/src/ai_context_core/analyzer/issues.py": [
+        "typing.List",
+        "typing.Dict",
+        "typing.Any",
+        "typing.Tuple",
+        "re",
+        "pathlib.Path"
+      ],
+      "src/analyzer/models/__init__.py": [
+        "analysis_models.ModuleAnalysis",
+        "analysis_models.ProjectContext"
+      ],
+      ".ai-context/ai_workflow.py": [
+        "json",
+        "os",
+        "time",
+        "unicodedata",
+        "datetime.datetime",
+        "pathlib.Path",
+        "yaml",
+        "argparse",
+        "re"
+      ],
+      ".ai-context/analyze_project_optfixed.py": [
+        "ast",
+        "datetime",
+        "fnmatch",
+        "gc",
+        "json",
+        "logging",
+        "mmap",
+        "os",
+        "pathlib",
+        "re",
+        "signal",
+        "subprocess",
+        "sys",
+        "threading",
+        "time",
+        "traceback",
+        "collections.Counter",
+        "collections.OrderedDict",
+        "concurrent.futures.ThreadPoolExecutor",
+        "concurrent.futures.as_completed",
+        "contextlib.contextmanager",
+        "dataclasses.dataclass",
+        "typing.Any",
+        "argparse"
+      ],
+      "src/analyzer/engine.py": [
+        "json",
+        "math",
+        "os",
+        "pathlib",
+        "subprocess",
+        "concurrent.futures.ProcessPoolExecutor",
+        "concurrent.futures.as_completed",
+        "typing.Any",
+        "typing.Dict",
+        "typing.List",
+        "typing.Optional",
+        "reporters.generate_html_report",
+        "reporters.generate_markdown_summary",
+        "reporters.save_json_context",
+        "scanner.analyze_module_worker",
+        "scanner.audit_qgis_standards",
+        "semantic.DependencyGraph",
+        "semantic.ResourceValidator",
+        "utils.IgnoreMatcher",
+        "utils.ProgressTracker",
+        "utils.load_ignore_patterns",
+        "utils.load_profile_config",
+        "utils.logger",
+        "utils.safe_path_resolve",
+        "utils.setup_logger",
+        "validators.calculate_package_size",
+        "validators.scan_for_binaries",
+        "validators.validate_metadata",
+        "validators.validate_metadata_urls",
+        "validators.validate_plugin_structure"
+      ],
+      "src/analyzer/rules/__init__.py": [
+        "modernization_rules.get_modernization_rules",
+        "qgis_rules.I18N_METHODS",
+        "qgis_rules.get_qgis_audit_rules"
+      ],
+      "src/analyzer/rules/qgis_rules.py": [
+        "re",
+        "typing.Any",
+        "typing.Dict",
+        "typing.List"
+      ],
+      "migration/ai-context-core/src/ai_context_core/cli.py": [
+        "click",
+        "pathlib",
+        "shutil",
+        "os",
+        "typing.Optional",
+        "analyzer.engine.ProjectAnalyzer",
+        "config.loader.ConfigLoader",
+        "config.loader.list_profiles",
+        "yaml",
+        "sys"
+      ],
+      "src/analyzer/reporters/html_reporter.py": [
+        "datetime",
+        "pathlib",
+        "typing.Any",
+        "typing.Dict",
+        "typing.List"
+      ],
+      "migration/ai-context-core/src/ai_context_core/config/loader.py": [
+        "yaml",
+        "pathlib",
+        "typing.Dict",
+        "typing.Any",
+        "typing.Optional"
+      ],
+      "src/analyzer/fixer.py": [
+        "difflib",
+        "pathlib",
+        "subprocess",
+        "tempfile",
+        "abc.ABC",
+        "abc.abstractmethod",
+        "typing.Any",
+        "typing.Dict",
+        "typing.List",
+        "transformers.GDALImportTransformer",
+        "transformers.I18nTransformer",
+        "transformers.LegacyImportTransformer",
+        "transformers.PrintToLogTransformer",
+        "transformers.apply_transformation"
+      ],
+      "src/analyzer/reporters/__init__.py": [
+        "html_reporter.generate_html_report",
+        "markdown_reporter.generate_markdown_summary",
+        "markdown_reporter.save_json_context"
+      ],
+      "src/analyzer/reporters/summary_reporter.py": [
+        "json",
+        "pathlib",
+        "typing.Any",
+        "typing.Dict",
+        "typing.List"
+      ],
+      "src/analyzer/utils/logging_utils.py": [
+        "logging",
+        "pathlib",
+        "sys"
+      ],
+      "src/analyzer/rules/modernization_rules.py": [
+        "typing.Any",
+        "typing.Dict",
+        "typing.List"
+      ],
+      "src/analyzer/cli.py": [
+        "argparse",
+        "pathlib",
+        "sys",
+        "engine.ProjectAnalyzer",
+        "utils.logger",
+        "utils.setup_logger",
+        "json",
+        "fixer.AutoFixer",
+        "reporters.summary_reporter.report_summary",
+        "rules.get_qgis_audit_rules",
+        "utils.DEFAULT_EXCLUDE"
+      ],
+      "src/analyzer/models/analysis_models.py": [
+        "dataclasses.dataclass",
+        "dataclasses.field",
+        "typing.Any",
+        "typing.Dict",
+        "typing.List"
+      ],
+      ".ai-context/context_manager.py": [
+        "json",
+        "pathlib.Path",
+        "yaml",
+        "sys"
+      ],
+      "migration/ai-context-core/src/ai_context_core/context/manager.py": [
+        "json",
+        "time",
+        "yaml",
+        "pathlib.Path",
+        "typing.Dict",
+        "typing.Any",
+        "typing.List"
+      ],
+      "src/__init__.py": [],
+      "src/analyzer/utils/config_utils.py": [
+        "logging",
+        "pathlib",
+        "re",
+        "typing.Any",
+        "typing.Dict",
+        "tomllib"
+      ],
+      "src/analyzer/utils/path_utils.py": [
+        "fnmatch",
+        "os",
+        "pathlib",
+        "typing.Dict",
+        "typing.List"
+      ],
+      "src/analyzer/utils/performance_utils.py": [
+        "pathlib",
+        "signal",
+        "sys",
+        "threading",
+        "time",
+        "collections.OrderedDict",
+        "contextlib.contextmanager",
+        "typing.Any",
+        "typing.Dict"
+      ],
+      "src/analyzer/validators.py": [
+        "ipaddress",
+        "pathlib",
+        "socket",
+        "urllib.error",
+        "urllib.parse",
+        "urllib.request",
+        "typing.Any",
+        "typing.Dict",
+        "typing.List"
+      ]
+    },
+    "circular_dependencies": [],
+    "graph_metrics": {
+      "nodes": 38,
+      "edges": 0,
+      "density": 0.0,
+      "is_dag": true,
+      "weakly_connected_components": 38
+    }
+  },
+  "qgis_compliance": {
+    "mandatory_files": {
+      "files": {
+        "LICENSE": true,
+        "metadata.txt": false,
+        "__init__.py": false
+      },
+      "all_present": false,
+      "has_class_factory": false
+    },
+    "metadata": {
+      "fields_found": [],
+      "missing_fields": [
+        "name",
+        "description",
+        "version",
+        "qgisMinimumVersion",
+        "author",
+        "email"
+      ],
+      "is_valid": false
+    },
+    "architecture": {
+      "violations": [],
+      "separation_clean": true
+    },
+    "widgets": {
+      "score": 1.0,
+      "recommendations": []
+    },
+    "performance": {
+      "score": 1.0,
+      "issues": []
+    },
+    "compliance_score": 50.0
+  },
+  "complexity": {
+    "total_modules": 38,
+    "total_lines": 10059,
+    "total_functions": 305,
+    "total_classes": 32,
+    "average_complexity": 42.76,
+    "max_complexity": 487,
+    "modules_without_docstrings": 19,
+    "avg_functions_per_module": 8.03,
+    "avg_classes_per_module": 0.84,
+    "lines_per_function": 32.98,
+    "most_complex_modules": [
+      [
+        ".ai-context/analyze_project_optfixed.py",
+        487
+      ],
+      [
+        "src/analyzer/scanner.py",
+        171
+      ],
+      [
+        ".ai-context/ai_workflow.py",
+        92
+      ],
+      [
+        "src/analyzer/engine.py",
+        62
+      ],
+      [
+        "migration/ai-context-core/src/ai_context_core/analyzer/fs_utils.py",
+        61
+      ],
+      [
+        "migration/ai-context-core/src/ai_context_core/analyzer/ast_utils.py",
+        61
+      ],
+      [
+        "src/analyzer/validators.py",
+        57
+      ],
+      [
+        "migration/ai-context-core/src/ai_context_core/analyzer/dependencies.py",
+        53
+      ],
+      [
+        "migration/ai-context-core/src/ai_context_core/analyzer/reporting.py",
+        51
+      ],
+      [
+        "src/analyzer/semantic.py",
+        42
+      ]
+    ],
+    "complexity_distribution": {
+      "low (0-5)": 11,
+      "medium (6-15)": 2,
+      "high (16-30)": 8,
+      "very_high (31+)": 17
+    }
+  },
+  "patterns": {
+    "mvc": {
+      "detected": true,
+      "confidence": 0.9999999999999999,
+      "evidence": [
+        "folder: models",
+        "folder: core",
+        "folder: irbuild",
+        "folder: user_guide",
+        "folder: models",
+        "folder: templates",
+        "folder: ai-context-core",
+        "folder: ai_context_core",
+        "folder: templates",
+        "folder: user_guide"
+      ]
+    },
+    "repository": {
+      "detected": true,
+      "confidence": 1.0,
+      "evidence": [
+        "migration/ai-context-core/src/ai_context_core/analyzer/fs_utils.py:LRUCache",
+        "src/analyzer/scanner.py:QGISASTVisitor",
+        "src/analyzer/semantic.py:DependencyGraph",
+        ".ai-context/ai_workflow.py:AIWorkflowManager",
+        ".ai-context/analyze_project_optfixed.py:LRUCache",
+        ".ai-context/analyze_project_optfixed.py:ProgressTracker",
+        ".ai-context/analyze_project_optfixed.py:ProjectAnalyzer",
+        "src/analyzer/engine.py:ProjectAnalyzer",
+        "src/analyzer/fixer.py:FixStrategy",
+        "src/analyzer/fixer.py:GDALImportFixer",
+        "src/analyzer/fixer.py:LegacyImportFixer",
+        "src/analyzer/fixer.py:PrintToLogFixer",
+        "src/analyzer/fixer.py:I18nFixer",
+        "src/analyzer/fixer.py:AutoFixer",
+        ".ai-context/context_manager.py:AIContextManager",
+        "migration/ai-context-core/src/ai_context_core/context/manager.py:AIContextManager",
+        "src/analyzer/utils/performance_utils.py:LRUCache",
+        "src/analyzer/utils/performance_utils.py:ProgressTracker"
+      ]
+    },
+    "factory": {
+      "detected": true,
+      "confidence": 0.8,
+      "evidence": [
+        "src/analyzer/semantic.py:DependencyGraph",
+        "src/analyzer/engine.py:ProjectAnalyzer",
+        ".ai-context/context_manager.py:AIContextManager",
+        "migration/ai-context-core/src/ai_context_core/context/manager.py:AIContextManager"
+      ]
+    },
+    "singleton": {
+      "detected": false,
+      "confidence": 0.0,
+      "evidence": []
+    },
+    "observer": {
+      "detected": false,
+      "confidence": 0.0,
+      "evidence": []
+    },
+    "decorator": {
+      "detected": false,
+      "confidence": 0.0,
+      "evidence": []
+    },
+    "strategy": {
+      "detected": false,
+      "confidence": 0.0,
+      "evidence": []
+    },
+    "adapter": {
+      "detected": false,
+      "confidence": 0.0,
+      "evidence": []
+    },
+    "command": {
+      "detected": false,
+      "confidence": 0.0,
+      "evidence": []
+    },
+    "template_method": {
+      "detected": false,
+      "confidence": 0.0,
+      "evidence": []
+    }
+  },
+  "debt": [
+    {
+      "module": ".ai-context/analyze_project_optfixed.py",
+      "issues": [
+        {
+          "type": "alta_complejidad",
+          "severity": "alta",
+          "message": "Complejidad ciclomática muy alta (487)",
+          "value": 487
+        },
+        {
+          "type": "archivo_muy_largo",
+          "severity": "alta",
+          "message": "Archivo muy largo (2612 líneas)",
+          "value": 2612
+        },
+        {
+          "type": "clases_sin_docstring",
+          "severity": "baja",
+          "message": "1 clases sin docstring"
+        },
+        {
+          "type": "funciones_sin_docstring",
+          "severity": "baja",
+          "message": "3 funciones sin docstring"
+        }
+      ],
+      "total_issues": 4,
+      "severity_score": 8
+    },
+    {
+      "module": ".ai-context/ai_workflow.py",
+      "issues": [
+        {
+          "type": "alta_complejidad",
+          "severity": "alta",
+          "message": "Complejidad ciclomática muy alta (92)",
+          "value": 92
+        },
+        {
+          "type": "archivo_muy_largo",
+          "severity": "alta",
+          "message": "Archivo muy largo (973 líneas)",
+          "value": 973
+        },
+        {
+          "type": "funciones_sin_docstring",
+          "severity": "baja",
+          "message": "1 funciones sin docstring"
+        }
+      ],
+      "total_issues": 3,
+      "severity_score": 7
+    },
+    {
+      "module": "src/analyzer/engine.py",
+      "issues": [
+        {
+          "type": "alta_complejidad",
+          "severity": "alta",
+          "message": "Complejidad ciclomática muy alta (62)",
+          "value": 62
+        },
+        {
+          "type": "archivo_largo",
+          "severity": "media",
+          "message": "Archivo largo (587 líneas)",
+          "value": 587
+        },
+        {
+          "type": "sin_docstring_modulo",
+          "severity": "baja",
+          "message": "Falta docstring a nivel de módulo"
+        },
+        {
+          "type": "clases_sin_docstring",
+          "severity": "baja",
+          "message": "1 clases sin docstring"
+        }
+      ],
+      "total_issues": 4,
+      "severity_score": 7
+    },
+    {
+      "module": "src/analyzer/scanner.py",
+      "issues": [
+        {
+          "type": "alta_complejidad",
+          "severity": "alta",
+          "message": "Complejidad ciclomática muy alta (171)",
+          "value": 171
+        },
+        {
+          "type": "archivo_largo",
+          "severity": "media",
+          "message": "Archivo largo (795 líneas)",
+          "value": 795
+        },
+        {
+          "type": "sin_docstring_modulo",
+          "severity": "baja",
+          "message": "Falta docstring a nivel de módulo"
+        }
+      ],
+      "total_issues": 3,
+      "severity_score": 6
+    },
+    {
+      "module": "migration/ai-context-core/src/ai_context_core/analyzer/dependencies.py",
+      "issues": [
+        {
+          "type": "alta_complejidad",
+          "severity": "alta",
+          "message": "Complejidad ciclomática muy alta (53)",
+          "value": 53
+        },
+        {
+          "type": "sin_docstring_modulo",
+          "severity": "baja",
+          "message": "Falta docstring a nivel de módulo"
+        },
+        {
+          "type": "funciones_sin_docstring",
+          "severity": "baja",
+          "message": "1 funciones sin docstring"
+        }
+      ],
+      "total_issues": 3,
+      "severity_score": 5
+    },
+    {
+      "module": "migration/ai-context-core/src/ai_context_core/analyzer/fs_utils.py",
+      "issues": [
+        {
+          "type": "alta_complejidad",
+          "severity": "alta",
+          "message": "Complejidad ciclomática muy alta (61)",
+          "value": 61
+        },
+        {
+          "type": "sin_docstring_modulo",
+          "severity": "baja",
+          "message": "Falta docstring a nivel de módulo"
+        },
+        {
+          "type": "funciones_sin_docstring",
+          "severity": "baja",
+          "message": "7 funciones sin docstring"
+        }
+      ],
+      "total_issues": 3,
+      "severity_score": 5
+    },
+    {
+      "module": "migration/ai-context-core/src/ai_context_core/analyzer/engine.py",
+      "issues": [
+        {
+          "type": "alta_complejidad",
+          "severity": "alta",
+          "message": "Complejidad ciclomática muy alta (21)",
+          "value": 21
+        },
+        {
+          "type": "sin_docstring_modulo",
+          "severity": "baja",
+          "message": "Falta docstring a nivel de módulo"
+        },
+        {
+          "type": "funciones_sin_docstring",
+          "severity": "baja",
+          "message": "1 funciones sin docstring"
+        }
+      ],
+      "total_issues": 3,
+      "severity_score": 5
+    },
+    {
+      "module": "src/analyzer/transformers.py",
+      "issues": [
+        {
+          "type": "alta_complejidad",
+          "severity": "alta",
+          "message": "Complejidad ciclomática muy alta (29)",
+          "value": 29
+        },
+        {
+          "type": "sin_docstring_modulo",
+          "severity": "baja",
+          "message": "Falta docstring a nivel de módulo"
+        },
+        {
+          "type": "funciones_sin_docstring",
+          "severity": "baja",
+          "message": "4 funciones sin docstring"
+        }
+      ],
+      "total_issues": 3,
+      "severity_score": 5
+    },
+    {
+      "module": "src/analyzer/semantic.py",
+      "issues": [
+        {
+          "type": "alta_complejidad",
+          "severity": "alta",
+          "message": "Complejidad ciclomática muy alta (42)",
+          "value": 42
+        },
+        {
+          "type": "sin_docstring_modulo",
+          "severity": "baja",
+          "message": "Falta docstring a nivel de módulo"
+        },
+        {
+          "type": "funciones_sin_docstring",
+          "severity": "baja",
+          "message": "1 funciones sin docstring"
+        }
+      ],
+      "total_issues": 3,
+      "severity_score": 5
+    },
+    {
+      "module": "src/analyzer/fixer.py",
+      "issues": [
+        {
+          "type": "alta_complejidad",
+          "severity": "alta",
+          "message": "Complejidad ciclomática muy alta (39)",
+          "value": 39
+        },
+        {
+          "type": "sin_docstring_modulo",
+          "severity": "baja",
+          "message": "Falta docstring a nivel de módulo"
+        },
+        {
+          "type": "funciones_sin_docstring",
+          "severity": "baja",
+          "message": "3 funciones sin docstring"
+        }
+      ],
+      "total_issues": 3,
+      "severity_score": 5
+    },
+    {
+      "module": "migration/ai-context-core/src/ai_context_core/context/manager.py",
+      "issues": [
+        {
+          "type": "alta_complejidad",
+          "severity": "alta",
+          "message": "Complejidad ciclomática muy alta (33)",
+          "value": 33
+        },
+        {
+          "type": "sin_docstring_modulo",
+          "severity": "baja",
+          "message": "Falta docstring a nivel de módulo"
+        },
+        {
+          "type": "funciones_sin_docstring",
+          "severity": "baja",
+          "message": "1 funciones sin docstring"
+        }
+      ],
+      "total_issues": 3,
+      "severity_score": 5
+    },
+    {
+      "module": "migration/ai-context-core/src/ai_context_core/analyzer/metrics.py",
+      "issues": [
+        {
+          "type": "alta_complejidad",
+          "severity": "alta",
+          "message": "Complejidad ciclomática muy alta (30)",
+          "value": 30
+        },
+        {
+          "type": "sin_docstring_modulo",
+          "severity": "baja",
+          "message": "Falta docstring a nivel de módulo"
+        }
+      ],
+      "total_issues": 2,
+      "severity_score": 4
+    },
+    {
+      "module": "migration/ai-context-core/src/ai_context_core/analyzer/ast_utils.py",
+      "issues": [
+        {
+          "type": "alta_complejidad",
+          "severity": "alta",
+          "message": "Complejidad ciclomática muy alta (61)",
+          "value": 61
+        },
+        {
+          "type": "sin_docstring_modulo",
+          "severity": "baja",
+          "message": "Falta docstring a nivel de módulo"
+        }
+      ],
+      "total_issues": 2,
+      "severity_score": 4
+    },
+    {
+      "module": "migration/ai-context-core/src/ai_context_core/analyzer/reporting.py",
+      "issues": [
+        {
+          "type": "alta_complejidad",
+          "severity": "alta",
+          "message": "Complejidad ciclomática muy alta (51)",
+          "value": 51
+        },
+        {
+          "type": "sin_docstring_modulo",
+          "severity": "baja",
+          "message": "Falta docstring a nivel de módulo"
+        }
+      ],
+      "total_issues": 2,
+      "severity_score": 4
+    },
+    {
+      "module": "migration/ai-context-core/src/ai_context_core/analyzer/issues.py",
+      "issues": [
+        {
+          "type": "alta_complejidad",
+          "severity": "alta",
+          "message": "Complejidad ciclomática muy alta (38)",
+          "value": 38
+        },
+        {
+          "type": "sin_docstring_modulo",
+          "severity": "baja",
+          "message": "Falta docstring a nivel de módulo"
+        }
+      ],
+      "total_issues": 2,
+      "severity_score": 4
+    },
+    {
+      "module": "migration/ai-context-core/src/ai_context_core/config/loader.py",
+      "issues": [
+        {
+          "type": "complejidad_moderada",
+          "severity": "media",
+          "message": "Complejidad ciclomática alta (14)",
+          "value": 14
+        },
+        {
+          "type": "sin_docstring_modulo",
+          "severity": "baja",
+          "message": "Falta docstring a nivel de módulo"
+        },
+        {
+          "type": "funciones_sin_docstring",
+          "severity": "baja",
+          "message": "1 funciones sin docstring"
+        }
+      ],
+      "total_issues": 3,
+      "severity_score": 4
+    },
+    {
+      "module": "src/analyzer/cli.py",
+      "issues": [
+        {
+          "type": "alta_complejidad",
+          "severity": "alta",
+          "message": "Complejidad ciclomática muy alta (35)",
+          "value": 35
+        },
+        {
+          "type": "sin_docstring_modulo",
+          "severity": "baja",
+          "message": "Falta docstring a nivel de módulo"
+        }
+      ],
+      "total_issues": 2,
+      "severity_score": 4
+    },
+    {
+      "module": ".ai-context/context_manager.py",
+      "issues": [
+        {
+          "type": "alta_complejidad",
+          "severity": "alta",
+          "message": "Complejidad ciclomática muy alta (26)",
+          "value": 26
+        },
+        {
+          "type": "funciones_sin_docstring",
+          "severity": "baja",
+          "message": "1 funciones sin docstring"
+        }
+      ],
+      "total_issues": 2,
+      "severity_score": 4
+    },
+    {
+      "module": "src/analyzer/utils/path_utils.py",
+      "issues": [
+        {
+          "type": "alta_complejidad",
+          "severity": "alta",
+          "message": "Complejidad ciclomática muy alta (23)",
+          "value": 23
+        },
+        {
+          "type": "funciones_sin_docstring",
+          "severity": "baja",
+          "message": "1 funciones sin docstring"
+        }
+      ],
+      "total_issues": 2,
+      "severity_score": 4
+    },
+    {
+      "module": "src/analyzer/validators.py",
+      "issues": [
+        {
+          "type": "alta_complejidad",
+          "severity": "alta",
+          "message": "Complejidad ciclomática muy alta (57)",
+          "value": 57
+        },
+        {
+          "type": "sin_docstring_modulo",
+          "severity": "baja",
+          "message": "Falta docstring a nivel de módulo"
+        }
+      ],
+      "total_issues": 2,
+      "severity_score": 4
+    },
+    {
+      "module": "src/analyzer/reporters/markdown_reporter.py",
+      "issues": [
+        {
+          "type": "alta_complejidad",
+          "severity": "alta",
+          "message": "Complejidad ciclomática muy alta (25)",
+          "value": 25
+        }
+      ],
+      "total_issues": 1,
+      "severity_score": 3
+    },
+    {
+      "module": "src/analyzer/utils/ast_utils.py",
+      "issues": [
+        {
+          "type": "alta_complejidad",
+          "severity": "alta",
+          "message": "Complejidad ciclomática muy alta (28)",
+          "value": 28
+        }
+      ],
+      "total_issues": 1,
+      "severity_score": 3
+    },
+    {
+      "module": "migration/ai-context-core/src/ai_context_core/cli.py",
+      "issues": [
+        {
+          "type": "complejidad_moderada",
+          "severity": "media",
+          "message": "Complejidad ciclomática alta (20)",
+          "value": 20
+        },
+        {
+          "type": "sin_docstring_modulo",
+          "severity": "baja",
+          "message": "Falta docstring a nivel de módulo"
+        }
+      ],
+      "total_issues": 2,
+      "severity_score": 3
+    },
+    {
+      "module": "src/analyzer/reporters/html_reporter.py",
+      "issues": [
+        {
+          "type": "alta_complejidad",
+          "severity": "alta",
+          "message": "Complejidad ciclomática muy alta (38)",
+          "value": 38
+        }
+      ],
+      "total_issues": 1,
+      "severity_score": 3
+    },
+    {
+      "module": "src/analyzer/reporters/summary_reporter.py",
+      "issues": [
+        {
+          "type": "alta_complejidad",
+          "severity": "alta",
+          "message": "Complejidad ciclomática muy alta (40)",
+          "value": 40
+        }
+      ],
+      "total_issues": 1,
+      "severity_score": 3
+    },
+    {
+      "module": "src/analyzer/utils/config_utils.py",
+      "issues": [
+        {
+          "type": "alta_complejidad",
+          "severity": "alta",
+          "message": "Complejidad ciclomática muy alta (38)",
+          "value": 38
+        }
+      ],
+      "total_issues": 1,
+      "severity_score": 3
+    },
+    {
+      "module": "src/analyzer/__init__.py",
+      "issues": [
+        {
+          "type": "sin_docstring_modulo",
+          "severity": "baja",
+          "message": "Falta docstring a nivel de módulo"
+        }
+      ],
+      "total_issues": 1,
+      "severity_score": 1
+    },
+    {
+      "module": "src/__init__.py",
+      "issues": [
+        {
+          "type": "sin_docstring_modulo",
+          "severity": "baja",
+          "message": "Falta docstring a nivel de módulo"
+        }
+      ],
+      "total_issues": 1,
+      "severity_score": 1
+    },
+    {
+      "module": "src/analyzer/utils/performance_utils.py",
+      "issues": [
+        {
+          "type": "funciones_sin_docstring",
+          "severity": "baja",
+          "message": "3 funciones sin docstring"
+        }
+      ],
+      "total_issues": 1,
+      "severity_score": 1
+    }
+  ],
+  "optimizations": [
+    {
+      "module": "migration/ai-context-core/src/ai_context_core/analyzer/fs_utils.py",
+      "suggestions": [
+        {
+          "type": "refactorizacion_complejidad",
+          "priority": "alta",
+          "message": "Alta complejidad (61) con 13 funciones",
+          "suggestions": [
+            "Extraer métodos de funciones largas",
+            "Usar polimorfismo en lugar de if/else largos",
+            "Aplicar principios SOLID",
+            "Considerar usar patrones de diseño"
+          ]
+        }
+      ],
+      "priority": "alta"
+    },
+    {
+      "module": "migration/ai-context-core/src/ai_context_core/analyzer/ast_utils.py",
+      "suggestions": [
+        {
+          "type": "refactorizacion_complejidad",
+          "priority": "alta",
+          "message": "Alta complejidad (61) con 9 funciones",
+          "suggestions": [
+            "Extraer métodos de funciones largas",
+            "Usar polimorfismo en lugar de if/else largos",
+            "Aplicar principios SOLID",
+            "Considerar usar patrones de diseño"
+          ]
+        }
+      ],
+      "priority": "alta"
+    },
+    {
+      "module": "src/analyzer/scanner.py",
+      "suggestions": [
+        {
+          "type": "refactorizacion_complejidad",
+          "priority": "alta",
+          "message": "Alta complejidad (171) con 18 funciones",
+          "suggestions": [
+            "Extraer métodos de funciones largas",
+            "Usar polimorfismo en lugar de if/else largos",
+            "Aplicar principios SOLID",
+            "Considerar usar patrones de diseño"
+          ]
+        },
+        {
+          "type": "modulo_demasiado_grande",
+          "priority": "media",
+          "message": "Módulo muy grande (795 líneas)",
+          "suggestions": [
+            "Dividir en múltiples módulos",
+            "Agrupar funcionalidad relacionada en paquetes",
+            "Extraer clases a módulos separados"
+          ]
+        }
+      ],
+      "priority": "alta"
+    },
+    {
+      "module": "src/analyzer/transformers.py",
+      "suggestions": [
+        {
+          "type": "refactorizacion_complejidad",
+          "priority": "alta",
+          "message": "Alta complejidad (29) con 10 funciones",
+          "suggestions": [
+            "Extraer métodos de funciones largas",
+            "Usar polimorfismo en lugar de if/else largos",
+            "Aplicar principios SOLID",
+            "Considerar usar patrones de diseño"
+          ]
+        }
+      ],
+      "priority": "alta"
+    },
+    {
+      "module": "src/analyzer/semantic.py",
+      "suggestions": [
+        {
+          "type": "refactorizacion_complejidad",
+          "priority": "alta",
+          "message": "Alta complejidad (42) con 10 funciones",
+          "suggestions": [
+            "Extraer métodos de funciones largas",
+            "Usar polimorfismo en lugar de if/else largos",
+            "Aplicar principios SOLID",
+            "Considerar usar patrones de diseño"
+          ]
+        }
+      ],
+      "priority": "alta"
+    },
+    {
+      "module": "src/analyzer/reporters/markdown_reporter.py",
+      "suggestions": [
+        {
+          "type": "refactorizacion_complejidad",
+          "priority": "alta",
+          "message": "Alta complejidad (25) con 6 funciones",
+          "suggestions": [
+            "Extraer métodos de funciones largas",
+            "Usar polimorfismo en lugar de if/else largos",
+            "Aplicar principios SOLID",
+            "Considerar usar patrones de diseño"
+          ]
+        }
+      ],
+      "priority": "alta"
+    },
+    {
+      "module": "migration/ai-context-core/src/ai_context_core/analyzer/reporting.py",
+      "suggestions": [
+        {
+          "type": "funciones_demasiado_largas",
+          "priority": "media",
+          "message": "Funciones muy largas (promedio 78.7 líneas/función)",
+          "suggestions": [
+            "Refactorizar funciones > 50 líneas",
+            "Extraer lógica común a funciones helper",
+            "Usar comprehensions y generadores"
+          ]
+        }
+      ],
+      "priority": "alta"
+    },
+    {
+      "module": "src/analyzer/utils/ast_utils.py",
+      "suggestions": [
+        {
+          "type": "refactorizacion_complejidad",
+          "priority": "alta",
+          "message": "Alta complejidad (28) con 6 funciones",
+          "suggestions": [
+            "Extraer métodos de funciones largas",
+            "Usar polimorfismo en lugar de if/else largos",
+            "Aplicar principios SOLID",
+            "Considerar usar patrones de diseño"
+          ]
+        }
+      ],
+      "priority": "alta"
+    },
+    {
+      "module": "migration/ai-context-core/src/ai_context_core/analyzer/issues.py",
+      "suggestions": [
+        {
+          "type": "funciones_demasiado_largas",
+          "priority": "media",
+          "message": "Funciones muy largas (promedio 88.3 líneas/función)",
+          "suggestions": [
+            "Refactorizar funciones > 50 líneas",
+            "Extraer lógica común a funciones helper",
+            "Usar comprehensions y generadores"
+          ]
+        }
+      ],
+      "priority": "alta"
+    },
+    {
+      "module": ".ai-context/ai_workflow.py",
+      "suggestions": [
+        {
+          "type": "refactorizacion_complejidad",
+          "priority": "alta",
+          "message": "Alta complejidad (92) con 33 funciones",
+          "suggestions": [
+            "Extraer métodos de funciones largas",
+            "Usar polimorfismo en lugar de if/else largos",
+            "Aplicar principios SOLID",
+            "Considerar usar patrones de diseño"
+          ]
+        },
+        {
+          "type": "modulo_demasiado_grande",
+          "priority": "media",
+          "message": "Módulo muy grande (973 líneas)",
+          "suggestions": [
+            "Dividir en múltiples módulos",
+            "Agrupar funcionalidad relacionada en paquetes",
+            "Extraer clases a módulos separados"
+          ]
+        }
+      ],
+      "priority": "alta"
+    },
+    {
+      "module": ".ai-context/analyze_project_optfixed.py",
+      "suggestions": [
+        {
+          "type": "refactorizacion_complejidad",
+          "priority": "alta",
+          "message": "Alta complejidad (487) con 68 funciones",
+          "suggestions": [
+            "Extraer métodos de funciones largas",
+            "Usar polimorfismo en lugar de if/else largos",
+            "Aplicar principios SOLID",
+            "Considerar usar patrones de diseño"
+          ]
+        },
+        {
+          "type": "modulo_demasiado_grande",
+          "priority": "media",
+          "message": "Módulo muy grande (2612 líneas)",
+          "suggestions": [
+            "Dividir en múltiples módulos",
+            "Agrupar funcionalidad relacionada en paquetes",
+            "Extraer clases a módulos separados"
+          ]
+        }
+      ],
+      "priority": "alta"
+    },
+    {
+      "module": "src/analyzer/engine.py",
+      "suggestions": [
+        {
+          "type": "imports_excesivos",
+          "priority": "media",
+          "message": "Muchos imports (30)",
+          "suggestions": [
+            "Agrupar imports relacionados",
+            "Usar imports locales dentro de funciones",
+            "Eliminar imports no utilizados con herramientas como autoflake"
+          ]
+        },
+        {
+          "type": "refactorizacion_complejidad",
+          "priority": "alta",
+          "message": "Alta complejidad (62) con 10 funciones",
+          "suggestions": [
+            "Extraer métodos de funciones largas",
+            "Usar polimorfismo en lugar de if/else largos",
+            "Aplicar principios SOLID",
+            "Considerar usar patrones de diseño"
+          ]
+        },
+        {
+          "type": "modulo_demasiado_grande",
+          "priority": "media",
+          "message": "Módulo muy grande (587 líneas)",
+          "suggestions": [
+            "Dividir en múltiples módulos",
+            "Agrupar funcionalidad relacionada en paquetes",
+            "Extraer clases a módulos separados"
+          ]
+        },
+        {
+          "type": "funciones_demasiado_largas",
+          "priority": "media",
+          "message": "Funciones muy largas (promedio 58.7 líneas/función)",
+          "suggestions": [
+            "Refactorizar funciones > 50 líneas",
+            "Extraer lógica común a funciones helper",
+            "Usar comprehensions y generadores"
+          ]
+        }
+      ],
+      "priority": "alta"
+    },
+    {
+      "module": "src/analyzer/rules/qgis_rules.py",
+      "suggestions": [
+        {
+          "type": "funciones_demasiado_largas",
+          "priority": "media",
+          "message": "Funciones muy largas (promedio 75.0 líneas/función)",
+          "suggestions": [
+            "Refactorizar funciones > 50 líneas",
+            "Extraer lógica común a funciones helper",
+            "Usar comprehensions y generadores"
+          ]
+        }
+      ],
+      "priority": "media"
+    },
+    {
+      "module": "src/analyzer/reporters/html_reporter.py",
+      "suggestions": [
+        {
+          "type": "refactorizacion_complejidad",
+          "priority": "alta",
+          "message": "Alta complejidad (38) con 9 funciones",
+          "suggestions": [
+            "Extraer métodos de funciones largas",
+            "Usar polimorfismo en lugar de if/else largos",
+            "Aplicar principios SOLID",
+            "Considerar usar patrones de diseño"
+          ]
+        },
+        {
+          "type": "modulo_demasiado_grande",
+          "priority": "media",
+          "message": "Módulo muy grande (389 líneas)",
+          "suggestions": [
+            "Dividir en múltiples módulos",
+            "Agrupar funcionalidad relacionada en paquetes",
+            "Extraer clases a módulos separados"
+          ]
+        }
+      ],
+      "priority": "alta"
+    },
+    {
+      "module": "src/analyzer/fixer.py",
+      "suggestions": [
+        {
+          "type": "refactorizacion_complejidad",
+          "priority": "alta",
+          "message": "Alta complejidad (39) con 23 funciones",
+          "suggestions": [
+            "Extraer métodos de funciones largas",
+            "Usar polimorfismo en lugar de if/else largos",
+            "Aplicar principios SOLID",
+            "Considerar usar patrones de diseño"
+          ]
+        },
+        {
+          "type": "modulo_demasiado_grande",
+          "priority": "media",
+          "message": "Módulo muy grande (315 líneas)",
+          "suggestions": [
+            "Dividir en múltiples módulos",
+            "Agrupar funcionalidad relacionada en paquetes",
+            "Extraer clases a módulos separados"
+          ]
+        }
+      ],
+      "priority": "alta"
+    },
+    {
+      "module": "src/analyzer/reporters/summary_reporter.py",
+      "suggestions": [
+        {
+          "type": "refactorizacion_complejidad",
+          "priority": "alta",
+          "message": "Alta complejidad (40) con 6 funciones",
+          "suggestions": [
+            "Extraer métodos de funciones largas",
+            "Usar polimorfismo en lugar de if/else largos",
+            "Aplicar principios SOLID",
+            "Considerar usar patrones de diseño"
+          ]
+        }
+      ],
+      "priority": "alta"
+    },
+    {
+      "module": "src/analyzer/cli.py",
+      "suggestions": [
+        {
+          "type": "refactorizacion_complejidad",
+          "priority": "alta",
+          "message": "Alta complejidad (35) con 7 funciones",
+          "suggestions": [
+            "Extraer métodos de funciones largas",
+            "Usar polimorfismo en lugar de if/else largos",
+            "Aplicar principios SOLID",
+            "Considerar usar patrones de diseño"
+          ]
+        },
+        {
+          "type": "modulo_demasiado_grande",
+          "priority": "media",
+          "message": "Módulo muy grande (312 líneas)",
+          "suggestions": [
+            "Dividir en múltiples módulos",
+            "Agrupar funcionalidad relacionada en paquetes",
+            "Extraer clases a módulos separados"
+          ]
+        }
+      ],
+      "priority": "alta"
+    },
+    {
+      "module": ".ai-context/context_manager.py",
+      "suggestions": [
+        {
+          "type": "refactorizacion_complejidad",
+          "priority": "alta",
+          "message": "Alta complejidad (26) con 8 funciones",
+          "suggestions": [
+            "Extraer métodos de funciones largas",
+            "Usar polimorfismo en lugar de if/else largos",
+            "Aplicar principios SOLID",
+            "Considerar usar patrones de diseño"
+          ]
+        }
+      ],
+      "priority": "alta"
+    },
+    {
+      "module": "migration/ai-context-core/src/ai_context_core/context/manager.py",
+      "suggestions": [
+        {
+          "type": "refactorizacion_complejidad",
+          "priority": "alta",
+          "message": "Alta complejidad (33) con 12 funciones",
+          "suggestions": [
+            "Extraer métodos de funciones largas",
+            "Usar polimorfismo en lugar de if/else largos",
+            "Aplicar principios SOLID",
+            "Considerar usar patrones de diseño"
+          ]
+        }
+      ],
+      "priority": "alta"
+    },
+    {
+      "module": "src/analyzer/validators.py",
+      "suggestions": [
+        {
+          "type": "refactorizacion_complejidad",
+          "priority": "alta",
+          "message": "Alta complejidad (57) con 6 funciones",
+          "suggestions": [
+            "Extraer métodos de funciones largas",
+            "Usar polimorfismo en lugar de if/else largos",
+            "Aplicar principios SOLID",
+            "Considerar usar patrones de diseño"
+          ]
+        }
+      ],
+      "priority": "alta"
+    }
+  ],
+  "security": [
+    {
+      "module": "migration/ai-context-core/src/ai_context_core/analyzer/issues.py",
+      "issues": [
+        {
+          "pattern": "exec(",
+          "description": "Uso de exec() - Vulnerable a inyección de código",
+          "severity": "alta",
+          "line": 200,
+          "code": "(\"exec(\", \"Uso de exec() - Vulnerable a inyección de código\", \"alta\"),"
+        },
+        {
+          "pattern": "eval(",
+          "description": "Uso de eval() - Vulnerable a inyección de código",
+          "severity": "alta",
+          "line": 201,
+          "code": "(\"eval(\", \"Uso de eval() - Vulnerable a inyección de código\", \"alta\"),"
+        },
+        {
+          "pattern": "pickle.loads",
+          "description": "Deserialización insegura - Puede ejecutar código arbitrario",
+          "severity": "alta",
+          "line": 202,
+          "code": "(\"pickle.loads\", \"Deserialización insegura - Puede ejecutar código arbitrario\", \"alta\"),"
+        },
+        {
+          "pattern": "subprocess.call(",
+          "description": "Ejecución de shell sin sanitizar",
+          "severity": "alta",
+          "line": 203,
+          "code": "(\"subprocess.call(\", \"Ejecución de shell sin sanitizar\", \"alta\"),"
+        },
+        {
+          "pattern": "subprocess.Popen(",
+          "description": "Ejecución de shell sin sanitizar",
+          "severity": "alta",
+          "line": 204,
+          "code": "(\"subprocess.Popen(\", \"Ejecución de shell sin sanitizar\", \"alta\"),"
+        },
+        {
+          "pattern": "os.system(",
+          "description": "Ejecución de comandos del sistema",
+          "severity": "alta",
+          "line": 205,
+          "code": "(\"os.system(\", \"Ejecución de comandos del sistema\", \"alta\"),"
+        },
+        {
+          "pattern": "input()",
+          "description": "Entrada de usuario sin validar",
+          "severity": "media",
+          "line": 206,
+          "code": "(\"input()\", \"Entrada de usuario sin validar\", \"media\"),"
+        },
+        {
+          "pattern": "open(",
+          "description": "Apertura de archivos sin validar ruta",
+          "severity": "media",
+          "line": 204,
+          "code": "(\"subprocess.Popen(\", \"Ejecución de shell sin sanitizar\", \"alta\"),"
+        },
+        {
+          "pattern": "yaml.load(",
+          "description": "Carga de YAML insegura (usar yaml.safe_load)",
+          "severity": "alta",
+          "line": 208,
+          "code": "(\"yaml.load(\", \"Carga de YAML insegura (usar yaml.safe_load)\", \"alta\"),"
+        },
+        {
+          "pattern": "marshal.loads",
+          "description": "Deserialización insegura",
+          "severity": "alta",
+          "line": 209,
+          "code": "(\"marshal.loads\", \"Deserialización insegura\", \"alta\"),"
+        },
+        {
+          "pattern": "sqlite3.execute(",
+          "description": "Posible inyección SQL (usar parámetros)",
+          "severity": "alta",
+          "line": 210,
+          "code": "(\"sqlite3.execute(\", \"Posible inyección SQL (usar parámetros)\", \"alta\"),"
+        },
+        {
+          "pattern": "flask.request.args.get",
+          "description": "Parámetros GET sin validar",
+          "severity": "media",
+          "line": 211,
+          "code": "(\"flask.request.args.get\", \"Parámetros GET sin validar\", \"media\"),"
+        },
+        {
+          "pattern": "django.forms.CharField",
+          "description": "Validación insuficiente",
+          "severity": "media",
+          "line": 212,
+          "code": "(\"django.forms.CharField\", \"Validación insuficiente\", \"media\"),"
+        },
+        {
+          "pattern": "md5(",
+          "description": "Uso de hash MD5 inseguro",
+          "severity": "media",
+          "line": 213,
+          "code": "(\"md5(\", \"Uso de hash MD5 inseguro\", \"media\"),"
+        },
+        {
+          "pattern": "sha1(",
+          "description": "Uso de hash SHA1 inseguro",
+          "severity": "media",
+          "line": 214,
+          "code": "(\"sha1(\", \"Uso de hash SHA1 inseguro\", \"media\"),"
+        }
+      ],
+      "total_issues": 15,
+      "max_severity": "alta"
+    },
+    {
+      "module": ".ai-context/analyze_project_optfixed.py",
+      "issues": [
+        {
+          "pattern": "exec(",
+          "description": "Uso de exec() - Vulnerable a inyección de código",
+          "severity": "alta",
+          "line": 1682,
+          "code": "(\"exec(\", \"Uso de exec() - Vulnerable a inyección de código\", \"alta\"),"
+        },
+        {
+          "pattern": "eval(",
+          "description": "Uso de eval() - Vulnerable a inyección de código",
+          "severity": "alta",
+          "line": 1683,
+          "code": "(\"eval(\", \"Uso de eval() - Vulnerable a inyección de código\", \"alta\"),"
+        },
+        {
+          "pattern": "pickle.loads",
+          "description": "Deserialización insegura - Puede ejecutar código arbitrario",
+          "severity": "alta",
+          "line": 1684,
+          "code": "(\"pickle.loads\", \"Deserialización insegura - Puede ejecutar código arbitrario\", \"alta\"),"
+        },
+        {
+          "pattern": "subprocess.call(",
+          "description": "Ejecución de shell sin sanitizar",
+          "severity": "alta",
+          "line": 1685,
+          "code": "(\"subprocess.call(\", \"Ejecución de shell sin sanitizar\", \"alta\"),"
+        },
+        {
+          "pattern": "subprocess.Popen(",
+          "description": "Ejecución de shell sin sanitizar",
+          "severity": "alta",
+          "line": 1686,
+          "code": "(\"subprocess.Popen(\", \"Ejecución de shell sin sanitizar\", \"alta\"),"
+        },
+        {
+          "pattern": "os.system(",
+          "description": "Ejecución de comandos del sistema",
+          "severity": "alta",
+          "line": 1687,
+          "code": "(\"os.system(\", \"Ejecución de comandos del sistema\", \"alta\"),"
+        },
+        {
+          "pattern": "input()",
+          "description": "Entrada de usuario sin validar",
+          "severity": "media",
+          "line": 1688,
+          "code": "(\"input()\", \"Entrada de usuario sin validar\", \"media\"),"
+        },
+        {
+          "pattern": "open(",
+          "description": "Apertura de archivos sin validar ruta",
+          "severity": "media",
+          "line": 286,
+          "code": "with open(config_path, encoding=\"utf-8\") as f:"
+        },
+        {
+          "pattern": "yaml.load(",
+          "description": "Carga de YAML insegura (usar yaml.safe_load)",
+          "severity": "alta",
+          "line": 1690,
+          "code": "(\"yaml.load(\", \"Carga de YAML insegura (usar yaml.safe_load)\", \"alta\"),"
+        },
+        {
+          "pattern": "marshal.loads",
+          "description": "Deserialización insegura",
+          "severity": "alta",
+          "line": 1691,
+          "code": "(\"marshal.loads\", \"Deserialización insegura\", \"alta\"),"
+        },
+        {
+          "pattern": "sqlite3.execute(",
+          "description": "Posible inyección SQL (usar parámetros)",
+          "severity": "alta",
+          "line": 1692,
+          "code": "(\"sqlite3.execute(\", \"Posible inyección SQL (usar parámetros)\", \"alta\"),"
+        },
+        {
+          "pattern": "flask.request.args.get",
+          "description": "Parámetros GET sin validar",
+          "severity": "media",
+          "line": 1693,
+          "code": "(\"flask.request.args.get\", \"Parámetros GET sin validar\", \"media\"),"
+        },
+        {
+          "pattern": "django.forms.CharField",
+          "description": "Validación insuficiente",
+          "severity": "media",
+          "line": 1694,
+          "code": "(\"django.forms.CharField\", \"Validación insuficiente\", \"media\"),"
+        },
+        {
+          "pattern": "md5(",
+          "description": "Uso de hash MD5 inseguro",
+          "severity": "media",
+          "line": 1695,
+          "code": "(\"md5(\", \"Uso de hash MD5 inseguro\", \"media\"),"
+        },
+        {
+          "pattern": "sha1(",
+          "description": "Uso de hash SHA1 inseguro",
+          "severity": "media",
+          "line": 1696,
+          "code": "(\"sha1(\", \"Uso de hash SHA1 inseguro\", \"media\"),"
+        }
+      ],
+      "total_issues": 15,
+      "max_severity": "alta"
+    },
+    {
+      "module": "migration/ai-context-core/src/ai_context_core/analyzer/fs_utils.py",
+      "issues": [
+        {
+          "pattern": "open(",
+          "description": "Apertura de archivos sin validar ruta",
+          "severity": "media",
+          "line": 40,
+          "code": "with open(path, \"rb\") as f:"
+        }
+      ],
+      "total_issues": 1,
+      "max_severity": "media"
+    },
+    {
+      "module": "migration/ai-context-core/src/ai_context_core/analyzer/engine.py",
+      "issues": [
+        {
+          "pattern": "open(",
+          "description": "Apertura de archivos sin validar ruta",
+          "severity": "media",
+          "line": 152,
+          "code": "with open(self.project_path / \"project_context.json\", \"w\", encoding=\"utf-8\") as f:"
+        }
+      ],
+      "total_issues": 1,
+      "max_severity": "media"
+    },
+    {
+      "module": "src/analyzer/scanner.py",
+      "issues": [
+        {
+          "pattern": "open(",
+          "description": "Apertura de archivos sin validar ruta",
+          "severity": "media",
+          "line": 658,
+          "code": "with open(py_file, encoding=\"utf-8-sig\", errors=\"replace\") as f:"
+        }
+      ],
+      "total_issues": 1,
+      "max_severity": "media"
+    },
+    {
+      "module": "src/analyzer/reporters/markdown_reporter.py",
+      "issues": [
+        {
+          "pattern": "open(",
+          "description": "Apertura de archivos sin validar ruta",
+          "severity": "media",
+          "line": 156,
+          "code": "with open(output_path, \"w\", encoding=\"utf-8\") as f:"
+        }
+      ],
+      "total_issues": 1,
+      "max_severity": "media"
+    },
+    {
+      "module": "migration/ai-context-core/src/ai_context_core/analyzer/reporting.py",
+      "issues": [
+        {
+          "pattern": "open(",
+          "description": "Apertura de archivos sin validar ruta",
+          "severity": "media",
+          "line": 126,
+          "code": "with open(output_path, \"w\", encoding=\"utf-8\") as f:"
+        }
+      ],
+      "total_issues": 1,
+      "max_severity": "media"
+    },
+    {
+      "module": ".ai-context/ai_workflow.py",
+      "issues": [
+        {
+          "pattern": "open(",
+          "description": "Apertura de archivos sin validar ruta",
+          "severity": "media",
+          "line": 71,
+          "code": "with open(session_dir / \"session_info.yaml\", \"w\") as f:"
+        }
+      ],
+      "total_issues": 1,
+      "max_severity": "media"
+    },
+    {
+      "module": "src/analyzer/reporters/summary_reporter.py",
+      "issues": [
+        {
+          "pattern": "open(",
+          "description": "Apertura de archivos sin validar ruta",
+          "severity": "media",
+          "line": 52,
+          "code": "with open(input_path, encoding=\"utf-8\") as f:"
+        }
+      ],
+      "total_issues": 1,
+      "max_severity": "media"
+    },
+    {
+      "module": "src/analyzer/cli.py",
+      "issues": [
+        {
+          "pattern": "open(",
+          "description": "Apertura de archivos sin validar ruta",
+          "severity": "media",
+          "line": 146,
+          "code": "with open(context_file) as f:"
+        }
+      ],
+      "total_issues": 1,
+      "max_severity": "media"
+    },
+    {
+      "module": ".ai-context/context_manager.py",
+      "issues": [
+        {
+          "pattern": "open(",
+          "description": "Apertura de archivos sin validar ruta",
+          "severity": "media",
+          "line": 145,
+          "code": "with open(update_file, \"w\", encoding=\"utf-8\") as f:"
+        }
+      ],
+      "total_issues": 1,
+      "max_severity": "media"
+    },
+    {
+      "module": "migration/ai-context-core/src/ai_context_core/context/manager.py",
+      "issues": [
+        {
+          "pattern": "open(",
+          "description": "Apertura de archivos sin validar ruta",
+          "severity": "media",
+          "line": 201,
+          "code": "with open(update_file, \"w\", encoding=\"utf-8\") as f:"
+        }
+      ],
+      "total_issues": 1,
+      "max_severity": "media"
+    },
+    {
+      "module": "src/analyzer/utils/config_utils.py",
+      "issues": [
+        {
+          "pattern": "open(",
+          "description": "Apertura de archivos sin validar ruta",
+          "severity": "media",
+          "line": 120,
+          "code": "with open(pyproject, \"rb\") as f:"
+        }
+      ],
+      "total_issues": 1,
+      "max_severity": "media"
+    },
+    {
+      "module": "src/analyzer/utils/path_utils.py",
+      "issues": [
+        {
+          "pattern": "open(",
+          "description": "Apertura de archivos sin validar ruta",
+          "severity": "media",
+          "line": 134,
+          "code": "with open(ignore_file) as f:"
+        }
+      ],
+      "total_issues": 1,
+      "max_severity": "media"
+    },
+    {
+      "module": "src/analyzer/validators.py",
+      "issues": [
+        {
+          "pattern": "open(",
+          "description": "Apertura de archivos sin validar ruta",
+          "severity": "media",
+          "line": 152,
+          "code": "with urllib.request.urlopen(req, timeout=5) as response:"
+        }
+      ],
+      "total_issues": 1,
+      "max_severity": "media"
+    }
+  ],
+  "linter": {
+    "available": false,
+    "errors": 0
+  },
+  "metrics": {
+    "total_size_kb": 364.59,
+    "total_lines_code": 10059,
+    "avg_module_size_kb": 9.59,
+    "avg_lines_per_module": 264.71,
+    "modules_with_docstrings": 19,
+    "modules_with_main_guard": 5,
+    "modules_with_syntax_errors": 0,
+    "docstring_coverage": 50.0,
+    "type_hint_coverage": 90.06,
+    "i18n_coverage": 5.41,
+    "entry_points_count": 0,
+    "test_files_count": 42,
+    "avg_complexity": 42.76,
+    "max_complexity": 487,
+    "quality_score": 50.2
+  }
+}

@@ -1,0 +1,1524 @@
+{
+  "modules": {
+    "__init__.py": {
+      "path": "__init__.py",
+      "lines": 20,
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "complexity": 0,
+      "docstrings": {
+        "module": false,
+        "classes": {},
+        "functions": {}
+      },
+      "has_main": false,
+      "type_hints": {
+        "total_functions": 0,
+        "typed_functions": 0,
+        "coverage": 100.0
+      },
+      "halstead": {
+        "vocabulary": 0,
+        "length": 0,
+        "volume": 0,
+        "difficulty": 0,
+        "effort": 0
+      },
+      "i18n": {
+        "tr_calls": 0,
+        "total_strings_estimate": 0,
+        "i18n_score": 100.0
+      },
+      "keywords": [
+        "qgis",
+        "free",
+        "software",
+        "license",
+        "version"
+      ],
+      "file_size_kb": 1.1572265625,
+      "syntax_error": false
+    },
+    "analyzer/__init__.py": {
+      "path": "analyzer/__init__.py",
+      "lines": 20,
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "complexity": 0,
+      "docstrings": {
+        "module": false,
+        "classes": {},
+        "functions": {}
+      },
+      "has_main": false,
+      "type_hints": {
+        "total_functions": 0,
+        "typed_functions": 0,
+        "coverage": 100.0
+      },
+      "halstead": {
+        "vocabulary": 0,
+        "length": 0,
+        "volume": 0,
+        "difficulty": 0,
+        "effort": 0
+      },
+      "i18n": {
+        "tr_calls": 0,
+        "total_strings_estimate": 0,
+        "i18n_score": 100.0
+      },
+      "keywords": [
+        "qgis",
+        "free",
+        "software",
+        "license",
+        "version"
+      ],
+      "file_size_kb": 1.1572265625,
+      "syntax_error": false
+    },
+    "analyzer/cli.py": {
+      "path": "analyzer/cli.py",
+      "lines": 312,
+      "functions": [
+        "_setup_argument_parser",
+        "_handle_fix_command(1 args)",
+        "_handle_analyze_command(1 args)",
+        "_handle_list_rules_command",
+        "_handle_init_command",
+        "_handle_summary_command(1 args)",
+        "main"
+      ],
+      "classes": [],
+      "imports": [
+        "argparse",
+        "pathlib",
+        "sys",
+        "engine.ProjectAnalyzer",
+        "utils.logger",
+        "utils.setup_logger",
+        "json",
+        "fixer.AutoFixer",
+        "reporters.summary_reporter.report_summary",
+        "rules.get_qgis_audit_rules",
+        "utils.DEFAULT_EXCLUDE"
+      ],
+      "complexity": 35,
+      "docstrings": {
+        "module": false,
+        "classes": {},
+        "functions": {
+          "_setup_argument_parser": true,
+          "_handle_fix_command": true,
+          "_handle_analyze_command": true,
+          "_handle_list_rules_command": true,
+          "_handle_init_command": true,
+          "_handle_summary_command": true,
+          "main": true
+        }
+      },
+      "has_main": true,
+      "type_hints": {
+        "total_functions": 7,
+        "typed_functions": 7,
+        "coverage": 100.0
+      },
+      "halstead": {
+        "vocabulary": 173,
+        "length": 393,
+        "volume": 2751,
+        "difficulty": 13.93,
+        "effort": 38333.47
+      },
+      "i18n": {
+        "tr_calls": 0,
+        "total_strings_estimate": 133,
+        "i18n_score": 0.0
+      },
+      "keywords": [
+        "args",
+        "command",
+        "help",
+        "default",
+        "rules"
+      ],
+      "file_size_kb": 10.2421875,
+      "syntax_error": false
+    },
+    "analyzer/fixer.py": {
+      "path": "analyzer/fixer.py",
+      "lines": 315,
+      "functions": [
+        "check_git_status(1 args)",
+        "show_diff(3 args)",
+        "can_fix(2 args)",
+        "apply_fix(3 args)",
+        "get_description(2 args)",
+        "can_fix(2 args)",
+        "apply_fix(3 args)",
+        "get_description(2 args)",
+        "can_fix(2 args)",
+        "apply_fix(3 args)",
+        "get_description(2 args)",
+        "can_fix(2 args)",
+        "apply_fix(3 args)",
+        "get_description(2 args)",
+        "can_fix(2 args)",
+        "apply_fix(3 args)",
+        "get_description(2 args)",
+        "__init__(3 args)",
+        "get_fixable_issues(2 args)",
+        "_check_git_status_with_prompt(2 args)",
+        "_group_issues_by_file(2 args)",
+        "_apply_single_fix(6 args)",
+        "apply_fixes(3 args)"
+      ],
+      "classes": [
+        "FixStrategy(ABC)",
+        "GDALImportFixer(FixStrategy)",
+        "LegacyImportFixer(FixStrategy)",
+        "PrintToLogFixer(FixStrategy)",
+        "I18nFixer(FixStrategy)",
+        "AutoFixer"
+      ],
+      "imports": [
+        "difflib",
+        "pathlib",
+        "subprocess",
+        "tempfile",
+        "abc.ABC",
+        "abc.abstractmethod",
+        "typing.Any",
+        "typing.Dict",
+        "typing.List",
+        "transformers.GDALImportTransformer",
+        "transformers.I18nTransformer",
+        "transformers.LegacyImportTransformer",
+        "transformers.PrintToLogTransformer",
+        "transformers.apply_transformation"
+      ],
+      "complexity": 39,
+      "docstrings": {
+        "module": false,
+        "classes": {
+          "FixStrategy": true,
+          "GDALImportFixer": true,
+          "LegacyImportFixer": true,
+          "PrintToLogFixer": true,
+          "I18nFixer": true,
+          "AutoFixer": true
+        },
+        "functions": {
+          "check_git_status": true,
+          "show_diff": true,
+          "can_fix": false,
+          "apply_fix": false,
+          "get_description": false,
+          "__init__": true,
+          "get_fixable_issues": true,
+          "_check_git_status_with_prompt": true,
+          "_group_issues_by_file": true,
+          "_apply_single_fix": true,
+          "apply_fixes": true
+        }
+      },
+      "has_main": false,
+      "type_hints": {
+        "total_functions": 23,
+        "typed_functions": 23,
+        "coverage": 100.0
+      },
+      "halstead": {
+        "vocabulary": 142,
+        "length": 507,
+        "volume": 3549,
+        "difficulty": 24.98,
+        "effort": 88655.14
+      },
+      "i18n": {
+        "tr_calls": 2,
+        "total_strings_estimate": 101,
+        "i18n_score": 1.9801980198019802
+      },
+      "keywords": [
+        "issue",
+        "dict",
+        "file_path",
+        "print",
+        "bool"
+      ],
+      "file_size_kb": 10.4033203125,
+      "syntax_error": false
+    },
+    "analyzer/engine.py": {
+      "path": "analyzer/engine.py",
+      "lines": 587,
+      "functions": [
+        "__init__(4 args)",
+        "get_python_files(1 args)",
+        "run_ruff_audit(1 args)",
+        "_run_parallel_analysis(3 args)",
+        "_run_qgis_specific_checks(3 args)",
+        "_run_semantic_analysis(2 args)",
+        "_build_analysis_results(16 args)",
+        "_save_reports(2 args)",
+        "run(1 args)",
+        "_calculate_scores(10 args)"
+      ],
+      "classes": [
+        "ProjectAnalyzer"
+      ],
+      "imports": [
+        "json",
+        "math",
+        "os",
+        "pathlib",
+        "subprocess",
+        "concurrent.futures.ProcessPoolExecutor",
+        "concurrent.futures.as_completed",
+        "typing.Any",
+        "typing.Dict",
+        "typing.List",
+        "typing.Optional",
+        "reporters.generate_html_report",
+        "reporters.generate_markdown_summary",
+        "reporters.save_json_context",
+        "scanner.analyze_module_worker",
+        "scanner.audit_qgis_standards",
+        "semantic.DependencyGraph",
+        "semantic.ResourceValidator",
+        "utils.IgnoreMatcher",
+        "utils.ProgressTracker",
+        "utils.load_ignore_patterns",
+        "utils.load_profile_config",
+        "utils.logger",
+        "utils.safe_path_resolve",
+        "utils.setup_logger",
+        "validators.calculate_package_size",
+        "validators.scan_for_binaries",
+        "validators.validate_metadata",
+        "validators.validate_metadata_urls",
+        "validators.validate_plugin_structure"
+      ],
+      "complexity": 62,
+      "docstrings": {
+        "module": false,
+        "classes": {
+          "ProjectAnalyzer": false
+        },
+        "functions": {
+          "__init__": true,
+          "get_python_files": true,
+          "run_ruff_audit": true,
+          "_run_parallel_analysis": true,
+          "_run_qgis_specific_checks": true,
+          "_run_semantic_analysis": true,
+          "_build_analysis_results": true,
+          "_save_reports": true,
+          "run": true,
+          "_calculate_scores": true
+        }
+      },
+      "has_main": false,
+      "type_hints": {
+        "total_functions": 10,
+        "typed_functions": 10,
+        "coverage": 100.0
+      },
+      "halstead": {
+        "vocabulary": 245,
+        "length": 1075,
+        "volume": 7525,
+        "difficulty": 36.2,
+        "effort": 272391.74
+      },
+      "i18n": {
+        "tr_calls": 0,
+        "total_strings_estimate": 135,
+        "i18n_score": 0.0
+      },
+      "keywords": [
+        "list",
+        "modules_data",
+        "dict",
+        "metadata",
+        "project_path"
+      ],
+      "file_size_kb": 21.7197265625,
+      "syntax_error": false
+    },
+    "analyzer/models/__init__.py": {
+      "path": "analyzer/models/__init__.py",
+      "lines": 6,
+      "functions": [],
+      "classes": [],
+      "imports": [
+        "analysis_models.ModuleAnalysis",
+        "analysis_models.ProjectContext"
+      ],
+      "complexity": 0,
+      "docstrings": {
+        "module": true,
+        "classes": {},
+        "functions": {}
+      },
+      "has_main": false,
+      "type_hints": {
+        "total_functions": 0,
+        "typed_functions": 0,
+        "coverage": 100.0
+      },
+      "halstead": {
+        "vocabulary": 4,
+        "length": 4,
+        "volume": 0,
+        "difficulty": 0,
+        "effort": 0
+      },
+      "i18n": {
+        "tr_calls": 0,
+        "total_strings_estimate": 3,
+        "i18n_score": 0.0
+      },
+      "keywords": [
+        "moduleanalysis",
+        "projectcontext",
+        "models",
+        "package",
+        "qgis"
+      ],
+      "file_size_kb": 0.15625,
+      "syntax_error": false
+    },
+    "analyzer/models/analysis_models.py": {
+      "path": "analyzer/models/analysis_models.py",
+      "lines": 63,
+      "functions": [],
+      "classes": [
+        "ModuleAnalysis",
+        "ProjectContext"
+      ],
+      "imports": [
+        "dataclasses.dataclass",
+        "dataclasses.field",
+        "typing.Any",
+        "typing.Dict",
+        "typing.List"
+      ],
+      "complexity": 0,
+      "docstrings": {
+        "module": true,
+        "classes": {
+          "ModuleAnalysis": true,
+          "ProjectContext": true
+        },
+        "functions": {}
+      },
+      "has_main": false,
+      "type_hints": {
+        "total_functions": 0,
+        "typed_functions": 0,
+        "coverage": 100.0
+      },
+      "halstead": {
+        "vocabulary": 36,
+        "length": 94,
+        "volume": 470,
+        "difficulty": 1.31,
+        "effort": 617.71
+      },
+      "i18n": {
+        "tr_calls": 0,
+        "total_strings_estimate": 5,
+        "i18n_score": 0.0
+      },
+      "keywords": [
+        "list",
+        "dict",
+        "field",
+        "default_factory",
+        "project"
+      ],
+      "file_size_kb": 2.306640625,
+      "syntax_error": false
+    },
+    "analyzer/reporters/__init__.py": {
+      "path": "analyzer/reporters/__init__.py",
+      "lines": 11,
+      "functions": [],
+      "classes": [],
+      "imports": [
+        "html_reporter.generate_html_report",
+        "markdown_reporter.generate_markdown_summary",
+        "markdown_reporter.save_json_context"
+      ],
+      "complexity": 0,
+      "docstrings": {
+        "module": true,
+        "classes": {},
+        "functions": {}
+      },
+      "has_main": false,
+      "type_hints": {
+        "total_functions": 0,
+        "typed_functions": 0,
+        "coverage": 100.0
+      },
+      "halstead": {
+        "vocabulary": 5,
+        "length": 5,
+        "volume": 0,
+        "difficulty": 0,
+        "effort": 0
+      },
+      "i18n": {
+        "tr_calls": 0,
+        "total_strings_estimate": 4,
+        "i18n_score": 0.0
+      },
+      "keywords": [
+        "generate_html_report",
+        "generate_markdown_summary",
+        "save_json_context",
+        "reporters",
+        "package"
+      ],
+      "file_size_kb": 0.2734375,
+      "syntax_error": false
+    },
+    "analyzer/reporters/markdown_reporter.py": {
+      "path": "analyzer/reporters/markdown_reporter.py",
+      "lines": 213,
+      "functions": [
+        "_build_markdown_header(4 args)",
+        "_build_markdown_qgis_findings(1 args)",
+        "_build_markdown_semantic_section(1 args)",
+        "_build_markdown_repo_standards(1 args)",
+        "generate_markdown_summary(2 args)",
+        "save_json_context(2 args)"
+      ],
+      "classes": [],
+      "imports": [
+        "datetime",
+        "json",
+        "pathlib",
+        "typing.Any",
+        "typing.Dict",
+        "typing.List"
+      ],
+      "complexity": 25,
+      "docstrings": {
+        "module": true,
+        "classes": {},
+        "functions": {
+          "_build_markdown_header": true,
+          "_build_markdown_qgis_findings": true,
+          "_build_markdown_semantic_section": true,
+          "_build_markdown_repo_standards": true,
+          "generate_markdown_summary": true,
+          "save_json_context": true
+        }
+      },
+      "has_main": false,
+      "type_hints": {
+        "total_functions": 6,
+        "typed_functions": 6,
+        "coverage": 100.0
+      },
+      "halstead": {
+        "vocabulary": 160,
+        "length": 399,
+        "volume": 2793,
+        "difficulty": 11.97,
+        "effort": 33422.9
+      },
+      "i18n": {
+        "tr_calls": 0,
+        "total_strings_estimate": 128,
+        "i18n_score": 0.0
+      },
+      "keywords": [
+        "lines",
+        "analyses",
+        "append",
+        "qgis",
+        "semantic"
+      ],
+      "file_size_kb": 7.884765625,
+      "syntax_error": false
+    },
+    "analyzer/reporters/html_reporter.py": {
+      "path": "analyzer/reporters/html_reporter.py",
+      "lines": 389,
+      "functions": [
+        "_get_html_styles",
+        "_build_html_header(10 args)",
+        "_build_html_qgis_findings(1 args)",
+        "_build_html_semantic_section(1 args)",
+        "_build_html_repo_compliance(1 args)",
+        "_build_html_ruff_findings(1 args)",
+        "_build_html_research_section(1 args)",
+        "_build_html_general_metrics(1 args)",
+        "generate_html_report(2 args)"
+      ],
+      "classes": [],
+      "imports": [
+        "datetime",
+        "pathlib",
+        "typing.Any",
+        "typing.Dict",
+        "typing.List"
+      ],
+      "complexity": 38,
+      "docstrings": {
+        "module": true,
+        "classes": {},
+        "functions": {
+          "_get_html_styles": true,
+          "_build_html_header": true,
+          "_build_html_qgis_findings": true,
+          "_build_html_semantic_section": true,
+          "_build_html_repo_compliance": true,
+          "_build_html_ruff_findings": true,
+          "_build_html_research_section": true,
+          "_build_html_general_metrics": true,
+          "generate_html_report": true
+        }
+      },
+      "has_main": false,
+      "type_hints": {
+        "total_functions": 9,
+        "typed_functions": 9,
+        "coverage": 100.0
+      },
+      "halstead": {
+        "vocabulary": 237,
+        "length": 618,
+        "volume": 4326,
+        "difficulty": 14.75,
+        "effort": 63794.08
+      },
+      "i18n": {
+        "tr_calls": 0,
+        "total_strings_estimate": 236,
+        "i18n_score": 0.0
+      },
+      "keywords": [
+        "html",
+        "append",
+        "span",
+        "score",
+        "metrics"
+      ],
+      "file_size_kb": 14.5693359375,
+      "syntax_error": false
+    },
+    "analyzer/reporters/summary_reporter.py": {
+      "path": "analyzer/reporters/summary_reporter.py",
+      "lines": 223,
+      "functions": [
+        "print_colored_score(2 args)",
+        "report_summary(2 args)",
+        "_report_total(1 args)",
+        "_report_by_modules(1 args)",
+        "_report_by_functions(1 args)",
+        "_report_by_classes(1 args)"
+      ],
+      "classes": [],
+      "imports": [
+        "json",
+        "pathlib",
+        "typing.Any",
+        "typing.Dict",
+        "typing.List"
+      ],
+      "complexity": 40,
+      "docstrings": {
+        "module": true,
+        "classes": {},
+        "functions": {
+          "print_colored_score": true,
+          "report_summary": true,
+          "_report_total": true,
+          "_report_by_modules": true,
+          "_report_by_functions": true,
+          "_report_by_classes": true
+        }
+      },
+      "has_main": false,
+      "type_hints": {
+        "total_functions": 6,
+        "typed_functions": 6,
+        "coverage": 100.0
+      },
+      "halstead": {
+        "vocabulary": 175,
+        "length": 533,
+        "volume": 3731,
+        "difficulty": 17.12,
+        "effort": 63861.9
+      },
+      "i18n": {
+        "tr_calls": 0,
+        "total_strings_estimate": 147,
+        "i18n_score": 0.0
+      },
+      "keywords": [
+        "print",
+        "issues",
+        "data",
+        "module",
+        "summary"
+      ],
+      "file_size_kb": 7.0673828125,
+      "syntax_error": false
+    },
+    "analyzer/rules/__init__.py": {
+      "path": "analyzer/rules/__init__.py",
+      "lines": 11,
+      "functions": [],
+      "classes": [],
+      "imports": [
+        "modernization_rules.get_modernization_rules",
+        "qgis_rules.I18N_METHODS",
+        "qgis_rules.get_qgis_audit_rules"
+      ],
+      "complexity": 0,
+      "docstrings": {
+        "module": true,
+        "classes": {},
+        "functions": {}
+      },
+      "has_main": false,
+      "type_hints": {
+        "total_functions": 0,
+        "typed_functions": 0,
+        "coverage": 100.0
+      },
+      "halstead": {
+        "vocabulary": 5,
+        "length": 5,
+        "volume": 0,
+        "difficulty": 0,
+        "effort": 0
+      },
+      "i18n": {
+        "tr_calls": 0,
+        "total_strings_estimate": 4,
+        "i18n_score": 0.0
+      },
+      "keywords": [
+        "get_modernization_rules",
+        "get_qgis_audit_rules",
+        "rules",
+        "package",
+        "qgis"
+      ],
+      "file_size_kb": 0.2548828125,
+      "syntax_error": false
+    },
+    "analyzer/rules/modernization_rules.py": {
+      "path": "analyzer/rules/modernization_rules.py",
+      "lines": 34,
+      "functions": [
+        "get_modernization_rules"
+      ],
+      "classes": [],
+      "imports": [
+        "typing.Any",
+        "typing.Dict",
+        "typing.List"
+      ],
+      "complexity": 0,
+      "docstrings": {
+        "module": true,
+        "classes": {},
+        "functions": {
+          "get_modernization_rules": true
+        }
+      },
+      "has_main": false,
+      "type_hints": {
+        "total_functions": 1,
+        "typed_functions": 1,
+        "coverage": 100.0
+      },
+      "halstead": {
+        "vocabulary": 18,
+        "length": 25,
+        "volume": 100,
+        "difficulty": 0.71,
+        "effort": 70.59
+      },
+      "i18n": {
+        "tr_calls": 0,
+        "total_strings_estimate": 21,
+        "i18n_score": 0.0
+      },
+      "keywords": [
+        "modernization",
+        "severity",
+        "rules",
+        "list",
+        "message"
+      ],
+      "file_size_kb": 1.0458984375,
+      "syntax_error": false
+    },
+    "analyzer/rules/qgis_rules.py": {
+      "path": "analyzer/rules/qgis_rules.py",
+      "lines": 75,
+      "functions": [
+        "get_qgis_audit_rules"
+      ],
+      "classes": [],
+      "imports": [
+        "re",
+        "typing.Any",
+        "typing.Dict",
+        "typing.List"
+      ],
+      "complexity": 0,
+      "docstrings": {
+        "module": true,
+        "classes": {},
+        "functions": {
+          "get_qgis_audit_rules": true
+        }
+      },
+      "has_main": false,
+      "type_hints": {
+        "total_functions": 1,
+        "typed_functions": 1,
+        "coverage": 100.0
+      },
+      "halstead": {
+        "vocabulary": 43,
+        "length": 77,
+        "volume": 385,
+        "difficulty": 0.9,
+        "effort": 348.33
+      },
+      "i18n": {
+        "tr_calls": 0,
+        "total_strings_estimate": 67,
+        "i18n_score": 0.0
+      },
+      "keywords": [
+        "severity",
+        "pattern",
+        "compile",
+        "message",
+        "detected"
+      ],
+      "file_size_kb": 2.48828125,
+      "syntax_error": false
+    },
+    "analyzer/scanner.py": {
+      "path": "analyzer/scanner.py",
+      "lines": 795,
+      "functions": [
+        "analyze_module_worker(4 args)",
+        "audit_qgis_standards(3 args)",
+        "__init__(3 args)",
+        "_check_docstring_style(2 args)",
+        "visit_Module(2 args)",
+        "_should_report(2 args)",
+        "_get_severity(2 args)",
+        "_check_obsolete_api(2 args)",
+        "_check_missing_i18n(2 args)",
+        "_check_missing_slot(2 args)",
+        "_check_unsafe_subprocess(2 args)",
+        "_check_blocking_network(2 args)",
+        "visit_Call(2 args)",
+        "visit_For(2 args)",
+        "visit_ClassDef(2 args)",
+        "visit_FunctionDef(2 args)",
+        "visit_Import(2 args)",
+        "visit_ImportFrom(2 args)"
+      ],
+      "classes": [
+        "QGISASTVisitor(ast.NodeVisitor)"
+      ],
+      "imports": [
+        "ast",
+        "pathlib",
+        "re",
+        "typing.Any",
+        "typing.Dict",
+        "typing.List",
+        "typing.Optional",
+        "rules.qgis_rules.I18N_METHODS",
+        "rules.qgis_rules.get_qgis_audit_rules",
+        "utils.ast_utils.calculate_complexity",
+        "utils.ast_utils.calculate_module_complexity",
+        "utils.ast_utils.check_main_guard",
+        "utils.ast_utils.extract_classes_from_ast",
+        "utils.ast_utils.extract_functions_from_ast",
+        "utils.ast_utils.extract_imports_from_ast"
+      ],
+      "complexity": 171,
+      "docstrings": {
+        "module": false,
+        "classes": {
+          "QGISASTVisitor": true
+        },
+        "functions": {
+          "analyze_module_worker": true,
+          "audit_qgis_standards": true,
+          "__init__": true,
+          "_check_docstring_style": true,
+          "visit_Module": true,
+          "_should_report": true,
+          "_get_severity": true,
+          "_check_obsolete_api": true,
+          "_check_missing_i18n": true,
+          "_check_missing_slot": true,
+          "_check_unsafe_subprocess": true,
+          "_check_blocking_network": true,
+          "visit_Call": true,
+          "visit_For": true,
+          "visit_ClassDef": true,
+          "visit_FunctionDef": true,
+          "visit_Import": true,
+          "visit_ImportFrom": true
+        }
+      },
+      "has_main": false,
+      "type_hints": {
+        "total_functions": 18,
+        "typed_functions": 18,
+        "coverage": 100.0
+      },
+      "halstead": {
+        "vocabulary": 266,
+        "length": 1381,
+        "volume": 11048,
+        "difficulty": 47.15,
+        "effort": 520962.6
+      },
+      "i18n": {
+        "tr_calls": 1,
+        "total_strings_estimate": 462,
+        "i18n_score": 0.21645021645021645
+      },
+      "keywords": [
+        "node",
+        "rel_path",
+        "args",
+        "name",
+        "issues"
+      ],
+      "file_size_kb": 33.45703125,
+      "syntax_error": false
+    },
+    "analyzer/semantic.py": {
+      "path": "analyzer/semantic.py",
+      "lines": 214,
+      "functions": [
+        "__init__(1 args)",
+        "add_node(3 args)",
+        "build_edges(2 args)",
+        "_resolve_import(4 args)",
+        "detect_cycles(1 args)",
+        "get_coupling_metrics(1 args)",
+        "__init__(2 args)",
+        "scan_project_resources(2 args)",
+        "validate_usage(2 args)",
+        "dfs(2 args)"
+      ],
+      "classes": [
+        "DependencyGraph",
+        "ResourceValidator"
+      ],
+      "imports": [
+        "pathlib",
+        "xml.etree.ElementTree",
+        "typing.Any",
+        "typing.Dict",
+        "typing.List",
+        "typing.Set"
+      ],
+      "complexity": 42,
+      "docstrings": {
+        "module": false,
+        "classes": {
+          "DependencyGraph": true,
+          "ResourceValidator": true
+        },
+        "functions": {
+          "__init__": true,
+          "add_node": true,
+          "build_edges": true,
+          "_resolve_import": true,
+          "detect_cycles": true,
+          "get_coupling_metrics": true,
+          "scan_project_resources": true,
+          "validate_usage": true,
+          "dfs": false
+        }
+      },
+      "has_main": false,
+      "type_hints": {
+        "total_functions": 10,
+        "typed_functions": 9,
+        "coverage": 90.0
+      },
+      "halstead": {
+        "vocabulary": 87,
+        "length": 291,
+        "volume": 1746,
+        "difficulty": 17.37,
+        "effort": 30325.26
+      },
+      "i18n": {
+        "tr_calls": 0,
+        "total_strings_estimate": 47,
+        "i18n_score": 0.0
+      },
+      "keywords": [
+        "path",
+        "module",
+        "project_path",
+        "node",
+        "list"
+      ],
+      "file_size_kb": 8.0,
+      "syntax_error": false
+    },
+    "analyzer/transformers.py": {
+      "path": "analyzer/transformers.py",
+      "lines": 191,
+      "functions": [
+        "apply_transformation(2 args)",
+        "__init__(1 args)",
+        "visit_Import(2 args)",
+        "__init__(1 args)",
+        "visit_Import(2 args)",
+        "visit_ImportFrom(2 args)",
+        "__init__(1 args)",
+        "visit_Expr(2 args)",
+        "__init__(1 args)",
+        "visit_Call(2 args)"
+      ],
+      "classes": [
+        "GDALImportTransformer(ast.NodeTransformer)",
+        "LegacyImportTransformer(ast.NodeTransformer)",
+        "PrintToLogTransformer(ast.NodeTransformer)",
+        "I18nTransformer(ast.NodeTransformer)"
+      ],
+      "imports": [
+        "ast",
+        "pathlib",
+        "typing.Optional"
+      ],
+      "complexity": 29,
+      "docstrings": {
+        "module": false,
+        "classes": {
+          "GDALImportTransformer": true,
+          "LegacyImportTransformer": true,
+          "PrintToLogTransformer": true,
+          "I18nTransformer": true
+        },
+        "functions": {
+          "apply_transformation": true,
+          "__init__": true,
+          "visit_Import": false,
+          "visit_ImportFrom": false,
+          "visit_Expr": false,
+          "visit_Call": false
+        }
+      },
+      "has_main": false,
+      "type_hints": {
+        "total_functions": 10,
+        "typed_functions": 10,
+        "coverage": 100.0
+      },
+      "halstead": {
+        "vocabulary": 70,
+        "length": 247,
+        "volume": 1482,
+        "difficulty": 19.02,
+        "effort": 28183.12
+      },
+      "i18n": {
+        "tr_calls": 2,
+        "total_strings_estimate": 59,
+        "i18n_score": 3.389830508474576
+      },
+      "keywords": [
+        "node",
+        "transformer",
+        "changes_made",
+        "value",
+        "qgis"
+      ],
+      "file_size_kb": 6.9365234375,
+      "syntax_error": false
+    },
+    "analyzer/utils/__init__.py": {
+      "path": "analyzer/utils/__init__.py",
+      "lines": 40,
+      "functions": [],
+      "classes": [],
+      "imports": [
+        "ast_utils.calculate_complexity",
+        "ast_utils.calculate_module_complexity",
+        "ast_utils.check_main_guard",
+        "ast_utils.extract_classes_from_ast",
+        "ast_utils.extract_functions_from_ast",
+        "ast_utils.extract_imports_from_ast",
+        "config_utils._minimal_toml_load",
+        "config_utils.load_profile_config",
+        "logging_utils.logger",
+        "logging_utils.setup_logger",
+        "path_utils.DEFAULT_EXCLUDE",
+        "path_utils.IgnoreMatcher",
+        "path_utils.load_ignore_patterns",
+        "path_utils.safe_path_resolve",
+        "performance_utils.LRUCache",
+        "performance_utils.ProgressTracker",
+        "performance_utils.timeout_manager"
+      ],
+      "complexity": 0,
+      "docstrings": {
+        "module": true,
+        "classes": {},
+        "functions": {}
+      },
+      "has_main": false,
+      "type_hints": {
+        "total_functions": 0,
+        "typed_functions": 0,
+        "coverage": 100.0
+      },
+      "halstead": {
+        "vocabulary": 19,
+        "length": 19,
+        "volume": 0,
+        "difficulty": 0,
+        "effort": 0
+      },
+      "i18n": {
+        "tr_calls": 0,
+        "total_strings_estimate": 18,
+        "i18n_score": 0.0
+      },
+      "keywords": [
+        "calculate_complexity",
+        "calculate_module_complexity",
+        "check_main_guard",
+        "extract_classes_from_ast",
+        "extract_functions_from_ast"
+      ],
+      "file_size_kb": 0.982421875,
+      "syntax_error": false
+    },
+    "analyzer/utils/ast_utils.py": {
+      "path": "analyzer/utils/ast_utils.py",
+      "lines": 134,
+      "functions": [
+        "calculate_complexity(1 args)",
+        "extract_functions_from_ast(1 args)",
+        "extract_classes_from_ast(1 args)",
+        "extract_imports_from_ast(1 args)",
+        "calculate_module_complexity(1 args)",
+        "check_main_guard(1 args)"
+      ],
+      "classes": [],
+      "imports": [
+        "ast",
+        "typing.Any",
+        "typing.Dict",
+        "typing.List"
+      ],
+      "complexity": 28,
+      "docstrings": {
+        "module": true,
+        "classes": {},
+        "functions": {
+          "calculate_complexity": true,
+          "extract_functions_from_ast": true,
+          "extract_classes_from_ast": true,
+          "extract_imports_from_ast": true,
+          "calculate_module_complexity": true,
+          "check_main_guard": true
+        }
+      },
+      "has_main": false,
+      "type_hints": {
+        "total_functions": 6,
+        "typed_functions": 6,
+        "coverage": 100.0
+      },
+      "halstead": {
+        "vocabulary": 55,
+        "length": 187,
+        "volume": 935,
+        "difficulty": 11.38,
+        "effort": 10635.62
+      },
+      "i18n": {
+        "tr_calls": 0,
+        "total_strings_estimate": 26,
+        "i18n_score": 0.0
+      },
+      "keywords": [
+        "node",
+        "tree",
+        "complexity",
+        "args",
+        "isinstance"
+      ],
+      "file_size_kb": 3.7412109375,
+      "syntax_error": false
+    },
+    "analyzer/utils/config_utils.py": {
+      "path": "analyzer/utils/config_utils.py",
+      "lines": 146,
+      "functions": [
+        "_parse_toml_value(1 args)",
+        "_process_section_header(3 args)",
+        "_ensure_profile_structure(3 args)",
+        "_minimal_toml_load(1 args)",
+        "load_profile_config(2 args)"
+      ],
+      "classes": [],
+      "imports": [
+        "logging",
+        "pathlib",
+        "re",
+        "typing.Any",
+        "typing.Dict",
+        "tomllib"
+      ],
+      "complexity": 38,
+      "docstrings": {
+        "module": true,
+        "classes": {},
+        "functions": {
+          "_parse_toml_value": true,
+          "_process_section_header": true,
+          "_ensure_profile_structure": true,
+          "_minimal_toml_load": true,
+          "load_profile_config": true
+        }
+      },
+      "has_main": false,
+      "type_hints": {
+        "total_functions": 5,
+        "typed_functions": 4,
+        "coverage": 80.0
+      },
+      "halstead": {
+        "vocabulary": 93,
+        "length": 274,
+        "volume": 1644,
+        "difficulty": 20.29,
+        "effort": 33358.63
+      },
+      "i18n": {
+        "tr_calls": 0,
+        "total_strings_estimate": 68,
+        "i18n_score": 0.0
+      },
+      "keywords": [
+        "data",
+        "line",
+        "profile_name",
+        "profiles",
+        "val_str"
+      ],
+      "file_size_kb": 4.580078125,
+      "syntax_error": false
+    },
+    "analyzer/utils/logging_utils.py": {
+      "path": "analyzer/utils/logging_utils.py",
+      "lines": 47,
+      "functions": [
+        "setup_logger(1 args)"
+      ],
+      "classes": [],
+      "imports": [
+        "logging",
+        "pathlib",
+        "sys"
+      ],
+      "complexity": 1,
+      "docstrings": {
+        "module": true,
+        "classes": {},
+        "functions": {
+          "setup_logger": true
+        }
+      },
+      "has_main": false,
+      "type_hints": {
+        "total_functions": 1,
+        "typed_functions": 1,
+        "coverage": 100.0
+      },
+      "halstead": {
+        "vocabulary": 21,
+        "length": 48,
+        "volume": 192,
+        "difficulty": 3.75,
+        "effort": 720.0
+      },
+      "i18n": {
+        "tr_calls": 0,
+        "total_strings_estimate": 11,
+        "i18n_score": 0.0
+      },
+      "keywords": [
+        "logger",
+        "logging",
+        "output_dir",
+        "file",
+        "handlers"
+      ],
+      "file_size_kb": 1.2275390625,
+      "syntax_error": false
+    },
+    "analyzer/utils/path_utils.py": {
+      "path": "analyzer/utils/path_utils.py",
+      "lines": 136,
+      "functions": [
+        "safe_path_resolve(2 args)",
+        "load_ignore_patterns(1 args)",
+        "__init__(3 args)",
+        "is_ignored(2 args)",
+        "_check_patterns(3 args)"
+      ],
+      "classes": [
+        "IgnoreMatcher"
+      ],
+      "imports": [
+        "fnmatch",
+        "os",
+        "pathlib",
+        "typing.Dict",
+        "typing.List"
+      ],
+      "complexity": 23,
+      "docstrings": {
+        "module": true,
+        "classes": {
+          "IgnoreMatcher": true
+        },
+        "functions": {
+          "safe_path_resolve": true,
+          "load_ignore_patterns": true,
+          "__init__": true,
+          "is_ignored": true,
+          "_check_patterns": false
+        }
+      },
+      "has_main": false,
+      "type_hints": {
+        "total_functions": 5,
+        "typed_functions": 4,
+        "coverage": 80.0
+      },
+      "halstead": {
+        "vocabulary": 75,
+        "length": 172,
+        "volume": 1032,
+        "difficulty": 16.18,
+        "effort": 16698.1
+      },
+      "i18n": {
+        "tr_calls": 0,
+        "total_strings_estimate": 32,
+        "i18n_score": 0.0
+      },
+      "keywords": [
+        "path",
+        "patterns",
+        "clean_pattern",
+        "fnmatch",
+        "str_rel_path"
+      ],
+      "file_size_kb": 4.0009765625,
+      "syntax_error": false
+    },
+    "analyzer/utils/performance_utils.py": {
+      "path": "analyzer/utils/performance_utils.py",
+      "lines": 151,
+      "functions": [
+        "timeout_manager(1 args)",
+        "__init__(2 args)",
+        "get(2 args)",
+        "set(3 args)",
+        "stats(1 args)",
+        "__init__(2 args)",
+        "update(3 args)",
+        "_display_progress(1 args)",
+        "complete(1 args)",
+        "signal_handler(2 args)"
+      ],
+      "classes": [
+        "LRUCache",
+        "ProgressTracker"
+      ],
+      "imports": [
+        "pathlib",
+        "signal",
+        "sys",
+        "threading",
+        "time",
+        "collections.OrderedDict",
+        "contextlib.contextmanager",
+        "typing.Any",
+        "typing.Dict"
+      ],
+      "complexity": 10,
+      "docstrings": {
+        "module": true,
+        "classes": {
+          "LRUCache": true,
+          "ProgressTracker": true
+        },
+        "functions": {
+          "timeout_manager": true,
+          "__init__": false,
+          "get": true,
+          "set": true,
+          "stats": true,
+          "update": true,
+          "_display_progress": false,
+          "complete": true,
+          "signal_handler": false
+        }
+      },
+      "has_main": false,
+      "type_hints": {
+        "total_functions": 10,
+        "typed_functions": 6,
+        "coverage": 60.0
+      },
+      "halstead": {
+        "vocabulary": 78,
+        "length": 220,
+        "volume": 1320,
+        "difficulty": 18.7,
+        "effort": 24688.12
+      },
+      "i18n": {
+        "tr_calls": 0,
+        "total_strings_estimate": 27,
+        "i18n_score": 0.0
+      },
+      "keywords": [
+        "cache",
+        "time",
+        "total",
+        "processed",
+        "hits"
+      ],
+      "file_size_kb": 4.1533203125,
+      "syntax_error": false
+    },
+    "analyzer/validators.py": {
+      "path": "analyzer/validators.py",
+      "lines": 264,
+      "functions": [
+        "scan_for_binaries(2 args)",
+        "calculate_package_size(2 args)",
+        "is_ssrf_safe(1 args)",
+        "validate_metadata_urls(1 args)",
+        "validate_plugin_structure(1 args)",
+        "validate_metadata(1 args)"
+      ],
+      "classes": [],
+      "imports": [
+        "ipaddress",
+        "pathlib",
+        "socket",
+        "urllib.error",
+        "urllib.parse",
+        "urllib.request",
+        "typing.Any",
+        "typing.Dict",
+        "typing.List"
+      ],
+      "complexity": 57,
+      "docstrings": {
+        "module": false,
+        "classes": {},
+        "functions": {
+          "scan_for_binaries": true,
+          "calculate_package_size": true,
+          "is_ssrf_safe": true,
+          "validate_metadata_urls": true,
+          "validate_plugin_structure": true,
+          "validate_metadata": true
+        }
+      },
+      "has_main": false,
+      "type_hints": {
+        "total_functions": 6,
+        "typed_functions": 6,
+        "coverage": 100.0
+      },
+      "halstead": {
+        "vocabulary": 135,
+        "length": 362,
+        "volume": 2534,
+        "difficulty": 18.69,
+        "effort": 47354.12
+      },
+      "i18n": {
+        "tr_calls": 0,
+        "total_strings_estimate": 84,
+        "i18n_score": 0.0
+      },
+      "keywords": [
+        "metadata",
+        "project_path",
+        "results",
+        "path",
+        "file_path"
+      ],
+      "file_size_kb": 8.1484375,
+      "syntax_error": false
+    }
+  },
+  "timestamps": {
+    "__init__.py": 1766938704.1743388,
+    "analyzer/__init__.py": 1766938677.9978347,
+    "analyzer/cli.py": 1767435904.4509327,
+    "analyzer/fixer.py": 1767373226.4959247,
+    "analyzer/engine.py": 1767397986.5826852,
+    "analyzer/models/__init__.py": 1767372391.7281413,
+    "analyzer/models/analysis_models.py": 1767372372.0513563,
+    "analyzer/reporters/__init__.py": 1767372393.7861054,
+    "analyzer/reporters/markdown_reporter.py": 1767373226.4949248,
+    "analyzer/reporters/html_reporter.py": 1767373226.4959247,
+    "analyzer/reporters/summary_reporter.py": 1767375140.7435212,
+    "analyzer/rules/__init__.py": 1767373218.6429582,
+    "analyzer/rules/modernization_rules.py": 1767373226.459925,
+    "analyzer/rules/qgis_rules.py": 1767377939.0344858,
+    "analyzer/scanner.py": 1767397866.7127736,
+    "analyzer/semantic.py": 1767372738.5332868,
+    "analyzer/transformers.py": 1767397864.7349827,
+    "analyzer/utils/__init__.py": 1767372844.549275,
+    "analyzer/utils/ast_utils.py": 1767397812.8236065,
+    "analyzer/utils/config_utils.py": 1767435544.0654354,
+    "analyzer/utils/logging_utils.py": 1767373226.4949248,
+    "analyzer/utils/path_utils.py": 1767435904.4499326,
+    "analyzer/utils/performance_utils.py": 1767397838.0777097,
+    "analyzer/validators.py": 1767373226.4959247
+  },
+  "metadata": {
+    "project_name": "src",
+    "save_time": 1768177866.7177072,
+    "version": "2.0",
+    "total_modules": 24
+  }
+}
