@@ -6,13 +6,16 @@
 ![License](https://img.shields.io/badge/License-GPLv3-blue.svg)
 ![Maintenance](https://img.shields.io/badge/Maintained%3F-yes-green.svg)
 ![Conventional Commits](https://img.shields.io/badge/Conventional%20Commits-1.0.0-yellow.svg?logo=git)
-![Quality Score](https://img.shields.io/badge/Module%20Stability-55.6%2F100-yellow)
-![Maintainability](https://img.shields.io/badge/Maintainability-100.0%2F100-brightgreen)
+![Quality Score](https://img.shields.io/badge/Module%20Stability-92.3%2F100-brightgreen)
+![Maintainability](https://img.shields.io/badge/Maintainability-84.1%2F100-green)
+![Security Score](https://img.shields.io/badge/Security--Bandit-98.7%2F100-brightgreen)
 
 The **QGIS Plugin Analyzer** is a static analysis tool designed specifically for QGIS (PyQGIS) plugin developers. Its goal is to elevate plugin quality by ensuring they follow community best practices and are optimized for AI-assisted development.
 
 ## ✨ Main Features
 
+- **Security Core (Bandit-inspired)**: Professional vulnerability scanning detecting `eval`, `exec`, shell injections, and SQL injection risks.
+- **Deep Entropy Secret Scanner**: Detects hardcoded API keys, passwords, and sensitive tokens using regex and information entropy.
 - **High-Performance Engine**: Parallel analysis powered by `ProcessPoolExecutor` for ultra-fast execution on multi-core systems.
 - **Project Auto-Detection**: Intelligently distinguishes between official QGIS Plugins and Generic Python Projects, tailoring validation logic accordingly.
 - **Advanced Ignore Engine**: Robust `.analyzerignore` support with non-anchored patterns and smart default excludes (`.venv`, `build`, etc.).
@@ -35,9 +38,8 @@ The **QGIS Plugin Analyzer** is a static analysis tool designed specifically for
 | **QGIS-Specific Rules**| ✅ (Precise AST) | ✅ (Regex/AST) | ❌ | ✅ |
 | **Interactive Auto-Fix**| ✅ | ❌ | ❌ | ❌ |
 | **Semantic Analysis**  | ✅ | ❌ | ❌ | ❌ |
-| **Compliance Checks**  | ✅ | ❌ | ❌ | ✅ |
-| **i18n / API Audit**   | ✅ | ❌ | ❌ | ✅ |
-| **Architecture Audit** | ✅ (UI/Core) | ❌ | ❌ | ❌ |
+| **Security Audit**     | ✅ (Bandit-style) | ❌ | ❌ | ❌ |
+| **Secret Scanning**    | ✅ (Entropy) | ❌ | ❌ | ❌ |
 | **HTML/MD Reports**    | ✅ | ❌ | ❌ | ❌ |
 | **AI Context Gen**      | ✅ (Project Brain) | ❌ | ❌ | ❌ |
 
@@ -101,7 +103,7 @@ You can run `qgis-plugin-analyzer` automatically before every commit to ensure q
 
 ```yaml
   - repo: https://github.com/geociencio/qgis-plugin-analyzer
-    rev: v1.4.0  # Use the latest tag
+    rev: v1.5.0  # Use the latest tag
     hooks:
       - id: qgis-plugin-analyzer
 ```
@@ -181,6 +183,17 @@ Shows a professional, color-coded summary of findings directly in your terminal.
 | :--- | :--- | :--- |
 | `-b`, `--by` | Granularity of the summary: `total`, `modules`, `functions`, `classes`. | `total` |
 | `-i`, `--input` | Path to the `project_context.json` file to summarize. | `analysis_results/project_context.json` |
+
+### `qgis-analyzer security`
+Performs a focused security scan on a file or directory.
+
+| Argument | Description | Default |
+| :--- | :--- | :--- |
+| `path` | **(Required)** Path to the file or directory to scan. | N/A |
+| `-p`, `--profile`| Configuration profile. | `default` |
+
+### `qgis-analyzer version`
+Shows the current version of the analyzer.
 
 **Example:**
 ```bash
