@@ -277,8 +277,9 @@ def _report_security(data: Dict[str, Any]) -> bool:
                     f"{sev_color}[{sev.upper()}]\033[0m {f.get('file')}:{f.get('line')} - {f.get('type')}"
                 )
                 print(f"  \033[2mMessage: {f.get('message')}\033[0m")
-                if f.get("code"):
-                    print(f"  \033[2mCode   : {f.get('code').strip()}\033[0m")
+                code_snippet = f.get("code")
+                if isinstance(code_snippet, str) and code_snippet.strip():
+                    print(f"  \033[2mCode   : {code_snippet.strip()}\033[0m")
                 print()
 
     print("=" * 60)

@@ -5,14 +5,25 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [1.5.0] - 2026-02-01
 
 ### Added
-- **Bilingual Command Guides**: Comprehensive GIS guides in both Spanish (`GUIA_COMANDOS.md`) and English (`COMMANDS_GUIDE.md`) covering installation, CLI usage, and practical scenarios.
-- **Detailed Installation Instructions**: Precise steps for installing via `uv`, `pip`, and local development environments.
+- **Security Scanning Infrastructure**: Integrated AST-based auditing (`QGISSecurityVisitor`) and Regex/Entropy scanning (`SecretScanner`) to detect vulnerabilities:
+    - `B102/B307`: Detects high-risk `exec()` and `eval()` calls.
+    - `B602/B608`: Detects unsafe subprocess shell execution and potential SQL injection.
+    - `HARDCODED_SECRET`: Advanced entropy-based detection of API keys, passwords, and tokens.
+- **Dedicated Security CLI**: New `security` subcommand for focused, high-impact plugin audits with specialized terminal reporting.
+- **Enhanced Version Reporting**: Added `--version` flag and a dedicated `version` subcommand.
+- **Bilingual Command Guides**: Comprehensive GIS guides in both Spanish (`GUIA_COMANDOS.md`) and English (`COMMANDS_GUIDE.md`).
+- **Antigravity Framework Standardization**: Modularized the agent system into `.agent/scripts/` for maximum portability.
 
 ### Changed
-- **Documentation Reorganization**: Restructured the `docs/` directory into a professional hierarchy (`user_guide/`, `releases/`, `research/`, `development/`, `reports/`) for improved discoverability.
+- **Documentation Reorganization**: Restructured the `docs/` directory into a professional hierarchy (`user_guide/`, `releases/`, `research/`, `development/`, `reports/`).
+- **Project Structure**: Refactored `ProjectAnalyzer` to support multi-faceted scoring (Stability, Maintainability, Compliance, Security).
+
+### Fixed
+- **Single-File Discovery**: Fixed a bug where analyzing individual files (not directories) resulted in zero results.
+- **Reporter Pathing**: Improved file path reporting in terminal summaries for single-file analysis.
 
 ## [1.4.0] - 2026-01-03
 

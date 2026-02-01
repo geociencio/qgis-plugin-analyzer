@@ -577,7 +577,7 @@ class ProjectAnalyzer:
         lint_penalty = ((5 * errors + others) / max(1, total_lines / 10)) * 10
         lint_score = max(0, 100 - lint_penalty)
 
-        return (func_score * 0.7) + (lint_score * 0.3)
+        return float((func_score * 0.7) + (lint_score * 0.3))
 
     def _get_modernization_bonus(self, modules_data: List[Dict[str, Any]]) -> float:
         """Calculates modernization bonuses based on type hints and documentation styles."""
@@ -632,7 +632,7 @@ class ProjectAnalyzer:
         # Security penalty
         score -= security_penalty
 
-        return max(0, score)
+        return float(max(0, score))
 
     def _get_security_penalty(self, modules_data: List[Dict[str, Any]]) -> float:
         """Calculates total penalty for security vulnerabilities."""

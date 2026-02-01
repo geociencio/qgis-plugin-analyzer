@@ -2,7 +2,7 @@
 
 import ast
 import re
-from typing import Any, Dict, List, Optional, Set
+from typing import Any, Dict, List, Optional, Set, cast
 
 # Import to trigger registration of checks
 from .rules.qgis_rules import I18N_METHODS
@@ -98,7 +98,7 @@ class QGISASTVisitor(ast.NodeVisitor):
         if name.startswith("qgis._") and not name.startswith("qgis._3d"):
             self._report_issue(
                 "QGIS_PROTECTED_MEMBER",
-                node.lineno,
+                cast(Any, node).lineno,
                 f"Protected member import detected: '{name}'. Protected members are unstable.",
                 code_snippet,
             )
@@ -107,7 +107,7 @@ class QGISASTVisitor(ast.NodeVisitor):
         if name == "gdal":
             self._report_issue(
                 "GDAL_DIRECT_IMPORT",
-                node.lineno,
+                cast(Any, node).lineno,
                 "Direct 'gdal' import detected. Use 'from osgeo import gdal'.",
                 code_snippet,
             )
@@ -116,7 +116,7 @@ class QGISASTVisitor(ast.NodeVisitor):
         if name.startswith(("PyQt4", "PyQt5")):
             self._report_issue(
                 "QGIS_LEGACY_IMPORT",
-                node.lineno,
+                cast(Any, node).lineno,
                 f"Legacy import detected: '{name}'. Use 'qgis.PyQt' for compatibility.",
                 code_snippet,
             )
