@@ -6,7 +6,7 @@ import yaml
 
 
 def sync_skills():
-    base_path = Path(__file__).parent.parent
+    base_path = Path(__file__).parent.parent.parent
     skills_dir = base_path / ".agent" / "skills"
     agents_file = base_path / ".agent" / "AGENTS.md"
 
@@ -84,7 +84,7 @@ def sync_skills():
 
 def sync_workflows():
     """Sync workflows metadata into AGENTS.md workflow table."""
-    base_path = Path(__file__).parent.parent
+    base_path = Path(__file__).parent.parent.parent
     workflows_dir = base_path / ".agent" / "workflows"
     agents_file = base_path / ".agent" / "AGENTS.md"
 
