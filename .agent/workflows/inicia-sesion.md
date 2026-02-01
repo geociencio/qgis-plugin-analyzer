@@ -1,31 +1,34 @@
 ---
-description: Inicializa la sesión: actualiza métricas, carga contexto crítico y verifica entorno.
+description: Inicializa la sesión con contexto y entorno sincronizado.
+agent: Static Analysis Architect
+skills: [project-context]
+validation:
+  - Tests corriendo
+  - Entorno uv sincronizado
+  - Contexto cargado
 ---
 
-Este workflow prepara el entorno para una sesión de desarrollo productiva.
+Este workflow prepara el entorno para una sesión productiva.
 
-1.  **Sintonización de Contexto**:
-    Ejecuta el análisis del proyecto y **lee** los archivos de memoria resultantes para entender el estado actual.
-    // turbo
-    ```bash
-    python3 .ai-context/analyze_project_optfixed.py
-    ```
-    
-    Lee los siguientes archivos para cargar el contexto en memoria:
-    *   `.ai-context/project_brain.md`
-    *   `AI_CONTEXT.md`
-    *   `docs/DEVELOPMENT_LOG.md`
-    *   `task.md`
+1. **Sincronización de Entorno**:
+   Asegura que las dependencias estén al día.
+   // turbo
+   ```bash
+   uv sync
+   ```
 
-2.  **Sincronización de Entorno**:
-    Asegura que las dependencias estén sincronizadas.
-    // turbo
-    ```bash
-    uv sync
-    ```
+2. **Actualización de Contexto**:
+   Ejecuta el analizador de contexto para tener la última foto del proyecto.
+   // turbo
+   ```bash
+   uv run ai-ctx analyze
+   ```
 
-3.  **Sanity Check (Tests)**:
-    Verifica que el código base esté estable antes de empezar a trabajar.
-    ```bash
-    uv run python -m unittest discover tests
-    ```
+3. **Sanity Check**:
+   Verifica el estado actual de los tests usando `unittest`.
+   ```bash
+   uv run python -m unittest discover tests
+   ```
+
+4. **Revisión de Tareas**:
+   Lee `task.md` y `.agent/next_steps.md` para recordar dónde nos quedamos.

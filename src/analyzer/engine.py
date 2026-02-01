@@ -482,48 +482,65 @@ class ProjectAnalyzer:
         if not modules_data:
             return 0.0, 0.0, 0.0
 
-        # 1. Module stability based on Maintainability Index (MI)
-        # Formula: MI = max(0, (171 - 0.23 * CC - 16.2 * ln(SLOC)) * 100 / 171)
+        module_score = self._get_mi_score(modules_data)
+        maintainability_score = self._get_maint_score(modules_data, ruff_findings)
+        modernization_bonus = self._get_modernization_bonus(modules_data)
+        maintainability_score = min(100.0, maintainability_score + modernization_bonus)
+
+        # Global penalties (e.g., circular dependencies)
+        penalty = len(cycles) * 10
+        module_score = max(0, module_score - penalty)
+        maintainability_score = max(0, maintainability_score - penalty)
+
+        if self.project_type == "generic":
+            return round(module_score, 1), round(maintainability_score, 1), 0.0
+
+        qgis_score = self._get_qgis_score(
+            compliance, structure, metadata, missing_resources, binaries, package_size
+        )
+
+        return (
+            round(module_score, 1),
+            round(maintainability_score, 1),
+            round(qgis_score, 1),
+        )
+
+    def _get_mi_score(self, modules_data: List[Dict[str, Any]]) -> float:
+        """Calculates module stability based on Maintainability Index (MI)."""
         mi_scores = []
         for m in modules_data:
             cc = m.get("complexity", 1)
             sloc = max(1, m.get("lines", 1))
+            # Formula: MI = (171 - 0.23 * CC - 16.2 * ln(SLOC)) * 100 / 171
             mi = (171 - 0.23 * cc - 16.2 * math.log(sloc)) * 100 / 171
             mi_scores.append(max(0, mi))
+        return sum(mi_scores) / len(mi_scores) if mi_scores else 0.0
 
-        module_score = sum(mi_scores) / len(mi_scores) if mi_scores else 0.0
-
-        # 2. Maintainability based on Function Complexity
+    def _get_maint_score(
+        self, modules_data: List[Dict[str, Any]], ruff_findings: List[Dict[str, Any]]
+    ) -> float:
+        """Calculates maintainability based on function complexity and linting penalties."""
+        # 1. Function Complexity Score
         all_func_comp = []
         for m in modules_data:
             for f in m.get("functions", []):
                 all_func_comp.append(f["complexity"])
 
         avg_func_comp = sum(all_func_comp) / len(all_func_comp) if all_func_comp else 1.0
-        # Function complexity score: 100 is perfect, -5 per point over 10
         func_score = max(0, 100 - (max(0, avg_func_comp - 10) * 5))
 
-        # 3. Lint Scoring (Pylint style)
-        # 10 - ((5*E + W + R + C) / statements) * 10
+        # 2. Lint Scoring (Pylint style)
         total_lines = sum(m.get("lines", 0) for m in modules_data)
-        errors = 0
-        others = 0
-        for find in ruff_findings:
-            code = find.get("code", "")
-            if code.startswith(("E", "F")):
-                errors += 1
-            else:
-                others += 1
+        errors = sum(1 for f in ruff_findings if f.get("code", "").startswith(("E", "F")))
+        others = len(ruff_findings) - errors
 
         lint_penalty = ((5 * errors + others) / max(1, total_lines / 10)) * 10
         lint_score = max(0, 100 - lint_penalty)
 
-        # Composite Maintainability Score
-        maintainability_score = (func_score * 0.7) + (lint_score * 0.3)
+        return (func_score * 0.7) + (lint_score * 0.3)
 
-        # 4. Research-based Bonuses & Modernization
-        total_public_items = 0
-        has_docstring_count = 0
+    def _get_modernization_bonus(self, modules_data: List[Dict[str, Any]]) -> float:
+        """Calculates modernization bonuses based on type hints and documentation styles."""
         total_functions = 0
         total_params = 0
         annotated_params = 0
@@ -532,55 +549,42 @@ class ProjectAnalyzer:
 
         for m in modules_data:
             metrics = m.get("research_metrics", {})
-            d_stats = metrics.get("docstring_stats", {})
-            total_public_items += d_stats.get("total_public_items", 0)
-            has_docstring_count += d_stats.get("has_docstring", 0)
-
             t_stats = metrics.get("type_hint_stats", {})
             total_functions += t_stats.get("total_functions", 0)
             total_params += t_stats.get("total_parameters", 0)
             annotated_params += t_stats.get("annotated_parameters", 0)
             has_return_hint += t_stats.get("has_return_hint", 0)
-
             detected_styles.update(metrics.get("docstring_styles", []))
 
-        # Bonuses
-        modernization_bonus = 0.0
-        # Type Hint Bonus: > 80% coverage on params and returns
+        bonus = 0.0
         if total_params > 0 or total_functions > 0:
             param_cov = annotated_params / max(1, total_params)
             ret_cov = has_return_hint / max(1, total_functions)
             if param_cov >= 0.8 and ret_cov >= 0.8:
-                modernization_bonus += 5.0
+                bonus += 5.0
 
-        # Docstring Style Bonus: Standardized formats (Google/NumPy)
         if detected_styles:
-            modernization_bonus += 2.0
+            bonus += 2.0
+        return bonus
 
-        maintainability_score = min(100.0, maintainability_score + modernization_bonus)
-
-        # Global penalties
-        penalty = len(cycles) * 10
-        module_score = max(0, module_score - penalty)
-        maintainability_score = max(0, maintainability_score - penalty)
-
-        if self.project_type == "generic":
-            return round(module_score, 1), round(maintainability_score, 1), 0.0
-
-        # ... (qgis_score logic remains same) ...
-        qgis_score = 100.0
-        qgis_score -= compliance.get("issues_count", 0) * 2
+    def _get_qgis_score(
+        self,
+        compliance: Dict[str, Any],
+        structure: Dict[str, Any],
+        metadata: Dict[str, Any],
+        missing_resources: List[str],
+        binaries: List[str],
+        package_size: float,
+    ) -> float:
+        """Calculates QGIS-specific compliance score."""
+        score = 100.0
+        score -= compliance.get("issues_count", 0) * 2
         if not structure.get("is_valid", True):
-            qgis_score -= 20
+            score -= 20
         if not metadata.get("is_valid", True):
-            qgis_score -= 10
-        qgis_score -= len(missing_resources) * 5
-        qgis_score -= len(binaries) * 50
+            score -= 10
+        score -= len(missing_resources) * 5
+        score -= len(binaries) * 50
         if package_size > 20:
-            qgis_score -= 10
-
-        return (
-            round(module_score, 1),
-            round(maintainability_score, 1),
-            round(max(0, qgis_score), 1),
-        )
+            score -= 10
+        return max(0, score)

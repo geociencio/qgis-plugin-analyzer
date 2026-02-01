@@ -1,33 +1,26 @@
 ---
-description: Finaliza sesión: corre tests, actualiza logs (Dev/Maintenance), regenera contexto IA y propone commit de cierre.
+description: "Finaliza sesión: corre tests, actualiza logs y propone commit."
+agent: Static Analysis Architect
+skills: [project-context, qa-docker]
+validation:
+  - Tests pasando (GREEN)
+  - Logs actualizados
 ---
 
-Este workflow asegura un cierre limpio y documentado del trabajo realizado.
+Este workflow asegura un cierre limpio.
 
-1.  **Sanity Check (Tests)**:
-    Verifica que no rompimos nada crítico antes de irnos.
-    ```bash
-    uv run python -m unittest discover tests
-    ```
+1. **Sanity Check Final**:
+   // turbo
+   ```bash
+   uv run pytest
+   ```
 
-2.  **Actualización de Memoria (Logs)**:
-    *   Lee `docs/DEVELOPMENT_LOG.md`.
-    *   Genera y escribe una nueva entrada con fecha de hoy (`## [YYYY-MM-DD] Resumen`) resumiendo los logros de esta sesión.
-    *   Si hubo cambios estructurales, actualiza `docs/source/MAINTENANCE_LOG.md`.
+2. **Actualización de Memoria**:
+   - Actualizar `docs/DEVELOPMENT_LOG.md` con el resumen del día.
+   - Reflejar métricas finales con `uv run ai-ctx analyze .`.
 
-3.  **Sincronización de Contexto Final**:
-    Actualiza las métricas y la memoria de largo plazo del proyecto.
-    // turbo
-    ```bash
-    python3 .ai-context/analyze_project_optfixed.py
-    ```
+3. **Limpieza**:
+   - Borrar archivos temporales o artefactos de debug.
 
-4.  **Commit de Cierre (Propuesta)**:
-    Revisa el estado y propone un commit.
-    ```bash
-    git status
-    ```
-    (El modelo propondrá `git add .` y `git commit` con un mensaje adecuado basado en el contexto. Espera confirmación).
-
-5.  **Despedida**:
-    Muestra un resumen final de lo logrado y cierra la sesión.
+4. **Propuesta de Cierre**:
+   Si hay cambios pendientes, sugerir usar el workflow `/crea-commit`.

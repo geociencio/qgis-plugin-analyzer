@@ -1,52 +1,63 @@
-# RESUMEN DEL PROYECTO - qgis_plugin_analyzer
-Fecha de análisis: 2026-01-11 21:13:15
-Versión del analizador: 2.0 (Optimizado)
+# PROJECT SUMMARY - qgis_plugin_analyzer
+Analysis Date: 2026-02-01 17:08:01
+Analyzer Version: 2.0 (Ai-Context-Core)
 
-## 📊 MÉTRICAS CLAVE
-- **Total módulos**: 38
-- **Líneas de código**: 10,059
-- **Tamaño total**: 1.7 MB
-- **Complejidad promedio**: 42.8
-- **Cobertura de docstrings**: 50.0%
-- **Score de calidad**: 50.2/100
-- **Archivos de test**: 42
+## 📊 KEY METRICS
+- **Total Modules**: 35
+- **Lines of Code**: 8,798
+- **Total Size**: 18.8 MB
+- **Average Complexity**: 31.1
+- **Avg Maintenance Index**: 39.7
+- **Docstring Coverage**: 86.1%
+- **Quality Score**: 71.0/100
+- **Test Files**: 10
 
-## 📁 ESTRUCTURA
-- **Archivos Python**: 45
-- **Total archivos**: 183
-- **Tipo de archivos principales**: .pyi, .json, .py, .so, .md
+## 📁 STRUCTURE
+- **Python Files**: 45
+- **Total Files**: 1679
+- **Primary File Types**: .json, .md, .py, .sample, .yaml
 
-## 🚨 PROBLEMAS CRÍTICOS
+## 🚨 CRITICAL ISSUES
+### 🔒 Security Issues:
+- **.ai-context/analyze_project_optfixed.py**: 27 issues (Max: HIGH)
+- **antigravity-framerepo/scaffold/skills/data-science/scripts/validate_dataset.py**: 1 issues (Max: LOW)
+- **antigravity-framerepo/bootstrap.py**: 2 issues (Max: LOW)
 
-### 🔒 Problemas de Seguridad:
-- **migration/ai-context-core/src/ai_context_core/analyzer/issues.py**: 15 problemas críticos
-- **.ai-context/analyze_project_optfixed.py**: 15 problemas críticos
+### 🏗️ Critical Technical Debt:
+- **src/analyzer/engine.py**: 3 issues (Score: 6)
+- **.ai-context/ai_workflow.py**: 2 issues (Score: 6)
+- **src/analyzer/scanner.py**: 3 issues (Score: 6)
+- **.ai-context/analyze_project_optfixed.py**: 2 issues (Score: 6)
+- **antigravity-framerepo/scripts/skill_sync.py**: 2 issues (Score: 4)
 
-### 🏗️ Deuda Técnica Crítica:
-- **.ai-context/analyze_project_optfixed.py**: 4 issues (score: 8)
-- **.ai-context/ai_workflow.py**: 3 issues (score: 7)
-- **src/analyzer/engine.py**: 4 issues (score: 7)
-- **src/analyzer/scanner.py**: 3 issues (score: 6)
-- **migration/ai-context-core/src/ai_context_core/analyzer/dependencies.py**: 3 issues (score: 5)
+## 💡 MAIN RECOMMENDATIONS
+### .ai-context/context_manager.py
+- Consider breaking down large logic
+### src/analyzer/cli.py
+- Consider breaking down large logic
+### src/analyzer/fixer.py
+- Consider breaking down large logic
 
-## 📦 ESTÁNDARES DE PLUGIN QGIS
-- **Score de Cumplimiento**: 50.0/100
-- ❌ **Archivos faltantes**: metadata.txt, __init__.py
+## 🏗️ DESIGN PATTERNS
+### Factory
+- **AIContextManager** in `.ai-context/context_manager.py` (70%)
 
-## 💡 RECOMENDACIONES PRINCIPALES
+## 🔄 GIT ANALYSIS
+### Code Churn (last 30 days)
+- **Files Changed**: 193
+- **Additions**: +18123
+- **Deletions**: -2792
+- **Total Churn**: 20915
 
-### migration/ai-context-core/src/ai_context_core/analyzer/fs_utils.py
-- Alta complejidad (61) con 13 funciones
+### 🔥 Hotspots
+- `src/analyzer/engine.py`: 19 commits
+- `src/analyzer/scanner.py`: 17 commits
+- `src/analyzer/cli.py`: 15 commits
+- `src/analyzer/utils.py`: 14 commits
+- `src/analyzer/reporters.py`: 10 commits
 
-### migration/ai-context-core/src/ai_context_core/analyzer/ast_utils.py
-- Alta complejidad (61) con 9 funciones
-
-### src/analyzer/scanner.py
-- Alta complejidad (171) con 18 funciones
-- Módulo muy grande (795 líneas)
-
-## 📈 DISTRIBUCIÓN DE COMPLEJIDAD
-- low (0-5): 11 módulos (28.9%)
-- medium (6-15): 2 módulos (5.3%)
-- high (16-30): 8 módulos (21.1%)
-- very_high (31+): 17 módulos (44.7%)
+## 📈 COMPLEXITY DISTRIBUTION
+- low (0-5): 15 modules (42.9%)
+- medium (6-15): 1 modules (2.9%)
+- high (16-30): 10 modules (28.6%)
+- very_high (31+): 9 modules (25.7%)

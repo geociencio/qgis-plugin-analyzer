@@ -34,11 +34,10 @@ Usage:
     4. Run script (Play button).
 """
 
-import sys
-import os
-import unittest
 import logging
 import pathlib
+import sys
+import unittest
 
 # --- CONFIGURATION ---
 # Auto-detect project root relative to this script
@@ -56,8 +55,8 @@ def setup_environment():
 
     # Configure logging to show in QGIS Console
     logging.basicConfig(
-        stream=sys.stdout, 
-        level=logging.DEBUG, 
+        stream=sys.stdout,
+        level=logging.DEBUG,
         format="%(levelname)s: %(message)s",
         force=True # Override existing handlers
     )
@@ -65,7 +64,7 @@ def setup_environment():
 def run_tests():
     """Discovers and runs tests."""
     print("=" * 60)
-    print(f"🚀 Starting Test Run in QGIS Environment")
+    print("🚀 Starting Test Run in QGIS Environment")
     print(f"📂 Project Root: {PROJECT_ROOT}")
     print("=" * 60)
 
@@ -73,7 +72,7 @@ def run_tests():
 
     # Create Test Loader
     loader = unittest.TestLoader()
-    
+
     # Discover tests
     if not TESTS_DIR.exists():
         print(f"❌ Error: Test directory not found at {TESTS_DIR}")

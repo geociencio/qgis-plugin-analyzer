@@ -56,7 +56,9 @@ def get_qgis_audit_rules() -> List[Dict[str, Any]]:
         },
         {
             "id": "BLOCKING_NETWORK_CALL",
-            "pattern": re.compile(r"\b(?:requests\.(?:get|post|put|delete|patch)|urllib\.request\.urlopen)\("),
+            "pattern": re.compile(
+                r"\b(?:requests\.(?:get|post|put|delete|patch)|urllib\.request\.urlopen)\("
+            ),
             "message": "Synchronous network call detected. UI blocking risk. Use QgsTask or QNetworkAccessManager.",
             "severity": "high",
         },

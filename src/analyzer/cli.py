@@ -23,7 +23,13 @@ import argparse
 import pathlib
 import sys
 
-from .engine import ProjectAnalyzer
+from .commands import (
+    handle_analyze,
+    handle_fix,
+    handle_init,
+    handle_list_rules,
+    handle_summary,
+)
 from .utils import logger, setup_logger
 
 
@@ -114,141 +120,6 @@ def _setup_argument_parser() -> argparse.ArgumentParser:
     return parser
 
 
-def _handle_fix_command(args: argparse.Namespace) -> bool:
-    """Handles the execution of the 'fix' command.
-
-    Args:
-        args: Parsed command line arguments.
-
-    Returns:
-        True if the fix process completed successfully, False otherwise.
-    """
-    import json
-
-    from .fixer import AutoFixer
-
-    project_path = pathlib.Path(args.path).resolve()
-    if not project_path.exists():
-        print(f"❌ Path not found: {project_path}")
-        return False
-
-    # Run analysis first
-    print("🔍 Analyzing project for fixable issues...")
-    analyzer = ProjectAnalyzer(
-        str(project_path),
-        args.output if hasattr(args, "output") else "./analysis_results",
-        args.profile if hasattr(args, "profile") else "default",
-    )
-    analyzer.run()
-
-    # Load issues
-    context_file = analyzer.output_dir / "project_context.json"
-    with open(context_file) as f:
-        context = json.load(f)
-
-    all_issues = []
-    for module in context.get("modules", []):
-        all_issues.extend(module.get("ast_issues", []))
-
-    if args.rules:
-        rule_ids = [r.strip() for r in args.rules.split(",")]
-        all_issues = [i for i in all_issues if i.get("type") in rule_ids]
-
-    fixer = AutoFixer(project_path, dry_run=not args.apply)
-    fixable = fixer.get_fixable_issues(all_issues)
-
-    if not fixable:
-        print("✅ No fixable issues found!")
-        return True
-
-    print(f"\n📋 Found {len(fixable)} fixable issue(s)")
-    if not args.apply:
-        print("\n⚠️  DRY RUN MODE (use --apply to execute changes)\n")
-
-    stats = fixer.apply_fixes(fixable, interactive=not args.auto_approve)
-    print(
-        f"\n📊 Summary: Applied: {stats['applied']}, Skipped: {stats['skipped']}, Failed: {stats['failed']}"
-    )
-    return True
-
-
-def _handle_analyze_command(args: argparse.Namespace) -> None:
-    """Handles the execution of the 'analyze' command.
-
-    Args:
-        args: Parsed command line arguments.
-    """
-    # Force generate_html based on flag, overriding profile if necessary for CLI usage
-    # We pass it via a temporary config override or modify the analyzer init
-    # For now, let's pass it to the analyzer constructor or modify config after init
-
-    analyzer = ProjectAnalyzer(args.project_path, args.output, args.profile)
-
-    # Override config based on CLI flag
-    if hasattr(args, "report") and args.report:
-        analyzer.config["generate_html"] = True
-    else:
-        analyzer.config["generate_html"] = False
-
-    success = analyzer.run()
-
-    # Always show terminal summary
-    from .reporters.summary_reporter import report_summary
-
-    # If we didn't generate reports, we might still want to show the summary
-    # using the in-memory data or the context file if it was saved.
-    # Engine saves json context by default? Let's check engine.py.
-    # Assuming engine saves project_context.json always or we need to access results directly.
-    # To keep it simple, we depend on the engine saving the context or returning it.
-    # Current engine.run retuns bool.
-
-    context_path = analyzer.output_dir / "project_context.json"
-    if context_path.exists():
-        report_summary(context_path)
-
-    if not success:
-        sys.exit(1)
-
-
-def _handle_list_rules_command() -> None:
-    """Handles the 'list-rules' command by displaying available audit rules."""
-    from .rules import get_qgis_audit_rules
-
-    rules = get_qgis_audit_rules()
-    print("\n📋 QGIS Audit Rules Catalog:")
-    print("=" * 30)
-    for r in rules:
-        print(f"- [{r['severity'].upper()}] {r['id']}: {r['message']}")
-    print(f"\nTotal: {len(rules)} rules.\n")
-
-
-def _handle_init_command() -> None:
-    """Handles the 'init' command by creating a default .analyzerignore file."""
-    from .utils import DEFAULT_EXCLUDE
-
-    ignore_file = pathlib.Path(".analyzerignore")
-    if ignore_file.exists():
-        print("⚠️  .analyzerignore already exists. Skipping.")
-    else:
-        with open(ignore_file, "w") as f:
-            f.write("# QGIS Plugin Analyzer Ignore File\n")
-            for p in DEFAULT_EXCLUDE:
-                f.write(f"{p}\n")
-        print("✅ Created .analyzerignore with default excludes.")
-
-
-def _handle_summary_command(args: argparse.Namespace) -> None:
-    """Handles the 'summary' command by displaying a terminal report.
-
-    Args:
-        args: Parsed command line arguments.
-    """
-    from .reporters.summary_reporter import report_summary
-
-    input_path = pathlib.Path(args.input).resolve()
-    report_summary(input_path, by=args.by)
-
-
 def main() -> None:
     """Main entry point for the QGIS Plugin Analyzer CLI.
 
@@ -278,17 +149,18 @@ def main() -> None:
     output_dir.mkdir(parents=True, exist_ok=True)
     setup_logger(output_dir)
 
+    # Command Dispatcher
+    dispatch = {
+        "fix": lambda: handle_fix(args),
+        "analyze": lambda: handle_analyze(args),
+        "list-rules": lambda: handle_list_rules(),
+        "init": lambda: handle_init(),
+        "summary": lambda: handle_summary(args),
+    }
+
     try:
-        if args.command == "fix":
-            _handle_fix_command(args)
-        elif args.command == "analyze":
-            _handle_analyze_command(args)
-        elif args.command == "list-rules":
-            _handle_list_rules_command()
-        elif args.command == "init":
-            _handle_init_command()
-        elif args.command == "summary":
-            _handle_summary_command(args)
+        if args.command in dispatch:
+            dispatch[args.command]()
         else:
             parser.print_help()
 

@@ -18,3 +18,4 @@ test_flake8_results/
 english_test_results/
 test_sec_interp_results/
 .antigravity/
+self_analysis_results*
