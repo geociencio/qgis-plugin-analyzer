@@ -43,6 +43,10 @@ def _build_markdown_header(
         qgis_score = compliance.get("compliance_score", 0)
         lines.append(f"- **QGIS Compliance**: `{qgis_score}/100`")
 
+    # Add Security Score
+    sec_score = analyses.get("security", {}).get("score", 0)
+    lines.append(f"- **Security Score**: `{sec_score}/100` (Bandit-inspired)")
+
     lines.append("")
     return lines
 
@@ -142,6 +146,37 @@ def _build_markdown_repo_standards(analyses: Dict[str, Any]) -> List[str]:
     return lines
 
 
+def _build_markdown_security_section(security: Dict[str, Any]) -> List[str]:
+    """Builds the security analysis section with findings.
+
+    Args:
+        security: The security analysis dictionary.
+
+    Returns:
+        A list of Markdown lines for the security section.
+    """
+    lines = ["\n## 🛡️ Security Analysis"]
+    findings = security.get("findings", [])
+    score = security.get("score", 0)
+
+    lines.append(f"Security score: `{score}/100` (Based on AST and secret scanning)")
+    lines.append(f"Detected **{len(findings)}** potential security risks.")
+
+    if not findings:
+        lines.append("- ✅ No security vulnerabilities detected.")
+    else:
+        for finding in findings:
+            severity = finding.get("severity", "medium").upper()
+            icon = "🛑" if severity == "HIGH" else "⚠️"
+            lines.append(
+                f"- {icon} **[{severity}]** `{finding.get('file')}:{finding.get('line')}`: {finding.get('message')}"
+            )
+            if finding.get("code"):
+                lines.append(f"  - Code: `{finding.get('code')}`")
+
+    return lines
+
+
 def generate_markdown_summary(analyses: Dict[str, Any], output_path: pathlib.Path) -> None:
     """Generates a professional PROJECT_SUMMARY.md report.
 
@@ -194,6 +229,12 @@ def generate_markdown_summary(analyses: Dict[str, Any], output_path: pathlib.Pat
         if semantic:
             semantic_lines = _build_markdown_semantic_section(semantic)
             f.write("\n".join(semantic_lines))
+
+        # Security analysis
+        security = analyses.get("security", {})
+        if security:
+            security_lines = _build_markdown_security_section(security)
+            f.write("\n".join(security_lines))
 
         # Repository standards (QGIS only)
         if project_type == "qgis":

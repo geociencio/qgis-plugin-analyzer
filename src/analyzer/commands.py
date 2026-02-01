@@ -129,3 +129,35 @@ def handle_summary(args: argparse.Namespace) -> None:
     """
     input_path = pathlib.Path(args.input).resolve()
     report_summary(input_path, by=args.by)
+
+
+def handle_security(args: argparse.Namespace) -> None:
+    """Handles the execution of the 'security' command.
+
+    Args:
+        args: Parsed command line arguments.
+    """
+    project_path = pathlib.Path(args.project_path).resolve()
+    if not project_path.exists():
+        print(f"❌ Path not found: {project_path}")
+        sys.exit(1)
+
+    print(f"🛡️  Starting focused security scan for: {project_path.name}...")
+
+    # Run analyzer with current profile
+    analyzer = ProjectAnalyzer(str(project_path), args.output, args.profile)
+
+    # We could potentially add a flag to 'deep' mode in the analyzer config
+    if args.deep:
+        analyzer.config["security_deep_scan"] = True
+        print("🔍 Deep scan enabled (Entropy analysis and full secret detection)")
+
+    success = analyzer.run()
+
+    context_path = analyzer.output_dir / "project_context.json"
+    if context_path.exists():
+        # Use the specialized security reporter
+        report_summary(context_path, by="security")
+
+    if not success:
+        sys.exit(1)

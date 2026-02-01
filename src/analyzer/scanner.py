@@ -23,6 +23,7 @@ import pathlib
 from typing import Any, Dict, List, Optional
 
 from .rules.qgis_rules import get_qgis_audit_rules
+from .secrets import SecretScanner
 from .utils.ast_utils import (
     calculate_module_complexity,
     check_main_guard,
@@ -30,7 +31,7 @@ from .utils.ast_utils import (
     extract_functions_from_ast,
     extract_imports_from_ast,
 )
-from .visitors import QGISASTVisitor
+from .visitors import QGISASTVisitor, QGISSecurityVisitor
 
 
 def analyze_module_worker(
@@ -52,7 +53,10 @@ def analyze_module_worker(
         could not be processed.
     """
     try:
-        rel_path = str(py_file.relative_to(project_path))
+        if project_path.is_file():
+            rel_path = py_file.name
+        else:
+            rel_path = str(py_file.relative_to(project_path))
 
         # Fast read
         with open(py_file, encoding="utf-8-sig", errors="replace") as f:
@@ -100,6 +104,28 @@ def analyze_module_worker(
         visitor = QGISASTVisitor(rel_path, rules_config=rules_config)
         visitor.visit(tree)
 
+        # Security AST Audit
+        security_visitor = QGISSecurityVisitor(rel_path)
+        security_visitor.visit(tree)
+
+        # Secrets Scanning (Regex + Entropy)
+        secret_scanner = SecretScanner()
+        secret_findings = secret_scanner.scan_text(content)
+
+        # Consolidate security issues
+        security_issues = security_visitor.findings
+        for sf in secret_findings:
+            security_issues.append(
+                {
+                    "file": rel_path,
+                    "line": sf.line,
+                    "type": sf.type,
+                    "severity": "high" if sf.confidence == "HIGH" else "medium",
+                    "message": sf.message,
+                    "confidence": sf.confidence.lower(),
+                }
+            )
+
         return {
             "path": rel_path,
             "lines": content.count("\n") + 1,
@@ -114,11 +140,13 @@ def analyze_module_worker(
             "file_size_kb": py_file.stat().st_size / 1024,
             "syntax_error": False,
             "ast_issues": visitor.issues,
+            "security_issues": security_issues,
             "resource_usages": getattr(visitor, "resource_usages", []),
             "research_metrics": {
                 "docstring_styles": list(set(visitor.docstring_styles)),
                 "type_hint_stats": visitor.type_hint_stats,
                 "docstring_stats": visitor.docstring_stats,
+                "security_findings_count": len(security_issues),
             },
             "content": content,
         }

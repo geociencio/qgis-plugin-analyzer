@@ -23,11 +23,13 @@ import argparse
 import pathlib
 import sys
 
+from . import __version__
 from .commands import (
     handle_analyze,
     handle_fix,
     handle_init,
     handle_list_rules,
+    handle_security,
     handle_summary,
 )
 from .utils import logger, setup_logger
@@ -42,6 +44,7 @@ def _setup_argument_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         description="QGIS Plugin Analyzer - A guardian for your PyQGIS code"
     )
+    parser.add_argument("-v", "--version", action="version", version=f"%(prog)s {__version__}")
     subparsers = parser.add_subparsers(dest="command", help="Command to execute")
 
     # Analyze Command
@@ -64,6 +67,27 @@ def _setup_argument_parser() -> argparse.ArgumentParser:
         "--profile",
         help="Configuration profile from pyproject.toml",
         default="default",
+    )
+
+    # Security Command
+    security_parser = subparsers.add_parser("security", help="Run a focused security scan")
+    security_parser.add_argument("project_path", help="Path to the QGIS project to scan")
+    security_parser.add_argument(
+        "-o",
+        "--output",
+        help="Output directory for reports",
+        default="./analysis_results",
+    )
+    security_parser.add_argument(
+        "-p",
+        "--profile",
+        help="Configuration profile from pyproject.toml",
+        default="default",
+    )
+    security_parser.add_argument(
+        "--deep",
+        action="store_true",
+        help="Run more intensive (but slower) security checks",
     )
 
     # Fix Command
@@ -95,6 +119,9 @@ def _setup_argument_parser() -> argparse.ArgumentParser:
 
     # List Rules Command
     subparsers.add_parser("list-rules", help="List all available QGIS audit rules")
+
+    # Version Command
+    subparsers.add_parser("version", help="Show the current version of the analyzer")
 
     # Init Command
     subparsers.add_parser("init", help="Initialize a new .analyzerignore with defaults")
@@ -131,6 +158,8 @@ def main() -> None:
     # Legacy support / default to analyze if no command provided
     if len(sys.argv) > 1 and sys.argv[1] not in [
         "analyze",
+        "security",
+        "version",
         "fix",
         "list-rules",
         "init",
@@ -156,6 +185,8 @@ def main() -> None:
         "list-rules": lambda: handle_list_rules(),
         "init": lambda: handle_init(),
         "summary": lambda: handle_summary(args),
+        "security": lambda: handle_security(args),
+        "version": lambda: print(f"qgis-analyzer {__version__}"),
     }
 
     try:

@@ -102,6 +102,15 @@ class ProjectAnalyzer:
             A sorted list of pathlib.Path objects for all detected Python files.
         """
         python_files = []
+        project_path = pathlib.Path(self.project_path)
+
+        # Handle direct file input
+        if project_path.is_file():
+            if project_path.suffix == ".py":
+                return [project_path]
+            return []
+
+        # Handle directory scan
         for root, dirs, files in os.walk(self.project_path):
             root_path = pathlib.Path(root)
 
@@ -254,6 +263,8 @@ class ProjectAnalyzer:
         binaries: List[str],
         package_size: float,
         url_status: Dict[str, str],
+        security_score: float,
+        all_security_issues: List[Dict[str, Any]],
     ) -> Dict[str, Any]:
         """Consolidates analysis results into a single dictionary.
 
@@ -282,6 +293,7 @@ class ProjectAnalyzer:
             "total_lines": sum(m["lines"] for m in modules_data),
             "quality_score": round(code_score, 1),
             "maintainability_score": round(maint_score, 1),
+            "security_score": round(security_score, 1),
         }
 
         if self.project_type == "qgis":
@@ -292,6 +304,11 @@ class ProjectAnalyzer:
             "project_type": self.project_type,
             "metrics": metrics_summary,
             "ruff_findings": ruff_findings,
+            "security": {
+                "findings": all_security_issues,
+                "count": len(all_security_issues),
+                "score": round(security_score, 1),
+            },
             "semantic": {"circular_dependencies": cycles, "coupling_metrics": metrics},
             "modules": modules_data,
         }
@@ -395,7 +412,6 @@ class ProjectAnalyzer:
         cycles = semantic_res[0] if len(semantic_res) > 0 else []
         metrics = semantic_res[1] if len(semantic_res) > 1 else {}
         missing_resources = semantic_res[2] if len(semantic_res) > 2 else []
-
         # Calculate scores
         scores = self._calculate_scores(
             modules_data,
@@ -408,10 +424,16 @@ class ProjectAnalyzer:
             binaries,
             package_size,
         )
-        # Handle potential return length mismatches gracefully (Robustness v1.0.0+)
+
         code_score = scores[0] if len(scores) > 0 else 0.0
         maint_score = scores[1] if len(scores) > 1 else 0.0
         qgis_score = scores[2] if len(scores) > 2 else 0.0
+        security_score = scores[3] if len(scores) > 3 else 0.0
+
+        # Aggregate all security findings
+        all_security_issues = []
+        for m in modules_data:
+            all_security_issues.extend(m.get("security_issues", []))
 
         # Build results
         analyses = self._build_analysis_results(
@@ -430,6 +452,8 @@ class ProjectAnalyzer:
             binaries,
             package_size,
             url_status,
+            security_score,
+            all_security_issues,
         )
 
         # Save reports
@@ -480,12 +504,16 @@ class ProjectAnalyzer:
             A tuple of (module_stability, maintainability, qgis_compliance) scores out of 100.
         """
         if not modules_data:
-            return 0.0, 0.0, 0.0
+            return 0.0, 0.0, 0.0, 0.0
 
         module_score = self._get_mi_score(modules_data)
         maintainability_score = self._get_maint_score(modules_data, ruff_findings)
         modernization_bonus = self._get_modernization_bonus(modules_data)
         maintainability_score = min(100.0, maintainability_score + modernization_bonus)
+
+        # Security context
+        security_penalty = self._get_security_penalty(modules_data)
+        security_score = max(0.0, 100.0 - security_penalty)
 
         # Global penalties (e.g., circular dependencies)
         penalty = len(cycles) * 10
@@ -493,16 +521,28 @@ class ProjectAnalyzer:
         maintainability_score = max(0, maintainability_score - penalty)
 
         if self.project_type == "generic":
-            return round(module_score, 1), round(maintainability_score, 1), 0.0
+            return (
+                round(module_score, 1),
+                round(maintainability_score, 1),
+                0.0,
+                round(security_score, 1),
+            )
 
         qgis_score = self._get_qgis_score(
-            compliance, structure, metadata, missing_resources, binaries, package_size
+            compliance,
+            structure,
+            metadata,
+            missing_resources,
+            binaries,
+            package_size,
+            security_penalty,
         )
 
         return (
             round(module_score, 1),
             round(maintainability_score, 1),
             round(qgis_score, 1),
+            round(security_score, 1),
         )
 
     def _get_mi_score(self, modules_data: List[Dict[str, Any]]) -> float:
@@ -575,6 +615,7 @@ class ProjectAnalyzer:
         missing_resources: List[str],
         binaries: List[str],
         package_size: float,
+        security_penalty: float = 0.0,
     ) -> float:
         """Calculates QGIS-specific compliance score."""
         score = 100.0
@@ -587,4 +628,22 @@ class ProjectAnalyzer:
         score -= len(binaries) * 50
         if package_size > 20:
             score -= 10
+
+        # Security penalty
+        score -= security_penalty
+
         return max(0, score)
+
+    def _get_security_penalty(self, modules_data: List[Dict[str, Any]]) -> float:
+        """Calculates total penalty for security vulnerabilities."""
+        penalty = 0.0
+        for m in modules_data:
+            for issue in m.get("security_issues", []):
+                sev = issue.get("severity", "medium").lower()
+                if sev == "high":
+                    penalty += 10.0
+                elif sev == "medium":
+                    penalty += 5.0
+                else:
+                    penalty += 2.0
+        return penalty

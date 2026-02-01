@@ -39,7 +39,7 @@ def report_summary(input_path: pathlib.Path, by: str = "total") -> bool:
 
     Args:
         input_path: Path to the project_context.json file.
-        by: Granularity level ('total', 'modules', 'functions', 'classes').
+        by: Granularity level ('total', 'modules', 'functions', 'classes', 'security').
 
     Returns:
         True if the report was successfully generated, False otherwise.
@@ -60,6 +60,8 @@ def report_summary(input_path: pathlib.Path, by: str = "total") -> bool:
             return _report_by_functions(data)
         elif by == "classes":
             return _report_by_classes(data)
+        elif by == "security":
+            return _report_security(data)
         else:
             print(f"\033[91mError: Unknown summary mode '{by}'\033[0m")
             return False
@@ -79,6 +81,7 @@ def _report_total(data: Dict[str, Any]) -> bool:
     print("\n\033[1m📊 Quality Indicators\033[0m")
     print_colored_score("- Module Stability Score", metrics.get("quality_score", "N/A"))
     print_colored_score("- Code Maintainability Score", metrics.get("maintainability_score", "N/A"))
+    print_colored_score("- Security Score (Bandit)", metrics.get("security_score", "N/A"))
 
     # 2. Research Metrics
     research = data.get("research_summary", {})
@@ -102,6 +105,12 @@ def _report_total(data: Dict[str, Any]) -> bool:
         for issue in module.get("ast_issues", []):
             issue["file"] = mod_path
             issues.append(issue)
+
+    # Add Security Findings
+    security_findings = data.get("security", {}).get("findings", [])
+    for finding in security_findings:
+        finding["type"] = f"SECURITY:{finding.get('type', 'generic')}"
+        issues.append(finding)
 
     if not issues:
         print("\n\033[92m✅ No issues detected! Your project looks great.\033[0m")
@@ -144,11 +153,10 @@ def _report_by_modules(data: Dict[str, Any]) -> bool:
     # Calculate issues per module
     mod_stats = []
     for m in modules:
-        issues_count = len(m.get("ast_issues", []))
         mod_stats.append(
             {
                 "path": m.get("path"),
-                "issues": issues_count,
+                "issues": len(m.get("ast_issues", [])) + len(m.get("security_issues", [])),
                 "complexity": m.get("complexity", 1),
                 "lines": m.get("lines", 0),
             }
@@ -218,5 +226,60 @@ def _report_by_classes(data: Dict[str, Any]) -> bool:
         print(f"{c['name']:<30} | {c['module']}")
 
     print(f"\nTotal: {len(all_classes)} classes found.")
+    print("=" * 60)
+    return True
+
+
+def _report_security(data: Dict[str, Any]) -> bool:
+    """Prints a focused security analysis report.
+
+    Args:
+        data: The full analysis results dictionary.
+
+    Returns:
+        True if the report was successfully generated.
+    """
+    print("\n\033[1m🛡️  QGIS Plugin Analyzer: Security Scan\033[0m")
+    print("=" * 60)
+
+    security = data.get("security", {})
+    findings = security.get("findings", [])
+    sec_score = security.get("score", 0.0)
+
+    print_colored_score("Security Health Score", sec_score)
+    print(f"Total vulnerabilities detected: {len(findings)}")
+
+    if not findings:
+        print("\n\033[92m✅ No security vulnerabilities found!\033[0m")
+    else:
+        print("\n\033[1m🛑 Detailed Findings\033[0m")
+        print("-" * 60)
+
+        # Group by severity
+        by_severity: Dict[str, List[Dict[str, Any]]] = {"high": [], "medium": [], "low": []}
+        for f in findings:
+            sev = f.get("severity", "medium").lower()
+            if sev in by_severity:
+                by_severity[sev].append(f)
+            else:
+                by_severity.setdefault("other", []).append(f)
+
+        for sev in ["high", "medium", "low"]:
+            group = by_severity.get(sev, [])
+            if not group:
+                continue
+
+            sev_color = (
+                "\033[91m" if sev == "high" else ("\033[93m" if sev == "medium" else "\033[94m")
+            )
+            for f in group:
+                print(
+                    f"{sev_color}[{sev.upper()}]\033[0m {f.get('file')}:{f.get('line')} - {f.get('type')}"
+                )
+                print(f"  \033[2mMessage: {f.get('message')}\033[0m")
+                if f.get("code"):
+                    print(f"  \033[2mCode   : {f.get('code').strip()}\033[0m")
+                print()
+
     print("=" * 60)
     return True

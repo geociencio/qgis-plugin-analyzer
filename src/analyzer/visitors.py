@@ -4,7 +4,9 @@ import ast
 import re
 from typing import Any, Dict, List, Optional, Set
 
+# Import to trigger registration of checks
 from .rules.qgis_rules import I18N_METHODS
+from .security_checker import SecurityContext, SecurityRegistry
 from .utils.ast_utils import calculate_complexity
 
 
@@ -419,3 +421,35 @@ class QGISASTVisitor(ast.NodeVisitor):
                     )
 
         self.generic_visit(node)
+
+
+class QGISSecurityVisitor(ast.NodeVisitor):
+    """AST visitor focused on security vulnerabilities (Bandit-inspired)."""
+
+    def __init__(self, rel_path: str):
+        self.rel_path = rel_path
+        self.findings: List[Dict[str, Any]] = []
+
+    def visit(self, node: ast.AST):
+        """Dispatches security checks for the current node."""
+        checks = SecurityRegistry.get_checks_for_node(type(node))
+        context = SecurityContext(node, self.rel_path)
+
+        for check_func in checks:
+            finding = check_func(context)
+            if finding:
+                self.findings.append(
+                    {
+                        "file": self.rel_path,
+                        "line": finding.line,
+                        "type": finding.id,
+                        "severity": finding.severity.lower(),
+                        "message": finding.message,
+                        "code": finding.code_snippet,
+                        "confidence": finding.confidence.lower()
+                        if hasattr(finding, "confidence")
+                        else "medium",
+                    }
+                )
+
+        super().generic_visit(node)
