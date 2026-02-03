@@ -154,6 +154,39 @@ class I18nTransformer(ast.NodeTransformer):
         return node
 
 
+def apply_transformation_to_content(
+    content: str, transformer: ast.NodeTransformer
+) -> Optional[str]:
+    """Applies an AST transformation to code content string.
+
+    Args:
+        content: The Python source code.
+        transformer: The AST node transformer to apply.
+
+    Returns:
+        The transformed code string if changes were made, None otherwise.
+    """
+    try:
+        tree = ast.parse(content)
+        new_tree = transformer.visit(tree)
+        ast.fix_missing_locations(new_tree)
+
+        if hasattr(transformer, "changes_made") and transformer.changes_made:
+            new_code = ast.unparse(new_tree)
+
+            # Add necessary imports if needed
+            if hasattr(transformer, "needs_import") and transformer.needs_import:
+                if "from qgis.core import QgsMessageLog, Qgis" not in new_code:
+                    new_code = "from qgis.core import QgsMessageLog, Qgis\n\n" + new_code
+
+            return new_code
+
+        return None
+    except Exception as e:
+        print(f"Error transforming content: {e}")
+        return None
+
+
 def apply_transformation(file_path: pathlib.Path, transformer: ast.NodeTransformer) -> bool:
     """Applies an AST transformation to a file and writes back the modified code.
 
@@ -166,21 +199,9 @@ def apply_transformation(file_path: pathlib.Path, transformer: ast.NodeTransform
     """
     try:
         content = file_path.read_text(encoding="utf-8")
-        tree = ast.parse(content)
+        new_code = apply_transformation_to_content(content, transformer)
 
-        # Apply transformation
-        new_tree = transformer.visit(tree)
-        ast.fix_missing_locations(new_tree)
-
-        if hasattr(transformer, "changes_made") and transformer.changes_made:
-            # Unparse back to code
-            new_code = ast.unparse(new_tree)
-
-            # Add necessary imports if needed
-            if hasattr(transformer, "needs_import") and transformer.needs_import:
-                if "from qgis.core import QgsMessageLog, Qgis" not in new_code:
-                    new_code = "from qgis.core import QgsMessageLog, Qgis\n\n" + new_code
-
+        if new_code is not None:
             file_path.write_text(new_code, encoding="utf-8")
             return True
 

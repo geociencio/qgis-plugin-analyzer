@@ -7,17 +7,37 @@
 import difflib
 import pathlib
 import subprocess
-import tempfile
-from abc import ABC, abstractmethod
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Optional, TypedDict
 
 from .transformers import (
     GDALImportTransformer,
     I18nTransformer,
     LegacyImportTransformer,
     PrintToLogTransformer,
-    apply_transformation,
+    apply_transformation_to_content,
 )
+
+# --- Types ---
+
+
+class FixContext(TypedDict):
+    """Context information for a fix handler."""
+
+    project_path: pathlib.Path
+    file_path: pathlib.Path
+    issue: Dict[str, Any]
+    content: str  # Original file content
+    dry_run: bool
+
+
+class FixHandlerResult(TypedDict):
+    """Result of a fix execution."""
+
+    applied: bool
+    message: str
+    new_content: Optional[str]  # Transformed code if applied
+    diff: Optional[str]
+    error: Optional[str]
 
 
 def check_git_status(project_path: pathlib.Path) -> bool:
@@ -76,80 +96,123 @@ def show_diff(file_path: pathlib.Path, original_content: str, new_content: str) 
     print("    " + "─" * 60)
 
 
-class FixStrategy(ABC):
-    """Abstract base class for all auto-fix strategies."""
-
-    @abstractmethod
-    def can_fix(self, issue: Dict[str, Any]) -> bool:
-        """Returns True if this strategy can fix the given issue."""
-        pass
-
-    @abstractmethod
-    def apply_fix(self, file_path: pathlib.Path, issue: Dict[str, Any]) -> bool:
-        """Applies the fix to the file. Returns True if successful."""
-        pass
-
-    @abstractmethod
-    def get_description(self, issue: Dict[str, Any]) -> str:
-        """Returns a human-readable description of the fix."""
-        pass
+# --- Fix Registry ---
 
 
-class GDALImportFixer(FixStrategy):
-    """Fixes direct GDAL imports."""
+class FixRegistry:
+    """Registry for managing and discovering fix handlers."""
 
-    def can_fix(self, issue: Dict[str, Any]) -> bool:
-        return issue.get("type") == "GDAL_DIRECT_IMPORT"
+    def __init__(self) -> None:
+        self._handlers: Dict[str, Any] = {}
 
-    def apply_fix(self, file_path: pathlib.Path, issue: Dict[str, Any]) -> bool:
-        transformer = GDALImportTransformer()
-        return apply_transformation(file_path, transformer)
+    def register(self, issue_type: str):
+        """Decorator to register a fix handler for a specific issue type."""
 
-    def get_description(self, issue: Dict[str, Any]) -> str:
-        return "Replace 'import gdal' with 'from osgeo import gdal'"
+        def decorator(func):
+            self._handlers[issue_type] = func
+            return func
 
+        return decorator
 
-class LegacyImportFixer(FixStrategy):
-    """Fixes PyQt4/PyQt5 imports."""
+    def get_handler(self, issue_type: str) -> Optional[Any]:
+        """Retrieves a handler for a given issue type."""
+        return self._handlers.get(issue_type)
 
-    def can_fix(self, issue: Dict[str, Any]) -> bool:
-        return issue.get("type") == "QGIS_LEGACY_IMPORT"
-
-    def apply_fix(self, file_path: pathlib.Path, issue: Dict[str, Any]) -> bool:
-        transformer = LegacyImportTransformer()
-        return apply_transformation(file_path, transformer)
-
-    def get_description(self, issue: Dict[str, Any]) -> str:
-        return "Replace PyQt4/PyQt5 imports with qgis.PyQt"
+    def get_all_handlers(self) -> List[Any]:
+        """Returns all registered handlers."""
+        return list(self._handlers.values())
 
 
-class PrintToLogFixer(FixStrategy):
-    """Fixes print() statements to use QgsMessageLog."""
-
-    def can_fix(self, issue: Dict[str, Any]) -> bool:
-        # This would need a new rule type in scanner.py
-        return issue.get("type") == "PRINT_STATEMENT"
-
-    def apply_fix(self, file_path: pathlib.Path, issue: Dict[str, Any]) -> bool:
-        transformer = PrintToLogTransformer()
-        return apply_transformation(file_path, transformer)
-
-    def get_description(self, issue: Dict[str, Any]) -> str:
-        return "Replace print() with QgsMessageLog.logMessage()"
+registry = FixRegistry()
 
 
-class I18nFixer(FixStrategy):
-    """Wraps hardcoded UI strings in self.tr()."""
+def create_ast_handler(issue_type: str, transformer_cls: Any, description_msg: str) -> Any:
+    """Factory function to create standard AST-based handlers.
 
-    def can_fix(self, issue: Dict[str, Any]) -> bool:
-        return issue.get("type") == "MISSING_I18N"
+    Args:
+        issue_type: The issue identifier this handler targets.
+        transformer_cls: The AST NodeTransformer class to instantiate.
+        description_msg: Human-readable description of the fix.
 
-    def apply_fix(self, file_path: pathlib.Path, issue: Dict[str, Any]) -> bool:
-        transformer = I18nTransformer()
-        return apply_transformation(file_path, transformer)
+    Returns:
+        A handler function compatible with FixRegistry.
+    """
 
-    def get_description(self, issue: Dict[str, Any]) -> str:
-        return "Wrap hardcoded string in self.tr() for internationalization"
+    def handler(ctx: FixContext) -> FixHandlerResult:
+        if ctx["issue"].get("type") != issue_type:
+            return {
+                "applied": False,
+                "message": "",
+                "new_content": None,
+                "diff": None,
+                "error": None,
+            }
+
+        if ctx["dry_run"]:
+            return {
+                "applied": True,
+                "message": description_msg,
+                "new_content": None,  # Not computed in dry-run
+                "diff": None,
+                "error": None,
+            }
+
+        transformer = transformer_cls()
+        new_code = apply_transformation_to_content(ctx["content"], transformer)
+
+        if new_code is not None:
+            return {
+                "applied": True,
+                "message": description_msg,
+                "new_content": new_code,
+                "diff": None,
+                "error": None,
+            }
+
+        return {
+            "applied": False,
+            "message": "",
+            "new_content": None,
+            "diff": None,
+            "error": None,
+        }
+
+    return handler
+
+
+# --- Fix Handlers Registration ---
+
+registry.register("GDAL_DIRECT_IMPORT")(
+    create_ast_handler(
+        "GDAL_DIRECT_IMPORT",
+        GDALImportTransformer,
+        "Replace 'import gdal' with 'from osgeo import gdal'",
+    )
+)
+
+registry.register("QGIS_LEGACY_IMPORT")(
+    create_ast_handler(
+        "QGIS_LEGACY_IMPORT",
+        LegacyImportTransformer,
+        "Replace PyQt4/PyQt5 imports with qgis.PyQt",
+    )
+)
+
+registry.register("PRINT_STATEMENT")(
+    create_ast_handler(
+        "PRINT_STATEMENT",
+        PrintToLogTransformer,
+        "Replace print() with QgsMessageLog.logMessage()",
+    )
+)
+
+registry.register("MISSING_I18N")(
+    create_ast_handler(
+        "MISSING_I18N",
+        I18nTransformer,
+        "Wrap hardcoded string in self.tr()",
+    )
+)
 
 
 class AutoFixer:
@@ -158,7 +221,7 @@ class AutoFixer:
     Attributes:
         project_path: Root path of the project.
         dry_run: If True, changes are proposed but not written.
-        strategies: List of available fix strategies.
+        registry: FixRegistry instance containing handlers.
     """
 
     def __init__(self, project_path: pathlib.Path, dry_run: bool = True) -> None:
@@ -170,12 +233,7 @@ class AutoFixer:
         """
         self.project_path = project_path
         self.dry_run = dry_run
-        self.strategies: List[FixStrategy] = [
-            GDALImportFixer(),
-            LegacyImportFixer(),
-            PrintToLogFixer(),
-            I18nFixer(),
-        ]
+        self.registry = registry
 
     def get_fixable_issues(self, issues: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
         """Filters a list of issues to identify those that can be auto-fixed.
@@ -184,16 +242,33 @@ class AutoFixer:
             issues: A list of issue dictionaries.
 
         Returns:
-            A list of fixable issues, each enriched with a 'fixer' strategy.
+            A list of fixable issues, each enriched with a 'handler' function.
         """
         fixable = []
         for issue in issues:
-            for strategy in self.strategies:
-                if strategy.can_fix(issue):
-                    issue["fixer"] = strategy
+            handler = self.registry.get_handler(issue.get("type", ""))
+            if handler:
+                # We use a temporary context in dry_run mode to check if handler can fix it
+                ctx = self._create_context(pathlib.Path(), issue, "")
+                result = handler(ctx)
+                if result["applied"]:
+                    # Enriched issue with its handler and description
+                    issue["handler"] = handler
+                    issue["fix_description"] = result["message"]
                     fixable.append(issue)
-                    break
         return fixable
+
+    def _create_context(
+        self, file_path: pathlib.Path, issue: Dict[str, Any], content: str
+    ) -> FixContext:
+        """Creates a standardized FixContext."""
+        return {
+            "project_path": self.project_path,
+            "file_path": file_path,
+            "issue": issue,
+            "content": content,
+            "dry_run": self.dry_run,
+        }
 
     def _check_git_status_with_prompt(self, interactive: bool) -> bool:
         """Checks git status and prompts user if needed. Returns True to continue."""
@@ -224,56 +299,6 @@ class AutoFixer:
             by_file[file_path].append(issue)
         return by_file
 
-    def _apply_single_fix(
-        self,
-        file_path: pathlib.Path,
-        issue: Dict[str, Any],
-        original_content: str,
-        interactive: bool,
-        stats: Dict[str, int],
-    ) -> bool:
-        """Applies a single fix and updates stats. Returns True to continue, False to abort."""
-        fixer: FixStrategy = issue["fixer"]
-        description = fixer.get_description(issue)
-
-        print(f"  Line {issue.get('line', '?')}: {description}")
-
-        if interactive and not self.dry_run:
-            # Show diff preview
-            with tempfile.NamedTemporaryFile(mode="w", suffix=".py", delete=False) as tmp:
-                tmp.write(original_content)
-                tmp_path = pathlib.Path(tmp.name)
-
-            try:
-                fixer.apply_fix(tmp_path, issue)
-                new_content = tmp_path.read_text(encoding="utf-8")
-
-                if new_content != original_content:
-                    show_diff(file_path, original_content, new_content)
-            finally:
-                tmp_path.unlink()
-
-            response = input("    Apply fix? [y/n/q]: ").lower()
-            if response == "q":
-                print("Aborted by user.")
-                return False
-            if response != "y":
-                stats["skipped"] += 1
-                return True
-
-        if not self.dry_run:
-            success = fixer.apply_fix(file_path, issue)
-            if success:
-                stats["applied"] += 1
-                print("    ✅ Applied")
-            else:
-                stats["failed"] += 1
-                print("    ❌ Failed")
-        else:
-            stats["applied"] += 1  # Count as "would apply"
-
-        return True
-
     def apply_fixes(self, issues: List[Dict[str, Any]], interactive: bool = True) -> Dict[str, int]:
         """Applies fixes to identified issues, grouping by file.
 
@@ -286,29 +311,80 @@ class AutoFixer:
         """
         stats = {"applied": 0, "skipped": 0, "failed": 0}
 
-        # Git status check
         if not self._check_git_status_with_prompt(interactive):
             return stats
 
-        # Group by file
         by_file = self._group_issues_by_file(issues)
 
         for file_rel, file_issues in by_file.items():
             file_path = self.project_path / file_rel
             print(f"\n📄 {file_rel}")
 
-            # Read original content for diff
             try:
-                original_content = file_path.read_text(encoding="utf-8")
+                current_content = file_path.read_text(encoding="utf-8")
             except Exception as e:
                 print(f"  ❌ Error reading file: {e}")
                 stats["failed"] += len(file_issues)
                 continue
 
+            file_modified = False
             for issue in file_issues:
-                if not self._apply_single_fix(
-                    file_path, issue, original_content, interactive, stats
-                ):
-                    return stats
+                handler = issue.get("handler")
+                if not handler:
+                    continue
+
+                description = issue.get("fix_description", "Automatic fix")
+                print(f"  Line {issue.get('line', '?')}: {description}")
+
+                # Context with current memory buffer
+                ctx = self._create_context(file_path, issue, current_content)
+
+                if interactive and not self.dry_run:
+                    # In-memory transformation for preview
+                    # For interactive mode, we show diff of the single fix
+                    work_ctx = ctx.copy()
+                    work_ctx["dry_run"] = False
+                    result = handler(work_ctx)
+
+                    if result["applied"] and result["new_content"]:
+                        show_diff(file_path, current_content, result["new_content"])
+                    else:
+                        print("    (No changes suggested by handler)")
+
+                    response = input("    Apply fix? [y/n/q]: ").lower()
+                    if response == "q":
+                        print("Aborted by user.")
+                        return stats
+                    if response != "y":
+                        stats["skipped"] += 1
+                        continue
+
+                # Actual application on memory buffer
+                if not self.dry_run:
+                    work_ctx = ctx.copy()
+                    work_ctx["dry_run"] = False
+                    result = handler(work_ctx)
+
+                    if result["applied"] and result["new_content"]:
+                        current_content = result["new_content"]
+                        stats["applied"] += 1
+                        file_modified = True
+                        print(f"    ✅ Applied: {result['message']}")
+                    else:
+                        stats["failed"] += 1
+                        error = result.get("error", "Transformation returned no changes")
+                        print(f"    ❌ Failed: {error}")
+                else:
+                    # Simulation
+                    stats["applied"] += 1
+
+            # Write back the modified content once per file
+            if file_modified and not self.dry_run:
+                try:
+                    file_path.write_text(current_content, encoding="utf-8")
+                except Exception as e:
+                    print(f"  ❌ Error writing back to file: {e}")
+                    # We already counted them as applied, but technically it failed
+                    pass
 
         return stats
