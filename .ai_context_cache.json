@@ -431,11 +431,11 @@
     "timestamp": 1769983681.2450302
   },
   "antigravity-framerepo/bootstrap.py": {
-    "hash": "c7ef9f19e2f5cd57cc9c7961395623e4f8f7f24e039ce856affee3a6970592fa",
+    "hash": "887fa593d79147606f8875eb27bbdb9cd6951ac7e69daee1f6b24614dfded061",
     "data": {
       "path": "antigravity-framerepo/bootstrap.py",
       "lines": 110,
-      "file_size_kb": 3.669921875,
+      "file_size_kb": 3.6669921875,
       "complexity": 20,
       "imports": [
         "os",
@@ -510,14 +510,14 @@
       "maintenance_index": 31.69,
       "syntax_error": false
     },
-    "timestamp": 1769983681.245353
+    "timestamp": 1770082378.994884
   },
   "src/analyzer/__init__.py": {
-    "hash": "9b6ee75c3385a52b4ecdf83742a79ac3bca3d70366a67387ef1939b2f942a6b0",
+    "hash": "e1c55d1f25642c2c2b8267228d262154388ac4c24915378ae123895cd5d62707",
     "data": {
       "path": "src/analyzer/__init__.py",
-      "lines": 19,
-      "file_size_kb": 1.1572265625,
+      "lines": 20,
+      "file_size_kb": 1.1025390625,
       "complexity": 0,
       "imports": [],
       "classes": [],
@@ -538,8 +538,8 @@
         "coverage": 100.0
       },
       "halstead": {
-        "vocabulary": 0,
-        "length": 0,
+        "vocabulary": 2,
+        "length": 2,
         "volume": 0,
         "difficulty": 0,
         "effort": 0
@@ -551,7 +551,7 @@
       "maintenance_index": 100.0,
       "syntax_error": false
     },
-    "timestamp": 1769983681.2454016
+    "timestamp": 1770082378.9874973
   },
   "antigravity-framerepo/scaffold/ui/dialog_template.py": {
     "hash": "cabf49849a8a6204eb90a285f66b6901ade8a69eb84f8447c335c0224c4b17cd",
@@ -881,14 +881,13 @@
     "timestamp": 1769983681.2515209
   },
   "antigravity-framerepo/scripts/skill_sync.py": {
-    "hash": "9b9dbb0548694fc210af956950cebb3f2e82a9bcc20f74a1596518f5331baa75",
+    "hash": "56166759bdb5bbd026dffed05912c3e69849dcf78f14ed383d016c79d7767cfb",
     "data": {
       "path": "antigravity-framerepo/scripts/skill_sync.py",
-      "lines": 143,
-      "file_size_kb": 4.69921875,
+      "lines": 142,
+      "file_size_kb": 4.689453125,
       "complexity": 21,
       "imports": [
-        "os",
         "re",
         "yaml",
         "pathlib.Path"
@@ -928,24 +927,22 @@
         {
           "pattern": "except Exception:",
           "severity": "low",
-          "line": 30,
+          "line": 29,
           "description": "Too broad exception handler"
         },
         {
           "pattern": "except Exception:",
           "severity": "low",
-          "line": 116,
+          "line": 115,
           "description": "Too broad exception handler"
         }
       ],
       "patterns": {},
-      "unused_imports": [
-        "os"
-      ],
-      "maintenance_index": 27.38,
+      "unused_imports": [],
+      "maintenance_index": 27.44,
       "syntax_error": false
     },
-    "timestamp": 1769983681.2543876
+    "timestamp": 1770082379.0000792
   },
   "scripts/skill_sync.py": {
     "hash": "9b9dbb0548694fc210af956950cebb3f2e82a9bcc20f74a1596518f5331baa75",
@@ -1117,33 +1114,29 @@
     "timestamp": 1769983681.2566857
   },
   "src/analyzer/cli.py": {
-    "hash": "c7a65f86d4f225b2c3480f1e3652a95dd7877349efbe9d2374de349981475cfb",
+    "hash": "c779841bc6399b5f112ecc175246a4cbf428639091d7b0ec5f0ca0f9b4a7bd9d",
     "data": {
       "path": "src/analyzer/cli.py",
-      "lines": 311,
-      "file_size_kb": 10.2421875,
-      "complexity": 28,
+      "lines": 214,
+      "file_size_kb": 6.9111328125,
+      "complexity": 10,
       "imports": [
         "argparse",
         "pathlib",
         "sys",
-        "engine.ProjectAnalyzer",
+        "__version__",
+        "commands.handle_analyze",
+        "commands.handle_fix",
+        "commands.handle_init",
+        "commands.handle_list_rules",
+        "commands.handle_security",
+        "commands.handle_summary",
         "utils.logger",
-        "utils.setup_logger",
-        "json",
-        "fixer.AutoFixer",
-        "reporters.summary_reporter.report_summary",
-        "rules.get_qgis_audit_rules",
-        "utils.DEFAULT_EXCLUDE"
+        "utils.setup_logger"
       ],
       "classes": [],
       "functions": [
         "_setup_argument_parser",
-        "_handle_fix_command(1 args)",
-        "_handle_analyze_command(1 args)",
-        "_handle_list_rules_command",
-        "_handle_init_command",
-        "_handle_summary_command(1 args)",
         "main"
       ],
       "docstrings": {
@@ -1151,11 +1144,6 @@
         "classes": {},
         "functions": {
           "_setup_argument_parser": true,
-          "_handle_fix_command": true,
-          "_handle_analyze_command": true,
-          "_handle_list_rules_command": true,
-          "_handle_init_command": true,
-          "_handle_summary_command": true,
           "main": true
         }
       },
@@ -1165,40 +1153,32 @@
       },
       "has_main": true,
       "type_hints": {
-        "total_functions": 7,
-        "typed_functions": 7,
+        "total_functions": 2,
+        "typed_functions": 2,
         "coverage": 100.0
       },
       "halstead": {
-        "vocabulary": 173,
-        "length": 393,
-        "volume": 2751,
-        "difficulty": 13.93,
-        "effort": 38333.47
+        "vocabulary": 115,
+        "length": 219,
+        "volume": 1314,
+        "difficulty": 8.75,
+        "effort": 11491.3
       },
-      "antipatterns": [
-        {
-          "type": "magic_number",
-          "severity": "low",
-          "message": "Magic number detected: 30",
-          "line": 219,
-          "value": 30
-        }
-      ],
+      "antipatterns": [],
       "ast_security": [
         {
           "pattern": "except Exception:",
           "severity": "low",
-          "line": 305,
+          "line": 208,
           "description": "Too broad exception handler"
         }
       ],
       "patterns": {},
       "unused_imports": [],
-      "maintenance_index": 17.77,
+      "maintenance_index": 25.98,
       "syntax_error": false
     },
-    "timestamp": 1769983681.2662654
+    "timestamp": 1770082378.999951
   },
   "src/analyzer/rules/__init__.py": {
     "hash": "50d66863cf52150a142981a3feb8f0beff2677abd7492336a463d5e8ca82d858",
@@ -1299,11 +1279,11 @@
     "timestamp": 1769983681.2683954
   },
   "src/analyzer/rules/qgis_rules.py": {
-    "hash": "37fd51c56adc90e656cdc00c3c8fb4eef2d03daccee8c33bf8b17af7f345332f",
+    "hash": "be9164742dd19e591c487a8907f11cd7060b9fca95f313235d90a08adb254527",
     "data": {
       "path": "src/analyzer/rules/qgis_rules.py",
-      "lines": 74,
-      "file_size_kb": 2.48828125,
+      "lines": 76,
+      "file_size_kb": 2.517578125,
       "complexity": 0,
       "imports": [
         "re",
@@ -1343,10 +1323,10 @@
       "ast_security": [],
       "patterns": {},
       "unused_imports": [],
-      "maintenance_index": 41.12,
+      "maintenance_index": 40.87,
       "syntax_error": false
     },
-    "timestamp": 1769983681.2717915
+    "timestamp": 1770082379.000128
   },
   "src/analyzer/fixer.py": {
     "hash": "e82ba3383af8a4981d4765ee26804e0ab4310478c97ef56c06683861974a2403",
@@ -1484,12 +1464,12 @@
     "timestamp": 1769983681.2738922
   },
   "src/analyzer/reporters/markdown_reporter.py": {
-    "hash": "b1cd3304ce3f84998b13cb5917c955fefed52d194d484856a928af15931029a7",
+    "hash": "80d4cfd8af321656d331c7aec714ecc46c80900514c721900f428cc87cda4364",
     "data": {
       "path": "src/analyzer/reporters/markdown_reporter.py",
-      "lines": 212,
-      "file_size_kb": 7.884765625,
-      "complexity": 20,
+      "lines": 253,
+      "file_size_kb": 9.34375,
+      "complexity": 24,
       "imports": [
         "datetime",
         "json",
@@ -1504,6 +1484,7 @@
         "_build_markdown_qgis_findings(1 args)",
         "_build_markdown_semantic_section(1 args)",
         "_build_markdown_repo_standards(1 args)",
+        "_build_markdown_security_section(1 args)",
         "generate_markdown_summary(2 args)",
         "save_json_context(2 args)"
       ],
@@ -1515,6 +1496,7 @@
           "_build_markdown_qgis_findings": true,
           "_build_markdown_semantic_section": true,
           "_build_markdown_repo_standards": true,
+          "_build_markdown_security_section": true,
           "generate_markdown_summary": true,
           "save_json_context": true
         }
@@ -1525,62 +1507,62 @@
       },
       "has_main": false,
       "type_hints": {
-        "total_functions": 6,
-        "typed_functions": 6,
+        "total_functions": 7,
+        "typed_functions": 7,
         "coverage": 100.0
       },
       "halstead": {
-        "vocabulary": 160,
-        "length": 399,
-        "volume": 2793,
-        "difficulty": 11.97,
-        "effort": 33422.9
+        "vocabulary": 183,
+        "length": 485,
+        "volume": 3395,
+        "difficulty": 12.66,
+        "effort": 42977.17
       },
       "antipatterns": [
         {
           "type": "magic_number",
           "severity": "low",
           "message": "Magic number detected: 10",
-          "line": 105,
+          "line": 109,
           "value": 10
         },
         {
           "type": "magic_number",
           "severity": "low",
           "message": "Magic number detected: 10",
-          "line": 103,
+          "line": 107,
           "value": 10
         },
         {
           "type": "magic_number",
           "severity": "low",
           "message": "Magic number detected: 2",
-          "line": 212,
+          "line": 253,
           "value": 2
         },
         {
           "type": "magic_number",
           "severity": "low",
           "message": "Magic number detected: 10",
-          "line": 106,
+          "line": 110,
           "value": 10
         }
       ],
       "ast_security": [],
       "patterns": {},
       "unused_imports": [],
-      "maintenance_index": 22.43,
+      "maintenance_index": 19.63,
       "syntax_error": false
     },
-    "timestamp": 1769983681.2753086
+    "timestamp": 1770082379.0156677
   },
   "src/analyzer/reporters/summary_reporter.py": {
-    "hash": "bf85df99c134dbb7c2216992e4dd28742c7e35dce25ae09e7c121a711862f170",
+    "hash": "762fdf35470d80b3ed48d407b828f827f8c65734146796aac3ff811e19e1cc1a",
     "data": {
       "path": "src/analyzer/reporters/summary_reporter.py",
-      "lines": 222,
-      "file_size_kb": 7.0673828125,
-      "complexity": 31,
+      "lines": 286,
+      "file_size_kb": 9.34765625,
+      "complexity": 41,
       "imports": [
         "json",
         "pathlib",
@@ -1595,7 +1577,8 @@
         "_report_total(1 args)",
         "_report_by_modules(1 args)",
         "_report_by_functions(1 args)",
-        "_report_by_classes(1 args)"
+        "_report_by_classes(1 args)",
+        "_report_security(1 args)"
       ],
       "docstrings": {
         "module": true,
@@ -1606,7 +1589,8 @@
           "_report_total": true,
           "_report_by_modules": true,
           "_report_by_functions": true,
-          "_report_by_classes": true
+          "_report_by_classes": true,
+          "_report_security": true
         }
       },
       "entry_point_info": {
@@ -1615,16 +1599,16 @@
       },
       "has_main": false,
       "type_hints": {
-        "total_functions": 6,
-        "typed_functions": 6,
+        "total_functions": 7,
+        "typed_functions": 7,
         "coverage": 100.0
       },
       "halstead": {
-        "vocabulary": 175,
-        "length": 533,
-        "volume": 3731,
-        "difficulty": 17.12,
-        "effort": 63861.9
+        "vocabulary": 207,
+        "length": 689,
+        "volume": 4823,
+        "difficulty": 21.76,
+        "effort": 104956.48
       },
       "antipatterns": [
         {
@@ -1638,77 +1622,91 @@
           "type": "magic_number",
           "severity": "low",
           "message": "Magic number detected: 45",
-          "line": 75,
+          "line": 77,
           "value": 45
         },
         {
           "type": "magic_number",
           "severity": "low",
           "message": "Magic number detected: 5",
-          "line": 127,
+          "line": 136,
           "value": 5
         },
         {
           "type": "magic_number",
           "severity": "low",
           "message": "Magic number detected: 60",
-          "line": 137,
+          "line": 146,
           "value": 60
         },
         {
           "type": "magic_number",
           "severity": "low",
           "message": "Magic number detected: 60",
-          "line": 161,
+          "line": 169,
           "value": 60
         },
         {
           "type": "magic_number",
           "severity": "low",
           "message": "Magic number detected: 10",
-          "line": 162,
+          "line": 170,
           "value": 10
         },
         {
           "type": "magic_number",
           "severity": "low",
           "message": "Magic number detected: 70",
-          "line": 172,
+          "line": 180,
           "value": 70
         },
         {
           "type": "magic_number",
           "severity": "low",
           "message": "Magic number detected: 70",
-          "line": 189,
+          "line": 197,
           "value": 70
         },
         {
           "type": "magic_number",
           "severity": "low",
           "message": "Magic number detected: 10",
-          "line": 190,
+          "line": 198,
           "value": 10
         },
         {
           "type": "magic_number",
           "severity": "low",
           "message": "Magic number detected: 60",
-          "line": 203,
+          "line": 211,
           "value": 60
         },
         {
           "type": "magic_number",
           "severity": "low",
           "message": "Magic number detected: 60",
-          "line": 216,
+          "line": 224,
           "value": 60
         },
         {
           "type": "magic_number",
           "severity": "low",
           "message": "Magic number detected: 60",
-          "line": 221,
+          "line": 229,
+          "value": 60
+        },
+        {
+          "type": "magic_number",
+          "severity": "low",
+          "message": "Magic number detected: 60",
+          "line": 243,
+          "value": 60
+        },
+        {
+          "type": "magic_number",
+          "severity": "low",
+          "message": "Magic number detected: 60",
+          "line": 285,
           "value": 60
         },
         {
@@ -1722,49 +1720,56 @@
           "type": "magic_number",
           "severity": "low",
           "message": "Magic number detected: 5",
-          "line": 120,
+          "line": 129,
           "value": 5
         },
         {
           "type": "magic_number",
           "severity": "low",
           "message": "Magic number detected: 45",
-          "line": 130,
+          "line": 139,
           "value": 45
         },
         {
           "type": "magic_number",
           "severity": "low",
           "message": "Magic number detected: 60",
-          "line": 165,
+          "line": 173,
           "value": 60
         },
         {
           "type": "magic_number",
           "severity": "low",
           "message": "Magic number detected: 15",
-          "line": 192,
+          "line": 200,
           "value": 15
         },
         {
           "type": "magic_number",
           "severity": "low",
           "message": "Magic number detected: 70",
-          "line": 196,
+          "line": 204,
           "value": 70
         },
         {
           "type": "magic_number",
           "severity": "low",
+          "message": "Magic number detected: 60",
+          "line": 256,
+          "value": 60
+        },
+        {
+          "type": "magic_number",
+          "severity": "low",
           "message": "Magic number detected: 8",
-          "line": 192,
+          "line": 200,
           "value": 8
         },
         {
           "type": "magic_number",
           "severity": "low",
           "message": "Magic number detected: 5",
-          "line": 128,
+          "line": 137,
           "value": 5
         }
       ],
@@ -1772,16 +1777,16 @@
         {
           "pattern": "except Exception:",
           "severity": "low",
-          "line": 67,
+          "line": 69,
           "description": "Too broad exception handler"
         }
       ],
       "patterns": {},
       "unused_imports": [],
-      "maintenance_index": 19.64,
+      "maintenance_index": 15.11,
       "syntax_error": false
     },
-    "timestamp": 1769983681.2793767
+    "timestamp": 1770082379.019465
   },
   "src/analyzer/utils/__init__.py": {
     "hash": "eda6c02329a6ac0f05973aac33c25f2979dfc771e35f4afef0a76f9a028c4500",
@@ -2305,12 +2310,12 @@
     "timestamp": 1769983681.29246
   },
   "src/analyzer/engine.py": {
-    "hash": "adb26d1108f5fd0afaf59dd4cf1ddcf7b882c350644bc038810bfd5a75741209",
+    "hash": "96cf56ae31f97851edf318214002c63a64606fff95bc19a73ee182d59080506f",
     "data": {
       "path": "src/analyzer/engine.py",
-      "lines": 586,
-      "file_size_kb": 21.7197265625,
-      "complexity": 52,
+      "lines": 649,
+      "file_size_kb": 23.8583984375,
+      "complexity": 58,
       "imports": [
         "json",
         "math",
@@ -2353,10 +2358,15 @@
         "_run_parallel_analysis(3 args)",
         "_run_qgis_specific_checks(3 args)",
         "_run_semantic_analysis(2 args)",
-        "_build_analysis_results(16 args)",
+        "_build_analysis_results(18 args)",
         "_save_reports(2 args)",
         "run(1 args)",
-        "_calculate_scores(10 args)"
+        "_calculate_scores(10 args)",
+        "_get_mi_score(2 args)",
+        "_get_maint_score(3 args)",
+        "_get_modernization_bonus(2 args)",
+        "_get_qgis_score(8 args)",
+        "_get_security_penalty(2 args)"
       ],
       "docstrings": {
         "module": false,
@@ -2373,7 +2383,12 @@
           "_build_analysis_results": true,
           "_save_reports": true,
           "run": true,
-          "_calculate_scores": true
+          "_calculate_scores": true,
+          "_get_mi_score": true,
+          "_get_maint_score": true,
+          "_get_modernization_bonus": true,
+          "_get_qgis_score": true,
+          "_get_security_penalty": true
         }
       },
       "entry_point_info": {
@@ -2382,16 +2397,16 @@
       },
       "has_main": false,
       "type_hints": {
-        "total_functions": 10,
-        "typed_functions": 10,
+        "total_functions": 15,
+        "typed_functions": 15,
         "coverage": 100.0
       },
       "halstead": {
-        "vocabulary": 245,
-        "length": 1075,
-        "volume": 7525,
-        "difficulty": 36.2,
-        "effort": 272391.74
+        "vocabulary": 265,
+        "length": 1220,
+        "volume": 9760,
+        "difficulty": 37.97,
+        "effort": 370563.89
       },
       "antipatterns": [
         {
@@ -2405,7 +2420,7 @@
           "type": "magic_number",
           "severity": "low",
           "message": "Magic number detected: 100.0",
-          "line": 571,
+          "line": 621,
           "value": 100.0
         },
         {
@@ -2418,51 +2433,261 @@
         {
           "type": "magic_number",
           "severity": "low",
-          "message": "Magic number detected: 10",
-          "line": 518,
-          "value": 10
-        },
-        {
-          "type": "magic_number",
-          "severity": "low",
-          "message": "Magic number detected: 2.0",
-          "line": 558,
-          "value": 2.0
-        },
-        {
-          "type": "magic_number",
-          "severity": "low",
           "message": "Magic number detected: 100.0",
-          "line": 560,
+          "line": 512,
           "value": 100.0
         },
         {
           "type": "magic_number",
           "severity": "low",
           "message": "Magic number detected: 10",
-          "line": 563,
+          "line": 519,
           "value": 10
         },
         {
           "type": "magic_number",
           "severity": "low",
+          "message": "Magic number detected: 10",
+          "line": 577,
+          "value": 10
+        },
+        {
+          "type": "magic_number",
+          "severity": "low",
+          "message": "Magic number detected: 2.0",
+          "line": 607,
+          "value": 2.0
+        },
+        {
+          "type": "magic_number",
+          "severity": "low",
           "message": "Magic number detected: 2",
-          "line": 572,
+          "line": 622,
           "value": 2
         },
         {
           "type": "magic_number",
           "severity": "low",
           "message": "Magic number detected: 20",
-          "line": 574,
+          "line": 624,
           "value": 20
         },
         {
           "type": "magic_number",
           "severity": "low",
           "message": "Magic number detected: 10",
-          "line": 576,
+          "line": 626,
           "value": 10
+        },
+        {
+          "type": "magic_number",
+          "severity": "low",
+          "message": "Magic number detected: 5",
+          "line": 627,
+          "value": 5
+        },
+        {
+          "type": "magic_number",
+          "severity": "low",
+          "message": "Magic number detected: 50",
+          "line": 628,
+          "value": 50
+        },
+        {
+          "type": "magic_number",
+          "severity": "low",
+          "message": "Magic number detected: 20",
+          "line": 629,
+          "value": 20
+        },
+        {
+          "type": "magic_number",
+          "severity": "low",
+          "message": "Magic number detected: 10",
+          "line": 630,
+          "value": 10
+        },
+        {
+          "type": "magic_number",
+          "severity": "low",
+          "message": "Magic number detected: 4",
+          "line": 79,
+          "value": 4
+        },
+        {
+          "type": "magic_number",
+          "severity": "low",
+          "message": "Magic number detected: 2",
+          "line": 414,
+          "value": 2
+        },
+        {
+          "type": "magic_number",
+          "severity": "low",
+          "message": "Magic number detected: 2",
+          "line": 414,
+          "value": 2
+        },
+        {
+          "type": "magic_number",
+          "severity": "low",
+          "message": "Magic number detected: 2",
+          "line": 430,
+          "value": 2
+        },
+        {
+          "type": "magic_number",
+          "severity": "low",
+          "message": "Magic number detected: 2",
+          "line": 430,
+          "value": 2
+        },
+        {
+          "type": "magic_number",
+          "severity": "low",
+          "message": "Magic number detected: 3",
+          "line": 431,
+          "value": 3
+        },
+        {
+          "type": "magic_number",
+          "severity": "low",
+          "message": "Magic number detected: 3",
+          "line": 431,
+          "value": 3
+        },
+        {
+          "type": "magic_number",
+          "severity": "low",
+          "message": "Magic number detected: 100.0",
+          "line": 516,
+          "value": 100.0
+        },
+        {
+          "type": "magic_number",
+          "severity": "low",
+          "message": "Magic number detected: 171",
+          "line": 555,
+          "value": 171
+        },
+        {
+          "type": "magic_number",
+          "severity": "low",
+          "message": "Magic number detected: 100",
+          "line": 570,
+          "value": 100
+        },
+        {
+          "type": "magic_number",
+          "severity": "low",
+          "message": "Magic number detected: 100",
+          "line": 578,
+          "value": 100
+        },
+        {
+          "type": "magic_number",
+          "severity": "low",
+          "message": "Magic number detected: 5.0",
+          "line": 604,
+          "value": 5.0
+        },
+        {
+          "type": "magic_number",
+          "severity": "low",
+          "message": "Magic number detected: 2",
+          "line": 361,
+          "value": 2
+        },
+        {
+          "type": "magic_number",
+          "severity": "low",
+          "message": "Magic number detected: 100",
+          "line": 555,
+          "value": 100
+        },
+        {
+          "type": "magic_number",
+          "severity": "low",
+          "message": "Magic number detected: 5",
+          "line": 570,
+          "value": 5
+        },
+        {
+          "type": "magic_number",
+          "severity": "low",
+          "message": "Magic number detected: 0.7",
+          "line": 580,
+          "value": 0.7
+        },
+        {
+          "type": "magic_number",
+          "severity": "low",
+          "message": "Magic number detected: 0.3",
+          "line": 580,
+          "value": 0.3
+        },
+        {
+          "type": "magic_number",
+          "severity": "low",
+          "message": "Magic number detected: 0.8",
+          "line": 603,
+          "value": 0.8
+        },
+        {
+          "type": "magic_number",
+          "severity": "low",
+          "message": "Magic number detected: 0.8",
+          "line": 603,
+          "value": 0.8
+        },
+        {
+          "type": "magic_number",
+          "severity": "low",
+          "message": "Magic number detected: 10.0",
+          "line": 644,
+          "value": 10.0
+        },
+        {
+          "type": "magic_number",
+          "severity": "low",
+          "message": "Magic number detected: 0.5",
+          "line": 300,
+          "value": 0.5
+        },
+        {
+          "type": "magic_number",
+          "severity": "low",
+          "message": "Magic number detected: 0.5",
+          "line": 300,
+          "value": 0.5
+        },
+        {
+          "type": "magic_number",
+          "severity": "low",
+          "message": "Magic number detected: 100",
+          "line": 340,
+          "value": 100
+        },
+        {
+          "type": "magic_number",
+          "severity": "low",
+          "message": "Magic number detected: 100",
+          "line": 344,
+          "value": 100
+        },
+        {
+          "type": "magic_number",
+          "severity": "low",
+          "message": "Magic number detected: 100",
+          "line": 346,
+          "value": 100
+        },
+        {
+          "type": "magic_number",
+          "severity": "low",
+          "message": "Magic number detected: 20",
+          "line": 363,
+          "value": 20
         },
         {
           "type": "magic_number",
@@ -2474,225 +2699,57 @@
         {
           "type": "magic_number",
           "severity": "low",
-          "message": "Magic number detected: 50",
-          "line": 578,
-          "value": 50
-        },
-        {
-          "type": "magic_number",
-          "severity": "low",
-          "message": "Magic number detected: 20",
-          "line": 579,
-          "value": 20
-        },
-        {
-          "type": "magic_number",
-          "severity": "low",
           "message": "Magic number detected: 10",
-          "line": 580,
+          "line": 577,
           "value": 10
-        },
-        {
-          "type": "magic_number",
-          "severity": "low",
-          "message": "Magic number detected: 4",
-          "line": 79,
-          "value": 4
-        },
-        {
-          "type": "magic_number",
-          "severity": "low",
-          "message": "Magic number detected: 2",
-          "line": 397,
-          "value": 2
-        },
-        {
-          "type": "magic_number",
-          "severity": "low",
-          "message": "Magic number detected: 2",
-          "line": 397,
-          "value": 2
-        },
-        {
-          "type": "magic_number",
-          "severity": "low",
-          "message": "Magic number detected: 2",
-          "line": 414,
-          "value": 2
-        },
-        {
-          "type": "magic_number",
-          "severity": "low",
-          "message": "Magic number detected: 2",
-          "line": 414,
-          "value": 2
-        },
-        {
-          "type": "magic_number",
-          "severity": "low",
-          "message": "Magic number detected: 171",
-          "line": 491,
-          "value": 171
-        },
-        {
-          "type": "magic_number",
-          "severity": "low",
-          "message": "Magic number detected: 100",
-          "line": 504,
-          "value": 100
-        },
-        {
-          "type": "magic_number",
-          "severity": "low",
-          "message": "Magic number detected: 100",
-          "line": 519,
-          "value": 100
-        },
-        {
-          "type": "magic_number",
-          "severity": "low",
-          "message": "Magic number detected: 0.7",
-          "line": 522,
-          "value": 0.7
-        },
-        {
-          "type": "magic_number",
-          "severity": "low",
-          "message": "Magic number detected: 0.3",
-          "line": 522,
-          "value": 0.3
         },
         {
           "type": "magic_number",
           "severity": "low",
           "message": "Magic number detected: 5.0",
-          "line": 554,
+          "line": 646,
           "value": 5.0
         },
         {
           "type": "magic_number",
           "severity": "low",
-          "message": "Magic number detected: 2",
-          "line": 344,
-          "value": 2
-        },
-        {
-          "type": "magic_number",
-          "severity": "low",
-          "message": "Magic number detected: 100",
-          "line": 491,
-          "value": 100
-        },
-        {
-          "type": "magic_number",
-          "severity": "low",
-          "message": "Magic number detected: 5",
-          "line": 504,
-          "value": 5
-        },
-        {
-          "type": "magic_number",
-          "severity": "low",
-          "message": "Magic number detected: 0.8",
-          "line": 553,
-          "value": 0.8
-        },
-        {
-          "type": "magic_number",
-          "severity": "low",
-          "message": "Magic number detected: 0.8",
-          "line": 553,
-          "value": 0.8
-        },
-        {
-          "type": "magic_number",
-          "severity": "low",
-          "message": "Magic number detected: 0.5",
-          "line": 288,
-          "value": 0.5
-        },
-        {
-          "type": "magic_number",
-          "severity": "low",
-          "message": "Magic number detected: 0.5",
-          "line": 288,
-          "value": 0.5
-        },
-        {
-          "type": "magic_number",
-          "severity": "low",
-          "message": "Magic number detected: 100",
-          "line": 323,
-          "value": 100
-        },
-        {
-          "type": "magic_number",
-          "severity": "low",
-          "message": "Magic number detected: 100",
-          "line": 327,
-          "value": 100
-        },
-        {
-          "type": "magic_number",
-          "severity": "low",
-          "message": "Magic number detected: 100",
-          "line": 329,
-          "value": 100
-        },
-        {
-          "type": "magic_number",
-          "severity": "low",
-          "message": "Magic number detected: 20",
-          "line": 346,
-          "value": 20
-        },
-        {
-          "type": "magic_number",
-          "severity": "low",
-          "message": "Magic number detected: 5",
-          "line": 518,
-          "value": 5
-        },
-        {
-          "type": "magic_number",
-          "severity": "low",
-          "message": "Magic number detected: 10",
-          "line": 518,
-          "value": 10
+          "message": "Magic number detected: 2.0",
+          "line": 648,
+          "value": 2.0
         },
         {
           "type": "magic_number",
           "severity": "low",
           "message": "Magic number detected: 1024",
-          "line": 115,
+          "line": 124,
           "value": 1024
         },
         {
           "type": "magic_number",
           "severity": "low",
           "message": "Magic number detected: 171",
-          "line": 491,
+          "line": 555,
           "value": 171
         },
         {
           "type": "magic_number",
           "severity": "low",
           "message": "Magic number detected: 16.2",
-          "line": 491,
+          "line": 555,
           "value": 16.2
         },
         {
           "type": "magic_number",
           "severity": "low",
           "message": "Magic number detected: 10",
-          "line": 504,
+          "line": 570,
           "value": 10
         },
         {
           "type": "magic_number",
           "severity": "low",
           "message": "Magic number detected: 0.23",
-          "line": 491,
+          "line": 555,
           "value": 0.23
         }
       ],
@@ -2700,16 +2757,16 @@
         {
           "pattern": "except Exception:",
           "severity": "low",
-          "line": 144,
+          "line": 153,
           "description": "Too broad exception handler"
         }
       ],
       "patterns": {},
       "unused_imports": [],
-      "maintenance_index": 5.48,
+      "maintenance_index": 2.92,
       "syntax_error": false
     },
-    "timestamp": 1769983681.294901
+    "timestamp": 1770082379.0405126
   },
   "src/analyzer/utils/config_utils.py": {
     "hash": "ade3725289e68a4f13a70c7445b6ac96c8a27a722a3c37a25c17e1e0fbf6dff1",
@@ -3401,74 +3458,38 @@
     "timestamp": 1769983681.307112
   },
   "src/analyzer/scanner.py": {
-    "hash": "a38a6fb549d89f6658a393a1130b309bb04478803ad57ae8b26ae14b9025f122",
+    "hash": "dcd52c12e9a5a1e343fd677557e7ce9e7dc69255c3a48877d603781e1b9ff405",
     "data": {
       "path": "src/analyzer/scanner.py",
-      "lines": 794,
-      "file_size_kb": 33.45703125,
-      "complexity": 142,
+      "lines": 222,
+      "file_size_kb": 7.962890625,
+      "complexity": 18,
       "imports": [
         "ast",
         "pathlib",
-        "re",
         "typing.Any",
         "typing.Dict",
         "typing.List",
         "typing.Optional",
-        "rules.qgis_rules.I18N_METHODS",
         "rules.qgis_rules.get_qgis_audit_rules",
-        "utils.ast_utils.calculate_complexity",
+        "secrets.SecretScanner",
         "utils.ast_utils.calculate_module_complexity",
         "utils.ast_utils.check_main_guard",
         "utils.ast_utils.extract_classes_from_ast",
         "utils.ast_utils.extract_functions_from_ast",
-        "utils.ast_utils.extract_imports_from_ast"
+        "utils.ast_utils.extract_imports_from_ast",
+        "visitors.QGISASTVisitor",
+        "visitors.QGISSecurityVisitor"
       ],
-      "classes": [
-        "QGISASTVisitor(ast.NodeVisitor)"
-      ],
+      "classes": [],
       "functions": [
-        "__init__(3 args)",
-        "_check_docstring_style(2 args)",
-        "visit_Module(2 args)",
-        "_should_report(2 args)",
-        "_get_severity(2 args)",
-        "_check_obsolete_api(2 args)",
-        "_check_missing_i18n(2 args)",
-        "_check_missing_slot(2 args)",
-        "_check_unsafe_subprocess(2 args)",
-        "_check_blocking_network(2 args)",
-        "visit_Call(2 args)",
-        "visit_For(2 args)",
-        "visit_ClassDef(2 args)",
-        "visit_FunctionDef(2 args)",
-        "visit_Import(2 args)",
-        "visit_ImportFrom(2 args)",
         "analyze_module_worker(4 args)",
         "audit_qgis_standards(3 args)"
       ],
       "docstrings": {
         "module": false,
-        "classes": {
-          "QGISASTVisitor": true
-        },
+        "classes": {},
         "functions": {
-          "__init__": true,
-          "_check_docstring_style": true,
-          "visit_Module": true,
-          "_should_report": true,
-          "_get_severity": true,
-          "_check_obsolete_api": true,
-          "_check_missing_i18n": true,
-          "_check_missing_slot": true,
-          "_check_unsafe_subprocess": true,
-          "_check_blocking_network": true,
-          "visit_Call": true,
-          "visit_For": true,
-          "visit_ClassDef": true,
-          "visit_FunctionDef": true,
-          "visit_Import": true,
-          "visit_ImportFrom": true,
           "analyze_module_worker": true,
           "audit_qgis_standards": true
         }
@@ -3479,44 +3500,37 @@
       },
       "has_main": false,
       "type_hints": {
-        "total_functions": 18,
-        "typed_functions": 18,
+        "total_functions": 2,
+        "typed_functions": 2,
         "coverage": 100.0
       },
       "halstead": {
-        "vocabulary": 266,
-        "length": 1381,
-        "volume": 11048,
-        "difficulty": 47.15,
-        "effort": 520962.6
+        "vocabulary": 117,
+        "length": 319,
+        "volume": 1914,
+        "difficulty": 17.94,
+        "effort": 34332.38
       },
       "antipatterns": [
         {
           "type": "magic_number",
           "severity": "low",
-          "message": "Magic number detected: 15",
-          "line": 459,
-          "value": 15
-        },
-        {
-          "type": "magic_number",
-          "severity": "low",
           "message": "Magic number detected: 1024",
-          "line": 714,
+          "line": 140,
           "value": 1024
         },
         {
           "type": "magic_number",
           "severity": "low",
           "message": "Magic number detected: 1024",
-          "line": 672,
+          "line": 76,
           "value": 1024
         },
         {
           "type": "magic_number",
           "severity": "low",
           "message": "Magic number detected: 20",
-          "line": 786,
+          "line": 214,
           "value": 20
         }
       ],
@@ -3524,22 +3538,22 @@
         {
           "pattern": "except Exception:",
           "severity": "low",
-          "line": 725,
+          "line": 153,
           "description": "Too broad exception handler"
         },
         {
           "pattern": "except Exception:",
           "severity": "low",
-          "line": 761,
+          "line": 189,
           "description": "Too broad exception handler"
         }
       ],
       "patterns": {},
       "unused_imports": [],
-      "maintenance_index": 0,
+      "maintenance_index": 23.42,
       "syntax_error": false
     },
-    "timestamp": 1769983681.3303154
+    "timestamp": 1770082379.0122232
   },
   ".ai-context/analyze_project_optfixed.py": {
     "hash": "fbb20ee557ceeb032d6d4ce9b2e4a72c6cab7d9a3117b807a512678c15ef6456",
@@ -4975,5 +4989,533 @@
       "syntax_error": false
     },
     "timestamp": 1769983681.468189
+  },
+  ".agent/scripts/skill_sync.py": {
+    "hash": "8571ae2cebc88ba21b747823b6ce07dcb1e4dea089362b95a737622d60b61a85",
+    "data": {
+      "path": ".agent/scripts/skill_sync.py",
+      "lines": 143,
+      "file_size_kb": 4.689453125,
+      "complexity": 21,
+      "imports": [
+        "re",
+        "pathlib.Path",
+        "yaml"
+      ],
+      "classes": [],
+      "functions": [
+        "sync_skills",
+        "sync_workflows"
+      ],
+      "docstrings": {
+        "module": false,
+        "classes": {},
+        "functions": {
+          "sync_skills": false,
+          "sync_workflows": true
+        }
+      },
+      "entry_point_info": {
+        "is_entry_point": true,
+        "type": "main_guard"
+      },
+      "has_main": true,
+      "type_hints": {
+        "total_functions": 2,
+        "typed_functions": 0,
+        "coverage": 0.0
+      },
+      "halstead": {
+        "vocabulary": 102,
+        "length": 296,
+        "volume": 1776,
+        "difficulty": 16.87,
+        "effort": 29955.2
+      },
+      "antipatterns": [],
+      "ast_security": [
+        {
+          "pattern": "except Exception:",
+          "severity": "low",
+          "line": 30,
+          "description": "Too broad exception handler"
+        },
+        {
+          "pattern": "except Exception:",
+          "severity": "low",
+          "line": 116,
+          "description": "Too broad exception handler"
+        }
+      ],
+      "patterns": {},
+      "unused_imports": [],
+      "maintenance_index": 27.41,
+      "syntax_error": false
+    },
+    "timestamp": 1770082378.998452
+  },
+  "src/analyzer/commands.py": {
+    "hash": "7235d5b62a4fbad611ecd080ce0f6ec41d4d64a919db4190a51b1e48f2444760",
+    "data": {
+      "path": "src/analyzer/commands.py",
+      "lines": 163,
+      "file_size_kb": 5.0068359375,
+      "complexity": 19,
+      "imports": [
+        "argparse",
+        "json",
+        "pathlib",
+        "sys",
+        "engine.ProjectAnalyzer",
+        "fixer.AutoFixer",
+        "reporters.summary_reporter.report_summary",
+        "rules.get_qgis_audit_rules",
+        "utils.DEFAULT_EXCLUDE"
+      ],
+      "classes": [],
+      "functions": [
+        "handle_fix(1 args)",
+        "handle_analyze(1 args)",
+        "handle_list_rules",
+        "handle_init",
+        "handle_summary(1 args)",
+        "handle_security(1 args)"
+      ],
+      "docstrings": {
+        "module": true,
+        "classes": {},
+        "functions": {
+          "handle_fix": true,
+          "handle_analyze": true,
+          "handle_list_rules": true,
+          "handle_init": true,
+          "handle_summary": true,
+          "handle_security": true
+        }
+      },
+      "entry_point_info": {
+        "is_entry_point": false,
+        "type": null
+      },
+      "has_main": false,
+      "type_hints": {
+        "total_functions": 6,
+        "typed_functions": 6,
+        "coverage": 100.0
+      },
+      "halstead": {
+        "vocabulary": 101,
+        "length": 260,
+        "volume": 1560,
+        "difficulty": 10.81,
+        "effort": 16863.26
+      },
+      "antipatterns": [
+        {
+          "type": "magic_number",
+          "severity": "low",
+          "message": "Magic number detected: 30",
+          "line": 105,
+          "value": 30
+        }
+      ],
+      "ast_security": [],
+      "patterns": {},
+      "unused_imports": [],
+      "maintenance_index": 26.83,
+      "syntax_error": false
+    },
+    "timestamp": 1770082379.0019069
+  },
+  "src/analyzer/secrets.py": {
+    "hash": "325fa14521602e502c8ba29e0f6579dceb90d44f2a584ffae72cc39bf443dc01",
+    "data": {
+      "path": "src/analyzer/secrets.py",
+      "lines": 84,
+      "file_size_kb": 2.8310546875,
+      "complexity": 9,
+      "imports": [
+        "math",
+        "re",
+        "dataclasses.dataclass",
+        "typing.List"
+      ],
+      "classes": [
+        "SecretFinding",
+        "SecretScanner"
+      ],
+      "functions": [
+        "__init__(1 args)",
+        "scan_text(2 args)",
+        "calculate_entropy(1 args)"
+      ],
+      "docstrings": {
+        "module": true,
+        "classes": {
+          "SecretFinding": true,
+          "SecretScanner": true
+        },
+        "functions": {
+          "__init__": false,
+          "scan_text": true,
+          "calculate_entropy": true
+        }
+      },
+      "entry_point_info": {
+        "is_entry_point": false,
+        "type": null
+      },
+      "has_main": false,
+      "type_hints": {
+        "total_functions": 3,
+        "typed_functions": 2,
+        "coverage": 66.66666666666666
+      },
+      "halstead": {
+        "vocabulary": 73,
+        "length": 128,
+        "volume": 768,
+        "difficulty": 9.49,
+        "effort": 7289.81
+      },
+      "antipatterns": [
+        {
+          "type": "magic_number",
+          "severity": "low",
+          "message": "Magic number detected: 256",
+          "line": 80,
+          "value": 256
+        },
+        {
+          "type": "magic_number",
+          "severity": "low",
+          "message": "Magic number detected: 4.5",
+          "line": 62,
+          "value": 4.5
+        },
+        {
+          "type": "magic_number",
+          "severity": "low",
+          "message": "Magic number detected: 2",
+          "line": 83,
+          "value": 2
+        },
+        {
+          "type": "magic_number",
+          "severity": "low",
+          "message": "Magic number detected: 8",
+          "line": 66,
+          "value": 8
+        }
+      ],
+      "ast_security": [],
+      "patterns": {},
+      "unused_imports": [],
+      "maintenance_index": 36.61,
+      "syntax_error": false
+    },
+    "timestamp": 1770082379.0069256
+  },
+  "src/analyzer/security_checker.py": {
+    "hash": "61741e22fb6bb70bea1e6e71196f335cdacfc9c76c2f26af0a7c453a5b5ff11b",
+    "data": {
+      "path": "src/analyzer/security_checker.py",
+      "lines": 85,
+      "file_size_kb": 2.7724609375,
+      "complexity": 9,
+      "imports": [
+        "ast",
+        "dataclasses.dataclass",
+        "typing.Any",
+        "typing.Callable",
+        "typing.Dict",
+        "typing.List",
+        "typing.Optional",
+        "typing.Type"
+      ],
+      "classes": [
+        "SecurityFinding",
+        "SecurityContext",
+        "SecurityRegistry"
+      ],
+      "functions": [
+        "__init__(3 args)",
+        "call_function_name(1 args)",
+        "call_args_count(1 args)",
+        "get_call_keyword_value(2 args)",
+        "register(2 args)",
+        "decorator(1 args)",
+        "get_checks_for_node(2 args)"
+      ],
+      "docstrings": {
+        "module": true,
+        "classes": {
+          "SecurityFinding": true,
+          "SecurityContext": true,
+          "SecurityRegistry": true
+        },
+        "functions": {
+          "__init__": false,
+          "call_function_name": true,
+          "call_args_count": true,
+          "get_call_keyword_value": true,
+          "register": true,
+          "decorator": false,
+          "get_checks_for_node": true
+        }
+      },
+      "entry_point_info": {
+        "is_entry_point": false,
+        "type": null
+      },
+      "has_main": false,
+      "type_hints": {
+        "total_functions": 7,
+        "typed_functions": 5,
+        "coverage": 71.42857142857143
+      },
+      "halstead": {
+        "vocabulary": 52,
+        "length": 130,
+        "volume": 650,
+        "difficulty": 7.11,
+        "effort": 4620.65
+      },
+      "antipatterns": [],
+      "ast_security": [],
+      "patterns": {
+        "Decorator": [
+          {
+            "name": "register",
+            "type": "function",
+            "confidence": 50,
+            "evidence": [
+              "Function contains and returns inner 'decorator'"
+            ],
+            "module": "src/analyzer/security_checker.py"
+          }
+        ]
+      },
+      "unused_imports": [],
+      "maintenance_index": 37.01,
+      "syntax_error": false
+    },
+    "timestamp": 1770082379.0086646
+  },
+  "src/analyzer/security_rules.py": {
+    "hash": "c7de44c1eaa04ce14d70ce889f6680dfba8e7aab2fd4f058902b119b0869c06c",
+    "data": {
+      "path": "src/analyzer/security_rules.py",
+      "lines": 127,
+      "file_size_kb": 5.060546875,
+      "complexity": 24,
+      "imports": [
+        "ast",
+        "typing.Optional",
+        "typing.cast",
+        "security_checker.SecurityContext",
+        "security_checker.SecurityFinding",
+        "security_checker.security_check"
+      ],
+      "classes": [],
+      "functions": [
+        "check_exec_eval(1 args)",
+        "check_insecure_deserialization(1 args)",
+        "check_subprocess_shell(1 args)",
+        "check_sql_injection(1 args)",
+        "check_hardcoded_secrets(1 args)"
+      ],
+      "docstrings": {
+        "module": true,
+        "classes": {},
+        "functions": {
+          "check_exec_eval": true,
+          "check_insecure_deserialization": true,
+          "check_subprocess_shell": true,
+          "check_sql_injection": true,
+          "check_hardcoded_secrets": true
+        }
+      },
+      "entry_point_info": {
+        "is_entry_point": false,
+        "type": null
+      },
+      "has_main": false,
+      "type_hints": {
+        "total_functions": 5,
+        "typed_functions": 5,
+        "coverage": 100.0
+      },
+      "halstead": {
+        "vocabulary": 79,
+        "length": 249,
+        "volume": 1494,
+        "difficulty": 13.37,
+        "effort": 19976.91
+      },
+      "antipatterns": [
+        {
+          "type": "magic_number",
+          "severity": "low",
+          "message": "Magic number detected: 95",
+          "line": 26,
+          "value": 95
+        },
+        {
+          "type": "magic_number",
+          "severity": "low",
+          "message": "Magic number detected: 78",
+          "line": 26,
+          "value": 78
+        },
+        {
+          "type": "magic_number",
+          "severity": "low",
+          "message": "Magic number detected: 78",
+          "line": 68,
+          "value": 78
+        },
+        {
+          "type": "magic_number",
+          "severity": "low",
+          "message": "Magic number detected: 8",
+          "line": 117,
+          "value": 8
+        },
+        {
+          "type": "magic_number",
+          "severity": "low",
+          "message": "Magic number detected: 502",
+          "line": 46,
+          "value": 502
+        },
+        {
+          "type": "magic_number",
+          "severity": "low",
+          "message": "Magic number detected: 89",
+          "line": 98,
+          "value": 89
+        }
+      ],
+      "ast_security": [],
+      "patterns": {},
+      "unused_imports": [],
+      "maintenance_index": 28.65,
+      "syntax_error": false
+    },
+    "timestamp": 1770082379.0138896
+  },
+  "src/analyzer/visitors.py": {
+    "hash": "0d1c2a25a97fa53b57b3bccdabb89229cec4bf20e14da5d102ed65be6d394add",
+    "data": {
+      "path": "src/analyzer/visitors.py",
+      "lines": 455,
+      "file_size_kb": 17.0390625,
+      "complexity": 96,
+      "imports": [
+        "ast",
+        "re",
+        "typing.Any",
+        "typing.Dict",
+        "typing.List",
+        "typing.Optional",
+        "typing.Set",
+        "typing.cast",
+        "rules.qgis_rules.I18N_METHODS",
+        "security_checker.SecurityContext",
+        "security_checker.SecurityRegistry",
+        "utils.ast_utils.calculate_complexity"
+      ],
+      "classes": [
+        "QGISASTVisitor(ast.NodeVisitor)",
+        "QGISSecurityVisitor(ast.NodeVisitor)"
+      ],
+      "functions": [
+        "__init__(3 args)",
+        "_should_report(2 args)",
+        "_get_severity(2 args)",
+        "_check_docstring_style(2 args)",
+        "_report_issue(5 args)",
+        "visit_Module(2 args)",
+        "_check_import_name(4 args)",
+        "visit_Import(2 args)",
+        "visit_ImportFrom(2 args)",
+        "_check_docstring_and_metrics(2 args)",
+        "_check_type_hints(2 args)",
+        "visit_FunctionDef(2 args)",
+        "visit_ClassDef(2 args)",
+        "visit_Call(2 args)",
+        "_check_obsolete_api(2 args)",
+        "_check_missing_i18n(2 args)",
+        "_check_missing_slot(2 args)",
+        "_check_unsafe_subprocess(2 args)",
+        "_check_blocking_network(2 args)",
+        "visit_For(2 args)",
+        "__init__(2 args)",
+        "visit(2 args)"
+      ],
+      "docstrings": {
+        "module": true,
+        "classes": {
+          "QGISASTVisitor": true,
+          "QGISSecurityVisitor": true
+        },
+        "functions": {
+          "__init__": false,
+          "_should_report": true,
+          "_get_severity": true,
+          "_check_docstring_style": true,
+          "_report_issue": true,
+          "visit_Module": true,
+          "_check_import_name": true,
+          "visit_Import": true,
+          "visit_ImportFrom": true,
+          "_check_docstring_and_metrics": true,
+          "_check_type_hints": true,
+          "visit_FunctionDef": true,
+          "visit_ClassDef": true,
+          "visit_Call": true,
+          "_check_obsolete_api": false,
+          "_check_missing_i18n": false,
+          "_check_missing_slot": false,
+          "_check_unsafe_subprocess": false,
+          "_check_blocking_network": false,
+          "visit_For": true,
+          "visit": true
+        }
+      },
+      "entry_point_info": {
+        "is_entry_point": false,
+        "type": null
+      },
+      "has_main": false,
+      "type_hints": {
+        "total_functions": 22,
+        "typed_functions": 20,
+        "coverage": 90.9090909090909
+      },
+      "halstead": {
+        "vocabulary": 216,
+        "length": 874,
+        "volume": 6118,
+        "difficulty": 28.44,
+        "effort": 173995.92
+      },
+      "antipatterns": [
+        {
+          "type": "magic_number",
+          "severity": "low",
+          "message": "Magic number detected: 15",
+          "line": 201,
+          "value": 15
+        }
+      ],
+      "ast_security": [],
+      "patterns": {},
+      "unused_imports": [],
+      "maintenance_index": 2.59,
+      "syntax_error": false
+    },
+    "timestamp": 1770082379.0422857
   }
 }

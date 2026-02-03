@@ -10,61 +10,7 @@ import socket
 import urllib.error
 import urllib.parse
 import urllib.request
-from typing import Any, Dict, List
-
-# Prohibited binary extensions per QGIS repository policy
-BINARY_EXTENSIONS = {".exe", ".dll", ".so", ".dylib", ".pyd", ".bin", ".a", ".lib"}
-
-
-def scan_for_binaries(project_path: pathlib.Path, ignore_matcher: Any = None) -> List[str]:
-    """Scans the project for prohibited binary files per QGIS policies.
-
-    Args:
-        project_path: Root path of the project.
-        ignore_matcher: Optional object to determine if a path should be ignored.
-
-    Returns:
-        A list of relative paths to any binary files found.
-    """
-    binaries = []
-
-    for file_path in project_path.rglob("*"):
-        if file_path.is_file():
-            # Skip if matches ignore pattern
-            if ignore_matcher and ignore_matcher.is_ignored(file_path):
-                continue
-
-            if file_path.suffix.lower() in BINARY_EXTENSIONS:
-                rel_path = str(file_path.relative_to(project_path))
-                binaries.append(rel_path)
-
-    return binaries
-
-
-def calculate_package_size(project_path: pathlib.Path, ignore_matcher: Any = None) -> float:
-    """Calculates the total package size in Megabytes (MB).
-
-    Args:
-        project_path: Root path of the project.
-        ignore_matcher: Optional object to determine if a path should be ignored.
-
-    Returns:
-        The total size of the plugin package in MB.
-    """
-    total_size = 0
-
-    for file_path in project_path.rglob("*"):
-        if file_path.is_file():
-            # Skip if matches ignore pattern
-            if ignore_matcher:
-                str(file_path.relative_to(project_path))
-                if ignore_matcher.is_ignored(file_path):
-                    continue
-
-            total_size += file_path.stat().st_size
-
-    # Convert bytes to MB
-    return total_size / (1024 * 1024)
+from typing import Any, Dict
 
 
 def is_ssrf_safe(url: str) -> bool:

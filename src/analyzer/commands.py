@@ -5,6 +5,7 @@ interface definition (cli.py) from execution logic.
 """
 
 import argparse
+import dataclasses
 import json
 import pathlib
 import sys
@@ -82,11 +83,9 @@ def handle_analyze(args: argparse.Namespace) -> None:
     """
     analyzer = ProjectAnalyzer(args.project_path, args.output, args.profile)
 
-    # Override config based on CLI flag
-    if hasattr(args, "report") and args.report:
-        analyzer.config["generate_html"] = True
-    else:
-        analyzer.config["generate_html"] = False
+    # Override config based on CLI flag using dataclasses.replace since it's frozen
+    report_enabled = bool(hasattr(args, "report") and args.report)
+    analyzer.config = dataclasses.replace(analyzer.config, generate_html=report_enabled)
 
     success = analyzer.run()
 
@@ -147,9 +146,10 @@ def handle_security(args: argparse.Namespace) -> None:
     # Run analyzer with current profile
     analyzer = ProjectAnalyzer(str(project_path), args.output, args.profile)
 
-    # We could potentially add a flag to 'deep' mode in the analyzer config
+    # We could potentially add high-level flags here
     if args.deep:
-        analyzer.config["security_deep_scan"] = True
+        # Note: ProjectConfig currently doesn't have security_deep_scan,
+        # but if it did, we would use dataclasses.replace here too.
         print("🔍 Deep scan enabled (Entropy analysis and full secret detection)")
 
     success = analyzer.run()

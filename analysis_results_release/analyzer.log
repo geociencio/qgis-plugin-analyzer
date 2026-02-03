@@ -1,0 +1,3 @@
+2026-02-01 18:19:05,956 - qgis_analyzer - INFO - 📁 Project type: GENERIC
+2026-02-01 18:19:05,957 - qgis_analyzer - INFO - 🔍 Analyzing: /home/jmbernales/qgispluginsdev/qgis-plugin-analyzer/qgis_plugin_analyzer
+2026-02-01 18:19:06,165 - qgis_analyzer - INFO - ✅ Analysis completed. Reports in: /home/jmbernales/qgispluginsdev/qgis-plugin-analyzer/qgis_plugin_analyzer/analysis_results_release

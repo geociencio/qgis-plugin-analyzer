@@ -13,6 +13,7 @@ from .logging_utils import logger, setup_logger
 from .path_utils import (
     DEFAULT_EXCLUDE,
     IgnoreMatcher,
+    discover_project_files,
     load_ignore_patterns,
     safe_path_resolve,
 )
@@ -29,6 +30,7 @@ __all__ = [
     "logger",
     "safe_path_resolve",
     "IgnoreMatcher",
+    "discover_project_files",
     "load_ignore_patterns",
     "DEFAULT_EXCLUDE",
     "load_profile_config",

@@ -3,7 +3,7 @@
 import fnmatch
 import os
 import pathlib
-from typing import Dict, List
+from typing import Any, Dict, List
 
 # Default patterns to ignore if not specified
 DEFAULT_EXCLUDE = {
@@ -20,6 +20,9 @@ DEFAULT_EXCLUDE = {
     ".analyzerignore",
     "analysis_results/",
 }
+
+# Prohibited binary extensions per QGIS repository policy
+BINARY_EXTENSIONS = {".exe", ".dll", ".so", ".dylib", ".pyd", ".bin", ".a", ".lib"}
 
 
 def safe_path_resolve(base_path: pathlib.Path, target_path_str: str) -> pathlib.Path:
@@ -133,3 +136,52 @@ def load_ignore_patterns(ignore_file: pathlib.Path) -> List[str]:
         return []
     with open(ignore_file) as f:
         return f.readlines()
+
+
+def discover_project_files(project_path: pathlib.Path, matcher: IgnoreMatcher) -> Dict[str, Any]:
+    """Scans the project directory once to discover all relevant files and metrics.
+    This replaces multiple redundant rglob calls, optimizing I/O performance.
+
+    Args:
+        project_path: Root path of the project.
+        matcher: IgnoreMatcher instance for filtering.
+
+    Returns:
+        A dictionary with:
+            - python_files: List of Paths to .py files.
+            - binaries: List of relative paths to binary files.
+            - total_size_mb: Total size of non-ignored files in MB.
+            - has_metadata: Boolean indicating if metadata.txt exists.
+    """
+    python_files = []
+    binaries = []
+    total_bytes = 0
+    has_metadata = False
+
+    for file_path in project_path.rglob("*"):
+        if not file_path.is_file():
+            continue
+
+        if matcher.is_ignored(file_path):
+            continue
+
+        # Basics
+        total_bytes += file_path.stat().st_size
+
+        # Check metadata
+        if file_path.name == "metadata.txt" and file_path.parent == project_path:
+            has_metadata = True
+
+        # Classify by extension
+        ext = file_path.suffix.lower()
+        if ext == ".py":
+            python_files.append(file_path)
+        elif ext in BINARY_EXTENSIONS:
+            binaries.append(str(file_path.relative_to(project_path)))
+
+    return {
+        "python_files": python_files,
+        "binaries": binaries,
+        "total_size_mb": total_bytes / (1024 * 1024),
+        "has_metadata": has_metadata,
+    }

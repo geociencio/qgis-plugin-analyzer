@@ -24,7 +24,7 @@ QGIS In-Process Test Runner
 ===========================
 
 This script is designed to be run INSIDE the QGIS Python Console.
-It allows you to execute the project's unit tests using the 
+It allows you to execute the project's unit tests using the
 active QGIS environment (with access to iface, qgis.core, etc.).
 
 Usage:
@@ -45,6 +45,7 @@ SCRIPT_DIR = pathlib.Path(__file__).parent.absolute()
 PROJECT_ROOT = SCRIPT_DIR.parent
 TESTS_DIR = PROJECT_ROOT / "tests"
 
+
 def setup_environment():
     """Configures sys.path to include the project source."""
     # Add src to python path so 'analyzer' modules can be imported
@@ -58,8 +59,9 @@ def setup_environment():
         stream=sys.stdout,
         level=logging.DEBUG,
         format="%(levelname)s: %(message)s",
-        force=True # Override existing handlers
+        force=True,  # Override existing handlers
     )
+
 
 def run_tests():
     """Discovers and runs tests."""
@@ -78,10 +80,7 @@ def run_tests():
         print(f"❌ Error: Test directory not found at {TESTS_DIR}")
         return
 
-    suite = loader.discover(
-        start_dir=str(TESTS_DIR),
-        pattern="test_*.py"
-    )
+    suite = loader.discover(start_dir=str(TESTS_DIR), pattern="test_*.py")
 
     # Run Tests
     runner = unittest.TextTestRunner(verbosity=2)
@@ -91,6 +90,7 @@ def run_tests():
         print("\n✅ SUCCESS: All tests passed!")
     else:
         print("\n❌ FAILURE: Some tests failed.")
+
 
 if __name__ == "__console__":
     run_tests()
