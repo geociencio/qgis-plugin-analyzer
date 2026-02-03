@@ -1,59 +1,45 @@
 # Roadmap: QGIS Plugin Analyzer 🚀
 
-This document outlines the strategic improvements and technical advancements required to evolve `qgis-plugin-analyzer` from a static validator into a comprehensive quality assurance ecosystem.
+This document outlines the strategic improvements and technical advancements planned for the next phases of `qgis-plugin-analyzer`.
 
-## 1. ✅ Deep Semantic Analysis (Completed in v0.5.0)
+## 1. 🛠️ PyQGIS specific Audits (Code Quality)
 
-Currently, the analyzer relies on AST/Regex for single-file analysis. It lacks understanding of cross-file relationships.
+| Feature | Description | Priority |
+| :--- | :--- | :--- |
+| **Qt Shim Enforcement** | Detect direct `PyQt` or `PySide` imports and suggest `qgis.PyQt`. | High |
+| **Unload Verification** | Ensure every plugin implements a proper `unload()` method for cleanup. | High |
+| **API Modernization** | Detect deprecated methods (e.g., `writeAsVectorFormat`) and suggest new ones. | Medium |
+| **Internal API Audit** | Warn against using `qgis._core` or other protected/internal members. | High |
 
-- **Dependency Graphing**:
-    - Visualize module usage using Mermaid diagrams in HTML reports.
-    - Detect circular imports.
-- **Resource Validation**:
-    - Verify that resource paths (e.g., `:/plugins/my_plugin/icon.png`) actually exist in the compiled `.qrc`/`.py` resource file.
-- **Signal/Slot Safety**:
-    - Analyze `connect()` calls to ensure target slots exist and match signatures (where possible statically).
+## 2. ⚡ Performance Optimization
 
-## 2. ✅ Interactive "Auto-Fix" Mode (Completed in v0.5.0)
+- **Spatial Filter Audit**: Warn when iterating `getFeatures()` on large layers without spatial or attribute filters.
+- **Main Thread Guardians**: Detect blocking operations (network, heavy processing) being called from the main GUI thread.
+- **Task Verification**: Ensure `QgsTask` is used correctly for long-running operations.
 
-Move from "reporting" to "fixing". Add a `fix` command.
+## 3. 🌍 Internationalization (i18n)
 
-- **Automated Fixers**:
-    - **i18n**: Interactive mode to wrap string literals in `self.tr()`.
-    - **Logging**: Replace `print()` with `QgsMessageLog.logMessage()`.
-    - **Imports**: Auto-refactor direct `gdal` imports to `osgeo.gdal`.
+- **Translation Check**: Verify that all user-visible strings are wrapped in `self.tr()` or `QCoreApplication.translate()`.
+- **TS File Sync**: Automated checking of `.ts` files to ensure they are up to date with the code.
 
-## 3. ✅ Official Repository Compliance Suite (Completed in v0.5.0)
+## 4. 🎨 UI/UX Consistency
 
-Local pre-check to ensure plugin passes metadata and security policies of `plugins.qgis.org`.
+- **Widget Standard**: Detect standard Qt widgets and suggest QGIS custom widgets (e.g., `QgsFileWidget`, `QgsMapLayerComboBox`) for a native look.
+- **Icon Quality**: Validate that plugin icons meet size and format requirements for the official repository.
 
-- **Binary Scanner**: Fail if `.dll`, `.exe`, `.so` binaries are found.
-- **Link Validator**: Check availability of URLs in `metadata.txt` (homepage, tracker).
-- **Size Check**: Warn if package size exceeds 20MB.
+## 5. 📦 Packaging & Metadata
 
-## 4. ✅ Enhanced Configuration Profiles (Completed in v0.5.0)
+- **Dependency Analysis**: Audit the `metadata.txt` description and category against official QGIS tags.
+- **Broken Link Checker**: Automatically verify that URLs in `metadata.txt` (homepage, tracker) are not 404.
+- **Automated Versioning**: Command to safely bump versions across `metadata.txt` and `pyproject.toml`.
 
-The current profile system only affects failure conditions. It should control the analysis depth.
+## 6. 👨‍💻 Developer Experience (DevX)
 
-- **Ruff Parameter Injection**:
-    - Allow profiles to inject specific Ruff rules/configs.
-- **Custom Rule Sets**:
-    - Allow users to define custom rule sets and severity levels in `pyproject.toml`.
+- **Scaffolding**: `init` command enhancement to generate boilerplate for specific QGIS components (Processing providers, Custom Widgets).
+- **QGIS Documentation Integration**: Linking detected errors directly to the official PyQGIS documentation.
 
-## 5. ✅ Security & Safety (Completed)
+## 7. Infrastructure & Integration (Pending)
 
-- **Subprocess Auditing**:
-    - Flag usage of `subprocess` with unsanitized inputs or `shell=True`.
-- **Network Calls**:
-    - Detect synchronous network calls (e.g., `requests.get`) inside the main thread (GUI blocking).
-
-## 6. Integration Improvements
-
-- **GitHub Actions**:
-    - Create a dedicated GitHub Action in the marketplace that uses this tool.
-- **Pre-commit Hook**:
-    - official support for `.pre-commit-config.yaml`.
-
-## 7. Type Checking (Future)
-
-- Integrate `mypy` execution into the report pipeline to catch type-related errors before runtime.
+- **GitHub Actions**: Create a dedicated GitHub Action in the marketplace that uses this tool.
+- **Pre-commit Hook**: Official support for `.pre-commit-config.yaml`.
+- **Type Checking Pipeline**: Fully integrate `mypy` execution into the report pipeline (beyond just local development checks).

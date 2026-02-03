@@ -8,6 +8,7 @@ from analyzer.validators import (
     scan_for_binaries,
     validate_metadata,
     validate_metadata_urls,
+    validate_package_constraints,
     validate_plugin_structure,
 )
 
@@ -91,6 +92,7 @@ version=1.0.0
 qgisMinimumVersion=3.0
 author=Test Author
 email=test@example.com
+about=About this plugin
 """
         metadata_file = self.test_dir / "metadata.txt"
         metadata_file.write_text(metadata_content)
@@ -100,6 +102,45 @@ email=test@example.com
         self.assertTrue(result["is_valid"])
         self.assertEqual(len(result["missing"]), 0)
         self.assertEqual(result["metadata"]["name"], "Test Plugin")
+
+    def test_validate_package_constraints(self):
+        # Valid
+        result = validate_package_constraints(total_size_mb=15.0, binaries=[])
+        self.assertTrue(result["is_valid"])
+
+        # Invalid Size
+        result = validate_package_constraints(total_size_mb=25.0, binaries=[])
+        self.assertFalse(result["is_valid"])
+        self.assertIn("exceeds", result["errors"][0])
+
+        # Invalid Binaries
+        result = validate_package_constraints(total_size_mb=10.0, binaries=["bin.exe"])
+        self.assertFalse(result["is_valid"])
+        self.assertIn("Binaries are not allowed", result["errors"][0])
+
+    def test_folder_name_validation(self):
+        # Helper to setup minimal structure
+        def setup_plugin(path):
+            if not path.exists():
+                path.mkdir()
+            (path / "__init__.py").write_text("def classFactory(): pass")
+            (path / "metadata.txt").write_text("name=T\nabout=A")
+            (path / "LICENSE").write_text("GPL")
+            (path / "plugin.py").write_text("")
+
+        # Valid name
+        valid_dir = self.test_dir / "my_plugin"
+        setup_plugin(valid_dir)
+        result = validate_plugin_structure(valid_dir)
+        self.assertTrue(result["is_valid"], f"Valid name rejected: {result}")
+        self.assertTrue(result["folder_name_valid"])
+
+        # Invalid: Starts with digit
+        invalid_dir_1 = self.test_dir / "1plugin"
+        setup_plugin(invalid_dir_1)
+        result = validate_plugin_structure(invalid_dir_1)
+        self.assertFalse(result["is_valid"])
+        self.assertFalse(result["folder_name_valid"])
 
 
 if __name__ == "__main__":

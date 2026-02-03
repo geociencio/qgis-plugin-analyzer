@@ -6,6 +6,7 @@
 
 import ipaddress
 import pathlib
+import re  # Added for folder name validation
 import socket
 import urllib.error
 import urllib.parse
@@ -113,6 +114,39 @@ def validate_metadata_urls(metadata: Dict[str, str]) -> Dict[str, str]:
     return results
 
 
+def validate_package_constraints(total_size_mb: float, binaries: List[str]) -> Dict[str, Any]:
+    """Validates package size and binary constraints against Official Repository rules.
+
+    Args:
+        total_size_mb: Total size of the package in MB.
+        binaries: List of detected binary files.
+
+    Returns:
+        Validation results including error messages.
+    """
+    errors = []
+
+    # Rule: Max 20MB
+    if total_size_mb > 20:
+        errors.append(f"Package size ({total_size_mb:.2f}MB) exceeds the 20MB limit.")
+
+    # Rule: No Binaries
+    if binaries:
+        count = len(binaries)
+        shown = ", ".join(binaries[:3])
+        suffix = "..." if count > 3 else ""
+        errors.append(
+            f"Detected {count} binary file(s): {shown}{suffix}. Binaries are not allowed."
+        )
+
+    return {
+        "is_valid": len(errors) == 0,
+        "errors": errors,
+        "total_size_mb": total_size_mb,
+        "binary_count": len(binaries),
+    }
+
+
 def validate_plugin_structure(project_path: pathlib.Path) -> Dict[str, Any]:
     """Validates that the plugin following the required QGIS file structure.
 
@@ -139,12 +173,29 @@ def validate_plugin_structure(project_path: pathlib.Path) -> Dict[str, Any]:
     py_files = list(project_path.glob("*.py"))
     has_python = len(py_files) > 0
 
+    # Check Folder Name (Official Repo Rule: ASCII, alphanumeric, no start with digit)
+    folder_name = project_path.name
+    # Regex explanation:
+    # ^[a-zA-Z_]      : Must start with letter or underscore (cannot start with digit/hyphen)
+    # [a-zA-Z0-9_-]*$ : Followed by alphanumeric, underscore, or hyphen
+    # Note: Official repo is strictly ASCII.
+    folder_valid = False
+    try:
+        # Check ASCII encoding implicitly by regex matching on string, or strict encode check
+        folder_name.encode("ascii")
+        if re.match(r"^[a-zA-Z_][a-zA-Z0-9_-]*$", folder_name):
+            folder_valid = True
+    except UnicodeEncodeError:
+        folder_valid = False
+
     return {
         "files": found,
         "missing_files": missing,
         "has_class_factory": has_factory,
         "has_python_files": has_python,
-        "is_valid": all(found.values()) and has_factory and has_python,
+        "folder_name": folder_name,
+        "folder_name_valid": folder_valid,
+        "is_valid": all(found.values()) and has_factory and has_python and folder_valid,
     }
 
 
@@ -164,6 +215,7 @@ def validate_metadata(metadata_path: pathlib.Path) -> Dict[str, Any]:
         "qgisMinimumVersion",
         "author",
         "email",
+        "about",
     ]
 
     recommended_fields = [

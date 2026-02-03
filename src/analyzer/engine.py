@@ -50,6 +50,7 @@ from .utils import (
 from .validators import (
     validate_metadata,
     validate_metadata_urls,
+    validate_package_constraints,
     validate_plugin_structure,
 )
 
@@ -76,6 +77,7 @@ class QGISChecksResult(TypedDict):
     metadata: Dict[str, Any]
     binaries: List[str]
     package_size: float
+    package_constraints: Dict[str, Any]
     url_status: Dict[str, str]
 
 
@@ -400,12 +402,18 @@ class ProjectAnalyzer:
         structure = validate_plugin_structure(self.project_path)
         metadata = validate_metadata(metadata_file)
 
+        # New Repository Constraints
+        constraints = validate_package_constraints(
+            discovery["total_size_mb"], discovery["binaries"]
+        )
+
         return {
             "compliance": compliance,
             "structure": structure,
             "metadata": metadata,
             "binaries": discovery["binaries"],
             "package_size": discovery["total_size_mb"],
+            "package_constraints": constraints,
             "url_status": validate_metadata_urls(metadata.get("metadata", {})),
         }
 
@@ -490,8 +498,10 @@ class ProjectAnalyzer:
                 "binaries": qgis_checks["binaries"],
                 "package_size_mb": round(qgis_checks["package_size"], 2),
                 "url_validation": qgis_checks["url_status"],
-                "is_compliant": len(qgis_checks["binaries"]) == 0
-                and qgis_checks["package_size"] <= 20,
+                "folder_name_valid": qgis_checks["structure"].get("folder_name_valid", True),
+                "constraint_errors": qgis_checks["package_constraints"].get("errors", []),
+                "is_compliant": qgis_checks["package_constraints"].get("is_valid", True)
+                and qgis_checks["structure"].get("is_valid", True),
             }
 
         return analyses
@@ -641,6 +651,7 @@ class ProjectAnalyzer:
                 int(compliance.get("issues_count", 0)) > 0
                 or not structure.get("is_valid", True)
                 or not metadata.get("is_valid", True)
+                or not qgis_checks["package_constraints"].get("is_valid", True)
             ):
                 logger.error(
                     "❌ Strict Mode: Critical QGIS compliance issues detected. Failing analysis."

@@ -34,20 +34,21 @@ The **QGIS Plugin Analyzer** is a static analysis tool designed specifically for
 
 | Feature | **QGIS Plugin Analyzer** | flake8-qgis | Ruff (Standard) | Official Repo Bot |
 | :--- | :---: | :---: | :---: | :---: |
+| **Run Locally / Offline**| ✅ (Your Machine) | ✅ | ✅ | ❌ (Upload Only) |
 | **Static Linting** | ✅ (Ruff + Custom) | ✅ (flake8) | ✅ (General) | ✅ (Limited) |
 | **QGIS-Specific Rules**| ✅ (Precise AST) | ✅ (Regex/AST) | ❌ | ✅ |
 | **Interactive Auto-Fix**| ✅ | ❌ | ❌ | ❌ |
 | **Semantic Analysis**  | ✅ | ❌ | ❌ | ❌ |
-| **Security Audit**     | ✅ (Bandit-style) | ❌ | ❌ | ❌ |
-| **Secret Scanning**    | ✅ (Entropy) | ❌ | ❌ | ❌ |
+| **Security Audit**     | ✅ (Bandit-style) | ❌ | ❌ | ✅ (Server-side) |
+| **Secret Scanning**    | ✅ (Entropy) | ❌ | ❌ | ✅ (Server-side) |
 | **HTML/MD Reports**    | ✅ | ❌ | ❌ | ❌ |
 | **AI Context Gen**      | ✅ (Project Brain) | ❌ | ❌ | ❌ |
 
 ### Key Differentiators
 
-1.  **High-Performance Hybrid Engine**: Combines multi-core AST processing with deep understanding of cross-file relationships and Qt-specific patterns.
-2.  **Safety-First Auto-Fixing**: AST-based transformations with Git status verification and interactive diff previews.
-3.  **Repository Compliance**: Local pre-checks to ensure your plugin passes the Official QGIS Repository policies.
+1.  **Shift Left (Run Locally)**: The biggest advantage is being able to run the **same high-standard checks** as the Official Repository *before* you upload your plugin. No more "reject-fix-upload" loops.
+2.  **High-Performance Hybrid Engine**: Combines multi-core AST processing with deep understanding of cross-file relationships and Qt-specific patterns.
+3.  **Safety-First Auto-Fixing**: AST-based transformations with Git status verification and interactive diff previews.
 4.  **Zero Runtime Stack**: Minimal footprint, ultra-fast execution, and easy CI integration.
 5.  **AI-Centric Design**: Built to help developers and AI agents understand complex QGIS plugins instantly.
 

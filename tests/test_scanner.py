@@ -45,6 +45,7 @@ version=0.1
 qgisMinimumVersion=3.0
 author=Tester
 email=test@test.com
+about=Test About
 """
         meta_file = self.test_dir / "metadata.txt"
         meta_file.write_text(metadata_content, encoding="utf-8")
