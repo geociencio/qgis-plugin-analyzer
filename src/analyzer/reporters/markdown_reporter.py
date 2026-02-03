@@ -146,6 +146,45 @@ def _build_markdown_repo_standards(analyses: Dict[str, Any]) -> List[str]:
     return lines
 
 
+def _build_markdown_research_metrics(research: Dict[str, Any]) -> List[str]:
+    """Builds the research-based metrics section.
+
+    Args:
+        research: The research summary dictionary.
+
+    Returns:
+        A list of Markdown lines for the research metrics section.
+    """
+    if not research:
+        return []
+
+    lines = [
+        "\n## 🔬 Research-based Metrics",
+        f"- **Type Hint Coverage (Params)**: {research.get('type_hint_coverage')}% (Microsoft/Dropbox Std)",
+        f"- **Type Hint Coverage (Returns)**: {research.get('return_hint_coverage')}%",
+        f"- **Docstring Coverage**: {research.get('docstring_coverage')}% (PEP 257)",
+    ]
+    styles = ", ".join(research.get("detected_docstring_styles", [])) or "PEP 257 (Default)"
+    lines.append(f"- **Detected Documentation Style**: {styles}")
+    return lines
+
+
+def _build_markdown_general_metrics(metrics: Dict[str, Any]) -> List[str]:
+    """Builds the general metrics section.
+
+    Args:
+        metrics: The metrics dictionary.
+
+    Returns:
+        A list of Markdown lines for the general metrics section.
+    """
+    lines = ["\n## 📊 General Metrics"]
+    for k, v in metrics.items():
+        if k not in ["quality_score", "maintainability_score", "overall_score"]:
+            lines.append(f"- **{k.replace('_', ' ').title()}**: {v}")
+    return lines
+
+
 def _build_markdown_security_section(security: Dict[str, Any]) -> List[str]:
     """Builds the security analysis section with findings.
 
@@ -202,22 +241,16 @@ def generate_markdown_summary(analyses: Dict[str, Any], output_path: pathlib.Pat
         )
         f.write("\n")
 
+        # Research-based metrics
         if research:
-            f.write("\n## 🔬 Research-based Metrics\n")
-            f.write(
-                f"- **Type Hint Coverage (Params)**: {research.get('type_hint_coverage')}% (Microsoft/Dropbox Std)\n"
-            )
-            f.write(
-                f"- **Type Hint Coverage (Returns)**: {research.get('return_hint_coverage')}% \n"
-            )
-            f.write(f"- **Docstring Coverage**: {research.get('docstring_coverage')}% (PEP 257)\n")
-            styles = ", ".join(research.get("detected_docstring_styles", [])) or "PEP 257 (Default)"
-            f.write(f"- **Detected Documentation Style**: {styles}\n")
+            research_lines = _build_markdown_research_metrics(research)
+            f.write("\n".join(research_lines))
+            f.write("\n")
 
-        f.write("\n## 📊 General Metrics\n")
-        for k, v in metrics.items():
-            if k not in ["quality_score", "maintainability_score", "overall_score"]:
-                f.write(f"- **{k.replace('_', ' ').title()}**: {v}\n")
+        # General metrics
+        general_metrics_lines = _build_markdown_general_metrics(metrics)
+        f.write("\n".join(general_metrics_lines))
+        f.write("\n")
 
         # QGIS-specific findings
         if project_type == "qgis":

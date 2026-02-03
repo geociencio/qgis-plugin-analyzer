@@ -9,6 +9,36 @@ import json
 import pathlib
 from typing import Any, Dict, List
 
+# Helper functions for formatting
+
+
+def print_header(title: str) -> None:
+    """Print a formatted section header.
+
+    Args:
+        title: The header title to display.
+    """
+    print(f"\n\033[1m{title}\033[0m")
+
+
+def print_separator(char: str = "=", length: int = 45) -> None:
+    """Print a separator line.
+
+    Args:
+        char: The character to use for the separator.
+        length: The length of the separator line.
+    """
+    print(char * length)
+
+
+def print_success(message: str) -> None:
+    """Print a success message in green.
+
+    Args:
+        message: The success message to display.
+    """
+    print(f"\n\033[92m{message}\033[0m")
+
 
 def print_colored_score(label: str, score: Any) -> None:
     """Prints a score with ANSI colors based on its value.
@@ -71,72 +101,122 @@ def report_summary(input_path: pathlib.Path, by: str = "total") -> bool:
         return False
 
 
-def _report_total(data: Dict[str, Any]) -> bool:
-    """Prints the executive total summary."""
-    print("\n\033[1m📋 QGIS Plugin Analyzer: Project Summary\033[0m")
-    print("=" * 45)
+# Specialized methods for _report_total
 
-    # 1. Quality Indicators
-    metrics = data.get("metrics", {})
-    print("\n\033[1m📊 Quality Indicators\033[0m")
+
+def _print_quality_indicators(metrics: Dict[str, Any]) -> None:
+    """Print quality scores section.
+
+    Args:
+        metrics: Dictionary containing quality metrics.
+    """
+    print_header("📊 Quality Indicators")
     print_colored_score("- Module Stability Score", metrics.get("quality_score", "N/A"))
     print_colored_score("- Code Maintainability Score", metrics.get("maintainability_score", "N/A"))
     print_colored_score("- Security Score (Bandit)", metrics.get("security_score", "N/A"))
 
-    # 2. Research Metrics
-    research = data.get("research_summary", {})
-    if research:
-        print("\n\033[1m🔬 Research-based Metrics\033[0m")
-        params_cov = research.get("type_hint_coverage", 0)
-        returns_cov = research.get("return_hint_coverage", 0)
-        doc_cov = research.get("docstring_coverage", 0)
-        styles = research.get("detected_docstring_styles", [])
-        style = styles[0] if styles else "Unknown"
 
-        print(f"- Type Hint Coverage (Params): {params_cov:.1f}%")
-        print(f"- Type Hint Coverage (Returns): {returns_cov:.1f}%")
-        print(f"- Docstring Coverage: {doc_cov:.1f}%")
-        print(f"- Documentation Style: {style}")
+def _print_research_metrics(research: Dict[str, Any]) -> None:
+    """Print research-based metrics section.
 
-    # 3. Issue Summary
+    Args:
+        research: Dictionary containing research metrics.
+    """
+    if not research:
+        return
+
+    print_header("🔬 Research-based Metrics")
+    params_cov = research.get("type_hint_coverage", 0)
+    returns_cov = research.get("return_hint_coverage", 0)
+    doc_cov = research.get("docstring_coverage", 0)
+    styles = research.get("detected_docstring_styles", [])
+    style = styles[0] if styles else "Unknown"
+
+    print(f"- Type Hint Coverage (Params): {params_cov:.1f}%")
+    print(f"- Type Hint Coverage (Returns): {returns_cov:.1f}%")
+    print(f"- Docstring Coverage: {doc_cov:.1f}%")
+    print(f"- Documentation Style: {style}")
+
+
+def _collect_all_issues(data: Dict[str, Any]) -> List[Dict[str, Any]]:
+    """Collect and merge AST issues and security findings.
+
+    Args:
+        data: The full analysis results dictionary.
+
+    Returns:
+        List of all issues with file paths added.
+    """
     issues: List[Dict[str, Any]] = []
+
+    # Collect AST issues
     for module in data.get("modules", []):
         mod_path = module.get("path", "unknown")
         for issue in module.get("ast_issues", []):
             issue["file"] = mod_path
             issues.append(issue)
 
-    # Add Security Findings
+    # Add security findings
     security_findings = data.get("security", {}).get("findings", [])
     for finding in security_findings:
         finding["type"] = f"SECURITY:{finding.get('type', 'generic')}"
         issues.append(finding)
 
+    return issues
+
+
+def _print_issue_statistics(issues: List[Dict[str, Any]]) -> None:
+    """Print issue counts grouped by type.
+
+    Args:
+        issues: List of all issues.
+    """
+    print(f"\n\033[1m⚠️  Issue Statistics ({len(issues)} total)\033[0m")
+    counts: Dict[str, int] = {}
+    for issue in issues:
+        issue_type = issue.get("type", "unknown")
+        counts[issue_type] = counts.get(issue_type, 0) + 1
+
+    for issue_type, count in sorted(counts.items(), key=lambda x: x[1], reverse=True):
+        print(f"- {issue_type}: {count}")
+
+
+def _print_sample_issues(issues: List[Dict[str, Any]], limit: int = 5) -> None:
+    """Print sample issues with formatting.
+
+    Args:
+        issues: List of all issues.
+        limit: Maximum number of issues to display.
+    """
+    print_header("🔍 Sample Issues")
+    for issue in issues[:limit]:
+        severity = issue.get("severity", "info").upper()
+        sev_color = "\033[91m" if severity == "ERROR" else "\033[93m"
+        print(
+            f"{sev_color}[{severity}]\033[0m {issue['file']}:{issue.get('line', '?')} - {issue['message']}"
+        )
+
+    if len(issues) > limit:
+        print(f"... and {len(issues) - limit} more issues.")
+
+
+def _report_total(data: Dict[str, Any]) -> bool:
+    """Prints the executive total summary."""
+    print_header("📋 QGIS Plugin Analyzer: Project Summary")
+    print_separator()
+
+    _print_quality_indicators(data.get("metrics", {}))
+    _print_research_metrics(data.get("research_summary", {}))
+
+    issues = _collect_all_issues(data)
     if not issues:
-        print("\n\033[92m✅ No issues detected! Your project looks great.\033[0m")
+        print_success("✅ No issues detected! Your project looks great.")
     else:
-        print(f"\n\033[1m⚠️  Issue Statistics ({len(issues)} total)\033[0m")
-        counts: Dict[str, int] = {}
-        for i in issues:
-            t = i.get("type", "unknown")
-            counts[t] = counts.get(t, 0) + 1
+        _print_issue_statistics(issues)
+        _print_sample_issues(issues)
 
-        for t, c in sorted(counts.items(), key=lambda x: x[1], reverse=True):
-            print(f"- {t}: {c}")
-
-        # 4. Sample Issues
-        print("\n\033[1m🔍 Sample Issues\033[0m")
-        for i in issues[:5]:
-            severity = i.get("severity", "info").upper()
-            sev_color = "\033[91m" if severity == "ERROR" else "\033[93m"
-            print(
-                f"{sev_color}[{severity}]\033[0m {i['file']}:{i.get('line', '?')} - {i['message']}"
-            )
-
-        if len(issues) > 5:
-            print(f"... and {len(issues) - 5} more issues.")
-
-    print("\n" + "=" * 45)
+    print()
+    print_separator()
     return True
 
 
@@ -230,6 +310,66 @@ def _report_by_classes(data: Dict[str, Any]) -> bool:
     return True
 
 
+# Specialized methods for _report_security
+
+
+def _group_findings_by_severity(findings: List[Dict[str, Any]]) -> Dict[str, List[Dict[str, Any]]]:
+    """Group security findings by severity level.
+
+    Args:
+        findings: List of security findings.
+
+    Returns:
+        Dictionary mapping severity levels to lists of findings.
+    """
+    by_severity: Dict[str, List[Dict[str, Any]]] = {"high": [], "medium": [], "low": []}
+    for finding in findings:
+        sev = finding.get("severity", "medium").lower()
+        if sev in by_severity:
+            by_severity[sev].append(finding)
+        else:
+            by_severity.setdefault("other", []).append(finding)
+    return by_severity
+
+
+def _print_security_finding(finding: Dict[str, Any], severity: str) -> None:
+    """Print a single security finding with formatting.
+
+    Args:
+        finding: The security finding dictionary.
+        severity: The severity level (high, medium, low).
+    """
+    sev_color = (
+        "\033[91m" if severity == "high" else ("\033[93m" if severity == "medium" else "\033[94m")
+    )
+    print(
+        f"{sev_color}[{severity.upper()}]\033[0m {finding.get('file')}:{finding.get('line')} - {finding.get('type')}"
+    )
+    print(f"  \033[2mMessage: {finding.get('message')}\033[0m")
+    code_snippet = finding.get("code")
+    if isinstance(code_snippet, str) and code_snippet.strip():
+        print(f"  \033[2mCode   : {code_snippet.strip()}\033[0m")
+    print()
+
+
+def _print_security_findings_by_severity(by_severity: Dict[str, List[Dict[str, Any]]]) -> None:
+    """Print all findings grouped by severity.
+
+    Args:
+        by_severity: Dictionary mapping severity levels to findings.
+    """
+    print_header("🛑 Detailed Findings")
+    print_separator("-", 60)
+
+    for severity in ["high", "medium", "low"]:
+        group = by_severity.get(severity, [])
+        if not group:
+            continue
+
+        for finding in group:
+            _print_security_finding(finding, severity)
+
+
 def _report_security(data: Dict[str, Any]) -> bool:
     """Prints a focused security analysis report.
 
@@ -239,8 +379,8 @@ def _report_security(data: Dict[str, Any]) -> bool:
     Returns:
         True if the report was successfully generated.
     """
-    print("\n\033[1m🛡️  QGIS Plugin Analyzer: Security Scan\033[0m")
-    print("=" * 60)
+    print_header("🛡️  QGIS Plugin Analyzer: Security Scan")
+    print_separator("=", 60)
 
     security = data.get("security", {})
     findings = security.get("findings", [])
@@ -250,37 +390,10 @@ def _report_security(data: Dict[str, Any]) -> bool:
     print(f"Total vulnerabilities detected: {len(findings)}")
 
     if not findings:
-        print("\n\033[92m✅ No security vulnerabilities found!\033[0m")
+        print_success("✅ No security vulnerabilities found!")
     else:
-        print("\n\033[1m🛑 Detailed Findings\033[0m")
-        print("-" * 60)
+        by_severity = _group_findings_by_severity(findings)
+        _print_security_findings_by_severity(by_severity)
 
-        # Group by severity
-        by_severity: Dict[str, List[Dict[str, Any]]] = {"high": [], "medium": [], "low": []}
-        for f in findings:
-            sev = f.get("severity", "medium").lower()
-            if sev in by_severity:
-                by_severity[sev].append(f)
-            else:
-                by_severity.setdefault("other", []).append(f)
-
-        for sev in ["high", "medium", "low"]:
-            group = by_severity.get(sev, [])
-            if not group:
-                continue
-
-            sev_color = (
-                "\033[91m" if sev == "high" else ("\033[93m" if sev == "medium" else "\033[94m")
-            )
-            for f in group:
-                print(
-                    f"{sev_color}[{sev.upper()}]\033[0m {f.get('file')}:{f.get('line')} - {f.get('type')}"
-                )
-                print(f"  \033[2mMessage: {f.get('message')}\033[0m")
-                code_snippet = f.get("code")
-                if isinstance(code_snippet, str) and code_snippet.strip():
-                    print(f"  \033[2mCode   : {code_snippet.strip()}\033[0m")
-                print()
-
-    print("=" * 60)
+    print_separator("=", 60)
     return True
