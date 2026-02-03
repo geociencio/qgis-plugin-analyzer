@@ -18,6 +18,12 @@
 #  *                                                                         *
 #  ***************************************************************************/
 
+"""Module for scanning and auditing QGIS plugin Python files.
+
+This module provides functionalities to analyze individual Python modules using AST,
+check for security vulnerabilities, and audit against QGIS coding standards.
+"""
+
 import ast
 import pathlib
 from typing import Any, Dict, List, Optional
@@ -53,105 +59,125 @@ def analyze_module_worker(
         could not be processed.
     """
     try:
-        if project_path.is_file():
-            rel_path = py_file.name
-        else:
-            rel_path = str(py_file.relative_to(project_path))
-
-        # Fast read
-        with open(py_file, encoding="utf-8-sig", errors="replace") as f:
-            content = f.read()
-
+        rel_path = _get_relative_path(py_file, project_path)
+        content = _read_file_content(py_file)
         if not content:
             return None
 
-        # Parse AST
-        try:
-            tree = ast.parse(content)
-        except SyntaxError:
-            return {
-                "path": rel_path,
-                "lines": content.count("\n") + 1,
-                "syntax_error": True,
-                "file_size_kb": py_file.stat().st_size / 1024,
-                "complexity": 1,
-                "functions": [],
-                "classes": [],
-                "imports": [],
-                "has_main": False,
-                "docstrings": {"module": False},
-                "ast_issues": [],
-                "research_metrics": {
-                    "docstring_styles": [],
-                    "type_hint_stats": {
-                        "total_parameters": 0,
-                        "annotated_parameters": 0,
-                        "has_return_hint": 0,
-                        "total_functions": 0,
-                    },
-                    "docstring_stats": {"total_public_items": 0, "has_docstring": 0},
-                },
-            }
+        # Parse AST with error handling
+        tree_or_error = _parse_ast(content, rel_path, py_file)
+        if isinstance(tree_or_error, dict) and tree_or_error.get("syntax_error"):
+            return tree_or_error
+
+        tree = tree_or_error
 
         # Extract information using helper functions
-        functions = extract_functions_from_ast(tree)
-        classes = extract_classes_from_ast(tree)
-        imports = extract_imports_from_ast(tree)
-        module_complexity = calculate_module_complexity(tree)
-        has_main = check_main_guard(tree)
+        results = {
+            "path": rel_path,
+            "lines": content.count("\n") + 1,
+            "functions": extract_functions_from_ast(tree),
+            "classes": extract_classes_from_ast(tree),
+            "imports": extract_imports_from_ast(tree),
+            "complexity": calculate_module_complexity(tree),
+            "has_main": check_main_guard(tree),
+            "docstrings": {"module": ast.get_docstring(tree) is not None},
+            "file_size_kb": py_file.stat().st_size / 1024,
+            "syntax_error": False,
+            "content": content,
+        }
 
-        # Custom AST Audit
+        # Run Audits
         visitor = QGISASTVisitor(rel_path, rules_config=rules_config)
         visitor.visit(tree)
 
-        # Security AST Audit
-        security_visitor = QGISSecurityVisitor(rel_path)
-        security_visitor.visit(tree)
+        results.update(
+            {
+                "ast_issues": visitor.issues,
+                "security_issues": _collect_security_issues(tree, content, rel_path),
+                "resource_usages": getattr(visitor, "resource_usages", []),
+                "research_metrics": {
+                    "docstring_styles": list(set(visitor.docstring_styles)),
+                    "type_hint_stats": visitor.type_hint_stats,
+                    "docstring_stats": visitor.docstring_stats,
+                    "security_findings_count": 0,
+                },
+            }
+        )
+        research_metrics = results["research_metrics"]
+        security_issues = results["security_issues"]
+        if isinstance(research_metrics, dict) and isinstance(security_issues, list):
+            research_metrics["security_findings_count"] = len(security_issues)
 
-        # Secrets Scanning (Regex + Entropy)
-        secret_scanner = SecretScanner()
-        secret_findings = secret_scanner.scan_text(content)
+        return results
+    except Exception:
+        return None
 
-        # Consolidate security issues
-        security_issues = security_visitor.findings
-        for sf in secret_findings:
-            security_issues.append(
-                {
-                    "file": rel_path,
-                    "line": sf.line,
-                    "type": sf.type,
-                    "severity": "high" if sf.confidence == "HIGH" else "medium",
-                    "message": sf.message,
-                    "confidence": sf.confidence.lower(),
-                }
-            )
 
+def _get_relative_path(py_file: pathlib.Path, project_path: pathlib.Path) -> str:
+    """Safely calculates the relative path of a file."""
+    if project_path.is_file():
+        return py_file.name
+    return str(py_file.relative_to(project_path))
+
+
+def _read_file_content(py_file: pathlib.Path) -> Optional[str]:
+    """Reads file content handling common encoding issues."""
+    try:
+        with open(py_file, encoding="utf-8-sig", errors="replace") as f:
+            return f.read()
+    except Exception:
+        return None
+
+
+def _parse_ast(content: str, rel_path: str, py_file: pathlib.Path) -> Any:
+    """Parses AST or returns a structured error dictionary."""
+    try:
+        return ast.parse(content)
+    except SyntaxError:
         return {
             "path": rel_path,
             "lines": content.count("\n") + 1,
-            "functions": functions,
-            "classes": classes,
-            "imports": imports,
-            "complexity": module_complexity,
-            "has_main": has_main,
-            "docstrings": {
-                "module": ast.get_docstring(tree) is not None,
-            },
+            "syntax_error": True,
             "file_size_kb": py_file.stat().st_size / 1024,
-            "syntax_error": False,
-            "ast_issues": visitor.issues,
-            "security_issues": security_issues,
-            "resource_usages": getattr(visitor, "resource_usages", []),
+            "complexity": 1,
+            "functions": [],
+            "classes": [],
+            "imports": [],
+            "has_main": False,
+            "docstrings": {"module": False},
+            "ast_issues": [],
             "research_metrics": {
-                "docstring_styles": list(set(visitor.docstring_styles)),
-                "type_hint_stats": visitor.type_hint_stats,
-                "docstring_stats": visitor.docstring_stats,
-                "security_findings_count": len(security_issues),
+                "docstring_styles": [],
+                "type_hint_stats": {
+                    "total_parameters": 0,
+                    "annotated_parameters": 0,
+                    "has_return_hint": 0,
+                    "total_functions": 0,
+                },
+                "docstring_stats": {"total_public_items": 0, "has_docstring": 0},
             },
-            "content": content,
         }
-    except Exception:
-        return None
+
+
+def _collect_security_issues(tree: ast.AST, content: str, rel_path: str) -> List[Dict[str, Any]]:
+    """Consolidates issues from AST security visitor and secret scanner."""
+    security_visitor = QGISSecurityVisitor(rel_path)
+    security_visitor.visit(tree)
+    issues = security_visitor.findings
+
+    secret_scanner = SecretScanner()
+    for sf in secret_scanner.scan_text(content):
+        issues.append(
+            {
+                "file": rel_path,
+                "line": sf.line,
+                "type": sf.type,
+                "severity": "high" if sf.confidence == "HIGH" else "medium",
+                "message": sf.message,
+                "confidence": sf.confidence.lower(),
+            }
+        )
+    return issues
 
 
 def audit_qgis_standards(
@@ -173,34 +199,20 @@ def audit_qgis_standards(
     results: Dict[str, Any] = {"issues": [], "issues_count": 0}
 
     for module in modules_data:
-        # Add issues found via AST
-        if "ast_issues" in module:
-            results["issues"].extend(module["ast_issues"])
+        # Add issues already found via AST
+        results["issues"].extend(module.get("ast_issues", []))
 
-        # Use cached content if available
         path = module.get("path")
-        content = module.get("content")
+        content = module.get("content") or _try_read_module_file(path, project_path)
 
-        if content is None and path:
-            full_path = project_path / path
-            if full_path.exists():
-                try:
-                    content = full_path.read_text(encoding="utf-8", errors="replace")
-                except Exception:
-                    continue
-
-        if content is None:
+        if not content:
             continue
 
+        # Run Regex rules
         for rule in rules:
-            rule_id = rule["id"]
-            severity_val = rules_config.get(rule_id, "warning") if rules_config else "warning"
-            if severity_val == "ignore":
+            internal_severity = _get_rule_severity(rule, rules_config)
+            if internal_severity == "ignore":
                 continue
-
-            # Map config severity to internal severity
-            severity_map = {"error": "high", "warning": "medium", "info": "low"}
-            internal_severity = severity_map.get(severity_val, rule["severity"])
 
             for match in rule["pattern"].finditer(content):
                 line_no = content.count("\n", 0, match.start()) + 1
@@ -217,6 +229,30 @@ def audit_qgis_standards(
 
     results["issues_count"] = len(results["issues"])
     return results
+
+
+def _try_read_module_file(path: Optional[str], project_path: pathlib.Path) -> Optional[str]:
+    """Attempts to read a module file from path if content is missing."""
+    if not path:
+        return None
+    full_path = project_path / path
+    if full_path.exists():
+        return _read_file_content(full_path)
+    return None
+
+
+def _get_rule_severity(rule: Dict[str, Any], config: Optional[Dict[str, Any]]) -> str:
+    """Calculates rule severity based on configuration."""
+    rule_id = rule["id"]
+    severity_val = config.get(rule_id, "warning") if config else "warning"
+
+    if severity_val == "ignore":
+        return "ignore"
+
+    # Map config severity to internal severity
+    severity_map = {"error": "high", "warning": "medium", "info": "low"}
+    internal_severity = severity_map.get(severity_val, rule["severity"])
+    return str(internal_severity)
 
 
 # End of scanner.py
