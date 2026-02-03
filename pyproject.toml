@@ -66,6 +66,7 @@ ignore = ["E701", "E501"] # Permite if cond: statement y líneas largas
 
 [tool.ruff.lint.per-file-ignores]
 "src/analyzer/reporters.py" = ["F401", "F403", "F405"] # Dominate usa mucho import *
+"src/analyzer/visitors/*.py" = ["N802"] # visit_* methods are part of ast.NodeVisitor API
 
 [tool.qgis-analyzer.profiles.default]
 strict = false
