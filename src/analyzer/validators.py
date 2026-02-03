@@ -10,7 +10,7 @@ import socket
 import urllib.error
 import urllib.parse
 import urllib.request
-from typing import Any, Dict
+from typing import Any, Dict, List
 
 
 def is_ssrf_safe(url: str) -> bool:
@@ -207,3 +207,40 @@ def validate_metadata(metadata_path: pathlib.Path) -> Dict[str, Any]:
         "recommended_missing": recommended_missing,
         "metadata": metadata,
     }
+
+
+def calculate_package_size(directory: pathlib.Path) -> float:
+    """Calculates the total size of a directory in megabytes.
+
+    Args:
+        directory: The directory path.
+
+    Returns:
+        The total size in MB.
+    """
+    total_size = 0
+    for file in directory.rglob("*"):
+        if file.is_file():
+            total_size += file.stat().st_size
+    return total_size / (1024 * 1024)
+
+
+def scan_for_binaries(directory: pathlib.Path) -> List[str]:
+    """Scans for binary files in the directory.
+
+    Args:
+        directory: The directory path.
+
+    Returns:
+        A list of relative paths to detected binary files.
+    """
+    binary_extensions = {".dll", ".so", ".exe", ".dylib", ".pyd", ".o", ".a"}
+    binaries = []
+    for file in directory.rglob("*"):
+        if file.suffix.lower() in binary_extensions:
+            try:
+                rel_path = file.relative_to(directory)
+                binaries.append(str(rel_path))
+            except ValueError:
+                binaries.append(str(file))
+    return binaries

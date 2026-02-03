@@ -1,10 +1,10 @@
 {
   "antigravity-framerepo/scaffold/skills/data-science/examples/eda_template.py": {
-    "hash": "eb5d1bd9f7c67dbb1f85fd27460bdb46ef7fe133d735173057d98ace181d197c",
+    "hash": "c7e182822ebcc8cd2af17a4488ddf30b105d3218c7b16dd3e2a74d280e22552d",
     "data": {
       "path": "antigravity-framerepo/scaffold/skills/data-science/examples/eda_template.py",
-      "lines": 42,
-      "file_size_kb": 1.208984375,
+      "lines": 47,
+      "file_size_kb": 1.23828125,
       "complexity": 3,
       "imports": [
         "pandas",
@@ -45,94 +45,94 @@
           "type": "magic_number",
           "severity": "low",
           "message": "Magic number detected: 3",
-          "line": 27,
+          "line": 28,
           "value": 3
         },
         {
           "type": "magic_number",
           "severity": "low",
           "message": "Magic number detected: 100",
-          "line": 38,
+          "line": 42,
           "value": 100
         },
         {
           "type": "magic_number",
           "severity": "low",
           "message": "Magic number detected: 5",
-          "line": 39,
+          "line": 43,
           "value": 5
         },
         {
           "type": "magic_number",
           "severity": "low",
           "message": "Magic number detected: 2",
-          "line": 40,
+          "line": 44,
           "value": 2
         },
         {
           "type": "magic_number",
           "severity": "low",
           "message": "Magic number detected: 100",
-          "line": 40,
+          "line": 44,
           "value": 100
         },
         {
           "type": "magic_number",
           "severity": "low",
           "message": "Magic number detected: 10",
-          "line": 20,
+          "line": 21,
           "value": 10
         },
         {
           "type": "magic_number",
           "severity": "low",
           "message": "Magic number detected: 8",
-          "line": 20,
+          "line": 21,
           "value": 8
         },
         {
           "type": "magic_number",
           "severity": "low",
           "message": "Magic number detected: 8",
-          "line": 29,
+          "line": 30,
           "value": 8
         },
         {
           "type": "magic_number",
           "severity": "low",
           "message": "Magic number detected: 4",
-          "line": 29,
+          "line": 30,
           "value": 4
         },
         {
           "type": "magic_number",
           "severity": "low",
           "message": "Magic number detected: 2",
-          "line": 39,
+          "line": 43,
           "value": 2
         },
         {
           "type": "magic_number",
           "severity": "low",
           "message": "Magic number detected: 100",
-          "line": 39,
+          "line": 43,
           "value": 100
         }
       ],
       "ast_security": [],
       "patterns": {},
       "unused_imports": [],
-      "maintenance_index": 46.6,
+      "maintenance_index": 45.53,
       "syntax_error": false
     },
-    "timestamp": 1769983681.2412477
+    "timestamp": 1770089110.673357
   },
   "antigravity-framerepo/scaffold/processing/algorithm_template.py": {
-    "hash": "1bd6c3efa38e988b815a2ab6a56805d2b63f83545207fad988484308447617b9",
+    "hash": "3e62696e2fe940d73210561049e5d89f6c87041fbcaf64be7eedc4bb8d3d9186",
     "data": {
       "path": "antigravity-framerepo/scaffold/processing/algorithm_template.py",
-      "lines": 62,
-      "file_size_kb": 1.8759765625,
+      "lines": 60,
+      "file_size_kb": 1.69921875,
       "complexity": 0,
       "imports": [
         "qgis.core.QgsProcessing",
@@ -193,17 +193,17 @@
       "ast_security": [],
       "patterns": {},
       "unused_imports": [],
-      "maintenance_index": 44.23,
+      "maintenance_index": 44.55,
       "syntax_error": false
     },
-    "timestamp": 1769983681.2414503
+    "timestamp": 1770089110.671719
   },
   "antigravity-framerepo/scaffold/skills/data-science/scripts/validate_dataset.py": {
-    "hash": "d00faa6cb68322e408e70e1def3f0f68e5ce4af096ef09b1eab6f617649c0fda",
+    "hash": "be0f5bd63cdc6d8936edfb854e8ec0470aead4f14e5bcd5ca137871b56361443",
     "data": {
       "path": "antigravity-framerepo/scaffold/skills/data-science/scripts/validate_dataset.py",
-      "lines": 48,
-      "file_size_kb": 1.27734375,
+      "lines": 50,
+      "file_size_kb": 1.271484375,
       "complexity": 5,
       "imports": [
         "argparse",
@@ -243,23 +243,23 @@
         {
           "pattern": "except Exception:",
           "severity": "low",
-          "line": 21,
+          "line": 22,
           "description": "Too broad exception handler"
         }
       ],
       "patterns": {},
       "unused_imports": [],
-      "maintenance_index": 44.84,
+      "maintenance_index": 44.45,
       "syntax_error": false
     },
-    "timestamp": 1769983681.242294
+    "timestamp": 1770089110.6767797
   },
   "antigravity-framerepo/scaffold/skills/data-science/scripts/generate_mock_data.py": {
-    "hash": "3c0eab90f3c44d65e2ef596a00438b509a36c49c5c1b4552fdeb33908752a4ad",
+    "hash": "8e29e2ab2c11572b710a253be1d6d20b6d73c925c247df6fdf33fe20fe2fd7a9",
     "data": {
       "path": "antigravity-framerepo/scaffold/skills/data-science/scripts/generate_mock_data.py",
-      "lines": 44,
-      "file_size_kb": 1.580078125,
+      "lines": 48,
+      "file_size_kb": 1.6005859375,
       "complexity": 1,
       "imports": [
         "pandas",
@@ -300,94 +300,94 @@
           "type": "magic_number",
           "severity": "low",
           "message": "Magic number detected: 100",
-          "line": 8,
+          "line": 9,
           "value": 100
         },
         {
           "type": "magic_number",
           "severity": "low",
           "message": "Magic number detected: 500",
-          "line": 30,
+          "line": 33,
           "value": 500
         },
         {
           "type": "magic_number",
           "severity": "low",
           "message": "Magic number detected: 42",
-          "line": 15,
+          "line": 16,
           "value": 42
         },
         {
           "type": "magic_number",
           "severity": "low",
           "message": "Magic number detected: 100",
-          "line": 42,
+          "line": 46,
           "value": 100
         },
         {
           "type": "magic_number",
           "severity": "low",
           "message": "Magic number detected: 50",
-          "line": 21,
+          "line": 23,
           "value": 50
         },
         {
           "type": "magic_number",
           "severity": "low",
           "message": "Magic number detected: 100",
-          "line": 22,
+          "line": 24,
           "value": 100
         },
         {
           "type": "magic_number",
           "severity": "low",
           "message": "Magic number detected: 5",
-          "line": 27,
+          "line": 30,
           "value": 5
         },
         {
           "type": "magic_number",
           "severity": "low",
           "message": "Magic number detected: 10",
-          "line": 21,
+          "line": 23,
           "value": 10
         },
         {
           "type": "magic_number",
           "severity": "low",
           "message": "Magic number detected: 0.3",
-          "line": 20,
+          "line": 22,
           "value": 0.3
         },
         {
           "type": "magic_number",
           "severity": "low",
           "message": "Magic number detected: 0.4",
-          "line": 20,
+          "line": 22,
           "value": 0.4
         },
         {
           "type": "magic_number",
           "severity": "low",
           "message": "Magic number detected: 0.2",
-          "line": 20,
+          "line": 22,
           "value": 0.2
         },
         {
           "type": "magic_number",
           "severity": "low",
           "message": "Magic number detected: 0.1",
-          "line": 20,
+          "line": 22,
           "value": 0.1
         }
       ],
       "ast_security": [],
       "patterns": {},
       "unused_imports": [],
-      "maintenance_index": 44.94,
+      "maintenance_index": 44.12,
       "syntax_error": false
     },
-    "timestamp": 1769983681.2445118
+    "timestamp": 1770089110.6770804
   },
   "src/__init__.py": {
     "hash": "9b6ee75c3385a52b4ecdf83742a79ac3bca3d70366a67387ef1939b2f942a6b0",
@@ -431,11 +431,11 @@
     "timestamp": 1769983681.2450302
   },
   "antigravity-framerepo/bootstrap.py": {
-    "hash": "887fa593d79147606f8875eb27bbdb9cd6951ac7e69daee1f6b24614dfded061",
+    "hash": "87a876a9637b00eab20cdfcf3c724ec11ce4195c8915c09324017588b226831e",
     "data": {
       "path": "antigravity-framerepo/bootstrap.py",
-      "lines": 110,
-      "file_size_kb": 3.6669921875,
+      "lines": 120,
+      "file_size_kb": 3.7119140625,
       "complexity": 20,
       "imports": [
         "os",
@@ -480,14 +480,14 @@
           "type": "magic_number",
           "severity": "low",
           "message": "Magic number detected: 3",
-          "line": 25,
+          "line": 27,
           "value": 3
         },
         {
           "type": "magic_number",
           "severity": "low",
           "message": "Magic number detected: 10",
-          "line": 25,
+          "line": 27,
           "value": 10
         }
       ],
@@ -495,22 +495,22 @@
         {
           "pattern": "except Exception:",
           "severity": "low",
-          "line": 106,
+          "line": 115,
           "description": "Too broad exception handler"
         },
         {
           "pattern": "except Exception:",
           "severity": "low",
-          "line": 72,
+          "line": 79,
           "description": "Too broad exception handler"
         }
       ],
       "patterns": {},
       "unused_imports": [],
-      "maintenance_index": 31.69,
+      "maintenance_index": 30.87,
       "syntax_error": false
     },
-    "timestamp": 1770082378.994884
+    "timestamp": 1770089110.6751401
   },
   "src/analyzer/__init__.py": {
     "hash": "e1c55d1f25642c2c2b8267228d262154388ac4c24915378ae123895cd5d62707",
@@ -554,11 +554,11 @@
     "timestamp": 1770082378.9874973
   },
   "antigravity-framerepo/scaffold/ui/dialog_template.py": {
-    "hash": "cabf49849a8a6204eb90a285f66b6901ade8a69eb84f8447c335c0224c4b17cd",
+    "hash": "3c58627e2a4daf8d1d4594a22af586f24c1f1782fba3158bbf377f99ff59dd1c",
     "data": {
       "path": "antigravity-framerepo/scaffold/ui/dialog_template.py",
-      "lines": 75,
-      "file_size_kb": 2.5107421875,
+      "lines": 85,
+      "file_size_kb": 2.5146484375,
       "complexity": 2,
       "imports": [
         "qgis.PyQt.QtWidgets.QDialog",
@@ -613,52 +613,52 @@
           "type": "magic_number",
           "severity": "low",
           "message": "Magic number detected: 400",
-          "line": 12,
+          "line": 21,
           "value": 400
         },
         {
           "type": "magic_number",
           "severity": "low",
           "message": "Magic number detected: 15",
-          "line": 18,
+          "line": 27,
           "value": 15
         },
         {
           "type": "magic_number",
           "severity": "low",
           "message": "Magic number detected: 20",
-          "line": 19,
+          "line": 28,
           "value": 20
         },
         {
           "type": "magic_number",
           "severity": "low",
           "message": "Magic number detected: 20",
-          "line": 19,
+          "line": 28,
           "value": 20
         },
         {
           "type": "magic_number",
           "severity": "low",
           "message": "Magic number detected: 20",
-          "line": 19,
+          "line": 28,
           "value": 20
         },
         {
           "type": "magic_number",
           "severity": "low",
           "message": "Magic number detected: 20",
-          "line": 19,
+          "line": 28,
           "value": 20
         }
       ],
       "ast_security": [],
       "patterns": {},
       "unused_imports": [],
-      "maintenance_index": 39.72,
+      "maintenance_index": 38.54,
       "syntax_error": false
     },
-    "timestamp": 1769983681.248465
+    "timestamp": 1770089110.6813233
   },
   ".ai-context/context_manager.py": {
     "hash": "0643894c692f63ba5466800984b7fc7f30ef24d714bb24a775d69a860ad07231",
@@ -881,11 +881,11 @@
     "timestamp": 1769983681.2515209
   },
   "antigravity-framerepo/scripts/skill_sync.py": {
-    "hash": "56166759bdb5bbd026dffed05912c3e69849dcf78f14ed383d016c79d7767cfb",
+    "hash": "9905226d6386e1ccde8fabf46ddfb07fbe2323e91e4c5c5534fafe163f9951ce",
     "data": {
       "path": "antigravity-framerepo/scripts/skill_sync.py",
-      "lines": 142,
-      "file_size_kb": 4.689453125,
+      "lines": 135,
+      "file_size_kb": 4.5810546875,
       "complexity": 21,
       "imports": [
         "re",
@@ -917,10 +917,10 @@
       },
       "halstead": {
         "vocabulary": 103,
-        "length": 299,
-        "volume": 1794,
-        "difficulty": 16.88,
-        "effort": 30281.14
+        "length": 293,
+        "volume": 1758,
+        "difficulty": 16.62,
+        "effort": 29209.85
       },
       "antipatterns": [],
       "ast_security": [
@@ -933,16 +933,16 @@
         {
           "pattern": "except Exception:",
           "severity": "low",
-          "line": 115,
+          "line": 108,
           "description": "Too broad exception handler"
         }
       ],
       "patterns": {},
       "unused_imports": [],
-      "maintenance_index": 27.44,
+      "maintenance_index": 27.98,
       "syntax_error": false
     },
-    "timestamp": 1770082379.0000792
+    "timestamp": 1770089110.68706
   },
   "scripts/skill_sync.py": {
     "hash": "9b9dbb0548694fc210af956950cebb3f2e82a9bcc20f74a1596518f5331baa75",
@@ -1114,36 +1114,24 @@
     "timestamp": 1769983681.2566857
   },
   "src/analyzer/cli.py": {
-    "hash": "c779841bc6399b5f112ecc175246a4cbf428639091d7b0ec5f0ca0f9b4a7bd9d",
+    "hash": "38ab1cf9f488ee673b1ab7e2ae4b78d06d96598066cb95ba599cad55ae9f67f4",
     "data": {
       "path": "src/analyzer/cli.py",
-      "lines": 214,
-      "file_size_kb": 6.9111328125,
-      "complexity": 10,
+      "lines": 34,
+      "file_size_kb": 1.3564453125,
+      "complexity": 1,
       "imports": [
-        "argparse",
-        "pathlib",
         "sys",
-        "__version__",
-        "commands.handle_analyze",
-        "commands.handle_fix",
-        "commands.handle_init",
-        "commands.handle_list_rules",
-        "commands.handle_security",
-        "commands.handle_summary",
-        "utils.logger",
-        "utils.setup_logger"
+        "cli.CLIApp"
       ],
       "classes": [],
       "functions": [
-        "_setup_argument_parser",
         "main"
       ],
       "docstrings": {
         "module": false,
         "classes": {},
         "functions": {
-          "_setup_argument_parser": true,
           "main": true
         }
       },
@@ -1153,32 +1141,25 @@
       },
       "has_main": true,
       "type_hints": {
-        "total_functions": 2,
-        "typed_functions": 2,
+        "total_functions": 1,
+        "typed_functions": 1,
         "coverage": 100.0
       },
       "halstead": {
-        "vocabulary": 115,
-        "length": 219,
-        "volume": 1314,
-        "difficulty": 8.75,
-        "effort": 11491.3
+        "vocabulary": 11,
+        "length": 12,
+        "volume": 36,
+        "difficulty": 1.69,
+        "effort": 60.75
       },
       "antipatterns": [],
-      "ast_security": [
-        {
-          "pattern": "except Exception:",
-          "severity": "low",
-          "line": 208,
-          "description": "Too broad exception handler"
-        }
-      ],
+      "ast_security": [],
       "patterns": {},
       "unused_imports": [],
-      "maintenance_index": 25.98,
+      "maintenance_index": 55.56,
       "syntax_error": false
     },
-    "timestamp": 1770082378.999951
+    "timestamp": 1770089110.6871119
   },
   "src/analyzer/rules/__init__.py": {
     "hash": "50d66863cf52150a142981a3feb8f0beff2677abd7492336a463d5e8ca82d858",
@@ -1329,82 +1310,72 @@
     "timestamp": 1770082379.000128
   },
   "src/analyzer/fixer.py": {
-    "hash": "e82ba3383af8a4981d4765ee26804e0ab4310478c97ef56c06683861974a2403",
+    "hash": "7e75399cb11fae4dac77968d7edc4d5b249e7f66cf2ed864cfce386677359839",
     "data": {
       "path": "src/analyzer/fixer.py",
-      "lines": 314,
-      "file_size_kb": 10.4033203125,
-      "complexity": 31,
+      "lines": 390,
+      "file_size_kb": 12.4521484375,
+      "complexity": 39,
       "imports": [
         "difflib",
         "pathlib",
         "subprocess",
-        "tempfile",
-        "abc.ABC",
-        "abc.abstractmethod",
         "typing.Any",
         "typing.Dict",
         "typing.List",
+        "typing.Optional",
+        "typing.TypedDict",
         "transformers.GDALImportTransformer",
         "transformers.I18nTransformer",
         "transformers.LegacyImportTransformer",
         "transformers.PrintToLogTransformer",
-        "transformers.apply_transformation"
+        "transformers.apply_transformation_to_content"
       ],
       "classes": [
-        "FixStrategy(ABC)",
-        "GDALImportFixer(FixStrategy)",
-        "LegacyImportFixer(FixStrategy)",
-        "PrintToLogFixer(FixStrategy)",
-        "I18nFixer(FixStrategy)",
+        "FixContext(TypedDict)",
+        "FixHandlerResult(TypedDict)",
+        "FixRegistry",
         "AutoFixer"
       ],
       "functions": [
         "check_git_status(1 args)",
         "show_diff(3 args)",
-        "can_fix(2 args)",
-        "apply_fix(3 args)",
-        "get_description(2 args)",
-        "can_fix(2 args)",
-        "apply_fix(3 args)",
-        "get_description(2 args)",
-        "can_fix(2 args)",
-        "apply_fix(3 args)",
-        "get_description(2 args)",
-        "can_fix(2 args)",
-        "apply_fix(3 args)",
-        "get_description(2 args)",
-        "can_fix(2 args)",
-        "apply_fix(3 args)",
-        "get_description(2 args)",
+        "__init__(1 args)",
+        "register(2 args)",
+        "decorator(1 args)",
+        "get_handler(2 args)",
+        "get_all_handlers(1 args)",
+        "create_ast_handler(3 args)",
+        "handler(1 args)",
         "__init__(3 args)",
         "get_fixable_issues(2 args)",
+        "_create_context(4 args)",
         "_check_git_status_with_prompt(2 args)",
         "_group_issues_by_file(2 args)",
-        "_apply_single_fix(6 args)",
         "apply_fixes(3 args)"
       ],
       "docstrings": {
         "module": false,
         "classes": {
-          "FixStrategy": true,
-          "GDALImportFixer": true,
-          "LegacyImportFixer": true,
-          "PrintToLogFixer": true,
-          "I18nFixer": true,
+          "FixContext": true,
+          "FixHandlerResult": true,
+          "FixRegistry": true,
           "AutoFixer": true
         },
         "functions": {
           "check_git_status": true,
           "show_diff": true,
-          "can_fix": false,
-          "apply_fix": false,
-          "get_description": false,
           "__init__": true,
+          "register": true,
+          "decorator": false,
+          "get_handler": true,
+          "get_all_handlers": true,
+          "create_ast_handler": true,
+          "handler": false,
           "get_fixable_issues": true,
+          "_create_context": true,
           "_check_git_status_with_prompt": true,
           "_group_issues_by_file": true,
-          "_apply_single_fix": true,
           "apply_fixes": true
         }
       },
@@ -1414,37 +1385,37 @@
       },
       "has_main": false,
       "type_hints": {
-        "total_functions": 23,
-        "typed_functions": 23,
-        "coverage": 100.0
+        "total_functions": 15,
+        "typed_functions": 13,
+        "coverage": 86.66666666666667
       },
       "halstead": {
-        "vocabulary": 142,
-        "length": 507,
-        "volume": 3549,
-        "difficulty": 24.98,
-        "effort": 88655.14
+        "vocabulary": 153,
+        "length": 566,
+        "volume": 3962,
+        "difficulty": 26.52,
+        "effort": 105079.13
       },
       "antipatterns": [
         {
           "type": "magic_number",
           "severity": "low",
           "message": "Magic number detected: 5",
-          "line": 39,
+          "line": 59,
           "value": 5
         },
         {
           "type": "magic_number",
           "severity": "low",
           "message": "Magic number detected: 60",
-          "line": 63,
+          "line": 83,
           "value": 60
         },
         {
           "type": "magic_number",
           "severity": "low",
           "message": "Magic number detected: 60",
-          "line": 76,
+          "line": 96,
           "value": 60
         }
       ],
@@ -1452,24 +1423,51 @@
         {
           "pattern": "except Exception:",
           "severity": "low",
-          "line": 303,
+          "line": 325,
+          "description": "Too broad exception handler"
+        },
+        {
+          "pattern": "except Exception:",
+          "severity": "low",
+          "line": 385,
           "description": "Too broad exception handler"
         }
       ],
-      "patterns": {},
+      "patterns": {
+        "Decorator": [
+          {
+            "name": "create_ast_handler",
+            "type": "function",
+            "confidence": 50,
+            "evidence": [
+              "Function contains and returns inner 'handler'"
+            ],
+            "module": "src/analyzer/fixer.py"
+          },
+          {
+            "name": "register",
+            "type": "function",
+            "confidence": 50,
+            "evidence": [
+              "Function contains and returns inner 'decorator'"
+            ],
+            "module": "src/analyzer/fixer.py"
+          }
+        ]
+      },
       "unused_imports": [],
-      "maintenance_index": 16.5,
+      "maintenance_index": 13.04,
       "syntax_error": false
     },
-    "timestamp": 1769983681.2738922
+    "timestamp": 1770089110.718861
   },
   "src/analyzer/reporters/markdown_reporter.py": {
-    "hash": "80d4cfd8af321656d331c7aec714ecc46c80900514c721900f428cc87cda4364",
+    "hash": "18d925a9bf2f25c50203bf442020f8451f227522effe90089d07fb2985679864",
     "data": {
       "path": "src/analyzer/reporters/markdown_reporter.py",
-      "lines": 253,
-      "file_size_kb": 9.34375,
-      "complexity": 24,
+      "lines": 286,
+      "file_size_kb": 10.1630859375,
+      "complexity": 25,
       "imports": [
         "datetime",
         "json",
@@ -1484,6 +1482,8 @@
         "_build_markdown_qgis_findings(1 args)",
         "_build_markdown_semantic_section(1 args)",
         "_build_markdown_repo_standards(1 args)",
+        "_build_markdown_research_metrics(1 args)",
+        "_build_markdown_general_metrics(1 args)",
         "_build_markdown_security_section(1 args)",
         "generate_markdown_summary(2 args)",
         "save_json_context(2 args)"
@@ -1496,6 +1496,8 @@
           "_build_markdown_qgis_findings": true,
           "_build_markdown_semantic_section": true,
           "_build_markdown_repo_standards": true,
+          "_build_markdown_research_metrics": true,
+          "_build_markdown_general_metrics": true,
           "_build_markdown_security_section": true,
           "generate_markdown_summary": true,
           "save_json_context": true
@@ -1507,16 +1509,16 @@
       },
       "has_main": false,
       "type_hints": {
-        "total_functions": 7,
-        "typed_functions": 7,
+        "total_functions": 9,
+        "typed_functions": 9,
         "coverage": 100.0
       },
       "halstead": {
-        "vocabulary": 183,
-        "length": 485,
-        "volume": 3395,
-        "difficulty": 12.66,
-        "effort": 42977.17
+        "vocabulary": 189,
+        "length": 515,
+        "volume": 3605,
+        "difficulty": 12.96,
+        "effort": 46724.02
       },
       "antipatterns": [
         {
@@ -1537,7 +1539,7 @@
           "type": "magic_number",
           "severity": "low",
           "message": "Magic number detected: 2",
-          "line": 253,
+          "line": 286,
           "value": 2
         },
         {
@@ -1551,17 +1553,17 @@
       "ast_security": [],
       "patterns": {},
       "unused_imports": [],
-      "maintenance_index": 19.63,
+      "maintenance_index": 18.15,
       "syntax_error": false
     },
-    "timestamp": 1770082379.0156677
+    "timestamp": 1770089110.7189512
   },
   "src/analyzer/reporters/summary_reporter.py": {
-    "hash": "762fdf35470d80b3ed48d407b828f827f8c65734146796aac3ff811e19e1cc1a",
+    "hash": "4709ab43a6fc0ce2057bd4148f61b6c71d4275926c8e35a54e02cf7a9202bd4d",
     "data": {
       "path": "src/analyzer/reporters/summary_reporter.py",
-      "lines": 286,
-      "file_size_kb": 9.34765625,
+      "lines": 399,
+      "file_size_kb": 11.982421875,
       "complexity": 41,
       "imports": [
         "json",
@@ -1572,24 +1574,46 @@
       ],
       "classes": [],
       "functions": [
+        "print_header(1 args)",
+        "print_separator(2 args)",
+        "print_success(1 args)",
         "print_colored_score(2 args)",
         "report_summary(2 args)",
+        "_print_quality_indicators(1 args)",
+        "_print_research_metrics(1 args)",
+        "_collect_all_issues(1 args)",
+        "_print_issue_statistics(1 args)",
+        "_print_sample_issues(2 args)",
         "_report_total(1 args)",
         "_report_by_modules(1 args)",
         "_report_by_functions(1 args)",
         "_report_by_classes(1 args)",
+        "_group_findings_by_severity(1 args)",
+        "_print_security_finding(2 args)",
+        "_print_security_findings_by_severity(1 args)",
         "_report_security(1 args)"
       ],
       "docstrings": {
         "module": true,
         "classes": {},
         "functions": {
+          "print_header": true,
+          "print_separator": true,
+          "print_success": true,
           "print_colored_score": true,
           "report_summary": true,
+          "_print_quality_indicators": true,
+          "_print_research_metrics": true,
+          "_collect_all_issues": true,
+          "_print_issue_statistics": true,
+          "_print_sample_issues": true,
           "_report_total": true,
           "_report_by_modules": true,
           "_report_by_functions": true,
           "_report_by_classes": true,
+          "_group_findings_by_severity": true,
+          "_print_security_finding": true,
+          "_print_security_findings_by_severity": true,
           "_report_security": true
         }
       },
@@ -1599,201 +1623,180 @@
       },
       "has_main": false,
       "type_hints": {
-        "total_functions": 7,
-        "typed_functions": 7,
+        "total_functions": 18,
+        "typed_functions": 18,
         "coverage": 100.0
       },
       "halstead": {
-        "vocabulary": 207,
-        "length": 689,
-        "volume": 4823,
-        "difficulty": 21.76,
-        "effort": 104956.48
+        "vocabulary": 235,
+        "length": 789,
+        "volume": 5523,
+        "difficulty": 21.95,
+        "effort": 121231.1
       },
       "antipatterns": [
         {
           "type": "magic_number",
           "severity": "low",
-          "message": "Magic number detected: 80",
-          "line": 26,
-          "value": 80
-        },
-        {
-          "type": "magic_number",
-          "severity": "low",
           "message": "Magic number detected: 45",
-          "line": 77,
+          "line": 24,
           "value": 45
         },
         {
           "type": "magic_number",
           "severity": "low",
           "message": "Magic number detected: 5",
-          "line": 136,
+          "line": 184,
           "value": 5
         },
         {
           "type": "magic_number",
           "severity": "low",
           "message": "Magic number detected: 60",
-          "line": 146,
+          "line": 362,
           "value": 60
         },
         {
           "type": "magic_number",
           "severity": "low",
           "message": "Magic number detected: 60",
-          "line": 169,
+          "line": 383,
+          "value": 60
+        },
+        {
+          "type": "magic_number",
+          "severity": "low",
+          "message": "Magic number detected: 60",
+          "line": 398,
+          "value": 60
+        },
+        {
+          "type": "magic_number",
+          "severity": "low",
+          "message": "Magic number detected: 80",
+          "line": 56,
+          "value": 80
+        },
+        {
+          "type": "magic_number",
+          "severity": "low",
+          "message": "Magic number detected: 60",
+          "line": 226,
+          "value": 60
+        },
+        {
+          "type": "magic_number",
+          "severity": "low",
+          "message": "Magic number detected: 60",
+          "line": 249,
           "value": 60
         },
         {
           "type": "magic_number",
           "severity": "low",
           "message": "Magic number detected: 10",
-          "line": 170,
+          "line": 250,
           "value": 10
         },
         {
           "type": "magic_number",
           "severity": "low",
           "message": "Magic number detected: 70",
-          "line": 180,
+          "line": 260,
           "value": 70
         },
         {
           "type": "magic_number",
           "severity": "low",
           "message": "Magic number detected: 70",
-          "line": 197,
+          "line": 277,
           "value": 70
         },
         {
           "type": "magic_number",
           "severity": "low",
           "message": "Magic number detected: 10",
-          "line": 198,
+          "line": 278,
           "value": 10
         },
         {
           "type": "magic_number",
           "severity": "low",
           "message": "Magic number detected: 60",
-          "line": 211,
+          "line": 291,
           "value": 60
         },
         {
           "type": "magic_number",
           "severity": "low",
           "message": "Magic number detected: 60",
-          "line": 224,
+          "line": 304,
           "value": 60
         },
         {
           "type": "magic_number",
           "severity": "low",
           "message": "Magic number detected: 60",
-          "line": 229,
-          "value": 60
-        },
-        {
-          "type": "magic_number",
-          "severity": "low",
-          "message": "Magic number detected: 60",
-          "line": 243,
-          "value": 60
-        },
-        {
-          "type": "magic_number",
-          "severity": "low",
-          "message": "Magic number detected: 60",
-          "line": 285,
+          "line": 309,
           "value": 60
         },
         {
           "type": "magic_number",
           "severity": "low",
           "message": "Magic number detected: 50",
-          "line": 28,
+          "line": 58,
           "value": 50
         },
         {
           "type": "magic_number",
           "severity": "low",
-          "message": "Magic number detected: 5",
-          "line": 129,
-          "value": 5
-        },
-        {
-          "type": "magic_number",
-          "severity": "low",
-          "message": "Magic number detected: 45",
-          "line": 139,
-          "value": 45
-        },
-        {
-          "type": "magic_number",
-          "severity": "low",
           "message": "Magic number detected: 60",
-          "line": 173,
+          "line": 253,
           "value": 60
         },
         {
           "type": "magic_number",
           "severity": "low",
           "message": "Magic number detected: 15",
-          "line": 200,
+          "line": 280,
           "value": 15
         },
         {
           "type": "magic_number",
           "severity": "low",
           "message": "Magic number detected: 70",
-          "line": 204,
+          "line": 284,
           "value": 70
         },
         {
           "type": "magic_number",
           "severity": "low",
-          "message": "Magic number detected: 60",
-          "line": 256,
-          "value": 60
-        },
-        {
-          "type": "magic_number",
-          "severity": "low",
           "message": "Magic number detected: 8",
-          "line": 200,
+          "line": 280,
           "value": 8
-        },
-        {
-          "type": "magic_number",
-          "severity": "low",
-          "message": "Magic number detected: 5",
-          "line": 137,
-          "value": 5
         }
       ],
       "ast_security": [
         {
           "pattern": "except Exception:",
           "severity": "low",
-          "line": 69,
+          "line": 99,
           "description": "Too broad exception handler"
         }
       ],
       "patterns": {},
       "unused_imports": [],
-      "maintenance_index": 15.11,
+      "maintenance_index": 11.55,
       "syntax_error": false
     },
-    "timestamp": 1770082379.019465
+    "timestamp": 1770089110.7325888
   },
   "src/analyzer/utils/__init__.py": {
-    "hash": "eda6c02329a6ac0f05973aac33c25f2979dfc771e35f4afef0a76f9a028c4500",
+    "hash": "ffbc6979ac955ce2a9f766bf7a79d1d87175b4a04d81bc906fb3397b26363bf7",
     "data": {
       "path": "src/analyzer/utils/__init__.py",
-      "lines": 39,
-      "file_size_kb": 0.982421875,
+      "lines": 41,
+      "file_size_kb": 1.0390625,
       "complexity": 0,
       "imports": [
         "ast_utils.calculate_complexity",
@@ -1808,6 +1811,7 @@
         "logging_utils.setup_logger",
         "path_utils.DEFAULT_EXCLUDE",
         "path_utils.IgnoreMatcher",
+        "path_utils.discover_project_files",
         "path_utils.load_ignore_patterns",
         "path_utils.safe_path_resolve",
         "performance_utils.LRUCache",
@@ -1832,8 +1836,8 @@
         "coverage": 100.0
       },
       "halstead": {
-        "vocabulary": 19,
-        "length": 19,
+        "vocabulary": 20,
+        "length": 20,
         "volume": 0,
         "difficulty": 0,
         "effort": 0
@@ -1854,6 +1858,7 @@
         "logging_utils.setup_logger",
         "path_utils.DEFAULT_EXCLUDE",
         "path_utils.IgnoreMatcher",
+        "path_utils.discover_project_files",
         "path_utils.load_ignore_patterns",
         "path_utils.safe_path_resolve",
         "performance_utils.LRUCache",
@@ -1863,7 +1868,7 @@
       "maintenance_index": 100.0,
       "syntax_error": false
     },
-    "timestamp": 1769983681.28043
+    "timestamp": 1770089110.6941812
   },
   "src/analyzer/reporters/html_reporter.py": {
     "hash": "8fae0a923891c30441cc83d913b6c1246b1b244608a129d97a1a3aded2387390",
@@ -2121,12 +2126,12 @@
     "timestamp": 1769983681.288682
   },
   "src/analyzer/transformers.py": {
-    "hash": "b4599e95178cf082e91633014832033025cf499943f6df050fb9535d581f3a00",
+    "hash": "f2e02862bcc1d4179509318be0e8c67784672a37b8bf10c992079530a5a58a10",
     "data": {
       "path": "src/analyzer/transformers.py",
-      "lines": 190,
-      "file_size_kb": 6.9365234375,
-      "complexity": 24,
+      "lines": 211,
+      "file_size_kb": 7.4931640625,
+      "complexity": 27,
       "imports": [
         "ast",
         "pathlib",
@@ -2148,6 +2153,7 @@
         "visit_Expr(2 args)",
         "__init__(1 args)",
         "visit_Call(2 args)",
+        "apply_transformation_to_content(2 args)",
         "apply_transformation(2 args)"
       ],
       "docstrings": {
@@ -2164,6 +2170,7 @@
           "visit_ImportFrom": false,
           "visit_Expr": false,
           "visit_Call": false,
+          "apply_transformation_to_content": true,
           "apply_transformation": true
         }
       },
@@ -2173,32 +2180,38 @@
       },
       "has_main": false,
       "type_hints": {
-        "total_functions": 10,
-        "typed_functions": 10,
+        "total_functions": 11,
+        "typed_functions": 11,
         "coverage": 100.0
       },
       "halstead": {
-        "vocabulary": 70,
-        "length": 247,
-        "volume": 1482,
-        "difficulty": 19.02,
-        "effort": 28183.12
+        "vocabulary": 74,
+        "length": 269,
+        "volume": 1614,
+        "difficulty": 21.48,
+        "effort": 34674.97
       },
       "antipatterns": [],
       "ast_security": [
         {
           "pattern": "except Exception:",
           "severity": "low",
-          "line": 188,
+          "line": 185,
+          "description": "Too broad exception handler"
+        },
+        {
+          "pattern": "except Exception:",
+          "severity": "low",
+          "line": 209,
           "description": "Too broad exception handler"
         }
       ],
       "patterns": {},
       "unused_imports": [],
-      "maintenance_index": 24.86,
+      "maintenance_index": 23.2,
       "syntax_error": false
     },
-    "timestamp": 1769983681.2896264
+    "timestamp": 1770089110.7087946
   },
   "src/analyzer/utils/ast_utils.py": {
     "hash": "2d9f4d2eb6c996114633b2ec5fa60d7b13a2fdabc9d12c737fc19d647be85cae",
@@ -2310,12 +2323,12 @@
     "timestamp": 1769983681.29246
   },
   "src/analyzer/engine.py": {
-    "hash": "96cf56ae31f97851edf318214002c63a64606fff95bc19a73ee182d59080506f",
+    "hash": "9089594c17824f0d9fbf5179f96d25a54a63c5f6fbc3f054d9b4f8df89ef95a1",
     "data": {
       "path": "src/analyzer/engine.py",
-      "lines": 649,
-      "file_size_kb": 23.8583984375,
-      "complexity": 58,
+      "lines": 821,
+      "file_size_kb": 29.8076171875,
+      "complexity": 72,
       "imports": [
         "json",
         "math",
@@ -2324,44 +2337,62 @@
         "subprocess",
         "concurrent.futures.ProcessPoolExecutor",
         "concurrent.futures.as_completed",
+        "dataclasses.dataclass",
+        "dataclasses.field",
         "typing.Any",
         "typing.Dict",
         "typing.List",
         "typing.Optional",
+        "typing.TypedDict",
+        "typing.cast",
         "reporters.generate_html_report",
         "reporters.generate_markdown_summary",
         "reporters.save_json_context",
+        "scanner.ModuleAnalysisResult",
         "scanner.analyze_module_worker",
         "scanner.audit_qgis_standards",
         "semantic.DependencyGraph",
         "semantic.ResourceValidator",
         "utils.IgnoreMatcher",
         "utils.ProgressTracker",
+        "utils.discover_project_files",
         "utils.load_ignore_patterns",
         "utils.load_profile_config",
         "utils.logger",
-        "utils.safe_path_resolve",
         "utils.setup_logger",
-        "validators.calculate_package_size",
-        "validators.scan_for_binaries",
         "validators.validate_metadata",
         "validators.validate_metadata_urls",
         "validators.validate_plugin_structure"
       ],
       "classes": [
+        "ProjectConfig",
+        "QGISChecksResult(TypedDict)",
+        "SemanticAnalysisResult(TypedDict)",
+        "ProjectScores(TypedDict)",
+        "FullAnalysisResult(TypedDict)",
+        "ScoringEngine",
         "ProjectAnalyzer"
       ],
       "functions": [
+        "__init__(2 args)",
+        "calculate_project_scores(5 args)",
+        "_get_mi_score(2 args)",
+        "_get_maint_score(3 args)",
+        "_get_modernization_bonus(2 args)",
+        "_get_qgis_score(8 args)",
+        "_get_security_penalty(2 args)",
         "__init__(4 args)",
-        "get_python_files(1 args)",
         "run_ruff_audit(1 args)",
         "_run_parallel_analysis(3 args)",
-        "_run_qgis_specific_checks(3 args)",
+        "_run_qgis_specific_checks(4 args)",
         "_run_semantic_analysis(2 args)",
-        "_build_analysis_results(18 args)",
+        "_build_analysis_results(7 args)",
+        "_get_metrics_summary(4 args)",
+        "_get_security_summary(3 args)",
+        "_get_research_summary(2 args)",
         "_save_reports(2 args)",
         "run(1 args)",
-        "_calculate_scores(10 args)",
+        "_calculate_scores(5 args)",
         "_get_mi_score(2 args)",
         "_get_maint_score(3 args)",
         "_get_modernization_bonus(2 args)",
@@ -2371,24 +2402,33 @@
       "docstrings": {
         "module": false,
         "classes": {
+          "ProjectConfig": true,
+          "QGISChecksResult": true,
+          "SemanticAnalysisResult": true,
+          "ProjectScores": true,
+          "FullAnalysisResult": true,
+          "ScoringEngine": true,
           "ProjectAnalyzer": false
         },
         "functions": {
           "__init__": true,
-          "get_python_files": true,
+          "calculate_project_scores": true,
+          "_get_mi_score": true,
+          "_get_maint_score": true,
+          "_get_modernization_bonus": true,
+          "_get_qgis_score": true,
+          "_get_security_penalty": true,
           "run_ruff_audit": true,
           "_run_parallel_analysis": true,
           "_run_qgis_specific_checks": true,
           "_run_semantic_analysis": true,
           "_build_analysis_results": true,
+          "_get_metrics_summary": true,
+          "_get_security_summary": true,
+          "_get_research_summary": true,
           "_save_reports": true,
           "run": true,
-          "_calculate_scores": true,
-          "_get_mi_score": true,
-          "_get_maint_score": true,
-          "_get_modernization_bonus": true,
-          "_get_qgis_score": true,
-          "_get_security_penalty": true
+          "_calculate_scores": true
         }
       },
       "entry_point_info": {
@@ -2397,359 +2437,534 @@
       },
       "has_main": false,
       "type_hints": {
-        "total_functions": 15,
-        "typed_functions": 15,
+        "total_functions": 24,
+        "typed_functions": 24,
         "coverage": 100.0
       },
       "halstead": {
-        "vocabulary": 265,
-        "length": 1220,
-        "volume": 9760,
-        "difficulty": 37.97,
-        "effort": 370563.89
+        "vocabulary": 271,
+        "length": 1695,
+        "volume": 13560,
+        "difficulty": 51.37,
+        "effort": 696544.51
       },
       "antipatterns": [
         {
           "type": "magic_number",
           "severity": "low",
+          "message": "Magic number detected: 100.0",
+          "line": 248,
+          "value": 100.0
+        },
+        {
+          "type": "magic_number",
+          "severity": "low",
           "message": "Magic number detected: 500",
-          "line": 80,
+          "line": 300,
           "value": 500
         },
         {
           "type": "magic_number",
           "severity": "low",
           "message": "Magic number detected: 100.0",
-          "line": 621,
+          "line": 793,
           "value": 100.0
         },
         {
           "type": "magic_number",
           "severity": "low",
-          "message": "Magic number detected: 4",
-          "line": 79,
-          "value": 4
-        },
-        {
-          "type": "magic_number",
-          "severity": "low",
           "message": "Magic number detected: 100.0",
-          "line": 512,
+          "line": 139,
           "value": 100.0
         },
         {
           "type": "magic_number",
           "severity": "low",
           "message": "Magic number detected: 10",
-          "line": 519,
+          "line": 147,
           "value": 10
         },
         {
           "type": "magic_number",
           "severity": "low",
           "message": "Magic number detected: 10",
-          "line": 577,
+          "line": 204,
           "value": 10
         },
         {
           "type": "magic_number",
           "severity": "low",
           "message": "Magic number detected: 2.0",
-          "line": 607,
+          "line": 234,
           "value": 2.0
         },
         {
           "type": "magic_number",
           "severity": "low",
           "message": "Magic number detected: 2",
-          "line": 622,
+          "line": 249,
           "value": 2
         },
         {
           "type": "magic_number",
           "severity": "low",
           "message": "Magic number detected: 20",
-          "line": 624,
+          "line": 251,
           "value": 20
         },
         {
           "type": "magic_number",
           "severity": "low",
           "message": "Magic number detected: 10",
-          "line": 626,
+          "line": 253,
           "value": 10
         },
         {
           "type": "magic_number",
           "severity": "low",
           "message": "Magic number detected: 5",
-          "line": 627,
+          "line": 254,
           "value": 5
         },
         {
           "type": "magic_number",
           "severity": "low",
           "message": "Magic number detected: 50",
-          "line": 628,
+          "line": 255,
           "value": 50
         },
         {
           "type": "magic_number",
           "severity": "low",
           "message": "Magic number detected: 20",
-          "line": 629,
+          "line": 256,
           "value": 20
         },
         {
           "type": "magic_number",
           "severity": "low",
           "message": "Magic number detected: 10",
-          "line": 630,
+          "line": 257,
           "value": 10
         },
         {
           "type": "magic_number",
           "severity": "low",
           "message": "Magic number detected: 4",
-          "line": 79,
+          "line": 299,
           "value": 4
         },
         {
           "type": "magic_number",
           "severity": "low",
-          "message": "Magic number detected: 2",
-          "line": 414,
-          "value": 2
+          "message": "Magic number detected: 100.0",
+          "line": 681,
+          "value": 100.0
+        },
+        {
+          "type": "magic_number",
+          "severity": "low",
+          "message": "Magic number detected: 10",
+          "line": 689,
+          "value": 10
+        },
+        {
+          "type": "magic_number",
+          "severity": "low",
+          "message": "Magic number detected: 10",
+          "line": 749,
+          "value": 10
+        },
+        {
+          "type": "magic_number",
+          "severity": "low",
+          "message": "Magic number detected: 2.0",
+          "line": 779,
+          "value": 2.0
         },
         {
           "type": "magic_number",
           "severity": "low",
           "message": "Magic number detected: 2",
-          "line": 414,
+          "line": 794,
           "value": 2
         },
         {
           "type": "magic_number",
           "severity": "low",
-          "message": "Magic number detected: 2",
-          "line": 430,
-          "value": 2
+          "message": "Magic number detected: 20",
+          "line": 796,
+          "value": 20
         },
         {
           "type": "magic_number",
           "severity": "low",
-          "message": "Magic number detected: 2",
-          "line": 430,
-          "value": 2
+          "message": "Magic number detected: 10",
+          "line": 798,
+          "value": 10
         },
         {
           "type": "magic_number",
           "severity": "low",
-          "message": "Magic number detected: 3",
-          "line": 431,
-          "value": 3
+          "message": "Magic number detected: 5",
+          "line": 799,
+          "value": 5
         },
         {
           "type": "magic_number",
           "severity": "low",
-          "message": "Magic number detected: 3",
-          "line": 431,
-          "value": 3
+          "message": "Magic number detected: 50",
+          "line": 800,
+          "value": 50
+        },
+        {
+          "type": "magic_number",
+          "severity": "low",
+          "message": "Magic number detected: 20",
+          "line": 801,
+          "value": 20
+        },
+        {
+          "type": "magic_number",
+          "severity": "low",
+          "message": "Magic number detected: 10",
+          "line": 802,
+          "value": 10
         },
         {
           "type": "magic_number",
           "severity": "low",
           "message": "Magic number detected: 100.0",
-          "line": 516,
+          "line": 143,
           "value": 100.0
         },
         {
           "type": "magic_number",
           "severity": "low",
           "message": "Magic number detected: 171",
-          "line": 555,
+          "line": 182,
           "value": 171
         },
         {
           "type": "magic_number",
           "severity": "low",
           "message": "Magic number detected: 100",
-          "line": 570,
+          "line": 198,
           "value": 100
         },
         {
           "type": "magic_number",
           "severity": "low",
           "message": "Magic number detected: 100",
-          "line": 578,
+          "line": 205,
           "value": 100
         },
         {
           "type": "magic_number",
           "severity": "low",
           "message": "Magic number detected: 5.0",
-          "line": 604,
+          "line": 231,
           "value": 5.0
         },
         {
           "type": "magic_number",
           "severity": "low",
-          "message": "Magic number detected: 2",
-          "line": 361,
-          "value": 2
+          "message": "Magic number detected: 4",
+          "line": 299,
+          "value": 4
+        },
+        {
+          "type": "magic_number",
+          "severity": "low",
+          "message": "Magic number detected: 100.0",
+          "line": 685,
+          "value": 100.0
+        },
+        {
+          "type": "magic_number",
+          "severity": "low",
+          "message": "Magic number detected: 171",
+          "line": 725,
+          "value": 171
         },
         {
           "type": "magic_number",
           "severity": "low",
           "message": "Magic number detected: 100",
-          "line": 555,
+          "line": 742,
+          "value": 100
+        },
+        {
+          "type": "magic_number",
+          "severity": "low",
+          "message": "Magic number detected: 100",
+          "line": 750,
+          "value": 100
+        },
+        {
+          "type": "magic_number",
+          "severity": "low",
+          "message": "Magic number detected: 5.0",
+          "line": 776,
+          "value": 5.0
+        },
+        {
+          "type": "magic_number",
+          "severity": "low",
+          "message": "Magic number detected: 100",
+          "line": 182,
           "value": 100
         },
         {
           "type": "magic_number",
           "severity": "low",
           "message": "Magic number detected: 5",
-          "line": 570,
+          "line": 198,
           "value": 5
         },
         {
           "type": "magic_number",
           "severity": "low",
           "message": "Magic number detected: 0.7",
-          "line": 580,
+          "line": 207,
           "value": 0.7
         },
         {
           "type": "magic_number",
           "severity": "low",
           "message": "Magic number detected: 0.3",
-          "line": 580,
+          "line": 207,
           "value": 0.3
         },
         {
           "type": "magic_number",
           "severity": "low",
           "message": "Magic number detected: 0.8",
-          "line": 603,
+          "line": 230,
           "value": 0.8
         },
         {
           "type": "magic_number",
           "severity": "low",
           "message": "Magic number detected: 0.8",
-          "line": 603,
+          "line": 230,
           "value": 0.8
         },
         {
           "type": "magic_number",
           "severity": "low",
           "message": "Magic number detected: 10.0",
-          "line": 644,
+          "line": 269,
           "value": 10.0
         },
         {
           "type": "magic_number",
           "severity": "low",
-          "message": "Magic number detected: 0.5",
-          "line": 300,
-          "value": 0.5
-        },
-        {
-          "type": "magic_number",
-          "severity": "low",
-          "message": "Magic number detected: 0.5",
-          "line": 300,
-          "value": 0.5
+          "message": "Magic number detected: 2",
+          "line": 491,
+          "value": 2
         },
         {
           "type": "magic_number",
           "severity": "low",
           "message": "Magic number detected: 100",
-          "line": 340,
+          "line": 725,
           "value": 100
-        },
-        {
-          "type": "magic_number",
-          "severity": "low",
-          "message": "Magic number detected: 100",
-          "line": 344,
-          "value": 100
-        },
-        {
-          "type": "magic_number",
-          "severity": "low",
-          "message": "Magic number detected: 100",
-          "line": 346,
-          "value": 100
-        },
-        {
-          "type": "magic_number",
-          "severity": "low",
-          "message": "Magic number detected: 20",
-          "line": 363,
-          "value": 20
         },
         {
           "type": "magic_number",
           "severity": "low",
           "message": "Magic number detected: 5",
-          "line": 577,
+          "line": 742,
+          "value": 5
+        },
+        {
+          "type": "magic_number",
+          "severity": "low",
+          "message": "Magic number detected: 0.7",
+          "line": 752,
+          "value": 0.7
+        },
+        {
+          "type": "magic_number",
+          "severity": "low",
+          "message": "Magic number detected: 0.3",
+          "line": 752,
+          "value": 0.3
+        },
+        {
+          "type": "magic_number",
+          "severity": "low",
+          "message": "Magic number detected: 0.8",
+          "line": 775,
+          "value": 0.8
+        },
+        {
+          "type": "magic_number",
+          "severity": "low",
+          "message": "Magic number detected: 0.8",
+          "line": 775,
+          "value": 0.8
+        },
+        {
+          "type": "magic_number",
+          "severity": "low",
+          "message": "Magic number detected: 10.0",
+          "line": 816,
+          "value": 10.0
+        },
+        {
+          "type": "magic_number",
+          "severity": "low",
+          "message": "Magic number detected: 5",
+          "line": 204,
           "value": 5
         },
         {
           "type": "magic_number",
           "severity": "low",
           "message": "Magic number detected: 10",
-          "line": 577,
+          "line": 204,
           "value": 10
         },
         {
           "type": "magic_number",
           "severity": "low",
           "message": "Magic number detected: 5.0",
-          "line": 646,
+          "line": 271,
           "value": 5.0
         },
         {
           "type": "magic_number",
           "severity": "low",
           "message": "Magic number detected: 2.0",
-          "line": 648,
+          "line": 273,
           "value": 2.0
         },
         {
           "type": "magic_number",
           "severity": "low",
-          "message": "Magic number detected: 1024",
-          "line": 124,
-          "value": 1024
+          "message": "Magic number detected: 0.5",
+          "line": 478,
+          "value": 0.5
+        },
+        {
+          "type": "magic_number",
+          "severity": "low",
+          "message": "Magic number detected: 0.5",
+          "line": 478,
+          "value": 0.5
+        },
+        {
+          "type": "magic_number",
+          "severity": "low",
+          "message": "Magic number detected: 20",
+          "line": 494,
+          "value": 20
+        },
+        {
+          "type": "magic_number",
+          "severity": "low",
+          "message": "Magic number detected: 100",
+          "line": 553,
+          "value": 100
+        },
+        {
+          "type": "magic_number",
+          "severity": "low",
+          "message": "Magic number detected: 100",
+          "line": 557,
+          "value": 100
+        },
+        {
+          "type": "magic_number",
+          "severity": "low",
+          "message": "Magic number detected: 100",
+          "line": 559,
+          "value": 100
+        },
+        {
+          "type": "magic_number",
+          "severity": "low",
+          "message": "Magic number detected: 5",
+          "line": 749,
+          "value": 5
+        },
+        {
+          "type": "magic_number",
+          "severity": "low",
+          "message": "Magic number detected: 10",
+          "line": 749,
+          "value": 10
+        },
+        {
+          "type": "magic_number",
+          "severity": "low",
+          "message": "Magic number detected: 5.0",
+          "line": 818,
+          "value": 5.0
+        },
+        {
+          "type": "magic_number",
+          "severity": "low",
+          "message": "Magic number detected: 2.0",
+          "line": 820,
+          "value": 2.0
         },
         {
           "type": "magic_number",
           "severity": "low",
           "message": "Magic number detected: 171",
-          "line": 555,
+          "line": 182,
           "value": 171
         },
         {
           "type": "magic_number",
           "severity": "low",
           "message": "Magic number detected: 16.2",
-          "line": 555,
+          "line": 182,
           "value": 16.2
         },
         {
           "type": "magic_number",
           "severity": "low",
           "message": "Magic number detected: 10",
-          "line": 570,
+          "line": 198,
+          "value": 10
+        },
+        {
+          "type": "magic_number",
+          "severity": "low",
+          "message": "Magic number detected: 171",
+          "line": 725,
+          "value": 171
+        },
+        {
+          "type": "magic_number",
+          "severity": "low",
+          "message": "Magic number detected: 16.2",
+          "line": 725,
+          "value": 16.2
+        },
+        {
+          "type": "magic_number",
+          "severity": "low",
+          "message": "Magic number detected: 10",
+          "line": 742,
           "value": 10
         },
         {
           "type": "magic_number",
           "severity": "low",
           "message": "Magic number detected: 0.23",
-          "line": 555,
+          "line": 182,
+          "value": 0.23
+        },
+        {
+          "type": "magic_number",
+          "severity": "low",
+          "message": "Magic number detected: 0.23",
+          "line": 725,
           "value": 0.23
         }
       ],
@@ -2757,16 +2972,16 @@
         {
           "pattern": "except Exception:",
           "severity": "low",
-          "line": 153,
+          "line": 349,
           "description": "Too broad exception handler"
         }
       ],
       "patterns": {},
       "unused_imports": [],
-      "maintenance_index": 2.92,
+      "maintenance_index": 0,
       "syntax_error": false
     },
-    "timestamp": 1770082379.0405126
+    "timestamp": 1770089110.7591062
   },
   "src/analyzer/utils/config_utils.py": {
     "hash": "ade3725289e68a4f13a70c7445b6ac96c8a27a722a3c37a25c17e1e0fbf6dff1",
@@ -2842,16 +3057,17 @@
     "timestamp": 1769983681.296107
   },
   "src/analyzer/utils/path_utils.py": {
-    "hash": "0647df3354d128030f0b32f1e3dad0ce66076066cfc25238d4b08ae50a0dda85",
+    "hash": "39f5f4230067324f5f48ee86214fa2cb1c4f0826a521c123c4f882877e92a616",
     "data": {
       "path": "src/analyzer/utils/path_utils.py",
-      "lines": 135,
-      "file_size_kb": 4.0009765625,
-      "complexity": 19,
+      "lines": 187,
+      "file_size_kb": 5.6806640625,
+      "complexity": 26,
       "imports": [
         "fnmatch",
         "os",
         "pathlib",
+        "typing.Any",
         "typing.Dict",
         "typing.List"
       ],
@@ -2863,7 +3079,8 @@
         "__init__(3 args)",
         "is_ignored(2 args)",
         "_check_patterns(3 args)",
-        "load_ignore_patterns(1 args)"
+        "load_ignore_patterns(1 args)",
+        "discover_project_files(2 args)"
       ],
       "docstrings": {
         "module": true,
@@ -2875,7 +3092,8 @@
           "__init__": true,
           "is_ignored": true,
           "_check_patterns": false,
-          "load_ignore_patterns": true
+          "load_ignore_patterns": true,
+          "discover_project_files": true
         }
       },
       "entry_point_info": {
@@ -2884,25 +3102,40 @@
       },
       "has_main": false,
       "type_hints": {
-        "total_functions": 5,
-        "typed_functions": 4,
-        "coverage": 80.0
+        "total_functions": 6,
+        "typed_functions": 5,
+        "coverage": 83.33333333333334
       },
       "halstead": {
-        "vocabulary": 75,
-        "length": 172,
-        "volume": 1032,
-        "difficulty": 16.18,
-        "effort": 16698.1
+        "vocabulary": 102,
+        "length": 245,
+        "volume": 1470,
+        "difficulty": 17.07,
+        "effort": 25091.38
       },
-      "antipatterns": [],
+      "antipatterns": [
+        {
+          "type": "magic_number",
+          "severity": "low",
+          "message": "Magic number detected: 1024",
+          "line": 185,
+          "value": 1024
+        },
+        {
+          "type": "magic_number",
+          "severity": "low",
+          "message": "Magic number detected: 1024",
+          "line": 185,
+          "value": 1024
+        }
+      ],
       "ast_security": [],
       "patterns": {},
       "unused_imports": [],
-      "maintenance_index": 29.87,
+      "maintenance_index": 24.77,
       "syntax_error": false
     },
-    "timestamp": 1769983681.2987907
+    "timestamp": 1770089110.713981
   },
   "src/analyzer/utils/performance_utils.py": {
     "hash": "33799f315acebf27e04220900744792249019c0c7e2fd7abe1f191f542f913ed",
@@ -3332,12 +3565,12 @@
     "timestamp": 1769983681.3015332
   },
   "src/analyzer/validators.py": {
-    "hash": "e493f041843828a4e165c86bdf89d5d3af954e81618013ad229ee53613b95939",
+    "hash": "6cdc407f669d1707c8daaa349447033335d4b798184ed7f37bf8b7ad80251e02",
     "data": {
       "path": "src/analyzer/validators.py",
-      "lines": 263,
-      "file_size_kb": 8.1484375,
-      "complexity": 47,
+      "lines": 209,
+      "file_size_kb": 6.4150390625,
+      "complexity": 38,
       "imports": [
         "ipaddress",
         "pathlib",
@@ -3346,13 +3579,10 @@
         "urllib.parse",
         "urllib.request",
         "typing.Any",
-        "typing.Dict",
-        "typing.List"
+        "typing.Dict"
       ],
       "classes": [],
       "functions": [
-        "scan_for_binaries(2 args)",
-        "calculate_package_size(2 args)",
         "is_ssrf_safe(1 args)",
         "validate_metadata_urls(1 args)",
         "validate_plugin_structure(1 args)",
@@ -3362,8 +3592,6 @@
         "module": false,
         "classes": {},
         "functions": {
-          "scan_for_binaries": true,
-          "calculate_package_size": true,
           "is_ssrf_safe": true,
           "validate_metadata_urls": true,
           "validate_plugin_structure": true,
@@ -3376,51 +3604,37 @@
       },
       "has_main": false,
       "type_hints": {
-        "total_functions": 6,
-        "typed_functions": 6,
+        "total_functions": 4,
+        "typed_functions": 4,
         "coverage": 100.0
       },
       "halstead": {
-        "vocabulary": 135,
-        "length": 362,
-        "volume": 2534,
-        "difficulty": 18.69,
-        "effort": 47354.12
+        "vocabulary": 113,
+        "length": 293,
+        "volume": 1758,
+        "difficulty": 15.93,
+        "effort": 27996.15
       },
       "antipatterns": [
         {
           "type": "magic_number",
           "severity": "low",
-          "message": "Magic number detected: 1024",
-          "line": 67,
-          "value": 1024
-        },
-        {
-          "type": "magic_number",
-          "severity": "low",
-          "message": "Magic number detected: 1024",
-          "line": 67,
-          "value": 1024
-        },
-        {
-          "type": "magic_number",
-          "severity": "low",
           "message": "Magic number detected: 4",
-          "line": 105,
+          "line": 51,
           "value": 4
         },
         {
           "type": "magic_number",
           "severity": "low",
           "message": "Magic number detected: 200",
-          "line": 153,
+          "line": 99,
           "value": 200
         },
         {
           "type": "magic_number",
           "severity": "low",
           "message": "Magic number detected: 5",
-          "line": 152,
+          "line": 98,
           "value": 5
         }
       ],
@@ -3428,42 +3642,42 @@
         {
           "pattern": "except Exception:",
           "severity": "low",
-          "line": 116,
+          "line": 62,
           "description": "Too broad exception handler"
         },
         {
           "pattern": "except Exception:",
           "severity": "low",
-          "line": 247,
+          "line": 193,
           "description": "Too broad exception handler"
         },
         {
           "pattern": "except Exception:",
           "severity": "low",
-          "line": 164,
+          "line": 110,
           "description": "Too broad exception handler"
         },
         {
           "pattern": "except Exception:",
           "severity": "low",
-          "line": 189,
+          "line": 135,
           "description": "Too broad exception handler"
         }
       ],
       "patterns": {},
       "unused_imports": [],
-      "maintenance_index": 17.06,
+      "maintenance_index": 21.56,
       "syntax_error": false
     },
-    "timestamp": 1769983681.307112
+    "timestamp": 1770089110.7179875
   },
   "src/analyzer/scanner.py": {
-    "hash": "dcd52c12e9a5a1e343fd677557e7ce9e7dc69255c3a48877d603781e1b9ff405",
+    "hash": "0333d62674c01c5ae7a25ab3579930e7a2d8a9604a478bc83175e88a21147688",
     "data": {
       "path": "src/analyzer/scanner.py",
-      "lines": 222,
-      "file_size_kb": 7.962890625,
-      "complexity": 18,
+      "lines": 302,
+      "file_size_kb": 10.0966796875,
+      "complexity": 20,
       "imports": [
         "ast",
         "pathlib",
@@ -3471,6 +3685,7 @@
         "typing.Dict",
         "typing.List",
         "typing.Optional",
+        "typing.TypedDict",
         "rules.qgis_rules.get_qgis_audit_rules",
         "secrets.SecretScanner",
         "utils.ast_utils.calculate_module_complexity",
@@ -3481,17 +3696,39 @@
         "visitors.QGISASTVisitor",
         "visitors.QGISSecurityVisitor"
       ],
-      "classes": [],
+      "classes": [
+        "ResearchMetrics(TypedDict)",
+        "ModuleAnalysisResult(TypedDict)"
+      ],
       "functions": [
         "analyze_module_worker(4 args)",
-        "audit_qgis_standards(3 args)"
+        "_get_relative_path(2 args)",
+        "_read_file_content(1 args)",
+        "_parse_ast(3 args)",
+        "_create_empty_analysis_result(4 args)",
+        "_collect_security_issues(3 args)",
+        "audit_qgis_standards(3 args)",
+        "_run_regex_audit_on_module(5 args)",
+        "_try_read_module_file(2 args)",
+        "_get_rule_severity(2 args)"
       ],
       "docstrings": {
-        "module": false,
-        "classes": {},
+        "module": true,
+        "classes": {
+          "ResearchMetrics": true,
+          "ModuleAnalysisResult": true
+        },
         "functions": {
           "analyze_module_worker": true,
-          "audit_qgis_standards": true
+          "_get_relative_path": true,
+          "_read_file_content": true,
+          "_parse_ast": true,
+          "_create_empty_analysis_result": true,
+          "_collect_security_issues": true,
+          "audit_qgis_standards": true,
+          "_run_regex_audit_on_module": true,
+          "_try_read_module_file": true,
+          "_get_rule_severity": true
         }
       },
       "entry_point_info": {
@@ -3500,37 +3737,37 @@
       },
       "has_main": false,
       "type_hints": {
-        "total_functions": 2,
-        "typed_functions": 2,
+        "total_functions": 10,
+        "typed_functions": 10,
         "coverage": 100.0
       },
       "halstead": {
-        "vocabulary": 117,
-        "length": 319,
-        "volume": 1914,
-        "difficulty": 17.94,
-        "effort": 34332.38
+        "vocabulary": 145,
+        "length": 485,
+        "volume": 3395,
+        "difficulty": 21.77,
+        "effort": 73892.69
       },
       "antipatterns": [
         {
           "type": "magic_number",
           "severity": "low",
           "message": "Magic number detected: 1024",
-          "line": 140,
+          "line": 186,
           "value": 1024
         },
         {
           "type": "magic_number",
           "severity": "low",
           "message": "Magic number detected: 1024",
-          "line": 76,
+          "line": 125,
           "value": 1024
         },
         {
           "type": "magic_number",
           "severity": "low",
           "message": "Magic number detected: 20",
-          "line": 214,
+          "line": 275,
           "value": 20
         }
       ],
@@ -3538,22 +3775,22 @@
         {
           "pattern": "except Exception:",
           "severity": "low",
-          "line": 153,
+          "line": 150,
           "description": "Too broad exception handler"
         },
         {
           "pattern": "except Exception:",
           "severity": "low",
-          "line": 189,
+          "line": 166,
           "description": "Too broad exception handler"
         }
       ],
       "patterns": {},
       "unused_imports": [],
-      "maintenance_index": 23.42,
+      "maintenance_index": 18.49,
       "syntax_error": false
     },
-    "timestamp": 1770082379.0122232
+    "timestamp": 1770089110.7142346
   },
   ".ai-context/analyze_project_optfixed.py": {
     "hash": "fbb20ee557ceeb032d6d4ce9b2e4a72c6cab7d9a3117b807a512678c15ef6456",
@@ -4991,11 +5228,11 @@
     "timestamp": 1769983681.468189
   },
   ".agent/scripts/skill_sync.py": {
-    "hash": "8571ae2cebc88ba21b747823b6ce07dcb1e4dea089362b95a737622d60b61a85",
+    "hash": "15e409728bed267335ea81467101d2c98fa9727f164327bd4c631548cb83ce13",
     "data": {
       "path": ".agent/scripts/skill_sync.py",
-      "lines": 143,
-      "file_size_kb": 4.689453125,
+      "lines": 136,
+      "file_size_kb": 4.5810546875,
       "complexity": 21,
       "imports": [
         "re",
@@ -5027,10 +5264,10 @@
       },
       "halstead": {
         "vocabulary": 102,
-        "length": 296,
-        "volume": 1776,
-        "difficulty": 16.87,
-        "effort": 29955.2
+        "length": 290,
+        "volume": 1740,
+        "difficulty": 16.6,
+        "effort": 28884.0
       },
       "antipatterns": [],
       "ast_security": [
@@ -5043,26 +5280,27 @@
         {
           "pattern": "except Exception:",
           "severity": "low",
-          "line": 116,
+          "line": 109,
           "description": "Too broad exception handler"
         }
       ],
       "patterns": {},
       "unused_imports": [],
-      "maintenance_index": 27.41,
+      "maintenance_index": 27.94,
       "syntax_error": false
     },
-    "timestamp": 1770082378.998452
+    "timestamp": 1770089110.6812549
   },
   "src/analyzer/commands.py": {
-    "hash": "7235d5b62a4fbad611ecd080ce0f6ec41d4d64a919db4190a51b1e48f2444760",
+    "hash": "faa171884b015b49e1434d42e2ebe97a3a1294a32dbe0f0d394071b8c2ab27cf",
     "data": {
       "path": "src/analyzer/commands.py",
       "lines": 163,
-      "file_size_kb": 5.0068359375,
-      "complexity": 19,
+      "file_size_kb": 5.1328125,
+      "complexity": 18,
       "imports": [
         "argparse",
+        "dataclasses",
         "json",
         "pathlib",
         "sys",
@@ -5105,27 +5343,27 @@
       },
       "halstead": {
         "vocabulary": 101,
-        "length": 260,
-        "volume": 1560,
-        "difficulty": 10.81,
-        "effort": 16863.26
+        "length": 256,
+        "volume": 1536,
+        "difficulty": 10.66,
+        "effort": 16378.43
       },
       "antipatterns": [
         {
           "type": "magic_number",
           "severity": "low",
           "message": "Magic number detected: 30",
-          "line": 105,
+          "line": 104,
           "value": 30
         }
       ],
       "ast_security": [],
       "patterns": {},
       "unused_imports": [],
-      "maintenance_index": 26.83,
+      "maintenance_index": 27.01,
       "syntax_error": false
     },
-    "timestamp": 1770082379.0019069
+    "timestamp": 1770089110.700581
   },
   "src/analyzer/secrets.py": {
     "hash": "325fa14521602e502c8ba29e0f6579dceb90d44f2a584ffae72cc39bf443dc01",
@@ -5517,5 +5755,1115 @@
       "syntax_error": false
     },
     "timestamp": 1770082379.0422857
+  },
+  "src/analyzer/cli/__init__.py": {
+    "hash": "fedc2684e67b86a2cc183c97986622834dda8d3c64ef208ae847dee3011a50ff",
+    "data": {
+      "path": "src/analyzer/cli/__init__.py",
+      "lines": 14,
+      "file_size_kb": 0.232421875,
+      "complexity": 0,
+      "imports": [
+        "sys",
+        "app.CLIApp"
+      ],
+      "classes": [],
+      "functions": [
+        "main"
+      ],
+      "docstrings": {
+        "module": true,
+        "classes": {},
+        "functions": {
+          "main": true
+        }
+      },
+      "entry_point_info": {
+        "is_entry_point": false,
+        "type": null
+      },
+      "has_main": false,
+      "type_hints": {
+        "total_functions": 1,
+        "typed_functions": 1,
+        "coverage": 100.0
+      },
+      "halstead": {
+        "vocabulary": 9,
+        "length": 11,
+        "volume": 33,
+        "difficulty": 0.62,
+        "effort": 20.62
+      },
+      "antipatterns": [],
+      "ast_security": [],
+      "patterns": {},
+      "unused_imports": [],
+      "maintenance_index": 64.37,
+      "syntax_error": false
+    },
+    "timestamp": 1770089110.6760068
+  },
+  "src/analyzer/cli/commands/__init__.py": {
+    "hash": "0318560d4ad4747b6f4460b4b602c1e6450e48429b5ec05e165215800ed971ad",
+    "data": {
+      "path": "src/analyzer/cli/commands/__init__.py",
+      "lines": 19,
+      "file_size_kb": 0.4287109375,
+      "complexity": 0,
+      "imports": [
+        "analyze.AnalyzeCommand",
+        "fix.FixCommand",
+        "init.InitCommand",
+        "list_rules.ListRulesCommand",
+        "security.SecurityCommand",
+        "summary.SummaryCommand",
+        "version.VersionCommand"
+      ],
+      "classes": [],
+      "functions": [],
+      "docstrings": {
+        "module": true,
+        "classes": {},
+        "functions": {}
+      },
+      "entry_point_info": {
+        "is_entry_point": false,
+        "type": null
+      },
+      "has_main": false,
+      "type_hints": {
+        "total_functions": 0,
+        "typed_functions": 0,
+        "coverage": 100.0
+      },
+      "halstead": {
+        "vocabulary": 9,
+        "length": 9,
+        "volume": 0,
+        "difficulty": 0,
+        "effort": 0
+      },
+      "antipatterns": [],
+      "ast_security": [],
+      "patterns": {},
+      "unused_imports": [
+        "analyze.AnalyzeCommand",
+        "fix.FixCommand",
+        "init.InitCommand",
+        "list_rules.ListRulesCommand",
+        "security.SecurityCommand",
+        "summary.SummaryCommand",
+        "version.VersionCommand"
+      ],
+      "maintenance_index": 100.0,
+      "syntax_error": false
+    },
+    "timestamp": 1770089110.6799028
+  },
+  "src/analyzer/cli/base.py": {
+    "hash": "b45a3f32168ed62dc7376b8e0c7691556fc00b7991183488c4bf68fdc10919e0",
+    "data": {
+      "path": "src/analyzer/cli/base.py",
+      "lines": 93,
+      "file_size_kb": 2.54296875,
+      "complexity": 3,
+      "imports": [
+        "argparse",
+        "pathlib",
+        "abc.ABC",
+        "abc.abstractmethod",
+        "typing.Optional"
+      ],
+      "classes": [
+        "BaseCommand(ABC)"
+      ],
+      "functions": [
+        "name(1 args)",
+        "help(1 args)",
+        "configure_parser(2 args)",
+        "execute(2 args)",
+        "add_common_args(4 args)",
+        "setup_output_dir(2 args)"
+      ],
+      "docstrings": {
+        "module": true,
+        "classes": {
+          "BaseCommand": true
+        },
+        "functions": {
+          "name": true,
+          "help": true,
+          "configure_parser": true,
+          "execute": true,
+          "add_common_args": true,
+          "setup_output_dir": true
+        }
+      },
+      "entry_point_info": {
+        "is_entry_point": false,
+        "type": null
+      },
+      "has_main": false,
+      "type_hints": {
+        "total_functions": 6,
+        "typed_functions": 6,
+        "coverage": 100.0
+      },
+      "halstead": {
+        "vocabulary": 37,
+        "length": 63,
+        "volume": 315,
+        "difficulty": 2.34,
+        "effort": 736.54
+      },
+      "antipatterns": [],
+      "ast_security": [],
+      "patterns": {},
+      "unused_imports": [],
+      "maintenance_index": 39.16,
+      "syntax_error": false
+    },
+    "timestamp": 1770089110.6813743
+  },
+  "src/analyzer/cli/commands/analyze.py": {
+    "hash": "e93f47b9b92a0fbe8e78ce4f2ed53afac8e7dcdedfb832a4ef82a87b8cc81d67",
+    "data": {
+      "path": "src/analyzer/cli/commands/analyze.py",
+      "lines": 47,
+      "file_size_kb": 1.189453125,
+      "complexity": 0,
+      "imports": [
+        "argparse",
+        "commands.handle_analyze",
+        "base.BaseCommand"
+      ],
+      "classes": [
+        "AnalyzeCommand(BaseCommand)"
+      ],
+      "functions": [
+        "name(1 args)",
+        "help(1 args)",
+        "configure_parser(2 args)",
+        "execute(2 args)"
+      ],
+      "docstrings": {
+        "module": true,
+        "classes": {
+          "AnalyzeCommand": true
+        },
+        "functions": {
+          "name": true,
+          "help": true,
+          "configure_parser": true,
+          "execute": true
+        }
+      },
+      "entry_point_info": {
+        "is_entry_point": false,
+        "type": null
+      },
+      "has_main": false,
+      "type_hints": {
+        "total_functions": 4,
+        "typed_functions": 4,
+        "coverage": 100.0
+      },
+      "halstead": {
+        "vocabulary": 27,
+        "length": 35,
+        "volume": 140,
+        "difficulty": 1.2,
+        "effort": 168.0
+      },
+      "antipatterns": [],
+      "ast_security": [],
+      "patterns": {},
+      "unused_imports": [],
+      "maintenance_index": 48.5,
+      "syntax_error": false
+    },
+    "timestamp": 1770089110.6813998
+  },
+  "src/analyzer/cli/commands/init.py": {
+    "hash": "eb353d8b2f31945968f32561f8b3394fa1f80790183a34e0069c19e5beccfa81",
+    "data": {
+      "path": "src/analyzer/cli/commands/init.py",
+      "lines": 41,
+      "file_size_kb": 0.955078125,
+      "complexity": 0,
+      "imports": [
+        "argparse",
+        "commands.handle_init",
+        "base.BaseCommand"
+      ],
+      "classes": [
+        "InitCommand(BaseCommand)"
+      ],
+      "functions": [
+        "name(1 args)",
+        "help(1 args)",
+        "configure_parser(2 args)",
+        "execute(2 args)"
+      ],
+      "docstrings": {
+        "module": true,
+        "classes": {
+          "InitCommand": true
+        },
+        "functions": {
+          "name": true,
+          "help": true,
+          "configure_parser": true,
+          "execute": true
+        }
+      },
+      "entry_point_info": {
+        "is_entry_point": false,
+        "type": null
+      },
+      "has_main": false,
+      "type_hints": {
+        "total_functions": 4,
+        "typed_functions": 4,
+        "coverage": 100.0
+      },
+      "halstead": {
+        "vocabulary": 18,
+        "length": 24,
+        "volume": 96,
+        "difficulty": 1.19,
+        "effort": 114.0
+      },
+      "antipatterns": [],
+      "ast_security": [],
+      "patterns": {},
+      "unused_imports": [],
+      "maintenance_index": 50.94,
+      "syntax_error": false
+    },
+    "timestamp": 1770089110.68334
+  },
+  "src/analyzer/cli/commands/fix.py": {
+    "hash": "5cce2cec7f825bf1331bef7aa43a8629b8181b5ea2f3c146131735441863b178",
+    "data": {
+      "path": "src/analyzer/cli/commands/fix.py",
+      "lines": 58,
+      "file_size_kb": 1.60546875,
+      "complexity": 0,
+      "imports": [
+        "argparse",
+        "commands.handle_fix",
+        "base.BaseCommand"
+      ],
+      "classes": [
+        "FixCommand(BaseCommand)"
+      ],
+      "functions": [
+        "name(1 args)",
+        "help(1 args)",
+        "configure_parser(2 args)",
+        "execute(2 args)"
+      ],
+      "docstrings": {
+        "module": true,
+        "classes": {
+          "FixCommand": true
+        },
+        "functions": {
+          "name": true,
+          "help": true,
+          "configure_parser": true,
+          "execute": true
+        }
+      },
+      "entry_point_info": {
+        "is_entry_point": false,
+        "type": null
+      },
+      "has_main": false,
+      "type_hints": {
+        "total_functions": 4,
+        "typed_functions": 4,
+        "coverage": 100.0
+      },
+      "halstead": {
+        "vocabulary": 34,
+        "length": 49,
+        "volume": 245,
+        "difficulty": 1.38,
+        "effort": 336.88
+      },
+      "antipatterns": [],
+      "ast_security": [],
+      "patterns": {},
+      "unused_imports": [],
+      "maintenance_index": 44.8,
+      "syntax_error": false
+    },
+    "timestamp": 1770089110.6834097
+  },
+  "src/analyzer/cli/commands/list_rules.py": {
+    "hash": "52d696a44b207a5c3f9d2a91c153a6c7f87091e561a59a85bc7db8a910ede0b2",
+    "data": {
+      "path": "src/analyzer/cli/commands/list_rules.py",
+      "lines": 41,
+      "file_size_kb": 0.9736328125,
+      "complexity": 0,
+      "imports": [
+        "argparse",
+        "commands.handle_list_rules",
+        "base.BaseCommand"
+      ],
+      "classes": [
+        "ListRulesCommand(BaseCommand)"
+      ],
+      "functions": [
+        "name(1 args)",
+        "help(1 args)",
+        "configure_parser(2 args)",
+        "execute(2 args)"
+      ],
+      "docstrings": {
+        "module": true,
+        "classes": {
+          "ListRulesCommand": true
+        },
+        "functions": {
+          "name": true,
+          "help": true,
+          "configure_parser": true,
+          "execute": true
+        }
+      },
+      "entry_point_info": {
+        "is_entry_point": false,
+        "type": null
+      },
+      "has_main": false,
+      "type_hints": {
+        "total_functions": 4,
+        "typed_functions": 4,
+        "coverage": 100.0
+      },
+      "halstead": {
+        "vocabulary": 18,
+        "length": 24,
+        "volume": 96,
+        "difficulty": 1.19,
+        "effort": 114.0
+      },
+      "antipatterns": [],
+      "ast_security": [],
+      "patterns": {},
+      "unused_imports": [],
+      "maintenance_index": 50.94,
+      "syntax_error": false
+    },
+    "timestamp": 1770089110.6835914
+  },
+  "src/analyzer/cli/app.py": {
+    "hash": "044ba858df74223881257ab4d644ae1e897dbfe973a14c26fe2075304d0d3c70",
+    "data": {
+      "path": "src/analyzer/cli/app.py",
+      "lines": 147,
+      "file_size_kb": 4.3095703125,
+      "complexity": 14,
+      "imports": [
+        "argparse",
+        "pathlib",
+        "sys",
+        "typing.Dict",
+        "typing.List",
+        "typing.Optional",
+        "utils.logger",
+        "utils.setup_logger",
+        "base.BaseCommand",
+        "commands.AnalyzeCommand",
+        "commands.FixCommand",
+        "commands.InitCommand",
+        "commands.ListRulesCommand",
+        "commands.SecurityCommand",
+        "commands.SummaryCommand",
+        "commands.VersionCommand",
+        "__version__"
+      ],
+      "classes": [
+        "CLIApp"
+      ],
+      "functions": [
+        "__init__(1 args)",
+        "_discover_commands(1 args)",
+        "_build_parser(1 args)",
+        "_parse_args(3 args)",
+        "_setup_logging(2 args)",
+        "_execute_command(2 args)",
+        "run(2 args)"
+      ],
+      "docstrings": {
+        "module": true,
+        "classes": {
+          "CLIApp": true
+        },
+        "functions": {
+          "__init__": true,
+          "_discover_commands": true,
+          "_build_parser": true,
+          "_parse_args": true,
+          "_setup_logging": true,
+          "_execute_command": true,
+          "run": true
+        }
+      },
+      "entry_point_info": {
+        "is_entry_point": false,
+        "type": null
+      },
+      "has_main": false,
+      "type_hints": {
+        "total_functions": 7,
+        "typed_functions": 6,
+        "coverage": 85.71428571428571
+      },
+      "halstead": {
+        "vocabulary": 73,
+        "length": 162,
+        "volume": 972,
+        "difficulty": 11.11,
+        "effort": 10800.0
+      },
+      "antipatterns": [],
+      "ast_security": [
+        {
+          "pattern": "except Exception:",
+          "severity": "low",
+          "line": 145,
+          "description": "Too broad exception handler"
+        }
+      ],
+      "patterns": {},
+      "unused_imports": [],
+      "maintenance_index": 29.92,
+      "syntax_error": false
+    },
+    "timestamp": 1770089110.6848419
+  },
+  "src/analyzer/cli/commands/security.py": {
+    "hash": "07644c519baef900637a7d4973ab83c18fb4d3ba9d3c50ac3c9501ad2f1c0d3d",
+    "data": {
+      "path": "src/analyzer/cli/commands/security.py",
+      "lines": 46,
+      "file_size_kb": 1.173828125,
+      "complexity": 0,
+      "imports": [
+        "argparse",
+        "commands.handle_security",
+        "base.BaseCommand"
+      ],
+      "classes": [
+        "SecurityCommand(BaseCommand)"
+      ],
+      "functions": [
+        "name(1 args)",
+        "help(1 args)",
+        "configure_parser(2 args)",
+        "execute(2 args)"
+      ],
+      "docstrings": {
+        "module": true,
+        "classes": {
+          "SecurityCommand": true
+        },
+        "functions": {
+          "name": true,
+          "help": true,
+          "configure_parser": true,
+          "execute": true
+        }
+      },
+      "entry_point_info": {
+        "is_entry_point": false,
+        "type": null
+      },
+      "has_main": false,
+      "type_hints": {
+        "total_functions": 4,
+        "typed_functions": 4,
+        "coverage": 100.0
+      },
+      "halstead": {
+        "vocabulary": 26,
+        "length": 34,
+        "volume": 136,
+        "difficulty": 1.21,
+        "effort": 164.33
+      },
+      "antipatterns": [],
+      "ast_security": [],
+      "patterns": {},
+      "unused_imports": [],
+      "maintenance_index": 48.79,
+      "syntax_error": false
+    },
+    "timestamp": 1770089110.6849837
+  },
+  "src/analyzer/cli/commands/summary.py": {
+    "hash": "52e42e025dfdcfcf7cbbf38773be6af08be03915ffacf19717c6e6c87de6b091",
+    "data": {
+      "path": "src/analyzer/cli/commands/summary.py",
+      "lines": 52,
+      "file_size_kb": 1.3505859375,
+      "complexity": 0,
+      "imports": [
+        "argparse",
+        "commands.handle_summary",
+        "base.BaseCommand"
+      ],
+      "classes": [
+        "SummaryCommand(BaseCommand)"
+      ],
+      "functions": [
+        "name(1 args)",
+        "help(1 args)",
+        "configure_parser(2 args)",
+        "execute(2 args)"
+      ],
+      "docstrings": {
+        "module": true,
+        "classes": {
+          "SummaryCommand": true
+        },
+        "functions": {
+          "name": true,
+          "help": true,
+          "configure_parser": true,
+          "execute": true
+        }
+      },
+      "entry_point_info": {
+        "is_entry_point": false,
+        "type": null
+      },
+      "has_main": false,
+      "type_hints": {
+        "total_functions": 4,
+        "typed_functions": 4,
+        "coverage": 100.0
+      },
+      "halstead": {
+        "vocabulary": 31,
+        "length": 39,
+        "volume": 156,
+        "difficulty": 1.17,
+        "effort": 182.9
+      },
+      "antipatterns": [],
+      "ast_security": [],
+      "patterns": {},
+      "unused_imports": [],
+      "maintenance_index": 47.21,
+      "syntax_error": false
+    },
+    "timestamp": 1770089110.685951
+  },
+  "src/analyzer/cli/commands/version.py": {
+    "hash": "1a19fd4e71309c3bf3a93db9ab16628546b7517befa3c46a02d285fe52d70e79",
+    "data": {
+      "path": "src/analyzer/cli/commands/version.py",
+      "lines": 41,
+      "file_size_kb": 0.9736328125,
+      "complexity": 0,
+      "imports": [
+        "argparse",
+        "__version__",
+        "base.BaseCommand"
+      ],
+      "classes": [
+        "VersionCommand(BaseCommand)"
+      ],
+      "functions": [
+        "name(1 args)",
+        "help(1 args)",
+        "configure_parser(2 args)",
+        "execute(2 args)"
+      ],
+      "docstrings": {
+        "module": true,
+        "classes": {
+          "VersionCommand": true
+        },
+        "functions": {
+          "name": true,
+          "help": true,
+          "configure_parser": true,
+          "execute": true
+        }
+      },
+      "entry_point_info": {
+        "is_entry_point": false,
+        "type": null
+      },
+      "has_main": false,
+      "type_hints": {
+        "total_functions": 4,
+        "typed_functions": 4,
+        "coverage": 100.0
+      },
+      "halstead": {
+        "vocabulary": 20,
+        "length": 26,
+        "volume": 104,
+        "difficulty": 1.17,
+        "effort": 121.33
+      },
+      "antipatterns": [],
+      "ast_security": [],
+      "patterns": {},
+      "unused_imports": [],
+      "maintenance_index": 50.7,
+      "syntax_error": false
+    },
+    "timestamp": 1770089110.6867404
+  },
+  "src/analyzer/visitors/__init__.py": {
+    "hash": "89cc07ab484548560e5d8890574004d9ebfd1c4f32f274ecd1c189e676b1db43",
+    "data": {
+      "path": "src/analyzer/visitors/__init__.py",
+      "lines": 19,
+      "file_size_kb": 0.5146484375,
+      "complexity": 0,
+      "imports": [
+        "composite_visitor.CompositeVisitor",
+        "security_visitor.SecurityVisitor"
+      ],
+      "classes": [],
+      "functions": [],
+      "docstrings": {
+        "module": true,
+        "classes": {},
+        "functions": {}
+      },
+      "entry_point_info": {
+        "is_entry_point": false,
+        "type": null
+      },
+      "has_main": false,
+      "type_hints": {
+        "total_functions": 0,
+        "typed_functions": 0,
+        "coverage": 100.0
+      },
+      "halstead": {
+        "vocabulary": 6,
+        "length": 10,
+        "volume": 0,
+        "difficulty": 0,
+        "effort": 0
+      },
+      "antipatterns": [],
+      "ast_security": [],
+      "patterns": {},
+      "unused_imports": [],
+      "maintenance_index": 100.0,
+      "syntax_error": false
+    },
+    "timestamp": 1770089110.7105129
+  },
+  "src/analyzer/visitors/base.py": {
+    "hash": "b036ba0b7fb5638819e574fd4afabcf9e6618845d907722766f3c81f00ddde02",
+    "data": {
+      "path": "src/analyzer/visitors/base.py",
+      "lines": 75,
+      "file_size_kb": 2.4541015625,
+      "complexity": 2,
+      "imports": [
+        "ast",
+        "typing.Any",
+        "typing.Dict",
+        "typing.List",
+        "typing.Optional"
+      ],
+      "classes": [
+        "BaseVisitor(ast.NodeVisitor)"
+      ],
+      "functions": [
+        "__init__(3 args)",
+        "_should_report(2 args)",
+        "_get_severity(2 args)",
+        "_report_issue(5 args)"
+      ],
+      "docstrings": {
+        "module": true,
+        "classes": {
+          "BaseVisitor": true
+        },
+        "functions": {
+          "__init__": true,
+          "_should_report": true,
+          "_get_severity": true,
+          "_report_issue": true
+        }
+      },
+      "entry_point_info": {
+        "is_entry_point": false,
+        "type": null
+      },
+      "has_main": false,
+      "type_hints": {
+        "total_functions": 4,
+        "typed_functions": 4,
+        "coverage": 100.0
+      },
+      "halstead": {
+        "vocabulary": 40,
+        "length": 78,
+        "volume": 390,
+        "difficulty": 5.0,
+        "effort": 1950.0
+      },
+      "antipatterns": [],
+      "ast_security": [],
+      "patterns": {},
+      "unused_imports": [],
+      "maintenance_index": 40.69,
+      "syntax_error": false
+    },
+    "timestamp": 1770089110.718088
+  },
+  "src/analyzer/visitors/composite_visitor.py": {
+    "hash": "780f64746fbcfb9f6b459c0b82b528f2e076caaeb286bdcb21ab3bcc74b20ed4",
+    "data": {
+      "path": "src/analyzer/visitors/composite_visitor.py",
+      "lines": 73,
+      "file_size_kb": 2.630859375,
+      "complexity": 1,
+      "imports": [
+        "ast",
+        "typing.Any",
+        "typing.Dict",
+        "typing.List",
+        "typing.Optional",
+        "imports_visitor.ImportsVisitor",
+        "metrics_visitor.MetricsVisitor",
+        "standards_visitor.StandardsVisitor"
+      ],
+      "classes": [
+        "CompositeVisitor(ast.NodeVisitor)"
+      ],
+      "functions": [
+        "__init__(3 args)",
+        "docstring_styles(1 args)",
+        "type_hint_stats(1 args)",
+        "docstring_stats(1 args)",
+        "visit(2 args)"
+      ],
+      "docstrings": {
+        "module": true,
+        "classes": {
+          "CompositeVisitor": true
+        },
+        "functions": {
+          "__init__": true,
+          "docstring_styles": true,
+          "type_hint_stats": true,
+          "docstring_stats": true,
+          "visit": true
+        }
+      },
+      "entry_point_info": {
+        "is_entry_point": false,
+        "type": null
+      },
+      "has_main": false,
+      "type_hints": {
+        "total_functions": 5,
+        "typed_functions": 5,
+        "coverage": 100.0
+      },
+      "halstead": {
+        "vocabulary": 26,
+        "length": 72,
+        "volume": 288,
+        "difficulty": 4.24,
+        "effort": 1220.87
+      },
+      "antipatterns": [],
+      "ast_security": [],
+      "patterns": {},
+      "unused_imports": [],
+      "maintenance_index": 42.0,
+      "syntax_error": false
+    },
+    "timestamp": 1770089110.720359
+  },
+  "src/analyzer/visitors/imports_visitor.py": {
+    "hash": "8e9b614e2c9cc60eda32e5f2fa0db33beb01f3619731f358363da974cd2011b1",
+    "data": {
+      "path": "src/analyzer/visitors/imports_visitor.py",
+      "lines": 85,
+      "file_size_kb": 2.8154296875,
+      "complexity": 10,
+      "imports": [
+        "ast",
+        "typing.Any",
+        "typing.cast",
+        "base.BaseVisitor"
+      ],
+      "classes": [
+        "ImportsVisitor(BaseVisitor)"
+      ],
+      "functions": [
+        "visit_Import(2 args)",
+        "visit_ImportFrom(2 args)",
+        "_check_import_name(4 args)"
+      ],
+      "docstrings": {
+        "module": true,
+        "classes": {
+          "ImportsVisitor": true
+        },
+        "functions": {
+          "visit_Import": true,
+          "visit_ImportFrom": true,
+          "_check_import_name": true
+        }
+      },
+      "entry_point_info": {
+        "is_entry_point": false,
+        "type": null
+      },
+      "has_main": false,
+      "type_hints": {
+        "total_functions": 3,
+        "typed_functions": 3,
+        "coverage": 100.0
+      },
+      "halstead": {
+        "vocabulary": 52,
+        "length": 111,
+        "volume": 555,
+        "difficulty": 9.52,
+        "effort": 5285.41
+      },
+      "antipatterns": [],
+      "ast_security": [],
+      "patterns": {},
+      "unused_imports": [],
+      "maintenance_index": 37.35,
+      "syntax_error": false
+    },
+    "timestamp": 1770089110.7241642
+  },
+  "src/analyzer/visitors/security_visitor.py": {
+    "hash": "a27b66573dd0c6da3eb24ea83670ca7f52338c1bc35483e6ea39f8988df82902",
+    "data": {
+      "path": "src/analyzer/visitors/security_visitor.py",
+      "lines": 52,
+      "file_size_kb": 1.6357421875,
+      "complexity": 2,
+      "imports": [
+        "ast",
+        "typing.Any",
+        "typing.Dict",
+        "typing.List",
+        "security_checker.SecurityContext",
+        "security_checker.SecurityRegistry"
+      ],
+      "classes": [
+        "SecurityVisitor(ast.NodeVisitor)"
+      ],
+      "functions": [
+        "__init__(2 args)",
+        "visit(2 args)"
+      ],
+      "docstrings": {
+        "module": true,
+        "classes": {
+          "SecurityVisitor": true
+        },
+        "functions": {
+          "__init__": true,
+          "visit": true
+        }
+      },
+      "entry_point_info": {
+        "is_entry_point": false,
+        "type": null
+      },
+      "has_main": false,
+      "type_hints": {
+        "total_functions": 2,
+        "typed_functions": 0,
+        "coverage": 0.0
+      },
+      "halstead": {
+        "vocabulary": 32,
+        "length": 54,
+        "volume": 270,
+        "difficulty": 3.5,
+        "effort": 945.0
+      },
+      "antipatterns": [],
+      "ast_security": [],
+      "patterns": {},
+      "unused_imports": [],
+      "maintenance_index": 45.27,
+      "syntax_error": false
+    },
+    "timestamp": 1770089110.726178
+  },
+  "src/analyzer/visitors/metrics_visitor.py": {
+    "hash": "c5df523198e901393045cc2a6cd3015f05f024d7526a9f5d50844fcad9032838",
+    "data": {
+      "path": "src/analyzer/visitors/metrics_visitor.py",
+      "lines": 158,
+      "file_size_kb": 5.3115234375,
+      "complexity": 18,
+      "imports": [
+        "ast",
+        "re",
+        "typing.Any",
+        "typing.Dict",
+        "typing.List",
+        "typing.Optional",
+        "utils.ast_utils.calculate_complexity",
+        "base.BaseVisitor"
+      ],
+      "classes": [
+        "MetricsVisitor(BaseVisitor)"
+      ],
+      "functions": [
+        "__init__(3 args)",
+        "visit_Module(2 args)",
+        "visit_FunctionDef(2 args)",
+        "visit_ClassDef(2 args)",
+        "_check_docstring_style(2 args)",
+        "_check_docstring_and_metrics(2 args)",
+        "_check_type_hints(2 args)"
+      ],
+      "docstrings": {
+        "module": true,
+        "classes": {
+          "MetricsVisitor": true
+        },
+        "functions": {
+          "__init__": true,
+          "visit_Module": true,
+          "visit_FunctionDef": true,
+          "visit_ClassDef": true,
+          "_check_docstring_style": true,
+          "_check_docstring_and_metrics": true,
+          "_check_type_hints": true
+        }
+      },
+      "entry_point_info": {
+        "is_entry_point": false,
+        "type": null
+      },
+      "has_main": false,
+      "type_hints": {
+        "total_functions": 7,
+        "typed_functions": 7,
+        "coverage": 100.0
+      },
+      "halstead": {
+        "vocabulary": 70,
+        "length": 238,
+        "volume": 1428,
+        "difficulty": 14.39,
+        "effort": 20542.13
+      },
+      "antipatterns": [
+        {
+          "type": "magic_number",
+          "severity": "low",
+          "message": "Magic number detected: 15",
+          "line": 65,
+          "value": 15
+        }
+      ],
+      "ast_security": [],
+      "patterns": {},
+      "unused_imports": [],
+      "maintenance_index": 27.53,
+      "syntax_error": false
+    },
+    "timestamp": 1770089110.733719
+  },
+  "src/analyzer/visitors/standards_visitor.py": {
+    "hash": "44698e3274bec97fe6126d964c3143b1663b72793f6a06614c1124d601115181",
+    "data": {
+      "path": "src/analyzer/visitors/standards_visitor.py",
+      "lines": 284,
+      "file_size_kb": 9.5595703125,
+      "complexity": 64,
+      "imports": [
+        "ast",
+        "typing.Any",
+        "typing.Dict",
+        "typing.List",
+        "typing.Optional",
+        "typing.Set",
+        "rules.qgis_rules.I18N_METHODS",
+        "base.BaseVisitor"
+      ],
+      "classes": [
+        "StandardsVisitor(BaseVisitor)"
+      ],
+      "functions": [
+        "__init__(3 args)",
+        "visit_ClassDef(2 args)",
+        "visit_FunctionDef(2 args)",
+        "visit_Call(2 args)",
+        "visit_For(2 args)",
+        "_check_obsolete_api(2 args)",
+        "_check_missing_i18n(2 args)",
+        "_check_missing_slot(2 args)",
+        "_check_unsafe_subprocess(2 args)",
+        "_check_blocking_network(2 args)"
+      ],
+      "docstrings": {
+        "module": true,
+        "classes": {
+          "StandardsVisitor": true
+        },
+        "functions": {
+          "__init__": true,
+          "visit_ClassDef": true,
+          "visit_FunctionDef": true,
+          "visit_Call": true,
+          "visit_For": true,
+          "_check_obsolete_api": true,
+          "_check_missing_i18n": true,
+          "_check_missing_slot": true,
+          "_check_unsafe_subprocess": true,
+          "_check_blocking_network": true
+        }
+      },
+      "entry_point_info": {
+        "is_entry_point": false,
+        "type": null
+      },
+      "has_main": false,
+      "type_hints": {
+        "total_functions": 10,
+        "typed_functions": 10,
+        "coverage": 100.0
+      },
+      "halstead": {
+        "vocabulary": 119,
+        "length": 448,
+        "volume": 2688,
+        "difficulty": 19.85,
+        "effort": 53358.06
+      },
+      "antipatterns": [],
+      "ast_security": [],
+      "patterns": {},
+      "unused_imports": [],
+      "maintenance_index": 13.86,
+      "syntax_error": false
+    },
+    "timestamp": 1770089110.7446132
   }
 }
