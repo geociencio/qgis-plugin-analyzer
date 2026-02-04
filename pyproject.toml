@@ -1,6 +1,6 @@
 [project]
 name = "qgis-plugin-analyzer"
-version = "1.5.0"
+version = "1.6.0"
 description = "A professional static analysis tool for QGIS (PyQGIS) plugins"
 readme = "README.md"
 requires-python = ">=3.8"
@@ -45,6 +45,7 @@ dev = [
     "qgis-stubs>=0.1",
     "pytest>=8.3.5",
     "PyYAML>=6.0",
+    "types-pyyaml>=6.0.12.20241230",
 ]
 
 [tool.mypy]

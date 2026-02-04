@@ -5,6 +5,27 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.6.0] - 2026-02-03
+
+### Added
+- **Official QGIS Repository Validation**: Implemented strict local checks to mirror the official repository bot:
+    - **Package Size Enforcement**: Warning when the plugin ZIP exceeds the 20MB limit.
+    - **Binary File Detection**: Proactive scanning and banning of `.exe`, `.dll`, `.so`, and other binaries.
+    - **Folder structure validation**: Ensures the root folder matches the expected QGIS plugin format.
+    - **Enhanced Metadata Validation**: Verification of mandatory fields and URL protocols in `metadata.txt`.
+- **Focused Security Command**: New `security --deep` flag for intensive, multi-pass vulnerability audits.
+- **Rules Documentation**: Added `list-rules` command to display the full catalog of implemented audit rules.
+
+### Changed
+- **CLI Architecture Refactor**: Re-implemented the command-line interface using the **Command Pattern** for better modularity and testability.
+- **Visitor Modularization**: Split the monolithic `visitors.py` into a specialized package (`src/analyzer/visitors/`) with separate audit contexts.
+- **Engine Optimization**: Significant performance improvements in file discovery and AST traversal logic.
+- **Refined Auto-Fixing**: Improved `FixRegistry` and handler-based auto-reparations for QGIS legacy issues.
+
+### Fixed
+- **CLI Flag Consistency**: Standardized flags across all subcommands (`--report`, `--profile`, `--input`).
+- **Path Handling**: Robust relative path resolution in terminal reports and JSON exports.
+
 ## [1.5.0] - 2026-02-01
 
 ### Added

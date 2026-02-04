@@ -104,7 +104,7 @@ You can run `qgis-plugin-analyzer` automatically before every commit to ensure q
 
 ```yaml
   - repo: https://github.com/geociencio/qgis-plugin-analyzer
-    rev: v1.5.0  # Use the latest tag
+    rev: main  # Use 'main' for latest features or a specific tag like v1.5.0
     hooks:
       - id: qgis-plugin-analyzer
 ```
@@ -163,6 +163,7 @@ Audits an existing QGIS plugin repository.
 | :--- | :--- | :--- |
 | `project_path` | **(Required)** Path to the plugin directory to analyze. | N/A |
 | `-o`, `--output` | Directory where HTML/Markdown reports will be saved. | `./analysis_results` |
+| `-r`, `--report` | Explicitly generate detailed HTML/Markdown reports. | `False` |
 | `-p`, `--profile`| Configuration profile from `pyproject.toml` (`default`, `release`). | `default` |
 
 ### `qgis-analyzer fix`
@@ -191,6 +192,7 @@ Performs a focused security scan on a file or directory.
 | Argument | Description | Default |
 | :--- | :--- | :--- |
 | `path` | **(Required)** Path to the file or directory to scan. | N/A |
+| `--deep` | Run more intensive (but slower) security checks. | `False` |
 | `-p`, `--profile`| Configuration profile. | `default` |
 
 ### `qgis-analyzer version`
@@ -231,6 +233,7 @@ The development of this analyzer is based on official QGIS community guidelines,
 - **[QGIS Plugin Repository Requirements](https://plugins.qgis.org/publish/)**: Mandatory criteria for plugin approval in the official repository.
 - **[QGIS Coding Standards](https://docs.qgis.org/latest/en/docs/developer_guide/codingstandards.html)**: Core style and organization guidelines for the QGIS project.
 - **[QGIS HIG (Human Interface Guidelines)](https://docs.qgis.org/latest/en/docs/developer_guide/hig.html)**: Standards for consistent and accessible user interface design.
+- **[QGIS Security Scanning Documentation](https://plugins.qgis.org/docs/security-scanning)**: Official guide on automated security analysis (Bandit, detect-secrets) for plugins.
 
 ### Industry & Community Standards
 - **[flake8-qgis Rules](https://github.com/qgis/flake8-qgis)**: Community-driven linting rules for PyQGIS (QGS101-106).
@@ -239,6 +242,11 @@ The development of this analyzer is based on official QGIS community guidelines,
 - **[Maintainability Index (SEI)](https://learn.microsoft.com/en-us/visualstudio/code-quality/code-metrics-maintainability-index-range-and-meaning)**: Methodology for measuring software maintainability.
 - **[Conventional Commits](https://www.conventionalcommits.org/)**: Standard for clear, machine-readable commit history.
 - **[Keep a Changelog](https://keepachangelog.com/)**: Best practices for maintainable version history.
+
+### Security Standards
+- **[Bandit (PyCQA)](https://bandit.readthedocs.io/)**: The security rules implemented (B1xx - B6xx) are directly derived from the Bandit project's rule set for identifying common security issues in Python code.
+- **[CWE (Common Weakness Enumeration)](https://cwe.mitre.org/)**: Security findings are mapped to standard CWE IDs (e.g., CWE-78 Command Injection, CWE-89 SQL Injection) for industry-standard classification.
+- **[OWASP Top 10](https://owasp.org/www-project-top-ten/)**: The "Hardcoded Secret" and "Injection" checks align with critical OWASP vulnerabilities.
 
 ### Internal Resources
 - **[Detailed Rules Catalog](RULES.md)**: Full documentation of all audit rules implemented in this analyzer.
