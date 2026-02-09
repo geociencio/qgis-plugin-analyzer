@@ -89,3 +89,4 @@ class ServeCommand(BaseCommand):
         except Exception as e:
             print(f"❌ Failed to start server: {e}")
             return 1
+        return 0

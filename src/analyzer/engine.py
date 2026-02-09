@@ -550,9 +550,9 @@ class ProjectAnalyzer:
                 "is_compliant": qgis_checks["package_constraints"].get("is_valid", True)
                 and qgis_checks["structure"].get("is_valid", True),
             }
-            analyses["ruff_metadata"] = ruff_findings.get(
-                "metadata", {}
-            )  # Placeholder for extra ruff metadata if needed
+            analyses["ruff_metadata"] = (
+                ruff_findings.get("metadata", {}) if isinstance(ruff_findings, dict) else {}
+            )
 
         return analyses
 

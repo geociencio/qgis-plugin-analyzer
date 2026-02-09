@@ -134,6 +134,8 @@ class BaseAnalyzerCommand(BaseCommand):
             updates["generate_html"] = True
 
         if updates:
-            analyzer.config = dataclasses.replace(analyzer.config, **updates)
+            from typing import Any, cast
+
+            analyzer.config = dataclasses.replace(analyzer.config, **cast(Any, updates))
 
         return analyzer

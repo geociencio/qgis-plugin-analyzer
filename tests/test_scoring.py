@@ -1,4 +1,5 @@
 import unittest
+from typing import Any, Dict, List
 from unittest.mock import MagicMock, patch
 
 from analyzer.engine import ProjectAnalyzer, ScoringEngine
@@ -32,7 +33,7 @@ class TestScoring(unittest.TestCase):
         # Case: Score + Bonus >= 100 but there are findings
         modules_data = [{"lines": 100, "functions": [{"complexity": 1}]}]
         ruff_findings = [{"code": "W123"}]  # One warning
-        semantic = {"cycles": [], "metrics": {}, "missing_resources": []}
+        semantic: Dict[str, Any] = {"cycles": [], "metrics": {}, "missing_resources": []}
 
         # Mock modernization bonus to be 5.0
         with patch.object(ScoringEngine, "_get_modernization_bonus", return_value=5.0):
@@ -44,8 +45,8 @@ class TestScoring(unittest.TestCase):
 
     def test_perfect_score_no_findings(self):
         modules_data = [{"lines": 100, "functions": [{"complexity": 1}]}]
-        ruff_findings = []
-        semantic = {"cycles": [], "metrics": {}, "missing_resources": []}
+        ruff_findings: List[Dict[str, Any]] = []
+        semantic: Dict[str, Any] = {"cycles": [], "metrics": {}, "missing_resources": []}
 
         scores = self.scoring.calculate_project_scores(modules_data, ruff_findings, None, semantic)
         self.assertEqual(scores["maint_score"], 100.0)

@@ -97,7 +97,7 @@ class SafetyVisitor(BaseVisitor):
         if is_intensive:
             self._report_issue(
                 "UI_BLOCKING_LOOP",
-                node.lineno,
+                getattr(node, "lineno", 0),
                 "Intensive loop detected in UI handler without QgsTask. This may freeze QGIS.",
                 ast.unparse(node).split("\n")[0] + " ...",
             )
