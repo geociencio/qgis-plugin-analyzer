@@ -54,6 +54,7 @@ class BaseCommand(ABC):
         parser: argparse.ArgumentParser,
         include_output: bool = True,
         include_profile: bool = True,
+        include_strict: bool = True,
     ) -> None:
         """Add common arguments shared across multiple commands.
 
@@ -61,6 +62,7 @@ class BaseCommand(ABC):
             parser: The argument parser to add arguments to.
             include_output: Whether to include the --output argument.
             include_profile: Whether to include the --profile argument.
+            include_strict: Whether to include the --strict argument.
         """
         if include_output:
             parser.add_argument(
@@ -75,6 +77,12 @@ class BaseCommand(ABC):
                 "--profile",
                 help="Configuration profile from pyproject.toml",
                 default="default",
+            )
+        if include_strict:
+            parser.add_argument(
+                "--strict",
+                action="store_true",
+                help="Enable strict mode with gold-standard rules",
             )
 
     def setup_output_dir(self, args: argparse.Namespace) -> Optional[pathlib.Path]:

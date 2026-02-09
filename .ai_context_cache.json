@@ -2323,12 +2323,12 @@
     "timestamp": 1769983681.29246
   },
   "src/analyzer/engine.py": {
-    "hash": "9089594c17824f0d9fbf5179f96d25a54a63c5f6fbc3f054d9b4f8df89ef95a1",
+    "hash": "1eadc9ee2bdfe30dff555d9fd618bf6299226df9dc19a75d9eb379f362bf8284",
     "data": {
       "path": "src/analyzer/engine.py",
-      "lines": 821,
-      "file_size_kb": 29.8076171875,
-      "complexity": 72,
+      "lines": 832,
+      "file_size_kb": 30.37890625,
+      "complexity": 73,
       "imports": [
         "json",
         "math",
@@ -2362,6 +2362,7 @@
         "utils.setup_logger",
         "validators.validate_metadata",
         "validators.validate_metadata_urls",
+        "validators.validate_package_constraints",
         "validators.validate_plugin_structure"
       ],
       "classes": [
@@ -2442,529 +2443,522 @@
         "coverage": 100.0
       },
       "halstead": {
-        "vocabulary": 271,
-        "length": 1695,
-        "volume": 13560,
-        "difficulty": 51.37,
-        "effort": 696544.51
+        "vocabulary": 275,
+        "length": 1720,
+        "volume": 13760,
+        "difficulty": 48.43,
+        "effort": 666400.0
       },
       "antipatterns": [
         {
           "type": "magic_number",
           "severity": "low",
           "message": "Magic number detected: 100.0",
-          "line": 248,
+          "line": 250,
           "value": 100.0
         },
         {
           "type": "magic_number",
           "severity": "low",
           "message": "Magic number detected: 500",
-          "line": 300,
+          "line": 302,
           "value": 500
         },
         {
           "type": "magic_number",
           "severity": "low",
           "message": "Magic number detected: 100.0",
-          "line": 793,
+          "line": 804,
           "value": 100.0
         },
         {
           "type": "magic_number",
           "severity": "low",
           "message": "Magic number detected: 100.0",
-          "line": 139,
+          "line": 141,
           "value": 100.0
         },
         {
           "type": "magic_number",
           "severity": "low",
           "message": "Magic number detected: 10",
-          "line": 147,
+          "line": 149,
           "value": 10
         },
         {
           "type": "magic_number",
           "severity": "low",
           "message": "Magic number detected: 10",
-          "line": 204,
+          "line": 206,
           "value": 10
         },
         {
           "type": "magic_number",
           "severity": "low",
           "message": "Magic number detected: 2.0",
-          "line": 234,
+          "line": 236,
           "value": 2.0
         },
         {
           "type": "magic_number",
           "severity": "low",
           "message": "Magic number detected: 2",
-          "line": 249,
-          "value": 2
-        },
-        {
-          "type": "magic_number",
-          "severity": "low",
-          "message": "Magic number detected: 20",
           "line": 251,
-          "value": 20
+          "value": 2
         },
         {
           "type": "magic_number",
           "severity": "low",
-          "message": "Magic number detected: 10",
+          "message": "Magic number detected: 20",
           "line": 253,
-          "value": 10
+          "value": 20
         },
         {
           "type": "magic_number",
           "severity": "low",
-          "message": "Magic number detected: 5",
-          "line": 254,
-          "value": 5
-        },
-        {
-          "type": "magic_number",
-          "severity": "low",
-          "message": "Magic number detected: 50",
+          "message": "Magic number detected: 10",
           "line": 255,
-          "value": 50
-        },
-        {
-          "type": "magic_number",
-          "severity": "low",
-          "message": "Magic number detected: 20",
-          "line": 256,
-          "value": 20
-        },
-        {
-          "type": "magic_number",
-          "severity": "low",
-          "message": "Magic number detected: 10",
-          "line": 257,
-          "value": 10
-        },
-        {
-          "type": "magic_number",
-          "severity": "low",
-          "message": "Magic number detected: 4",
-          "line": 299,
-          "value": 4
-        },
-        {
-          "type": "magic_number",
-          "severity": "low",
-          "message": "Magic number detected: 100.0",
-          "line": 681,
-          "value": 100.0
-        },
-        {
-          "type": "magic_number",
-          "severity": "low",
-          "message": "Magic number detected: 10",
-          "line": 689,
-          "value": 10
-        },
-        {
-          "type": "magic_number",
-          "severity": "low",
-          "message": "Magic number detected: 10",
-          "line": 749,
-          "value": 10
-        },
-        {
-          "type": "magic_number",
-          "severity": "low",
-          "message": "Magic number detected: 2.0",
-          "line": 779,
-          "value": 2.0
-        },
-        {
-          "type": "magic_number",
-          "severity": "low",
-          "message": "Magic number detected: 2",
-          "line": 794,
-          "value": 2
-        },
-        {
-          "type": "magic_number",
-          "severity": "low",
-          "message": "Magic number detected: 20",
-          "line": 796,
-          "value": 20
-        },
-        {
-          "type": "magic_number",
-          "severity": "low",
-          "message": "Magic number detected: 10",
-          "line": 798,
           "value": 10
         },
         {
           "type": "magic_number",
           "severity": "low",
           "message": "Magic number detected: 5",
-          "line": 799,
+          "line": 256,
           "value": 5
         },
         {
           "type": "magic_number",
           "severity": "low",
           "message": "Magic number detected: 50",
-          "line": 800,
+          "line": 257,
           "value": 50
         },
         {
           "type": "magic_number",
           "severity": "low",
           "message": "Magic number detected: 20",
-          "line": 801,
+          "line": 258,
           "value": 20
         },
         {
           "type": "magic_number",
           "severity": "low",
           "message": "Magic number detected: 10",
-          "line": 802,
+          "line": 259,
           "value": 10
         },
         {
           "type": "magic_number",
           "severity": "low",
-          "message": "Magic number detected: 100.0",
-          "line": 143,
-          "value": 100.0
-        },
-        {
-          "type": "magic_number",
-          "severity": "low",
-          "message": "Magic number detected: 171",
-          "line": 182,
-          "value": 171
-        },
-        {
-          "type": "magic_number",
-          "severity": "low",
-          "message": "Magic number detected: 100",
-          "line": 198,
-          "value": 100
-        },
-        {
-          "type": "magic_number",
-          "severity": "low",
-          "message": "Magic number detected: 100",
-          "line": 205,
-          "value": 100
-        },
-        {
-          "type": "magic_number",
-          "severity": "low",
-          "message": "Magic number detected: 5.0",
-          "line": 231,
-          "value": 5.0
-        },
-        {
-          "type": "magic_number",
-          "severity": "low",
           "message": "Magic number detected: 4",
-          "line": 299,
+          "line": 301,
           "value": 4
         },
         {
           "type": "magic_number",
           "severity": "low",
           "message": "Magic number detected: 100.0",
-          "line": 685,
+          "line": 692,
+          "value": 100.0
+        },
+        {
+          "type": "magic_number",
+          "severity": "low",
+          "message": "Magic number detected: 10",
+          "line": 700,
+          "value": 10
+        },
+        {
+          "type": "magic_number",
+          "severity": "low",
+          "message": "Magic number detected: 10",
+          "line": 760,
+          "value": 10
+        },
+        {
+          "type": "magic_number",
+          "severity": "low",
+          "message": "Magic number detected: 2.0",
+          "line": 790,
+          "value": 2.0
+        },
+        {
+          "type": "magic_number",
+          "severity": "low",
+          "message": "Magic number detected: 2",
+          "line": 805,
+          "value": 2
+        },
+        {
+          "type": "magic_number",
+          "severity": "low",
+          "message": "Magic number detected: 20",
+          "line": 807,
+          "value": 20
+        },
+        {
+          "type": "magic_number",
+          "severity": "low",
+          "message": "Magic number detected: 10",
+          "line": 809,
+          "value": 10
+        },
+        {
+          "type": "magic_number",
+          "severity": "low",
+          "message": "Magic number detected: 5",
+          "line": 810,
+          "value": 5
+        },
+        {
+          "type": "magic_number",
+          "severity": "low",
+          "message": "Magic number detected: 50",
+          "line": 811,
+          "value": 50
+        },
+        {
+          "type": "magic_number",
+          "severity": "low",
+          "message": "Magic number detected: 20",
+          "line": 812,
+          "value": 20
+        },
+        {
+          "type": "magic_number",
+          "severity": "low",
+          "message": "Magic number detected: 10",
+          "line": 813,
+          "value": 10
+        },
+        {
+          "type": "magic_number",
+          "severity": "low",
+          "message": "Magic number detected: 100.0",
+          "line": 145,
           "value": 100.0
         },
         {
           "type": "magic_number",
           "severity": "low",
           "message": "Magic number detected: 171",
-          "line": 725,
+          "line": 184,
           "value": 171
         },
         {
           "type": "magic_number",
           "severity": "low",
           "message": "Magic number detected: 100",
-          "line": 742,
+          "line": 200,
           "value": 100
         },
         {
           "type": "magic_number",
           "severity": "low",
           "message": "Magic number detected: 100",
-          "line": 750,
+          "line": 207,
           "value": 100
         },
         {
           "type": "magic_number",
           "severity": "low",
           "message": "Magic number detected: 5.0",
-          "line": 776,
+          "line": 233,
+          "value": 5.0
+        },
+        {
+          "type": "magic_number",
+          "severity": "low",
+          "message": "Magic number detected: 4",
+          "line": 301,
+          "value": 4
+        },
+        {
+          "type": "magic_number",
+          "severity": "low",
+          "message": "Magic number detected: 100.0",
+          "line": 696,
+          "value": 100.0
+        },
+        {
+          "type": "magic_number",
+          "severity": "low",
+          "message": "Magic number detected: 171",
+          "line": 736,
+          "value": 171
+        },
+        {
+          "type": "magic_number",
+          "severity": "low",
+          "message": "Magic number detected: 100",
+          "line": 753,
+          "value": 100
+        },
+        {
+          "type": "magic_number",
+          "severity": "low",
+          "message": "Magic number detected: 100",
+          "line": 761,
+          "value": 100
+        },
+        {
+          "type": "magic_number",
+          "severity": "low",
+          "message": "Magic number detected: 5.0",
+          "line": 787,
           "value": 5.0
         },
         {
           "type": "magic_number",
           "severity": "low",
           "message": "Magic number detected: 100",
-          "line": 182,
+          "line": 184,
           "value": 100
         },
         {
           "type": "magic_number",
           "severity": "low",
           "message": "Magic number detected: 5",
-          "line": 198,
+          "line": 200,
           "value": 5
         },
         {
           "type": "magic_number",
           "severity": "low",
           "message": "Magic number detected: 0.7",
-          "line": 207,
+          "line": 209,
           "value": 0.7
         },
         {
           "type": "magic_number",
           "severity": "low",
           "message": "Magic number detected: 0.3",
-          "line": 207,
+          "line": 209,
           "value": 0.3
         },
         {
           "type": "magic_number",
           "severity": "low",
           "message": "Magic number detected: 0.8",
-          "line": 230,
+          "line": 232,
           "value": 0.8
         },
         {
           "type": "magic_number",
           "severity": "low",
           "message": "Magic number detected: 0.8",
-          "line": 230,
+          "line": 232,
           "value": 0.8
         },
         {
           "type": "magic_number",
           "severity": "low",
           "message": "Magic number detected: 10.0",
-          "line": 269,
+          "line": 271,
           "value": 10.0
         },
         {
           "type": "magic_number",
           "severity": "low",
           "message": "Magic number detected: 2",
-          "line": 491,
+          "line": 499,
           "value": 2
         },
         {
           "type": "magic_number",
           "severity": "low",
           "message": "Magic number detected: 100",
-          "line": 725,
+          "line": 736,
           "value": 100
         },
         {
           "type": "magic_number",
           "severity": "low",
           "message": "Magic number detected: 5",
-          "line": 742,
+          "line": 753,
           "value": 5
         },
         {
           "type": "magic_number",
           "severity": "low",
           "message": "Magic number detected: 0.7",
-          "line": 752,
+          "line": 763,
           "value": 0.7
         },
         {
           "type": "magic_number",
           "severity": "low",
           "message": "Magic number detected: 0.3",
-          "line": 752,
+          "line": 763,
           "value": 0.3
         },
         {
           "type": "magic_number",
           "severity": "low",
           "message": "Magic number detected: 0.8",
-          "line": 775,
+          "line": 786,
           "value": 0.8
         },
         {
           "type": "magic_number",
           "severity": "low",
           "message": "Magic number detected: 0.8",
-          "line": 775,
+          "line": 786,
           "value": 0.8
         },
         {
           "type": "magic_number",
           "severity": "low",
           "message": "Magic number detected: 10.0",
-          "line": 816,
+          "line": 827,
           "value": 10.0
         },
         {
           "type": "magic_number",
           "severity": "low",
           "message": "Magic number detected: 5",
-          "line": 204,
+          "line": 206,
           "value": 5
         },
         {
           "type": "magic_number",
           "severity": "low",
           "message": "Magic number detected: 10",
-          "line": 204,
+          "line": 206,
           "value": 10
         },
         {
           "type": "magic_number",
           "severity": "low",
           "message": "Magic number detected: 5.0",
-          "line": 271,
+          "line": 273,
           "value": 5.0
         },
         {
           "type": "magic_number",
           "severity": "low",
           "message": "Magic number detected: 2.0",
-          "line": 273,
+          "line": 275,
           "value": 2.0
         },
         {
           "type": "magic_number",
           "severity": "low",
           "message": "Magic number detected: 0.5",
-          "line": 478,
+          "line": 486,
           "value": 0.5
         },
         {
           "type": "magic_number",
           "severity": "low",
           "message": "Magic number detected: 0.5",
-          "line": 478,
+          "line": 486,
           "value": 0.5
         },
         {
           "type": "magic_number",
           "severity": "low",
-          "message": "Magic number detected: 20",
-          "line": 494,
-          "value": 20
-        },
-        {
-          "type": "magic_number",
-          "severity": "low",
           "message": "Magic number detected: 100",
-          "line": 553,
+          "line": 563,
           "value": 100
         },
         {
           "type": "magic_number",
           "severity": "low",
           "message": "Magic number detected: 100",
-          "line": 557,
+          "line": 567,
           "value": 100
         },
         {
           "type": "magic_number",
           "severity": "low",
           "message": "Magic number detected: 100",
-          "line": 559,
+          "line": 569,
           "value": 100
         },
         {
           "type": "magic_number",
           "severity": "low",
           "message": "Magic number detected: 5",
-          "line": 749,
+          "line": 760,
           "value": 5
         },
         {
           "type": "magic_number",
           "severity": "low",
           "message": "Magic number detected: 10",
-          "line": 749,
+          "line": 760,
           "value": 10
         },
         {
           "type": "magic_number",
           "severity": "low",
           "message": "Magic number detected: 5.0",
-          "line": 818,
+          "line": 829,
           "value": 5.0
         },
         {
           "type": "magic_number",
           "severity": "low",
           "message": "Magic number detected: 2.0",
-          "line": 820,
+          "line": 831,
           "value": 2.0
         },
         {
           "type": "magic_number",
           "severity": "low",
           "message": "Magic number detected: 171",
-          "line": 182,
+          "line": 184,
           "value": 171
         },
         {
           "type": "magic_number",
           "severity": "low",
           "message": "Magic number detected: 16.2",
-          "line": 182,
+          "line": 184,
           "value": 16.2
         },
         {
           "type": "magic_number",
           "severity": "low",
           "message": "Magic number detected: 10",
-          "line": 198,
+          "line": 200,
           "value": 10
         },
         {
           "type": "magic_number",
           "severity": "low",
           "message": "Magic number detected: 171",
-          "line": 725,
+          "line": 736,
           "value": 171
         },
         {
           "type": "magic_number",
           "severity": "low",
           "message": "Magic number detected: 16.2",
-          "line": 725,
+          "line": 736,
           "value": 16.2
         },
         {
           "type": "magic_number",
           "severity": "low",
           "message": "Magic number detected: 10",
-          "line": 742,
+          "line": 753,
           "value": 10
         },
         {
           "type": "magic_number",
           "severity": "low",
           "message": "Magic number detected: 0.23",
-          "line": 182,
+          "line": 184,
           "value": 0.23
         },
         {
           "type": "magic_number",
           "severity": "low",
           "message": "Magic number detected: 0.23",
-          "line": 725,
+          "line": 736,
           "value": 0.23
         }
       ],
@@ -2972,7 +2966,7 @@
         {
           "pattern": "except Exception:",
           "severity": "low",
-          "line": 349,
+          "line": 351,
           "description": "Too broad exception handler"
         }
       ],
@@ -2981,7 +2975,7 @@
       "maintenance_index": 0,
       "syntax_error": false
     },
-    "timestamp": 1770089110.7591062
+    "timestamp": 1770117951.4394596
   },
   "src/analyzer/utils/config_utils.py": {
     "hash": "ade3725289e68a4f13a70c7445b6ac96c8a27a722a3c37a25c17e1e0fbf6dff1",
@@ -3565,28 +3559,33 @@
     "timestamp": 1769983681.3015332
   },
   "src/analyzer/validators.py": {
-    "hash": "6cdc407f669d1707c8daaa349447033335d4b798184ed7f37bf8b7ad80251e02",
+    "hash": "7fc7959c21000923024da2cdc91347a502b54c9220447112ca145cfd268913f7",
     "data": {
       "path": "src/analyzer/validators.py",
-      "lines": 209,
-      "file_size_kb": 6.4150390625,
-      "complexity": 38,
+      "lines": 298,
+      "file_size_kb": 9.2021484375,
+      "complexity": 50,
       "imports": [
         "ipaddress",
         "pathlib",
+        "re",
         "socket",
         "urllib.error",
         "urllib.parse",
         "urllib.request",
         "typing.Any",
-        "typing.Dict"
+        "typing.Dict",
+        "typing.List"
       ],
       "classes": [],
       "functions": [
         "is_ssrf_safe(1 args)",
         "validate_metadata_urls(1 args)",
+        "validate_package_constraints(2 args)",
         "validate_plugin_structure(1 args)",
-        "validate_metadata(1 args)"
+        "validate_metadata(1 args)",
+        "calculate_package_size(1 args)",
+        "scan_for_binaries(1 args)"
       ],
       "docstrings": {
         "module": false,
@@ -3594,8 +3593,11 @@
         "functions": {
           "is_ssrf_safe": true,
           "validate_metadata_urls": true,
+          "validate_package_constraints": true,
           "validate_plugin_structure": true,
-          "validate_metadata": true
+          "validate_metadata": true,
+          "calculate_package_size": true,
+          "scan_for_binaries": true
         }
       },
       "entry_point_info": {
@@ -3604,37 +3606,72 @@
       },
       "has_main": false,
       "type_hints": {
-        "total_functions": 4,
-        "typed_functions": 4,
+        "total_functions": 7,
+        "typed_functions": 7,
         "coverage": 100.0
       },
       "halstead": {
-        "vocabulary": 113,
-        "length": 293,
-        "volume": 1758,
-        "difficulty": 15.93,
-        "effort": 27996.15
+        "vocabulary": 160,
+        "length": 421,
+        "volume": 2947,
+        "difficulty": 18.31,
+        "effort": 53960.59
       },
       "antipatterns": [
         {
           "type": "magic_number",
           "severity": "low",
+          "message": "Magic number detected: 20",
+          "line": 130,
+          "value": 20
+        },
+        {
+          "type": "magic_number",
+          "severity": "low",
+          "message": "Magic number detected: 1024",
+          "line": 277,
+          "value": 1024
+        },
+        {
+          "type": "magic_number",
+          "severity": "low",
+          "message": "Magic number detected: 1024",
+          "line": 277,
+          "value": 1024
+        },
+        {
+          "type": "magic_number",
+          "severity": "low",
+          "message": "Magic number detected: 3",
+          "line": 137,
+          "value": 3
+        },
+        {
+          "type": "magic_number",
+          "severity": "low",
           "message": "Magic number detected: 4",
-          "line": 51,
+          "line": 52,
           "value": 4
         },
         {
           "type": "magic_number",
           "severity": "low",
           "message": "Magic number detected: 200",
-          "line": 99,
+          "line": 100,
           "value": 200
         },
         {
           "type": "magic_number",
           "severity": "low",
+          "message": "Magic number detected: 3",
+          "line": 136,
+          "value": 3
+        },
+        {
+          "type": "magic_number",
+          "severity": "low",
           "message": "Magic number detected: 5",
-          "line": 98,
+          "line": 99,
           "value": 5
         }
       ],
@@ -3642,34 +3679,34 @@
         {
           "pattern": "except Exception:",
           "severity": "low",
-          "line": 62,
+          "line": 63,
           "description": "Too broad exception handler"
         },
         {
           "pattern": "except Exception:",
           "severity": "low",
-          "line": 193,
+          "line": 245,
           "description": "Too broad exception handler"
         },
         {
           "pattern": "except Exception:",
           "severity": "low",
-          "line": 110,
+          "line": 111,
           "description": "Too broad exception handler"
         },
         {
           "pattern": "except Exception:",
           "severity": "low",
-          "line": 135,
+          "line": 169,
           "description": "Too broad exception handler"
         }
       ],
       "patterns": {},
       "unused_imports": [],
-      "maintenance_index": 21.56,
+      "maintenance_index": 15.01,
       "syntax_error": false
     },
-    "timestamp": 1770089110.7179875
+    "timestamp": 1770117951.3972244
   },
   "src/analyzer/scanner.py": {
     "hash": "0333d62674c01c5ae7a25ab3579930e7a2d8a9604a478bc83175e88a21147688",

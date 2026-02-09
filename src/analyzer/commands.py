@@ -38,6 +38,9 @@ def handle_fix(args: argparse.Namespace) -> bool:
         args.output if hasattr(args, "output") else "./analysis_results",
         args.profile if hasattr(args, "profile") else "default",
     )
+    if hasattr(args, "strict") and args.strict:
+        analyzer.config = dataclasses.replace(analyzer.config, strict=True)
+
     analyzer.run()
 
     # Load issues
@@ -83,9 +86,15 @@ def handle_analyze(args: argparse.Namespace) -> None:
     """
     analyzer = ProjectAnalyzer(args.project_path, args.output, args.profile)
 
-    # Override config based on CLI flag using dataclasses.replace since it's frozen
-    report_enabled = bool(hasattr(args, "report") and args.report)
-    analyzer.config = dataclasses.replace(analyzer.config, generate_html=report_enabled)
+    # Override config based on CLI flags using dataclasses.replace
+    updates = {}
+    if hasattr(args, "report") and args.report:
+        updates["generate_html"] = True
+    if hasattr(args, "strict") and args.strict:
+        updates["strict"] = True
+
+    if updates:
+        analyzer.config = dataclasses.replace(analyzer.config, **updates)
 
     success = analyzer.run()
 

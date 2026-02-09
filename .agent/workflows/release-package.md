@@ -17,9 +17,12 @@ Flujo de liberación para `qgis-plugin-analyzer`.
    uv run qgis-analyzer analyze . --profile release
    ```
 
-2. **Sincronización de Versión**:
-   - Actualizar `pyproject.toml`.
+2. **Sincronización de Versión & Docs**:
+   - Actualizar `version` en `pyproject.toml`.
    - Actualizar `CHANGELOG.md`.
+   - **Generar Release Notes**: Crear `docs/releases/notes/v[VERSION].md` con un título descriptivo y profesional (ej: `v[VERSION]: [Hito Principal] 🛡️`).
+   - **Actualización de Documentos**: Asegurar que `README.md` y `RULES.md` reflejan los últimos cambios.
+   - Sincronizar entorno: `uv sync`.
 
 3. **Verificación Técnica**:
    // turbo
@@ -29,9 +32,9 @@ Flujo de liberación para `qgis-plugin-analyzer`.
 
 4. **Git Operations**:
    ```bash
-   git add pyproject.toml CHANGELOG.md
-   git commit -m "chore(release): prepare vX.Y.Z"
-   git tag -a vX.Y.Z -m "Release vX.Y.Z"
+   git add pyproject.toml CHANGELOG.md README.md docs/ uv.lock
+   git commit -m "chore(release): prepare v[VERSION]"
+   git tag -a "v[VERSION]" -m "Release v[VERSION] - [Hito Principal]"
    git push origin main --tags
    ```
 
@@ -41,4 +44,4 @@ Flujo de liberación para `qgis-plugin-analyzer`.
    rm -rf dist/
    uv run python -m build
    ```
-   - Crear Release en GitHub.
+   - Crear Release en GitHub usando `gh release create` vinculando las notas creadas.

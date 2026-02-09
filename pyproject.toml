@@ -46,6 +46,7 @@ dev = [
     "pytest>=8.3.5",
     "PyYAML>=6.0",
     "types-pyyaml>=6.0.12.20241230",
+    "build>=1.2.2.post1",
 ]
 
 [tool.mypy]
