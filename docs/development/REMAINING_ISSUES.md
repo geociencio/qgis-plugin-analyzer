@@ -1,95 +1,32 @@
-# Remaining Security and Code Issues in QGIS Plugin Analyzer
+# Remaining Issues & Technical Debt
 
-## Security Vulnerabilities
+This document tracks resolved and outstanding issues in the **QGIS Plugin Analyzer**.
 
-### 1. Server-Side Request Forgery (SSRF) in URL Validation
-**File**: `src/analyzer/validators.py`
-**Function**: `validate_metadata_urls()`
-**Issue**: The URL validation uses `urllib.request.urlopen()` without proper validation to prevent access to internal resources.
+## ✅ Resolved in v1.7.0
+- **SSRF Protection**: Implemented `is_ssrf_safe` validation in `validators.py` to block access to private/loopback IP ranges during metadata URL checks.
+- **XXE Mitigation**: Standardized on `xml.etree.ElementTree` for resource scanning, which is safe from external entity injection by default in Python 3.
+- **Engine Performance**: Optimized AST traversal to a single-pass model and implemented shared worker context to avoid redundant data serialization.
+- **Rule Documentation**: Comprehensive update to `RULES.md` and `README.md` covering all 1.7.0 features (Safety, Performance, CLI).
+- **Test Coverage**: Expanded test suite to cover security vulnerabilities and new safety audits.
 
-```python
-# Current vulnerable code:
-with urllib.request.urlopen(req, timeout=5) as response:
-```
+## 🚧 Outstanding Issues
 
-**Recommendation**: Implement URL validation to block access to private IP ranges (10.0.0.0/8, 172.16.0.0/12, 192.168.0.0/16, 127.0.0.1/8, etc.) while allowing access to public domains. This will prevent SSRF attacks while still allowing legitimate local network access for development purposes.
+### 1. Broad Exception Handling
+**File**: `src/analyzer/cli/base.py` and `src/analyzer/scanner.py`
+**Issue**: Several locations still use broad `except Exception` blocks that could mask specific recovery opportunities or debugging information.
+**Recommendation**: Carry out a targeted refactor to use specific exception types (e.g., `pathlib.Path.relative_to` errors, `urllib` errors).
 
-### 2. XML External Entity (XXE) Vulnerability
-**File**: `src/analyzer/semantic.py`
-**Function**: `ResourceValidator.scan_project_resources()`
-**Issue**: XML parsing without XXE protection could allow malicious XML files to access internal resources.
+### 2. Path Traversal Guardrails
+**Issue**: While many paths are handled via `pathlib`, some operations could benefit from explicit "jail" validation to ensure analysis never escapes the project root.
+**Recommendation**: Implement a `path_utils.is_within_root()` check for all file-reading operations.
 
-```python
-# Current code:
-tree = ET.parse(qrc_file)
-```
+### 3. Advanced Input Validation
+**Issue**: Configuration values in `pyproject.toml` (like rule levels) are assumed to be strings.
+**Recommendation**: Add a validation layer in `config_utils.py` to ensure profile settings are well-formed before starting the engine.
 
-**Recommendation**: Configure the XML parser with security settings to prevent XXE attacks.
+### 4. Interactive UI for HTML Reports
+**Issue**: The current HTML report is static.
+**Recommendation**: Integrate a lightweight JS library (or vanilla JS) for sortable tables and collapsible find sections within the dashboard.
 
-### 3. Path Traversal Vulnerability
-**File**: Multiple files using file operations
-**Issue**: No explicit validation to prevent path traversal attacks when processing user-provided paths.
-
-**Recommendation**: Implement path validation to ensure paths are within expected directories.
-
-## Code Quality Issues
-
-### 4. Broad Exception Handling
-**File**: `src/analyzer/cli.py`
-**Line**: ~92
-**Issue**: General `except Exception` catches too broadly, potentially masking important errors.
-
-```python
-except Exception as e:
-    logger.critical(f"Critical Error: {e}", exc_info=True)
-    sys.exit(1)
-```
-
-**Recommendation**: Use more specific exception types to handle different error conditions appropriately.
-
-### 5. Potentially Ineffective Regex Pattern
-**File**: `src/analyzer/scanner.py`
-**Issue**: The `SPATIAL_INDEX` rule uses a complex multiline regex that may not work as expected:
-
-```python
-{
-    "id": "SPATIAL_INDEX",
-    "pattern": re.compile(r"for\s+\w+\s+in\s+.*?\.getFeatures\(\):\n\s+(?!.*?QgsSpatialIndex)"),
-    "message": "Iteration over features without spatial index detected on potentially heavy loop.",
-    "severity": "high",
-}
-```
-
-**Recommendation**: This pattern may need refinement as it contains multiline matching that might not work correctly with the `re.MULTILINE` flag.
-
-### 6. Potential Performance Issue
-**File**: `src/analyzer/engine.py`
-**Issue**: Files may be read multiple times (once for AST parsing and once for regex matching), which could be optimized.
-
-**Recommendation**: Consider caching file content to avoid multiple reads.
-
-### 7. Missing Input Validation
-**File**: Various files handling user input
-**Issue**: No validation of user-provided paths or configuration values that could lead to security issues.
-
-**Recommendation**: Add input validation for all user-provided values.
-
-## Configuration Issues
-
-### 8. Incomplete Configuration Documentation
-**File**: `RULES.md`
-**Issue**: While rule IDs are now consistent, some configuration options may not be fully documented.
-
-**Recommendation**: Ensure all configuration options are properly documented in the README and RULES.md.
-
-## Testing Gaps
-
-### 9. Lack of Security Tests
-**Issue**: No specific tests for security vulnerabilities like SSRF or XXE.
-
-**Recommendation**: Add security-focused tests to the test suite.
-
-### 10. Missing Edge Case Tests
-**Issue**: No tests for malformed inputs, extremely large files, or malicious file structures.
-
-**Recommendation**: Add tests for edge cases and potential attack vectors.
+---
+*Last updated: 2026-02-09*

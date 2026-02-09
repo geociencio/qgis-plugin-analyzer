@@ -5,6 +5,28 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.7.0] - 2026-02-09
+
+### Added
+- **Engine Performance Upgrades**:
+    - **Single-Pass AST Traversal**: Refactored `CompositeVisitor` to a hook-based model (`enter_node`/`exit_node`), visiting each AST node exactly once.
+    - **Worker Context Sharing**: Implemented process-pool initializers to share heavyweight configuration and project context across workers, reducing per-file serialization overhead.
+- **Deep QGIS Safety Audits**:
+    - **Signal/Slot Leak Detection**: Automatically identifies signals connected in `initGui` that lack a corresponding disconnect in `unload`.
+    - **UI-Blocking Heuristics**: Detects intensive loops and long-running operations that should be wrapped in `QgsTask` to prevent freezing the QGIS interface.
+- **New CLI Visualization & Utilities**:
+    - **`graph` Command**: Generates Mermaid dependency graphs and identifies circular imports visually.
+    - **`serve` Command**: Built-in local web server to instantly view generated HTML analysis reports.
+- **Enhanced I18n Heuristics**: Improved precision in translatable string detection, reducing false positives for non-user-facing strings.
+
+### Changed
+- **Modular Visitor Architecture**: Fully decoupled visitors into specialized components supporting both standalone and single-pass execution.
+- **Improved Complexity Scoring**: Introduced density-based penalties for code with high decision-point concentrations.
+
+### Fixed
+- **Undefined Name Regressions**: Resolved several `F821` linting issues in CLI and engine layers.
+- **Test Compatibility**: Implemented a hybrid traversal model to maintain 100% compatibility with the existing unit test suite.
+
 ## [1.6.0] - 2026-02-03
 
 ### Added

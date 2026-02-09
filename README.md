@@ -16,17 +16,18 @@ The **QGIS Plugin Analyzer** is a static analysis tool designed specifically for
 
 - **Security Core (Bandit-inspired)**: Professional vulnerability scanning detecting `eval`, `exec`, shell injections, and SQL injection risks.
 - **Deep Entropy Secret Scanner**: Detects hardcoded API keys, passwords, and sensitive tokens using regex and information entropy.
-- **High-Performance Engine**: Parallel analysis powered by `ProcessPoolExecutor` for ultra-fast execution on multi-core systems.
+- **High-Performance Engine**: Parallel analysis powered by `ProcessPoolExecutor` with single-pass AST traversal and shared worker context.
 - **Project Auto-Detection**: Intelligently distinguishes between official QGIS Plugins and Generic Python Projects, tailoring validation logic accordingly.
 - **Advanced Ignore Engine**: Robust `.analyzerignore` support with non-anchored patterns and smart default excludes (`.venv`, `build`, etc.).
-- **Deep Semantic Analysis**: Cross-file dependency graphing, circular import detection, and module coupling metrics.
+- **Deep Semantic Analysis**: Cross-file dependency graphing (Mermaid), circular import detection, and module coupling metrics.
 - **Interactive Auto-Fix Mode**: Automatically fix common QGIS issues (GDAL imports, PyQt bridge, logging, i18n) with safety checks.
 - **Official Repository Compliance**: Proactive validation of binaries, package size, and metadata URLs.
 - **Real-time Progress**: CLI feedback with a progress bar and ETA tracking.
 - **Enhanced Configuration Profiles**: Rule-level severity control (`error`, `warning`, `info`, `ignore`) via `pyproject.toml`.
 - **Integrated Ruff Analysis**: Combines custom QGIS rules with the fastest linter in the Python ecosystem.
 - **Qt Resource Validation**: Detect missing or broken resource paths (`:/plugins/...`) in your code.
-- **Signal/Slot Safety**: Detection of potentially missing slots or inherited slot warnings.
+- **Extended Safety Audit**: Detection of signal leaks, missing slots, and UI-blocking loops (QgsTask suggestions).
+- **Embedded Web Server**: View reports instantly with the built-in `serve` command.
 - **AI-Ready**: Generates structured summaries and optimized contexts for LLMs.
 - **Zero Runtime Dependencies**: Works using only the Python standard library (Ruff as an external tool).
 
@@ -209,6 +210,22 @@ qgis-analyzer summary --by functions
 
 ### `qgis-analyzer list-rules`
 Displays the full catalog of implemented QGIS audit rules with their severity and descriptions.
+
+### `qgis-analyzer graph`
+Visualizes the project's dependency graph.
+
+| Argument | Description | Default |
+| :--- | :--- | :--- |
+| `project_path` | Path to the plugin directory. | `.` |
+| `--format` | Output format: `text` or `mermaid`. | `text` |
+
+### `qgis-analyzer serve`
+Starts a local web server to view the generated HTML reports.
+
+| Argument | Description | Default |
+| :--- | :--- | :--- |
+| `path` | Path to the analysis results directory. | `./analysis_results` |
+| `--port` | Port to run the server on. | `8000` |
 
 ### `qgis-analyzer init`
 Initializes a recommended `.analyzerignore` file in the current directory with common Python and QGIS development exclusions.
