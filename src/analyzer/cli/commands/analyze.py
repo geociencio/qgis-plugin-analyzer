@@ -3,10 +3,10 @@
 import argparse
 
 from ...commands import handle_analyze
-from ..base import BaseCommand
+from ..base import BaseAnalyzerCommand
 
 
-class AnalyzeCommand(BaseCommand):
+class AnalyzeCommand(BaseAnalyzerCommand):
     """Command to analyze an existing QGIS plugin."""
 
     @property
@@ -43,5 +43,6 @@ class AnalyzeCommand(BaseCommand):
         Returns:
             Exit code (0 for success).
         """
+        # Note: logic moved to BaseAnalyzerCommand.get_analyzer
         handle_analyze(args)
         return 0

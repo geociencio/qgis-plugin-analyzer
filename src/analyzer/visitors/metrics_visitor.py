@@ -94,8 +94,9 @@ class MetricsVisitor(BaseVisitor):
                     f"Public class '{node.name}' is missing a docstring.",
                     f"class {node.name}...",
                 )
-
         self.generic_visit(node)
+
+        pass
 
     def _check_docstring_style(self, doc: Optional[str]) -> None:
         """Identifies Google or NumPy docstring styles within a string.

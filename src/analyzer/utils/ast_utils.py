@@ -9,7 +9,7 @@ from typing import Any, Dict, List
 
 
 def calculate_complexity(node: ast.AST) -> int:
-    """Calculates Cyclomatic Complexity for a node.
+    """Calculates Cyclomatic Complexity for a node with density-based penalty.
 
     Args:
         node: The AST node to analyze.
@@ -18,6 +18,8 @@ def calculate_complexity(node: ast.AST) -> int:
         The cyclomatic complexity score.
     """
     complexity = 1
+    decision_lines = set()
+
     for child in ast.walk(node):
         if isinstance(
             child,
@@ -30,9 +32,21 @@ def calculate_complexity(node: ast.AST) -> int:
                 ast.ExceptHandler,
                 ast.With,
                 ast.AsyncWith,
+                ast.IfExp,
             ),
         ):
             complexity += 1
+            if hasattr(child, "lineno"):
+                decision_lines.add(child.lineno)
+
+    # Apply penalty for dense logic (many decision points in few lines)
+    if decision_lines:
+        line_range = max(decision_lines) - min(decision_lines) + 1
+        density = len(decision_lines) / line_range
+        # Threshold: 0.5 (1 decision every 2 lines)
+        if density > 0.5:
+            complexity = int(complexity * 1.5)
+
     return complexity
 
 
@@ -93,8 +107,12 @@ def extract_imports_from_ast(tree: ast.AST) -> List[str]:
         if isinstance(node, ast.Import):
             imports.extend(n.name for n in node.names)
         elif isinstance(node, ast.ImportFrom):
-            if node.module:
-                imports.append(node.module)
+            module_name = node.module if node.module else ""
+            if node.level > 0:
+                # Add leading dots for relative imports
+                module_name = ("." * node.level) + module_name
+            if module_name:
+                imports.append(module_name)
     return sorted(set(imports))
 
 

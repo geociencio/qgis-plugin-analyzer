@@ -5,6 +5,8 @@ Each visitor is specialized for a specific concern (imports, metrics, standards,
 """
 
 from .composite_visitor import CompositeVisitor
+from .qgis_rules_visitor import QGISRulesVisitor
+from .safety_visitor import SafetyVisitor
 from .security_visitor import SecurityVisitor
 
 # Maintain backward compatibility
@@ -16,4 +18,6 @@ __all__ = [
     "QGISSecurityVisitor",
     "CompositeVisitor",
     "SecurityVisitor",
+    "QGISRulesVisitor",
+    "SafetyVisitor",
 ]

@@ -39,7 +39,9 @@ def complex_f(x):
         high_complexity_issues = [i for i in issues if i["type"] == "HIGH_COMPLEXITY"]
         self.assertEqual(len(high_complexity_issues), 1)
         self.assertIn("too complex", high_complexity_issues[0]["message"])
-        self.assertIn("CC=21", high_complexity_issues[0]["message"])  # 1 (base) + 20 (ifs)
+        self.assertIn(
+            "CC=31", high_complexity_issues[0]["message"]
+        )  # 1 (base) + 20 (ifs) + density penalty (1.5x)
 
 
 if __name__ == "__main__":

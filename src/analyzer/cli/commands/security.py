@@ -3,11 +3,11 @@
 import argparse
 
 from ...commands import handle_security
-from ..base import BaseCommand
+from ..base import BaseAnalyzerCommand
 
 
-class SecurityCommand(BaseCommand):
-    """Command to run a focused security scan."""
+class SecurityCommand(BaseAnalyzerCommand):
+    """Command to execute focused security checks."""
 
     @property
     def name(self) -> str:
@@ -17,7 +17,7 @@ class SecurityCommand(BaseCommand):
     @property
     def help(self) -> str:
         """Command help text."""
-        return "Run a focused security scan"
+        return "Run focused security audit on the plugin"
 
     def configure_parser(self, parser: argparse.ArgumentParser) -> None:
         """Configure security command arguments.
@@ -25,12 +25,13 @@ class SecurityCommand(BaseCommand):
         Args:
             parser: The argument parser for this command.
         """
-        parser.add_argument("project_path", help="Path to the QGIS project to scan")
+        parser.add_argument("project_path", help="Path to the QGIS project to analyze")
         self.add_common_args(parser)
         parser.add_argument(
+            "-d",
             "--deep",
             action="store_true",
-            help="Run more intensive (but slower) security checks",
+            help="Enable entropy and full secrets detection",
         )
 
     def execute(self, args: argparse.Namespace) -> int:

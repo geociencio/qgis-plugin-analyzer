@@ -84,17 +84,18 @@ def handle_analyze(args: argparse.Namespace) -> None:
     Args:
         args: Parsed command line arguments.
     """
-    analyzer = ProjectAnalyzer(args.project_path, args.output, args.profile)
+    # Use standard initialization if not already provided
+    project_path = getattr(args, "project_path", ".")
+    output_dir = getattr(args, "output", "./analysis_results")
+    profile = getattr(args, "profile", "default")
 
-    # Override config based on CLI flags using dataclasses.replace
-    updates = {}
-    if hasattr(args, "report") and args.report:
-        updates["generate_html"] = True
+    analyzer = ProjectAnalyzer(str(project_path), output_dir, profile)
+
+    # Apply overrides (moving towards centralized config in BaseAnalyzerCommand)
     if hasattr(args, "strict") and args.strict:
-        updates["strict"] = True
-
-    if updates:
-        analyzer.config = dataclasses.replace(analyzer.config, **updates)
+        analyzer.config = dataclasses.replace(analyzer.config, strict=True)
+    if hasattr(args, "report") and args.report:
+        analyzer.config = dataclasses.replace(analyzer.config, generate_html=True)
 
     success = analyzer.run()
 
@@ -145,20 +146,18 @@ def handle_security(args: argparse.Namespace) -> None:
     Args:
         args: Parsed command line arguments.
     """
-    project_path = pathlib.Path(args.project_path).resolve()
+    project_path = pathlib.Path(getattr(args, "project_path", ".")).resolve()
     if not project_path.exists():
         print(f"❌ Path not found: {project_path}")
         sys.exit(1)
 
     print(f"🛡️  Starting focused security scan for: {project_path.name}...")
 
-    # Run analyzer with current profile
-    analyzer = ProjectAnalyzer(str(project_path), args.output, args.profile)
+    output_dir = getattr(args, "output", "./analysis_results")
+    profile = getattr(args, "profile", "default")
+    analyzer = ProjectAnalyzer(str(project_path), output_dir, profile)
 
-    # We could potentially add high-level flags here
-    if args.deep:
-        # Note: ProjectConfig currently doesn't have security_deep_scan,
-        # but if it did, we would use dataclasses.replace here too.
+    if hasattr(args, "deep") and args.deep:
         print("🔍 Deep scan enabled (Entropy analysis and full secret detection)")
 
     success = analyzer.run()

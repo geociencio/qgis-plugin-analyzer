@@ -7,10 +7,7 @@ from typing import Any, Dict, List, Optional
 class BaseVisitor(ast.NodeVisitor):
     """Base class for AST visitors with common reporting and configuration logic.
 
-    Attributes:
-        rel_path: Relative path to the file being analyzed.
-        issues: List of detected issues.
-        rules_config: Configuration for audit rules and severities.
+    Designed for both direct usage and single-pass traversal (CompositeVisitor).
     """
 
     def __init__(self, rel_path: str, rules_config: Optional[Dict[str, Any]] = None) -> None:
@@ -23,6 +20,42 @@ class BaseVisitor(ast.NodeVisitor):
         self.rel_path = rel_path
         self.issues: List[Dict[str, Any]] = []
         self.rules_config = rules_config or {}
+        self._is_single_pass = False
+
+    def generic_visit(self, node: ast.AST) -> None:
+        """Controlled recursion: only recurses if not in single-pass mode.
+
+        In single-pass mode, CompositeVisitor manages the recursion.
+        """
+        if not self._is_single_pass:
+            super().generic_visit(node)
+
+    def enter_node(self, node: ast.AST, parent: Optional[ast.AST] = None) -> None:
+        """Dispatches to visit_XXX method when entering a node."""
+        method_name = f"visit_{node.__class__.__name__}"
+        visitor = getattr(self, method_name, None)
+        if visitor:
+            # Check if signature supports parent
+            import inspect
+
+            sig = inspect.signature(visitor)
+            if "parent" in sig.parameters:
+                visitor(node, parent=parent)
+            else:
+                visitor(node)
+
+    def exit_node(self, node: ast.AST, parent: Optional[ast.AST] = None) -> None:
+        """Dispatches to leave_XXX method when exiting a node."""
+        method_name = f"leave_{node.__class__.__name__}"
+        visitor = getattr(self, method_name, None)
+        if visitor:
+            import inspect
+
+            sig = inspect.signature(visitor)
+            if "parent" in sig.parameters:
+                visitor(node, parent=parent)
+            else:
+                visitor(node)
 
     def _should_report(self, rule_id: str) -> bool:
         """Check if rule should be reported based on config.

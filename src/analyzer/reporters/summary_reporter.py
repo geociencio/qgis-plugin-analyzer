@@ -137,6 +137,27 @@ def _print_research_metrics(research: Dict[str, Any]) -> None:
     print(f"- Docstring Coverage: {doc_cov:.1f}%")
     print(f"- Documentation Style: {style}")
 
+    # QGIS Specific context
+    q_ctx = research.get("qgis_context_summary")
+    if q_ctx:
+        print_header("🏗️  QGIS Transition & Style")
+        g_styles = q_ctx.get("gdal_styles", {})
+        g_style = "Legacy" if g_styles.get("Legacy", 0) > 0 else "Modern"
+        p_usage = q_ctx.get("pyqt_usage", {})
+        signals = q_ctx.get("total_legacy_signals", 0)
+
+        print(f"- GDAL Import Style: {g_style}")
+        print(f"- PyQt5 Usage: {'Detected' if p_usage.get('PyQt5', 0) > 0 else 'None'}")
+        print(f"- Legacy Signals/Slots: {signals}")
+        if q_ctx.get("uses_processing"):
+            print("- Processing Framework: Active")
+
+        leaks = q_ctx.get("signal_leaks", [])
+        if leaks:
+            print(f"🚨 Signal Leaks Detected: {len(leaks)}")
+            for signal in leaks:
+                print(f"  - {signal}")
+
 
 def _collect_all_issues(data: Dict[str, Any]) -> List[Dict[str, Any]]:
     """Collect and merge AST issues and security findings.

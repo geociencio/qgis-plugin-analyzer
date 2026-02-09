@@ -25,7 +25,7 @@ import pathlib
 import subprocess
 from concurrent.futures import ProcessPoolExecutor, as_completed
 from dataclasses import dataclass, field
-from typing import Any, Dict, List, Optional, TypedDict, cast
+from typing import Any, Dict, List, Optional, Set, TypedDict, cast
 
 from .reporters import (
     generate_html_report,
@@ -85,6 +85,7 @@ class SemanticAnalysisResult(TypedDict):
     """Result of semantic analysis."""
 
     cycles: List[List[str]]
+    graph: Dict[str, List[str]]
     metrics: Dict[str, Any]
     missing_resources: List[str]
 
@@ -401,14 +402,22 @@ class ProjectAnalyzer:
         Returns:
             A list of module analysis results.
         """
+        from .scanner import init_worker
+
         tracker = ProgressTracker(len(files))
         modules_data: List[ModuleAnalysisResult] = []
 
-        with ProcessPoolExecutor(max_workers=self.max_workers) as executor:
-            futures = {
-                executor.submit(analyze_module_worker, f, self.project_path, None, rules_config): f
-                for f in files
-            }
+        # Shared context to avoid serializing large rules multiple times
+        shared_context = {
+            "project_path": self.project_path,
+            "rules_config": rules_config,
+        }
+
+        with ProcessPoolExecutor(
+            max_workers=self.max_workers, initializer=init_worker, initargs=(shared_context,)
+        ) as executor:
+            # We no longer need to pass project_path or rules_config to every call
+            futures = {executor.submit(analyze_module_worker, f): f for f in files}
             for future in as_completed(futures):
                 res = future.result()
                 if res:
@@ -490,6 +499,7 @@ class ProjectAnalyzer:
 
         return {
             "cycles": cycles,
+            "graph": {u: list(v) for u, v in dep_graph.adjacency_list.items()},
             "metrics": metrics,
             "missing_resources": missing_resources,
         }
@@ -585,6 +595,13 @@ class ProjectAnalyzer:
         total_public_items = 0
         detected_styles = set()
 
+        # QGIS context aggregation
+        gdal_styles: Dict[str, int] = {}
+        pyqt_versions: Dict[str, int] = {"PyQt5": 0, "PyQt6": 0}
+        processing_usage = False
+        total_legacy_signals = 0
+        all_signal_leaks: Set[str] = set()
+
         for m in modules_data:
             r_metrics = m.get("research_metrics", {})
             d_stats = r_metrics.get("docstring_stats", {})
@@ -599,6 +616,23 @@ class ProjectAnalyzer:
 
             detected_styles.update(r_metrics.get("docstring_styles", []))
 
+            # QGIS Context
+            q_ctx = r_metrics.get("qgis_context", {})
+            style = q_ctx.get("gdal_style", "Modern")
+            gdal_styles[style] = gdal_styles.get(style, 0) + 1
+
+            p_trans = q_ctx.get("pyqt_transition", {})
+            if p_trans.get("PyQt5"):
+                pyqt_versions["PyQt5"] += 1
+            if p_trans.get("PyQt6"):
+                pyqt_versions["PyQt6"] += 1
+
+            if q_ctx.get("processing_framework"):
+                processing_usage = True
+
+            total_legacy_signals += q_ctx.get("legacy_signals_count", 0)
+            all_signal_leaks.update(q_ctx.get("signal_leaks", []))
+
         return {
             "type_hint_coverage": round((annotated_params / max(1, total_params)) * 100, 1)
             if total_params > 0
@@ -609,7 +643,14 @@ class ProjectAnalyzer:
             "docstring_coverage": round((has_docstring_count / max(1, total_public_items)) * 100, 1)
             if total_public_items > 0
             else 0.0,
-            "detected_docstring_styles": list(detected_styles),
+            "detected_docstring_styles": sorted(list(detected_styles)),
+            "qgis_context_summary": {
+                "gdal_styles": gdal_styles,
+                "pyqt_usage": pyqt_versions,
+                "uses_processing": processing_usage,
+                "total_legacy_signals": total_legacy_signals,
+                "signal_leaks": sorted(list(all_signal_leaks)),
+            },
         }
 
     def _save_reports(self, analyses: FullAnalysisResult) -> None:

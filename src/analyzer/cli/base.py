@@ -3,7 +3,10 @@
 import argparse
 import pathlib
 from abc import ABC, abstractmethod
-from typing import Optional
+from typing import TYPE_CHECKING, Optional
+
+if TYPE_CHECKING:
+    from ..engine import ProjectAnalyzer
 
 
 class BaseCommand(ABC):
@@ -99,3 +102,38 @@ class BaseCommand(ABC):
             output_dir.mkdir(parents=True, exist_ok=True)
             return output_dir
         return None
+
+
+class BaseAnalyzerCommand(BaseCommand):
+    """Base class for commands that use the ProjectAnalyzer engine."""
+
+    def get_analyzer(self, args: argparse.Namespace) -> "ProjectAnalyzer":
+        """Initializes and returns a ProjectAnalyzer instance.
+
+        Args:
+            args: Parsed command-line arguments.
+
+        Returns:
+            A configured ProjectAnalyzer instance.
+        """
+        import dataclasses
+
+        from ..engine import ProjectAnalyzer
+
+        project_path = getattr(args, "project_path", getattr(args, "path", "."))
+        output_dir = getattr(args, "output", "./analysis_results")
+        profile = getattr(args, "profile", "default")
+
+        analyzer = ProjectAnalyzer(str(project_path), output_dir, profile)
+
+        # Apply common flags
+        updates = {}
+        if hasattr(args, "strict") and args.strict:
+            updates["strict"] = True
+        if hasattr(args, "report") and args.report:
+            updates["generate_html"] = True
+
+        if updates:
+            analyzer.config = dataclasses.replace(analyzer.config, **updates)
+
+        return analyzer

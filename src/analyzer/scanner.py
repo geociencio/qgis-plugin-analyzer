@@ -48,6 +48,7 @@ class ResearchMetrics(TypedDict):
     docstring_styles: List[str]
     type_hint_stats: Dict[str, Any]
     docstring_stats: Dict[str, Any]
+    qgis_context: Dict[str, Any]
     security_findings_count: int
 
 
@@ -80,9 +81,24 @@ SEVERITY_MAP = {
 }
 
 
+# --- Shared Worker Context ---
+
+_worker_context: Optional[Dict[str, Any]] = None
+
+
+def init_worker(context: Dict[str, Any]) -> None:
+    """Initializes the worker process with shared context.
+
+    Args:
+        context: Shared data (e.g., rules_config, project_path).
+    """
+    global _worker_context
+    _worker_context = context
+
+
 def analyze_module_worker(
     py_file: pathlib.Path,
-    project_path: pathlib.Path,
+    project_path: Optional[pathlib.Path] = None,
     cached_data: Optional[Dict[str, Any]] = None,
     rules_config: Optional[Dict[str, Any]] = None,
 ) -> Optional[ModuleAnalysisResult]:
@@ -90,16 +106,24 @@ def analyze_module_worker(
 
     Args:
         py_file: Path to the Python file to analyze.
-        project_path: Root path of the project.
+        project_path: Root path of the project. If missing, uses shared context.
         cached_data: Optional previously cached analysis results.
-        rules_config: Optional rule configuration overrides.
+        rules_config: Optional rule configuration overrides. If missing, uses shared context.
 
     Returns:
         A dictionary containing the analysis results, or None if the file
         could not be processed.
     """
     try:
-        rel_path = _get_relative_path(py_file, project_path)
+        # Use shared context if available to reduce per-call serialization overhead
+        ctx = _worker_context or {}
+        p_path = project_path or ctx.get("project_path")
+        r_config = rules_config or ctx.get("rules_config")
+
+        if not p_path:
+            return None
+
+        rel_path = _get_relative_path(py_file, p_path)
         content = _read_file_content(py_file)
         if not content:
             return None
@@ -111,6 +135,10 @@ def analyze_module_worker(
             return tree_or_error  # type: ignore
 
         tree = tree_or_error
+
+        # Run Audits (using the new CompositeVisitor for single-pass)
+        visitor = QGISASTVisitor(rel_path, rules_config=r_config)
+        visitor.visit(tree)
 
         # Extract information using helper functions
         results: ModuleAnalysisResult = {
@@ -127,10 +155,6 @@ def analyze_module_worker(
             "content": content,
         }
 
-        # Run Audits
-        visitor = QGISASTVisitor(rel_path, rules_config=rules_config)
-        visitor.visit(tree)
-
         security_issues = _collect_security_issues(tree, content, rel_path)
         results.update(
             {
@@ -141,6 +165,7 @@ def analyze_module_worker(
                     "docstring_styles": list(set(visitor.docstring_styles)),
                     "type_hint_stats": visitor.type_hint_stats,
                     "docstring_stats": visitor.docstring_stats,
+                    "qgis_context": visitor.qgis_context,
                     "security_findings_count": len(security_issues),
                 },
             }
@@ -200,6 +225,12 @@ def _create_empty_analysis_result(
                 "total_functions": 0,
             },
             "docstring_stats": {"total_public_items": 0, "has_docstring": 0},
+            "qgis_context": {
+                "processing_framework": False,
+                "gdal_style": "Modern",
+                "pyqt_transition": {"PyQt5": [], "PyQt6": []},
+                "legacy_signals_count": 0,
+            },
             "security_findings_count": 0,
         },
     }

@@ -43,3 +43,18 @@
 - Maintainability Score increased to **100/100**.
 - Cyclomatic Complexity reduced across all core modules.
 - All tests passing (including fixes for `tests/test_validators.py`).
+
+## [2026-02-09] Engine Performance & Architecture Phase
+
+### Achieved
+- **Single-Pass AST Traversal**: Refactored `CompositeVisitor` and all specialized sub-visitors to use a hook-based architecture (`enter_node`/`exit_node`). Eliminated redundant tree traversals.
+- **Worker Context Optimization**: Implemented `WorkerContext` with process-pool initializers to share rules and project paths, reducing serialization overhead in parallel analysis.
+- **Strict QGIS Safety Audit**: Integrated advanced signal/slot leak detection and UI-blocking loop heuristics.
+- **I18n Heuristic Precision**: Enhanced translatable string detection with better scope filtering for keys, functions, and non-user-facing patterns.
+- **Hybrid Traversal Model**: Visitors now support both optimized single-pass orchestration and independent recursive visitation for testing.
+
+### Technical details
+- New modules: `src/analyzer/visitors/qgis_rules_visitor.py`, updated `composite_visitor.py`, `scanner.py`, `base.py`.
+- Verified 100% test coverage for the new visitor architecture (43 tests passing).
+- Optimized parallel processing via `concurrent.futures.ProcessPoolExecutor` with initializers.
+- Local performance verified with `uv run qgis-analyzer analyze .`.

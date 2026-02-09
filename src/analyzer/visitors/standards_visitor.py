@@ -6,6 +6,31 @@ from typing import Any, Dict, List, Optional, Set
 from ..rules.qgis_rules import I18N_METHODS
 from .base import BaseVisitor
 
+# --- Constants ---
+
+IGNORED_I18N_FUNCTIONS = {
+    "debug",
+    "info",
+    "warning",
+    "error",
+    "critical",
+    "log",
+    "Exception",
+    "ValueError",
+    "TypeError",
+    "RuntimeError",
+    "setObjectName",
+    "addItem",
+    "setValue",
+    "value",
+    "key",
+    "setProperty",
+    "connect",
+    "disconnect",
+    "signal",
+    "slot",
+}
+
 
 class StandardsVisitor(BaseVisitor):
     """Visitor focused on QGIS-specific standards and best practices.
@@ -30,6 +55,8 @@ class StandardsVisitor(BaseVisitor):
         super().__init__(rel_path, rules_config)
         self.class_methods_stack: List[Set[str]] = []
         self.i18n_methods = I18N_METHODS
+        self._in_ignored_call = False
+        self._in_dict_key = False
 
     def visit_ClassDef(self, node: ast.ClassDef) -> None:
         """Analyzes class definitions.
@@ -55,8 +82,10 @@ class StandardsVisitor(BaseVisitor):
                 f"Class '{node.name}' implements 'initGui()' but is missing 'unload()'.",
                 f"class {node.name}...",
             )
-
         self.generic_visit(node)
+
+    def leave_ClassDef(self, node: ast.ClassDef) -> None:
+        """Restores method stack after class analysis."""
         self.class_methods_stack.pop()
 
     def visit_FunctionDef(self, node: ast.FunctionDef) -> None:
@@ -75,7 +104,6 @@ class StandardsVisitor(BaseVisitor):
                         f"Function '{node.name}' receives 'QgisInterface' as an argument. Use the global 'iface' or Singleton pattern.",
                         ast.unparse(node).split("\n")[0],
                     )
-
         self.generic_visit(node)
 
     def visit_Call(self, node: ast.Call) -> None:
@@ -85,11 +113,43 @@ class StandardsVisitor(BaseVisitor):
             node: The call AST node.
         """
         self._check_obsolete_api(node)
-        self._check_missing_i18n(node)
+        self._check_missing_i18n_call(node)
         self._check_missing_slot(node)
         self._check_unsafe_subprocess(node)
         self._check_blocking_network(node)
+
+        # Context-aware i18n analysis
+        func_name = self._get_func_name(node.func)
+        if func_name in IGNORED_I18N_FUNCTIONS:
+            self._in_ignored_call = True
         self.generic_visit(node)
+
+    def leave_Call(self, node: ast.Call) -> None:
+        """Resets ignored call state."""
+        func_name = self._get_func_name(node.func)
+        if func_name in IGNORED_I18N_FUNCTIONS:
+            self._in_ignored_call = False
+
+    def visit_Dict(self, node: ast.Dict) -> None:
+        """Visits dictionary and ignores its keys for i18n string counting."""
+        # Handled by parent check in visit_Constant
+        pass
+
+    def visit_Constant(self, node: ast.Constant, parent: Optional[ast.AST] = None) -> None:
+        """Analyzes string constants for missing translations."""
+        # Ignore if inside ignored call or if it's a dict key
+        is_dict_key = isinstance(parent, ast.Dict) and node in parent.keys
+
+        if isinstance(node.value, str) and not self._in_ignored_call and not is_dict_key:
+            self._check_potential_i18n_string(node.value, node.lineno)
+
+    def _get_func_name(self, func: ast.expr) -> str:
+        """Helper to get function name from a call."""
+        if isinstance(func, ast.Name):
+            return func.id
+        if isinstance(func, ast.Attribute):
+            return func.attr
+        return ""
 
     def visit_For(self, node: ast.For) -> None:
         """Analyzes loop nodes.
@@ -138,7 +198,6 @@ class StandardsVisitor(BaseVisitor):
                         f"Manual counter '{body_node.target.id} += 1' detected inside loop.",
                         ast.unparse(body_node),
                     )
-
         self.generic_visit(node)
 
     def _check_obsolete_api(self, node: ast.Call) -> None:
@@ -155,12 +214,8 @@ class StandardsVisitor(BaseVisitor):
                 ast.unparse(node),
             )
 
-    def _check_missing_i18n(self, node: ast.Call) -> None:
-        """Checks for missing i18n translations.
-
-        Args:
-            node: The call AST node.
-        """
+    def _check_missing_i18n_call(self, node: ast.Call) -> None:
+        """Checks for missing i18n translations in known i18n method calls."""
         if isinstance(node.func, ast.Attribute) and node.func.attr in self.i18n_methods:
             if (
                 node.args
@@ -169,12 +224,51 @@ class StandardsVisitor(BaseVisitor):
             ):
                 val = node.args[0].value
                 if val.strip() and not val.startswith("%"):
-                    self._report_issue(
-                        "MISSING_I18N",
-                        node.lineno,
-                        f"Untranslated UI text string in '{node.func.attr}': '{val}'. Use self.tr().",
-                        ast.unparse(node),
-                    )
+                    # This is a direct call to tr/translate, so it's ALREADY translated
+                    # or being marked for translation. We don't report here,
+                    # but we could track it for coverage.
+                    pass
+
+    def _check_potential_i18n_string(self, val: str, lineno: int) -> None:
+        """Heuristic to detect strings that SHOULD be translated but aren't."""
+        if not self.is_translatable_string(val):
+            return
+
+        # If it's a translatable candidate but not wrapped in tr(), report it
+        # Note: In a real QGIS context, strings outside tr() are missing i18n
+        # but we must avoid false positives.
+        self._report_issue(
+            "MISSING_I18N",
+            lineno,
+            f"Untranslated user-facing string: '{val}'. Use self.tr().",
+        )
+
+    @staticmethod
+    def is_translatable_string(value: str) -> bool:
+        """Heuristic to determine if a string is user-facing.
+
+        Ported from ai-context-core.
+        """
+        if not value or len(value) < 3:
+            return False
+
+        # Ignore paths and technical patterns
+        if "/" in value or "\\" in value or value.startswith(":/"):
+            return False
+
+        # If it contains spaces, it's likely a sentence
+        if " " in value:
+            return True
+
+        # Ignore snake_case, dotted names, CamelCase, and UPPERCASE
+        if "_" in value or "." in value:
+            return False
+        if not value.islower() and not value.isupper() and any(c.isupper() for c in value):
+            return False
+        if value.isupper():
+            return False
+
+        return True
 
     def _check_missing_slot(self, node: ast.Call) -> None:
         """Checks for potentially missing signal slots.

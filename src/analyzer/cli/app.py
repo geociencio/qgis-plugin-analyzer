@@ -10,9 +10,11 @@ from .base import BaseCommand
 from .commands import (
     AnalyzeCommand,
     FixCommand,
+    GraphCommand,
     InitCommand,
     ListRulesCommand,
     SecurityCommand,
+    ServeCommand,
     SummaryCommand,
     VersionCommand,
 )
@@ -38,6 +40,8 @@ class CLIApp:
             AnalyzeCommand,
             SecurityCommand,
             FixCommand,
+            GraphCommand,
+            ServeCommand,
             ListRulesCommand,
             InitCommand,
             SummaryCommand,

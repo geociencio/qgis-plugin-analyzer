@@ -62,13 +62,25 @@ class DependencyGraph:
         Returns:
             The relative path to the resolved module, or an empty string if not found.
         """
-        # Handle relative imports (e.g., .utils)
+        # Handle relative imports (e.g., .utils, ..base)
         if import_name.startswith("."):
-            # This is a simplification. Ideally AST gives better level info.
-            # Assuming same package level for now if single dot
-            parts = import_name.lstrip(".").split(".")
-            target = current_dir.joinpath(*parts).with_suffix(".py")
+            # Count leading dots
+            dot_count = 0
+            for char in import_name:
+                if char == ".":
+                    dot_count += 1
+                else:
+                    break
+
+            # Go up (dot_count - 1) times. One dot means current dir.
+            target_dir = current_dir
+            for _ in range(dot_count - 1):
+                target_dir = target_dir.parent
+
+            parts = import_name[dot_count:].split(".")
+            target = target_dir.joinpath(*parts).with_suffix(".py")
             try:
+                # Ensure we are still within project_path
                 rel = str(target.relative_to(project_path))
                 return rel
             except ValueError:
