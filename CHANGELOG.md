@@ -5,6 +5,32 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.9.0] - 2026-02-15
+
+### Added
+- **Specialized Analysis Subcommands**: Implemented targeted analysis scopes for more efficient auditing:
+    - `analyze i18n [path]`: Internationalization and translation audit
+    - `analyze security [path]`: Security vulnerability scanning
+    - `analyze performance [path]`: Performance and UI blocking detection
+    - `analyze architecture [path]`: Dependency and coupling analysis
+    - `analyze metadata [path]`: QGIS metadata validation
+    - Full backward compatibility maintained with legacy `analyze [path]` syntax
+- **CLI Commands Roadmap**: Comprehensive 3-phase implementation plan for future CLI enhancements documented in `docs/research/CLI_COMMANDS_ROADMAP.md`
+
+### Changed
+- **Scope-Based Filtering**: Enhanced analysis engine to filter issues based on selected scope throughout the entire pipeline
+- **Visitor Architecture**: Extended all visitors to support scope-aware analysis with minimal overhead
+
+### Technical Details
+- Manual argument dispatch in `AnalyzeCommand` for subcommand detection
+- Scope parameter propagation through worker context to all visitors
+- Issue filtering at multiple levels: visitor reporting, composite aggregation, and final result building
+- Zero breaking changes - all existing scripts and workflows remain compatible
+
+### Verification
+- `analyze i18n .` → 1,150 issues (MISSING_I18N only)
+- `analyze .` → 1,266 issues (all types, legacy compatible)
+
 ## [1.8.0-beta.1] - 2026-02-14
 
 ### Added
