@@ -1,0 +1,34 @@
+# Tareas de la Sesión
+
+- [x] Sincronizar entorno (`uv sync`) (Ajustado `requires-python` a >=3.9)
+- [x] Analizar contexto (`uv run ai-ctx analyze`)
+- [x] Realizar Sanity Check (Tests) (40 tests PASSED)
+- [x] Revisar tareas pendientes y próximos pasos (`.agent/next_steps.md`)
+- [x] Refinar heurística de i18n (MISSING_I18N)
+    - [x] Crear tests de reproducción
+    - [x] Ajustar `is_translatable_string`
+    - [x] Mejorar contexto en `visit_Constant`
+- [x] Eliminar versión hardcodeada
+    - [x] Usar `importlib.metadata` en `src/analyzer/__init__.py`
+    - [x] Verificar funcionamiento del comando `version` y flag `--version` (Reportando 1.8.0b1 OK)
+- [x] Implementar subcomandos en `analyze`
+    - [x] Reestructurar `AnalyzeCommand` para soportar despacho manual (legacy friendly)
+    - [x] Actualizar `ProjectAnalyzer` para soportar análisis parciales (filtros)
+    - [x] Implementar `analyze i18n`
+    - [x] Implementar `analyze performance`
+    - [x] Implementar `analyze architecture`
+    - [x] Implementar `analyze metadata`
+    - [x] Implementar `analyze security`
+    - [x] Verificar compatibilidad con `analyze` (full scan)
+- [x] Preparar Release v1.9.0
+    - [x] Actualizar versión en `pyproject.toml` a 1.9.0
+    - [x] Actualizar `CHANGELOG.md` con entrada de release
+    - [x] Crear release notes en `docs/releases/notes/v1.9.0.md`
+    - [x] Crear roadmap de comandos CLI en `docs/research/CLI_COMMANDS_ROADMAP.md`
+    - [x] Sincronizar entorno (`uv sync`)
+    - [x] Ejecutar tests (49/49 passed)
+    - [x] Commit de release (`chore(release): prepare v1.9.0`)
+    - [x] Crear tag v1.9.0
+    - [x] Push a GitHub (main + tags)
+    - [x] Build de paquetes (tar.gz + wheel)
+    - [x] Crear release en GitHub (https://github.com/geociencio/qgis-plugin-analyzer/releases/tag/v1.9.0)

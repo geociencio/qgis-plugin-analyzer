@@ -1,6 +1,42 @@
 
 # Development Log
 
+## [2026-02-14] Release v1.9.0: Specialized Analysis Subcommands
+
+### Achieved
+- **Specialized Subcommands**: Implemented 5 targeted analysis scopes (`i18n`, `security`, `performance`, `architecture`, `metadata`) for the `analyze` command.
+- **Backward Compatibility**: Maintained 100% compatibility with legacy `analyze [path]` syntax through manual argument dispatch.
+- **Scope-Based Filtering**: Enhanced analysis pipeline to filter issues at multiple levels (visitor reporting, composite aggregation, engine results).
+- **Release v1.9.0**: Successfully published release to GitHub with complete documentation and distribution packages.
+- **Documentation Overhaul**: Updated README with modern badges (PyPI, downloads, Python versions), "What's New" section, and comprehensive subcommand examples.
+- **PyPI Optimization**: Added 10 new trove classifiers for better discoverability (OS Independent, Testing, Utilities, Python 3.13, Console, Typed).
+- **CLI Commands Roadmap**: Created comprehensive 3-phase implementation plan for future commands (`fix`, `docs`, `migrate`, `test`, `benchmark`, `init`).
+
+### Technical Details
+- Modified `AnalyzeCommand` with manual argument parsing to support both `analyze [scope] [path]` and `analyze [path]` syntax.
+- Extended `ProjectAnalyzer.run()` to accept `scope` parameter and propagate it through worker context.
+- Implemented `_filter_issues_by_scope()` method to filter results before saving to JSON context.
+- Updated all visitors (`BaseVisitor`, `MetricsVisitor`, `StandardsVisitor`, `QGISRulesVisitor`, `SafetyVisitor`) to support scope-aware analysis.
+- Enhanced `CompositeVisitor` to activate only relevant visitors based on scope.
+
+### Quality Metrics
+- Tests: 49/49 passing (0.39s)
+- Module Stability: 45.1/100
+- Maintainability: 90.0/100
+- Security: 100.0/100
+- Type Hints (Params): 97.1%
+- Docstrings: 77.9%
+
+### Commits
+1. `feat(cli): add specialized subcommands to analyze command` (a45df81)
+2. `chore(release): prepare v1.9.0` (5378ad2)
+3. `docs(readme): add PyPI badges and improve trove classifiers` (f38c2b0)
+
+### Distribution
+- GitHub Release: https://github.com/geociencio/qgis-plugin-analyzer/releases/tag/v1.9.0
+- Packages: tar.gz (95K) + wheel (100K)
+- Roadmap: `docs/research/CLI_COMMANDS_ROADMAP.md`
+
 ## [2026-01-11] AI Context Core Extraction
 
 ### Achieved
