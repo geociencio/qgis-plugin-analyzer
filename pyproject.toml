@@ -3,7 +3,7 @@ name = "qgis-plugin-analyzer"
 version = "1.8.0-beta.1"
 description = "A professional static analysis tool for QGIS (PyQGIS) plugins"
 readme = "README.md"
-requires-python = ">=3.8"
+requires-python = ">=3.9"
 authors = [
   {name = "geociencio", email = "juanbernales@gmail.com"}
 ]
@@ -47,6 +47,7 @@ dev = [
     "PyYAML>=6.0",
     "types-pyyaml>=6.0.12.20241230",
     "build>=1.2.2.post1",
+    "ai-context-core>=3.2.1",
 ]
 
 [tool.mypy]

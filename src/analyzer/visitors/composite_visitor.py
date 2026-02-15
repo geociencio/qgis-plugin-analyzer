@@ -24,22 +24,49 @@ class CompositeVisitor(ast.NodeVisitor):
         docstring_stats: Docstring statistics from metrics visitor.
     """
 
-    def __init__(self, rel_path: str, rules_config: Optional[Dict[str, Any]] = None) -> None:
+    def __init__(
+        self,
+        rel_path: str,
+        rules_config: Optional[Dict[str, Any]] = None,
+        scope: str = "all",
+    ) -> None:
         """Initializes the composite visitor.
 
         Args:
             rel_path: Relative path to the file being analyzed.
             rules_config: Optional configuration for audit rules and severities.
+            scope: The scope of analysis.
         """
         self.rel_path = rel_path
         self.rules_config = rules_config or {}
+        self.scope = scope
 
         # Initialize specialized visitors
-        self._imports_visitor = ImportsVisitor(rel_path, rules_config)
-        self._metrics_visitor = MetricsVisitor(rel_path, rules_config)
-        self._standards_visitor = StandardsVisitor(rel_path, rules_config)
-        self._qgis_rules_visitor = QGISRulesVisitor(rel_path, rules_config)
-        self._safety_visitor = SafetyVisitor(rel_path, rules_config)
+        self._imports_visitor = ImportsVisitor(rel_path, rules_config, scope)
+        self._metrics_visitor = MetricsVisitor(rel_path, rules_config, scope)
+        self._standards_visitor = StandardsVisitor(rel_path, rules_config, scope)
+        self._qgis_rules_visitor = QGISRulesVisitor(rel_path, rules_config, scope)
+        self._safety_visitor = SafetyVisitor(rel_path, rules_config, scope)
+
+        # Filter visitors based on scope
+        self._active_visitors = []
+        if self.scope == "all":
+            self._active_visitors = [
+                self._imports_visitor,
+                self._metrics_visitor,
+                self._standards_visitor,
+                self._qgis_rules_visitor,
+                self._safety_visitor,
+            ]
+        elif self.scope == "i18n":
+            self._active_visitors = [self._standards_visitor]
+        elif self.scope == "performance":
+            self._active_visitors = [self._standards_visitor, self._safety_visitor]
+        elif self.scope == "architecture":
+            self._active_visitors = [self._imports_visitor, self._metrics_visitor]
+        elif self.scope == "security":
+            # StandardsVisitor also has some security rules
+            self._active_visitors = [self._standards_visitor]
 
         # Configure visitors for single-pass mode
         for visitor in [
@@ -90,13 +117,7 @@ class CompositeVisitor(ast.NodeVisitor):
         parent = self._node_stack[-1] if self._node_stack else None
 
         # 1. Notify all visitors (Enter)
-        for visitor in [
-            self._imports_visitor,
-            self._metrics_visitor,
-            self._standards_visitor,
-            self._qgis_rules_visitor,
-            self._safety_visitor,
-        ]:
+        for visitor in self._active_visitors:
             visitor.enter_node(node, parent=parent)
 
         # 2. Recurse to children
@@ -105,20 +126,11 @@ class CompositeVisitor(ast.NodeVisitor):
         self._node_stack.pop()
 
         # 3. Notify all visitors (Exit)
-        for visitor in [
-            self._imports_visitor,
-            self._metrics_visitor,
-            self._standards_visitor,
-            self._qgis_rules_visitor,
-            self._safety_visitor,
-        ]:
+        for visitor in self._active_visitors:
             visitor.exit_node(node, parent=parent)
 
         # 4. Aggregate issues (only once at the end of root visit)
         if isinstance(node, ast.Module):
             self.issues = []
-            self.issues.extend(self._imports_visitor.issues)
-            self.issues.extend(self._metrics_visitor.issues)
-            self.issues.extend(self._standards_visitor.issues)
-            self.issues.extend(self._qgis_rules_visitor.issues)
-            self.issues.extend(self._safety_visitor.issues)
+            for visitor in self._active_visitors:
+                self.issues.extend(visitor.issues)

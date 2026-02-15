@@ -16,5 +16,10 @@
 #  *   the Free Software Foundation; either version 2 of the License, or     *
 #  *   (at your option) any later version.                                   *
 #  *                                                                         *
-#
-__version__ = "1.5.0"
+import importlib.metadata
+
+try:
+    __version__ = importlib.metadata.version("qgis-plugin-analyzer")
+except importlib.metadata.PackageNotFoundError:
+    # Fallback for development when package is not installed
+    __version__ = "1.8.0-beta.1"  # Default fallback if metadata is missing

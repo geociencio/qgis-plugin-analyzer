@@ -25,7 +25,19 @@ class AnalyzeCommand(BaseAnalyzerCommand):
         Args:
             parser: The argument parser for this command.
         """
-        parser.add_argument("project_path", help="Path to the QGIS project to analyze")
+        # We manually handle subcommands (scopes) to maintain 100% backward
+        # compatibility with 'analyze [path]'.
+        parser.add_argument(
+            "scope_or_path",
+            nargs="?",
+            default=".",
+            help="Analysis scope (i18n, performance, architecture, metadata) or project path",
+        )
+        parser.add_argument(
+            "remaining_path",
+            nargs="?",
+            help="Project path if a scope was specified in the first argument",
+        )
         self.add_common_args(parser)
         parser.add_argument(
             "-r",
@@ -43,6 +55,15 @@ class AnalyzeCommand(BaseAnalyzerCommand):
         Returns:
             Exit code (0 for success).
         """
-        # Note: logic moved to BaseAnalyzerCommand.get_analyzer
+        scopes = ["all", "i18n", "security", "performance", "architecture", "metadata"]
+
+        # Logic to distinguish between 'analyze [scope] [path]' and 'analyze [path]'
+        if args.scope_or_path in scopes:
+            args.scope = args.scope_or_path
+            args.project_path = args.remaining_path or "."
+        else:
+            args.scope = "all"
+            args.project_path = args.scope_or_path
+
         handle_analyze(args)
         return 0

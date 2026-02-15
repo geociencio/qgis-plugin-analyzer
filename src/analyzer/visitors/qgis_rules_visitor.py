@@ -16,8 +16,20 @@ class QGISRulesVisitor(BaseVisitor):
     - QGIS Processing framework usage
     """
 
-    def __init__(self, rel_path: str, rules_config: Optional[Dict[str, Any]] = None) -> None:
-        super().__init__(rel_path, rules_config)
+    def __init__(
+        self,
+        rel_path: str,
+        rules_config: Optional[Dict[str, Any]] = None,
+        scope: str = "all",
+    ) -> None:
+        """Initializes the QGIS rules visitor.
+
+        Args:
+            rel_path: Relative path to the file being analyzed.
+            rules_config: Optional configuration for audit rules and severities.
+            scope: Analysis scope.
+        """
+        super().__init__(rel_path, rules_config, scope)
         self.processing_framework = False
         self.gdal_style = "Modern"
         self.qt_imports: Dict[str, List[str]] = {"PyQt5": [], "PyQt6": []}

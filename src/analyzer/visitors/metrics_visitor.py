@@ -17,14 +17,20 @@ class MetricsVisitor(BaseVisitor):
     - Complexity metrics
     """
 
-    def __init__(self, rel_path: str, rules_config: Optional[Dict[str, Any]] = None) -> None:
+    def __init__(
+        self,
+        rel_path: str,
+        rules_config: Optional[Dict[str, Any]] = None,
+        scope: str = "all",
+    ) -> None:
         """Initializes the metrics visitor.
 
         Args:
             rel_path: Relative path to the file being analyzed.
             rules_config: Optional configuration for audit rules and severities.
+            scope: Analysis scope.
         """
-        super().__init__(rel_path, rules_config)
+        super().__init__(rel_path, rules_config, scope)
         self.docstring_styles: List[str] = []
         self.type_hint_stats = {
             "total_parameters": 0,

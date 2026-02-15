@@ -14,8 +14,20 @@ class SafetyVisitor(BaseVisitor):
     - UI Blocking: Intensive loops in UI handlers without QgsTask.
     """
 
-    def __init__(self, rel_path: str, rules_config: Optional[Dict[str, Any]] = None) -> None:
-        super().__init__(rel_path, rules_config)
+    def __init__(
+        self,
+        rel_path: str,
+        rules_config: Optional[Dict[str, Any]] = None,
+        scope: str = "all",
+    ) -> None:
+        """Initializes the safety visitor.
+
+        Args:
+            rel_path: Relative path to the file being analyzed.
+            rules_config: Optional configuration for audit rules and severities.
+            scope: Analysis scope.
+        """
+        super().__init__(rel_path, rules_config, scope)
         self.connections: Set[str] = set()
         self.disconnections: Set[str] = set()
         self.in_ui_handler = False

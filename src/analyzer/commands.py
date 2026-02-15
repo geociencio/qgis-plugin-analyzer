@@ -88,6 +88,7 @@ def handle_analyze(args: argparse.Namespace) -> None:
     project_path = getattr(args, "project_path", ".")
     output_dir = getattr(args, "output", "./analysis_results")
     profile = getattr(args, "profile", "default")
+    scope = getattr(args, "scope", "all")
 
     analyzer = ProjectAnalyzer(str(project_path), output_dir, profile)
 
@@ -97,7 +98,7 @@ def handle_analyze(args: argparse.Namespace) -> None:
     if hasattr(args, "report") and args.report:
         analyzer.config = dataclasses.replace(analyzer.config, generate_html=True)
 
-    success = analyzer.run()
+    success = analyzer.run(scope=scope)
 
     context_path = analyzer.output_dir / "project_context.json"
     if context_path.exists():

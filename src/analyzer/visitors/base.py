@@ -10,16 +10,23 @@ class BaseVisitor(ast.NodeVisitor):
     Designed for both direct usage and single-pass traversal (CompositeVisitor).
     """
 
-    def __init__(self, rel_path: str, rules_config: Optional[Dict[str, Any]] = None) -> None:
+    def __init__(
+        self,
+        rel_path: str,
+        rules_config: Optional[Dict[str, Any]] = None,
+        scope: str = "all",
+    ) -> None:
         """Initializes the base visitor.
 
         Args:
             rel_path: Relative path to the file being analyzed.
             rules_config: Optional configuration for audit rules and severities.
+            scope: Analysis scope ('all', 'i18n', etc.).
         """
         self.rel_path = rel_path
         self.issues: List[Dict[str, Any]] = []
         self.rules_config = rules_config or {}
+        self.scope = scope
         self._is_single_pass = False
 
     def generic_visit(self, node: ast.AST) -> None:
@@ -58,7 +65,7 @@ class BaseVisitor(ast.NodeVisitor):
                 visitor(node)
 
     def _should_report(self, rule_id: str) -> bool:
-        """Check if rule should be reported based on config.
+        """Check if rule should be reported based on config and scope.
 
         Args:
             rule_id: The rule identifier.
@@ -66,6 +73,50 @@ class BaseVisitor(ast.NodeVisitor):
         Returns:
             True if the rule should be reported, False otherwise.
         """
+        # Global scope filtering
+        if self.scope == "i18n":
+            # Only i18n-related rules
+            return rule_id == "MISSING_I18N"
+        elif self.scope == "security":
+            # Security-related rules
+            security_rules = {
+                "UNSAFE_SUBPROCESS",
+                "HARDCODED_PASSWORD",
+                "SQL_INJECTION",
+                "UNSAFE_YAML",
+                "UNSAFE_PICKLE",
+            }
+            return rule_id in security_rules
+        elif self.scope == "performance":
+            # Performance-related rules
+            performance_rules = {
+                "SPATIAL_INDEX",
+                "BLOCKING_NETWORK_CALL",
+                "UI_BLOCKING_LOOP",
+                "NON_PYTHONIC_LOOP",
+            }
+            return rule_id in performance_rules
+        elif self.scope == "architecture":
+            # Architecture-related rules (imports, dependencies)
+            architecture_rules = {
+                "QGIS_PROTECTED_MEMBER",
+                "GDAL_DIRECT_IMPORT",
+                "QGIS_LEGACY_IMPORT",
+                "HEAVY_LOGIC_UI",
+                "PYQT5_IMPORT",
+                "LEGACY_GDAL_IMPORT",
+            }
+            return rule_id in architecture_rules
+        elif self.scope == "metadata":
+            # Metadata validation rules
+            metadata_rules = {
+                "MANDATORY_CLEANUP",
+                "OBSOLETE_API",
+                "IFACE_AS_ARGUMENT",
+            }
+            return rule_id in metadata_rules
+
+        # For "all" scope or unrecognized scopes, check config
         severity = self.rules_config.get(rule_id, "warning")
         return bool(severity != "ignore")
 

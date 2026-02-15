@@ -101,6 +101,7 @@ def analyze_module_worker(
     project_path: Optional[pathlib.Path] = None,
     cached_data: Optional[Dict[str, Any]] = None,
     rules_config: Optional[Dict[str, Any]] = None,
+    scope: str = "all",
 ) -> Optional[ModuleAnalysisResult]:
     """Worker function for module analysis, intended for parallel execution.
 
@@ -109,6 +110,7 @@ def analyze_module_worker(
         project_path: Root path of the project. If missing, uses shared context.
         cached_data: Optional previously cached analysis results.
         rules_config: Optional rule configuration overrides. If missing, uses shared context.
+        scope: Analysis scope ('all', 'i18n', etc.). If missing, uses shared context.
 
     Returns:
         A dictionary containing the analysis results, or None if the file
@@ -119,6 +121,7 @@ def analyze_module_worker(
         ctx = _worker_context or {}
         p_path = project_path or ctx.get("project_path")
         r_config = rules_config or ctx.get("rules_config")
+        a_scope = scope if scope != "all" else ctx.get("scope", "all")
 
         if not p_path:
             return None
@@ -137,7 +140,7 @@ def analyze_module_worker(
         tree = tree_or_error
 
         # Run Audits (using the new CompositeVisitor for single-pass)
-        visitor = QGISASTVisitor(rel_path, rules_config=r_config)
+        visitor = QGISASTVisitor(rel_path, rules_config=r_config, scope=a_scope)
         visitor.visit(tree)
 
         # Extract information using helper functions
@@ -155,7 +158,9 @@ def analyze_module_worker(
             "content": content,
         }
 
-        security_issues = _collect_security_issues(tree, content, rel_path)
+        security_issues = []
+        if a_scope in ["all", "security"]:
+            security_issues = _collect_security_issues(tree, content, rel_path)
         results.update(
             {
                 "ast_issues": visitor.issues,

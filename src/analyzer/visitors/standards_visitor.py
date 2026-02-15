@@ -29,6 +29,15 @@ IGNORED_I18N_FUNCTIONS = {
     "disconnect",
     "signal",
     "slot",
+    "get",
+    "post",
+    "request",
+    "arg",
+    "group",
+    "format",
+    "join",
+    "split",
+    "replace",
 }
 
 
@@ -45,14 +54,20 @@ class StandardsVisitor(BaseVisitor):
     - Non-pythonic loops
     """
 
-    def __init__(self, rel_path: str, rules_config: Optional[Dict[str, Any]] = None) -> None:
+    def __init__(
+        self,
+        rel_path: str,
+        rules_config: Optional[Dict[str, Any]] = None,
+        scope: str = "all",
+    ) -> None:
         """Initializes the standards visitor.
 
         Args:
             rel_path: Relative path to the file being analyzed.
             rules_config: Optional configuration for audit rules and severities.
+            scope: Analysis scope.
         """
-        super().__init__(rel_path, rules_config)
+        super().__init__(rel_path, rules_config, scope)
         self.class_methods_stack: List[Set[str]] = []
         self.i18n_methods = I18N_METHODS
         self._in_ignored_call = False
@@ -137,10 +152,16 @@ class StandardsVisitor(BaseVisitor):
 
     def visit_Constant(self, node: ast.Constant, parent: Optional[ast.AST] = None) -> None:
         """Analyzes string constants for missing translations."""
-        # Ignore if inside ignored call or if it's a dict key
+        # Ignore if inside ignored call or if it's a dict key or value
         is_dict_key = isinstance(parent, ast.Dict) and node in parent.keys
+        is_dict_value = isinstance(parent, ast.Dict) and node in parent.values
 
-        if isinstance(node.value, str) and not self._in_ignored_call and not is_dict_key:
+        if (
+            isinstance(node.value, str)
+            and not self._in_ignored_call
+            and not is_dict_key
+            and not is_dict_value
+        ):
             # Docstring detection: docstrings are strings directly under an Expr node.
             # In QGIS/Python, we don't wrap standalone strings in tr() as they have no target.
             # However, strings in Assignments (self.label = "Name"), Calls, etc. SHOULD be checked.
@@ -254,7 +275,7 @@ class StandardsVisitor(BaseVisitor):
     def is_translatable_string(value: str) -> bool:
         """Heuristic to determine if a string is user-facing.
 
-        Ported from ai-context-core.
+        Ported from ai-context-core and refined.
         """
         if not value or len(value) < 3:
             return False
@@ -263,9 +284,14 @@ class StandardsVisitor(BaseVisitor):
         if "/" in value or "\\" in value or value.startswith(":/"):
             return False
 
-        # If it contains spaces or ends with punctuation, it's likely user-facing
+        # If it contains spaces or ends with punctuation, it's very likely user-facing
         if " " in value or any(value.endswith(p) for p in ":.!?"):
             return True
+
+        # TECHNICAL STRINGS: Ignore short strings that look like identifiers
+        # Most GUI labels have spaces or more than 5 characters if they are single words
+        if len(value) <= 5:
+            return False
 
         # Ignore snake_case, dotted names, CamelCase, and UPPERCASE
         if "_" in value or "." in value:
@@ -273,6 +299,24 @@ class StandardsVisitor(BaseVisitor):
         if not value.islower() and not value.isupper() and any(c.isupper() for c in value):
             return False
         if value.isupper():
+            return False
+
+        # Technical words list (whitelist)
+        technical_words = {
+            "name",
+            "type",
+            "date",
+            "color",
+            "value",
+            "label",
+            "index",
+            "field",
+            "count",
+            "total",
+            "state",
+            "status",
+        }
+        if value.lower() in technical_words:
             return False
 
         return True
