@@ -5,7 +5,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [1.7.0] - 2026-02-09
+## [1.8.0-beta.1] - 2026-02-14
+
+### Added
+- **I18n Differentiation**:
+    - **Docstring Detection**: Standalone string constants (docstrings and standalone expression strings) are now explicitly excluded from `MISSING_I18N` analysis.
+    - **Improved UI String Heuristics**: Enhanced detection to include single-word UI labels with punctuation (e.g., `"Name:"`, `"Error!"`), improving accuracy for translation candidates.
+
+### Fixed
+- **I18n False Positives**: Resolved issue where developer documentation (docstrings) was incorrectly flagged as missing translation.
+
 
 ### Added
 - **Engine Performance Upgrades**:
