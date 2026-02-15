@@ -1,14 +1,25 @@
 # QGIS Plugin Analyzer 🛡️
 
 👉 **[View Full Rules Catalog (RULES.md)](RULES.md)**
-![GitHub release (latest by date)](https://img.shields.io/github/v/release/geociencio/qgis-plugin-analyzer?color=blue&logo=github)
-![Python Version](https://img.shields.io/badge/python-3.8%2B-blue?logo=python)
-![License](https://img.shields.io/badge/License-GPLv3-blue.svg)
-![Maintenance](https://img.shields.io/badge/Maintained%3F-yes-green.svg)
-![Conventional Commits](https://img.shields.io/badge/Conventional%20Commits-1.0.0-yellow.svg?logo=git)
-![Quality Score](https://img.shields.io/badge/Module%20Stability-92.3%2F100-brightgreen)
-![Maintainability](https://img.shields.io/badge/Maintainability-84.1%2F100-green)
-![Security Score](https://img.shields.io/badge/Security--Bandit-98.7%2F100-brightgreen)
+
+[![GitHub release (latest by date)](https://img.shields.io/github/v/release/geociencio/qgis-plugin-analyzer?color=blue&logo=github&style=flat-square)](https://github.com/geociencio/qgis-plugin-analyzer/releases)
+[![PyPI version](https://img.shields.io/pypi/v/qgis-plugin-analyzer?style=flat-square&logo=pypi&logoColor=white)](https://pypi.org/project/qgis-plugin-analyzer/)
+[![PyPI downloads](https://img.shields.io/pypi/dm/qgis-plugin-analyzer?style=flat-square&logo=pypi&logoColor=white)](https://pypi.org/project/qgis-plugin-analyzer/)
+[![Python Version](https://img.shields.io/pypi/pyversions/qgis-plugin-analyzer?style=flat-square&logo=python&logoColor=white)](https://www.python.org/downloads/)
+[![License](https://img.shields.io/badge/License-GPLv3-blue.svg?style=flat-square)](LICENSE)
+[![GitHub stars](https://img.shields.io/github/stars/geociencio/qgis-plugin-analyzer?style=flat-square&logo=github)](https://github.com/geociencio/qgis-plugin-analyzer/stargazers)
+[![GitHub forks](https://img.shields.io/github/forks/geociencio/qgis-plugin-analyzer?style=flat-square&logo=github)](https://github.com/geociencio/qgis-plugin-analyzer/network/members)
+[![Maintenance](https://img.shields.io/badge/Maintained%3F-yes-green.svg?style=flat-square)](https://github.com/geociencio/qgis-plugin-analyzer/graphs/commit-activity)
+[![Conventional Commits](https://img.shields.io/badge/Conventional%20Commits-1.0.0-yellow.svg?logo=git&style=flat-square)](https://conventionalcommits.org)
+
+**Quality Metrics:**
+
+![Module Stability](https://img.shields.io/badge/Module%20Stability-45.1%2F100-orange?style=flat-square)
+![Maintainability](https://img.shields.io/badge/Maintainability-90.0%2F100-brightgreen?style=flat-square)
+![Security Score](https://img.shields.io/badge/Security--Bandit-100.0%2F100-brightgreen?style=flat-square)
+![Type Coverage](https://img.shields.io/badge/Type%20Hints%20(Params)-97.1%25-brightgreen?style=flat-square)
+![Docstring Coverage](https://img.shields.io/badge/Docstrings-77.9%25-green?style=flat-square)
+![Tests](https://img.shields.io/badge/Tests-49%2F49%20passing-brightgreen?style=flat-square&logo=pytest)
 
 The **QGIS Plugin Analyzer** is a static analysis tool designed specifically for QGIS (PyQGIS) plugin developers. Its goal is to elevate plugin quality by ensuring they follow community best practices and are optimized for AI-assisted development.
 
@@ -30,6 +41,24 @@ The **QGIS Plugin Analyzer** is a static analysis tool designed specifically for
 - **Embedded Web Server**: View reports instantly with the built-in `serve` command.
 - **AI-Ready**: Generates structured summaries and optimized contexts for LLMs.
 - **Zero Runtime Dependencies**: Works using only the Python standard library (Ruff as an external tool).
+
+## 🆕 What's New in v1.9.0
+
+**Specialized Analysis Subcommands** - Target specific aspects of your plugin for faster, focused auditing:
+
+- 🌐 **`analyze i18n`** - Detect untranslated user-facing strings with intelligent heuristics
+- 🔒 **`analyze security`** - Scan for vulnerabilities, unsafe calls, and hardcoded secrets
+- ⚡ **`analyze performance`** - Find UI-blocking operations and missing optimizations
+- 🏗️ **`analyze architecture`** - Analyze dependencies, imports, and QGIS API usage patterns
+- 📋 **`analyze metadata`** - Validate QGIS plugin structure and metadata.txt compliance
+
+**Benefits:**
+- ⚡ **Faster Feedback**: Run only the checks you need (e.g., i18n audit in seconds)
+- 🎯 **Targeted Fixes**: Address specific concerns without noise from unrelated issues
+- 🔄 **CI/CD Friendly**: Run different scopes in parallel pipelines for faster builds
+- ✅ **100% Backward Compatible**: Existing `analyze [path]` commands work unchanged
+
+[**📖 Full Release Notes**](docs/releases/notes/v1.9.0.md) | [**🗺️ CLI Commands Roadmap**](docs/research/CLI_COMMANDS_ROADMAP.md)
 
 ## ⚖️ Why use this Analyzer? (Comparison)
 
@@ -83,17 +112,35 @@ pip install .
 
 ### Main Commands:
 
-**1. Analyze a Plugin:**
+**1. Analyze a Plugin (Full Analysis):**
 ```bash
 qgis-analyzer analyze /path/to/your/plugin -o ./quality_report
 ```
 
-**2. Auto-Fix issues (Dry Run):**
+**2. Specialized Analysis (NEW in v1.9.0):**
+```bash
+# Internationalization audit only
+qgis-analyzer analyze i18n /path/to/your/plugin
+
+# Security vulnerability scanning only
+qgis-analyzer analyze security /path/to/your/plugin
+
+# Performance and UI blocking detection only
+qgis-analyzer analyze performance /path/to/your/plugin
+
+# Dependency and coupling analysis only
+qgis-analyzer analyze architecture /path/to/your/plugin
+
+# QGIS metadata validation only
+qgis-analyzer analyze metadata /path/to/your/plugin
+```
+
+**3. Auto-Fix issues (Dry Run):**
 ```bash
 qgis-analyzer fix /path/to/your/plugin
 ```
 
-**3. Legacy Support:**
+**4. Legacy Support:**
 The default command remains analysis if no subcommand is specified:
 ```bash
 qgis-analyzer /path/to/your/plugin
@@ -157,15 +204,41 @@ This tool performs **Static Analysis** (AST & Regex parsing). It does **not** ex
 
 > **Note**: The Python package is named `qgis-plugin-analyzer`, but the command-line tool is installed as `qgis-analyzer`.
 
-### `qgis-analyzer analyze`
-Audits an existing QGIS plugin repository.
+### `qgis-analyzer analyze [scope] [path]`
+Audits an existing QGIS plugin repository with optional specialized scopes.
+
+**NEW in v1.9.0:** Specialized analysis scopes for targeted auditing.
+
+**Available Scopes:**
+- `i18n` - Internationalization and translation audit (detects untranslated strings)
+- `security` - Security vulnerability scanning (unsafe calls, hardcoded secrets, SQL injection)
+- `performance` - Performance and UI blocking detection (blocking loops, missing indexes)
+- `architecture` - Dependency and coupling analysis (imports, QGIS API usage)
+- `metadata` - QGIS metadata validation (metadata.txt compliance)
+- `all` or no scope - Full analysis (default, legacy compatible)
+
+**Arguments:**
 
 | Argument | Description | Default |
 | :--- | :--- | :--- |
-| `project_path` | **(Required)** Path to the plugin directory to analyze. | N/A |
+| `scope` | **(Optional)** Analysis scope: `i18n`, `security`, `performance`, `architecture`, `metadata`, or `all`. | `all` |
+| `project_path` | **(Required)** Path to the plugin directory to analyze. | `.` |
 | `-o`, `--output` | Directory where HTML/Markdown reports will be saved. | `./analysis_results` |
 | `-r`, `--report` | Explicitly generate detailed HTML/Markdown reports. | `False` |
 | `-p`, `--profile`| Configuration profile from `pyproject.toml` (`default`, `release`). | `default` |
+
+**Examples:**
+```bash
+# Full analysis (legacy compatible)
+qgis-analyzer analyze .
+qgis-analyzer analyze /path/to/plugin
+
+# Specialized i18n analysis
+qgis-analyzer analyze i18n .
+
+# Security-only scan with reports
+qgis-analyzer analyze security . --report
+```
 
 ### `qgis-analyzer fix`
 Automatically fix common QGIS issues identified during analysis.
