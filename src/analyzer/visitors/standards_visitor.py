@@ -141,6 +141,13 @@ class StandardsVisitor(BaseVisitor):
         is_dict_key = isinstance(parent, ast.Dict) and node in parent.keys
 
         if isinstance(node.value, str) and not self._in_ignored_call and not is_dict_key:
+            # Docstring detection: docstrings are strings directly under an Expr node.
+            # In QGIS/Python, we don't wrap standalone strings in tr() as they have no target.
+            # However, strings in Assignments (self.label = "Name"), Calls, etc. SHOULD be checked.
+            if isinstance(parent, ast.Expr):
+                # Standalone string (docstring or comment-like string)
+                return
+
             self._check_potential_i18n_string(node.value, node.lineno)
 
     def _get_func_name(self, func: ast.expr) -> str:
@@ -256,8 +263,8 @@ class StandardsVisitor(BaseVisitor):
         if "/" in value or "\\" in value or value.startswith(":/"):
             return False
 
-        # If it contains spaces, it's likely a sentence
-        if " " in value:
+        # If it contains spaces or ends with punctuation, it's likely user-facing
+        if " " in value or any(value.endswith(p) for p in ":.!?"):
             return True
 
         # Ignore snake_case, dotted names, CamelCase, and UPPERCASE
