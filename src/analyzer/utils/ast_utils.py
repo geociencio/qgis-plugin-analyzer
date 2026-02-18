@@ -190,16 +190,16 @@ def extract_runtime_imports_from_ast(tree: ast.AST) -> List[str]:
                     type_checking_lines.add(child.lineno)
 
     # Walk the full tree but skip nodes on TYPE_CHECKING lines
-    for node in ast.walk(tree):
-        lineno = getattr(node, "lineno", None)
+    for child_node in ast.walk(tree):
+        lineno = getattr(child_node, "lineno", None)
         if lineno is not None and lineno in type_checking_lines:
             continue
-        if isinstance(node, ast.Import):
-            imports.extend(n.name for n in node.names)
-        elif isinstance(node, ast.ImportFrom):
-            module_name = node.module if node.module else ""
-            if node.level > 0:
-                module_name = ("." * node.level) + module_name
+        if isinstance(child_node, ast.Import):
+            imports.extend(n.name for n in child_node.names)
+        elif isinstance(child_node, ast.ImportFrom):
+            module_name = child_node.module if child_node.module else ""
+            if child_node.level > 0:
+                module_name = ("." * child_node.level) + module_name
             if module_name:
                 imports.append(module_name)
 
