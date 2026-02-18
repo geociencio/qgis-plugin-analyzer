@@ -7,6 +7,7 @@ from .ast_utils import (
     extract_classes_from_ast,
     extract_functions_from_ast,
     extract_imports_from_ast,
+    extract_runtime_imports_from_ast,
 )
 from .config_utils import _minimal_toml_load, load_profile_config
 from .logging_utils import logger, setup_logger
@@ -24,6 +25,7 @@ __all__ = [
     "extract_functions_from_ast",
     "extract_classes_from_ast",
     "extract_imports_from_ast",
+    "extract_runtime_imports_from_ast",
     "calculate_module_complexity",
     "check_main_guard",
     "setup_logger",

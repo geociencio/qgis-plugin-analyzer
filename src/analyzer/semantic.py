@@ -37,6 +37,9 @@ class DependencyGraph:
     def build_edges(self, project_path: pathlib.Path) -> None:
         """Resolves module imports and builds edges between nodes.
 
+        Skips imports that are only used for type checking (TYPE_CHECKING guard),
+        as these do not exist at runtime and would create false cycle edges.
+
         Args:
             project_path: Root path of the project.
         """
@@ -44,7 +47,10 @@ class DependencyGraph:
             current_file = project_path / module_path
             current_dir = current_file.parent
 
-            for imp in data.get("imports", []):
+            # Prefer runtime_imports if available (excludes TYPE_CHECKING imports)
+            imports = data.get("runtime_imports") or data.get("imports", [])
+
+            for imp in imports:
                 resolved_path = self._resolve_import(imp, current_dir, project_path)
                 if resolved_path and resolved_path in self.nodes:
                     self.adjacency_list[module_path].add(resolved_path)
@@ -80,8 +86,10 @@ class DependencyGraph:
             parts = import_name[dot_count:].split(".")
             target = target_dir.joinpath(*parts).with_suffix(".py")
             try:
-                # Ensure we are still within project_path
+                # Ensure we are still within project_path and file exists
                 rel = str(target.relative_to(project_path))
+                if not (project_path / rel).exists():
+                    return ""
                 return rel
             except ValueError:
                 pass
@@ -92,28 +100,39 @@ class DependencyGraph:
         target = project_path.joinpath(*parts).with_suffix(".py")
         try:
             rel = str(target.relative_to(project_path))
-            return rel
-        except ValueError:
-            # Maybe it is a package (__init__.py)
-            target_pkg = project_path.joinpath(*parts) / "__init__.py"
-            try:
-                rel = str(target_pkg.relative_to(project_path))
+            if (project_path / rel).exists():
                 return rel
-            except ValueError:
-                pass
+        except ValueError:
+            pass
+
+        # Maybe it is a package (__init__.py)
+        target_pkg = project_path.joinpath(*parts) / "__init__.py"
+        try:
+            rel = str(target_pkg.relative_to(project_path))
+            if (project_path / rel).exists():
+                return rel
+        except ValueError:
+            pass
+
         return ""
 
     def detect_cycles(self) -> List[List[str]]:
         """Detects circular import cycles using Depth First Search (DFS).
 
-        Returns:
-            A list of dependency cycles, where each cycle is a list of module paths.
-        """
-        visited = set()
-        recursion_stack = set()
-        cycles = []
+        Each cycle is deduplicated using canonical form (rotation starting at the
+        lexicographically smallest node), so a cycle A→B→A is only reported once
+        regardless of which node the DFS enters first.
 
-        def dfs(node, path):
+        Returns:
+            A list of unique dependency cycles, where each cycle is a list of
+            module paths. The last element repeats the first to close the cycle.
+        """
+        visited: Set[str] = set()
+        recursion_stack: Set[str] = set()
+        seen_cycles: Set[tuple] = set()
+        cycles: List[List[str]] = []
+
+        def dfs(node: str, path: List[str]) -> None:
             visited.add(node)
             recursion_stack.add(node)
             path.append(node)
@@ -122,9 +141,18 @@ class DependencyGraph:
                 if neighbor not in visited:
                     dfs(neighbor, path)
                 elif neighbor in recursion_stack:
-                    # Cycle found
+                    # Extract the raw cycle slice
                     cycle_start_index = path.index(neighbor)
-                    cycles.append(path[cycle_start_index:] + [neighbor])
+                    raw_cycle = path[cycle_start_index:]
+
+                    # Normalize to canonical form: rotate so the min node is first
+                    min_idx = raw_cycle.index(min(raw_cycle))
+                    canonical = tuple(raw_cycle[min_idx:] + raw_cycle[:min_idx])
+
+                    if canonical not in seen_cycles:
+                        seen_cycles.add(canonical)
+                        # Append closing node to make the cycle explicit
+                        cycles.append(list(canonical) + [canonical[0]])
 
             recursion_stack.remove(node)
             path.pop()

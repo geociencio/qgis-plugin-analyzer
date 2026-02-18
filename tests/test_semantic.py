@@ -1,9 +1,11 @@
+import ast
 import pathlib
 import shutil
 import tempfile
 import unittest
 
 from analyzer.semantic import DependencyGraph, ResourceValidator
+from analyzer.utils.ast_utils import extract_runtime_imports_from_ast
 
 
 class TestSemanticAnalysis(unittest.TestCase):
@@ -69,6 +71,56 @@ class TestSemanticAnalysis(unittest.TestCase):
 
         self.assertEqual(len(missing), 1)
         self.assertEqual(missing[0], ":/plugins/test/missing.png")
+
+    def test_cycle_deduplication(self):
+        """A single cycle A->B->A must be reported exactly once, not twice."""
+        # A -> B -> A: DFS enters from both A and B, but canonical form deduplicates
+        self.graph.add_node("a.py", {})
+        self.graph.add_node("b.py", {})
+        self.graph.adjacency_list["a.py"] = {"b.py"}
+        self.graph.adjacency_list["b.py"] = {"a.py"}
+
+        cycles = self.graph.detect_cycles()
+        self.assertEqual(len(cycles), 1, f"Expected 1 cycle, got {len(cycles)}: {cycles}")
+
+    def test_resolve_nonexistent_file(self):
+        """_resolve_import must return '' for modules that don't exist on disk."""
+        project = pathlib.Path(tempfile.mkdtemp())
+        try:
+            # Create only module_a.py; module_b does NOT exist
+            (project / "module_a.py").write_text("")
+            self.graph.add_node("module_a.py", {"imports": ["module_b"]})
+            self.graph.add_node("module_b.py", {})  # node exists in graph but not on disk
+
+            self.graph.build_edges(project)
+
+            # No edge should be created because module_b.py doesn't exist on disk
+            self.assertEqual(
+                self.graph.adjacency_list["module_a.py"],
+                set(),
+                "Should not create edge to non-existent file",
+            )
+        finally:
+            import shutil as _shutil
+
+            _shutil.rmtree(project)
+
+    def test_type_checking_imports_excluded(self):
+        """extract_runtime_imports_from_ast must exclude TYPE_CHECKING-guarded imports."""
+        code = """
+from __future__ import annotations
+from typing import TYPE_CHECKING
+
+import os  # runtime import
+
+if TYPE_CHECKING:
+    from .other_module import SomeType  # type-only, NOT runtime
+"""
+        tree = ast.parse(code)
+        runtime_imports = extract_runtime_imports_from_ast(tree)
+
+        self.assertIn("os", runtime_imports)
+        self.assertNotIn(".other_module", runtime_imports)
 
 
 if __name__ == "__main__":

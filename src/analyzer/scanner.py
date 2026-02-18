@@ -36,6 +36,7 @@ from .utils.ast_utils import (
     extract_classes_from_ast,
     extract_functions_from_ast,
     extract_imports_from_ast,
+    extract_runtime_imports_from_ast,
 )
 from .visitors import QGISASTVisitor, QGISSecurityVisitor
 
@@ -60,6 +61,7 @@ class ModuleAnalysisResult(TypedDict, total=False):
     functions: List[Dict[str, Any]]
     classes: List[str]
     imports: List[str]
+    runtime_imports: List[str]
     complexity: int
     has_main: bool
     docstrings: Dict[str, bool]
@@ -150,6 +152,7 @@ def analyze_module_worker(
             "functions": extract_functions_from_ast(tree),
             "classes": extract_classes_from_ast(tree),
             "imports": extract_imports_from_ast(tree),
+            "runtime_imports": extract_runtime_imports_from_ast(tree),
             "complexity": calculate_module_complexity(tree),
             "has_main": check_main_guard(tree),
             "docstrings": {"module": ast.get_docstring(tree) is not None},

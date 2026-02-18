@@ -116,6 +116,96 @@ def extract_imports_from_ast(tree: ast.AST) -> List[str]:
     return sorted(set(imports))
 
 
+def _is_type_checking_guard(node: ast.If) -> bool:
+    """Returns True if the If node is a TYPE_CHECKING guard.
+
+    Matches both ``if TYPE_CHECKING:`` and
+    ``if typing.TYPE_CHECKING:`` patterns.
+
+    Args:
+        node: An AST If node.
+
+    Returns:
+        True if the node is a TYPE_CHECKING guard, False otherwise.
+    """
+    test = node.test
+    if isinstance(test, ast.Name) and test.id == "TYPE_CHECKING":
+        return True
+    if (
+        isinstance(test, ast.Attribute)
+        and test.attr == "TYPE_CHECKING"
+        and isinstance(test.value, ast.Name)
+        and test.value.id == "typing"
+    ):
+        return True
+    return False
+
+
+def _collect_import_name(node: ast.stmt) -> str:
+    """Extracts the module name string from an Import or ImportFrom node.
+
+    Args:
+        node: An AST Import or ImportFrom statement node.
+
+    Returns:
+        The module name string, or an empty string if not applicable.
+    """
+    if isinstance(node, ast.Import):
+        # For bare ``import a, b`` we return the first name only;
+        # callers iterate over all names separately when needed.
+        return ""  # handled by caller
+    if isinstance(node, ast.ImportFrom):
+        module_name = node.module if node.module else ""
+        if node.level > 0:
+            module_name = ("." * node.level) + module_name
+        return module_name
+    return ""
+
+
+def extract_runtime_imports_from_ast(tree: ast.AST) -> List[str]:
+    """Extracts only runtime imports, excluding TYPE_CHECKING-guarded ones.
+
+    Imports inside ``if TYPE_CHECKING:`` blocks are used exclusively for
+    static type analysis and do not exist at runtime. Including them in the
+    dependency graph creates false edges that lead to phantom circular import
+    cycles.
+
+    Args:
+        tree: The AST tree root (must be an ``ast.Module``).
+
+    Returns:
+        A sorted list of runtime-only imported module names.
+    """
+    imports: List[str] = []
+
+    # Only iterate over top-level statements to detect TYPE_CHECKING guards
+    top_level = tree.body if isinstance(tree, ast.Module) else []
+
+    # Collect line numbers of nodes inside TYPE_CHECKING blocks
+    type_checking_lines: set[int] = set()
+    for node in top_level:
+        if isinstance(node, ast.If) and _is_type_checking_guard(node):
+            for child in ast.walk(node):
+                if hasattr(child, "lineno"):
+                    type_checking_lines.add(child.lineno)
+
+    # Walk the full tree but skip nodes on TYPE_CHECKING lines
+    for node in ast.walk(tree):
+        lineno = getattr(node, "lineno", None)
+        if lineno is not None and lineno in type_checking_lines:
+            continue
+        if isinstance(node, ast.Import):
+            imports.extend(n.name for n in node.names)
+        elif isinstance(node, ast.ImportFrom):
+            module_name = node.module if node.module else ""
+            if node.level > 0:
+                module_name = ("." * node.level) + module_name
+            if module_name:
+                imports.append(module_name)
+
+    return sorted(set(imports))
+
+
 def calculate_module_complexity(tree: ast.AST) -> int:
     """Calculates module-level complexity based on decision points.
 
