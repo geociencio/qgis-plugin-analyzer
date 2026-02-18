@@ -5,6 +5,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.10.0] - 2026-02-18
+
+### Fixed
+- **Architectural Analysis**: Eliminated false positives in circular dependency detection (`DependencyGraph`) by:
+    - Excluding `TYPE_CHECKING` imports from the graph.
+    - Implementing canonical deduplication for reported cycles.
+    - Validating file existence during import resolution.
+- **Module Stability Score**: Fixed a critical bug where the score dropped to 0/100 in large projects due to phantom cycles.
+
 ## [1.9.0] - 2026-02-15
 
 ### Added

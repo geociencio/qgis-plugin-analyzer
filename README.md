@@ -42,23 +42,20 @@ The **QGIS Plugin Analyzer** is a static analysis tool designed specifically for
 - **AI-Ready**: Generates structured summaries and optimized contexts for LLMs.
 - **Zero Runtime Dependencies**: Works using only the Python standard library (Ruff as an external tool).
 
-## 🆕 What's New in v1.9.0
+## 🆕 What's New in v1.10.0
 
-**Specialized Analysis Subcommands** - Target specific aspects of your plugin for faster, focused auditing:
+**Architectural Precision & False Positive Elimination** - We've rewritten the dependency graph engine to be 100% accurate:
 
-- 🌐 **`analyze i18n`** - Detect untranslated user-facing strings with intelligent heuristics
-- 🔒 **`analyze security`** - Scan for vulnerabilities, unsafe calls, and hardcoded secrets
-- ⚡ **`analyze performance`** - Find UI-blocking operations and missing optimizations
-- 🏗️ **`analyze architecture`** - Analyze dependencies, imports, and QGIS API usage patterns
-- 📋 **`analyze metadata`** - Validate QGIS plugin structure and metadata.txt compliance
+- 🧠 **Smart Cycle Detection** - Eliminates "ghost cycles" caused by `TYPE_CHECKING` imports and file resolution artifacts.
+- 🎯 **Accurate Stability Score** - Large projects will no longer see artificially low scores due to false positive cycles.
+- ⚡ **Canonical Deduplication** - Detected cycles are reported exactly once, preventing penalty inflation.
 
 **Benefits:**
-- ⚡ **Faster Feedback**: Run only the checks you need (e.g., i18n audit in seconds)
-- 🎯 **Targeted Fixes**: Address specific concerns without noise from unrelated issues
-- 🔄 **CI/CD Friendly**: Run different scopes in parallel pipelines for faster builds
-- ✅ **100% Backward Compatible**: Existing `analyze [path]` commands work unchanged
+- ✅ **Trustworthy Metrics**: Score reflects true code quality.
+- 📉 **Reduced Noise**: Focus only on real architectural issues.
+- 🚀 **Large Project Support**: Optimized for codebases with hundreds of files.
 
-[**📖 Full Release Notes**](docs/releases/notes/v1.9.0.md) | [**🗺️ CLI Commands Roadmap**](docs/research/CLI_COMMANDS_ROADMAP.md)
+[**📖 Full Release Notes**](docs/releases/notes/v1.10.0.md) | [**🗺️ CLI Commands Roadmap**](docs/research/CLI_COMMANDS_ROADMAP.md)
 
 ## ⚖️ Why use this Analyzer? (Comparison)
 
