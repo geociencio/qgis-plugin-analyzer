@@ -80,6 +80,25 @@ class MetricsVisitor(BaseVisitor):
         self._check_type_hints(node)
         self.generic_visit(node)
 
+    def visit_AsyncFunctionDef(self, node: ast.AsyncFunctionDef) -> None:
+        """Analyzes async function definitions (identically to sync functions).
+
+        Args:
+            node: The async function definition AST node.
+        """
+        complexity = calculate_complexity(node)
+        if complexity > 15:
+            self._report_issue(
+                "HIGH_COMPLEXITY",
+                node.lineno,
+                f"Async function '{node.name}' is too complex (CC={complexity} > 15). Consider extracting methods.",
+                f"async def {node.name}...",
+            )
+
+        self._check_docstring_and_metrics(node)
+        self._check_type_hints(node)
+        self.generic_visit(node)
+
     def visit_ClassDef(self, node: ast.ClassDef) -> None:
         """Analyzes class definitions.
 
@@ -119,32 +138,36 @@ class MetricsVisitor(BaseVisitor):
         elif re.search(r"\n(Parameters|Returns|Raises|Yields)\n\s*-{3,}", doc):
             self.docstring_styles.append("NumPy")
 
-    def _check_docstring_and_metrics(self, node: ast.FunctionDef) -> None:
+    def _check_docstring_and_metrics(self, node: ast.AST) -> None:
         """Checks docstrings and collects metrics.
 
         Args:
-            node: The function definition AST node.
+            node: The function definition AST node (FunctionDef or AsyncFunctionDef).
         """
-        if not node.name.startswith("_") and node.name != "__init__":
-            doc = ast.get_docstring(node)
-            self.docstring_stats["total_public_items"] += 1
-            if doc:
-                self.docstring_stats["has_docstring"] += 1
-                self._check_docstring_style(doc)
-            else:
-                self._report_issue(
-                    "MISSING_DOCSTRING",
-                    node.lineno,
-                    f"Public function '{node.name}' is missing a docstring.",
-                    f"def {node.name}...",
-                )
+        if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)):
+            if not node.name.startswith("_") and node.name != "__init__":
+                doc = ast.get_docstring(node)
+                self.docstring_stats["total_public_items"] += 1
+                if doc:
+                    self.docstring_stats["has_docstring"] += 1
+                    self._check_docstring_style(doc)
+                else:
+                    self._report_issue(
+                        "MISSING_DOCSTRING",
+                        node.lineno,
+                        f"Public function '{node.name}' is missing a docstring.",
+                        f"def {node.name}...",
+                    )
 
-    def _check_type_hints(self, node: ast.FunctionDef) -> None:
+    def _check_type_hints(self, node: ast.AST) -> None:
         """Checks for type hints.
 
         Args:
-            node: The function definition AST node.
+            node: The function definition AST node (FunctionDef or AsyncFunctionDef).
         """
+        if not isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)):
+            return
+
         if node.name == "__init__":
             return
 

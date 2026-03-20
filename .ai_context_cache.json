@@ -515,13 +515,19 @@
     "timestamp": 1770089110.6751401
   },
   "src/analyzer/__init__.py": {
-    "hash": "e1c55d1f25642c2c2b8267228d262154388ac4c24915378ae123895cd5d62707",
+    "hash": "3173751b3f4e42effd6581531f9ab72bc3ed824b9215246fd192fef0c9fcd648",
+    "mtime": 1771126813.7309232,
+    "size": 1391,
     "data": {
       "path": "src/analyzer/__init__.py",
-      "lines": 20,
-      "file_size_kb": 1.1025390625,
-      "complexity": 0,
-      "imports": [],
+      "lines": 25,
+      "sloc": 5,
+      "loc": 5,
+      "file_size_kb": 1.3583984375,
+      "complexity": 2,
+      "imports": [
+        "importlib.metadata"
+      ],
       "classes": [],
       "functions": [],
       "docstrings": {
@@ -540,22 +546,37 @@
         "coverage": 100.0
       },
       "halstead": {
-        "vocabulary": 2,
-        "length": 2,
-        "volume": 0,
-        "difficulty": 0,
-        "effort": 0
+        "vocabulary": 5,
+        "length": 7,
+        "volume": 14,
+        "difficulty": 0.75,
+        "effort": 10.5
+      },
+      "maintenance_index": 76.46,
+      "syntax_error": false,
+      "unused_imports": [],
+      "qgis_compliance": {
+        "processing_framework": false,
+        "i18n_usage": {
+          "tr": 0,
+          "translate": 0,
+          "total_strings": 1
+        },
+        "gdal_import_style": "Modern",
+        "qt_transition": {
+          "pyqt5_imports": [],
+          "pyqt6_imports": []
+        },
+        "signals_slots": {
+          "legacy": 0,
+          "modern": 0
+        }
       },
       "antipatterns": [],
       "ast_security": [],
-      "patterns": {},
-      "unused_imports": [],
-      "maintenance_index": 100.0,
-      "syntax_error": false
+      "patterns": {}
     },
-    "timestamp": 1770082378.9874973,
-    "mtime": 1769987960.074361,
-    "size": 1129
+    "timestamp": 1774049778.8569086
   },
   "antigravity-framerepo/scaffold/ui/dialog_template.py": {
     "hash": "3c58627e2a4daf8d1d4594a22af586f24c1f1782fba3158bbf377f99ff59dd1c",
@@ -1837,12 +1858,16 @@
     "timestamp": 1771126008.8885627
   },
   "src/analyzer/utils/__init__.py": {
-    "hash": "ffbc6979ac955ce2a9f766bf7a79d1d87175b4a04d81bc906fb3397b26363bf7",
+    "hash": "2f91f0734827d771de7f508ef3bebb34b0163456b4e7815a11899a61cf9228db",
+    "mtime": 1771389248.7369273,
+    "size": 1142,
     "data": {
       "path": "src/analyzer/utils/__init__.py",
-      "lines": 41,
-      "file_size_kb": 1.0390625,
-      "complexity": 0,
+      "lines": 43,
+      "sloc": 40,
+      "loc": 40,
+      "file_size_kb": 1.115234375,
+      "complexity": 1,
       "imports": [
         "ast_utils.calculate_complexity",
         "ast_utils.calculate_module_complexity",
@@ -1850,6 +1875,7 @@
         "ast_utils.extract_classes_from_ast",
         "ast_utils.extract_functions_from_ast",
         "ast_utils.extract_imports_from_ast",
+        "ast_utils.extract_runtime_imports_from_ast",
         "config_utils._minimal_toml_load",
         "config_utils.load_profile_config",
         "logging_utils.logger",
@@ -1881,15 +1907,14 @@
         "coverage": 100.0
       },
       "halstead": {
-        "vocabulary": 20,
-        "length": 20,
+        "vocabulary": 21,
+        "length": 21,
         "volume": 0,
         "difficulty": 0,
         "effort": 0
       },
-      "antipatterns": [],
-      "ast_security": [],
-      "patterns": {},
+      "maintenance_index": 100.0,
+      "syntax_error": false,
       "unused_imports": [
         "ast_utils.calculate_complexity",
         "ast_utils.calculate_module_complexity",
@@ -1897,6 +1922,7 @@
         "ast_utils.extract_classes_from_ast",
         "ast_utils.extract_functions_from_ast",
         "ast_utils.extract_imports_from_ast",
+        "ast_utils.extract_runtime_imports_from_ast",
         "config_utils._minimal_toml_load",
         "config_utils.load_profile_config",
         "logging_utils.logger",
@@ -1910,12 +1936,28 @@
         "performance_utils.ProgressTracker",
         "performance_utils.timeout_manager"
       ],
-      "maintenance_index": 100.0,
-      "syntax_error": false
+      "qgis_compliance": {
+        "processing_framework": false,
+        "i18n_usage": {
+          "tr": 0,
+          "translate": 0,
+          "total_strings": 1
+        },
+        "gdal_import_style": "Modern",
+        "qt_transition": {
+          "pyqt5_imports": [],
+          "pyqt6_imports": []
+        },
+        "signals_slots": {
+          "legacy": 0,
+          "modern": 0
+        }
+      },
+      "antipatterns": [],
+      "ast_security": [],
+      "patterns": {}
     },
-    "timestamp": 1770089110.6941812,
-    "mtime": 1770084544.8789654,
-    "size": 1064
+    "timestamp": 1774049778.8579142
   },
   "src/analyzer/reporters/html_reporter.py": {
     "hash": "8fae0a923891c30441cc83d913b6c1246b1b244608a129d97a1a3aded2387390",
@@ -2093,16 +2135,16 @@
     "size": 14919
   },
   "src/analyzer/semantic.py": {
-    "hash": "13ffe914f330e48cb0ee6796801f314574c86bd087820c53651cd7680297c544",
-    "mtime": 1770616566.1053329,
-    "size": 8526,
+    "hash": "fb07ecf81223b0a1ad0744ac7897987433b6f9a4994155e687da3a0d92ab724e",
+    "mtime": 1771389177.8255424,
+    "size": 9897,
     "data": {
       "path": "src/analyzer/semantic.py",
-      "lines": 225,
-      "sloc": 111,
-      "loc": 111,
-      "file_size_kb": 8.326171875,
-      "complexity": 32,
+      "lines": 253,
+      "sloc": 123,
+      "loc": 123,
+      "file_size_kb": 9.6650390625,
+      "complexity": 37,
       "imports": [
         "pathlib",
         "xml.etree.ElementTree",
@@ -2152,17 +2194,17 @@
       "has_main": false,
       "type_hints": {
         "total_functions": 10,
-        "typed_functions": 9,
-        "coverage": 90.0
+        "typed_functions": 10,
+        "coverage": 100.0
       },
       "halstead": {
-        "vocabulary": 94,
-        "length": 313,
-        "volume": 1878,
-        "difficulty": 20.54,
-        "effort": 38580.15
+        "vocabulary": 102,
+        "length": 368,
+        "volume": 2208,
+        "difficulty": 23.86,
+        "effort": 52690.91
       },
-      "maintenance_index": 28.16,
+      "maintenance_index": 26.02,
       "syntax_error": false,
       "unused_imports": [],
       "qgis_compliance": {
@@ -2187,13 +2229,13 @@
         {
           "pattern": "except Exception:",
           "severity": "low",
-          "line": 207,
+          "line": 235,
           "description": "Too broad exception handler"
         }
       ],
       "patterns": {}
     },
-    "timestamp": 1771126008.8887403
+    "timestamp": 1774049778.8578649
   },
   "src/analyzer/transformers.py": {
     "hash": "f2e02862bcc1d4179509318be0e8c67784672a37b8bf10c992079530a5a58a10",
@@ -2286,16 +2328,16 @@
     "size": 7673
   },
   "src/analyzer/utils/ast_utils.py": {
-    "hash": "4ac192f30e70d288a8b702eefe439142e3b207fd82be427c632ea795259ba503",
-    "mtime": 1770616566.104333,
-    "size": 4554,
+    "hash": "24acd4ce57def43a7b40f3f0d2eb68381c15521732da6570bd0aec1bbe068292",
+    "mtime": 1771390002.9510243,
+    "size": 7673,
     "data": {
       "path": "src/analyzer/utils/ast_utils.py",
-      "lines": 151,
-      "sloc": 79,
-      "loc": 79,
-      "file_size_kb": 4.447265625,
-      "complexity": 28,
+      "lines": 241,
+      "sloc": 122,
+      "loc": 122,
+      "file_size_kb": 7.4931640625,
+      "complexity": 50,
       "imports": [
         "ast",
         "typing.Any",
@@ -2308,6 +2350,9 @@
         "extract_functions_from_ast(1 args)",
         "extract_classes_from_ast(1 args)",
         "extract_imports_from_ast(1 args)",
+        "_is_type_checking_guard(1 args)",
+        "_collect_import_name(1 args)",
+        "extract_runtime_imports_from_ast(1 args)",
         "calculate_module_complexity(1 args)",
         "check_main_guard(1 args)"
       ],
@@ -2319,6 +2364,9 @@
           "extract_functions_from_ast": true,
           "extract_classes_from_ast": true,
           "extract_imports_from_ast": true,
+          "_is_type_checking_guard": true,
+          "_collect_import_name": true,
+          "extract_runtime_imports_from_ast": true,
           "calculate_module_complexity": true,
           "check_main_guard": true
         }
@@ -2329,18 +2377,18 @@
       },
       "has_main": false,
       "type_hints": {
-        "total_functions": 6,
-        "typed_functions": 6,
+        "total_functions": 9,
+        "typed_functions": 9,
         "coverage": 100.0
       },
       "halstead": {
-        "vocabulary": 73,
-        "length": 234,
-        "volume": 1404,
-        "difficulty": 16.94,
-        "effort": 23788.74
+        "vocabulary": 84,
+        "length": 381,
+        "volume": 2286,
+        "difficulty": 25.42,
+        "effort": 58102.5
       },
-      "maintenance_index": 32.8,
+      "maintenance_index": 24.24,
       "syntax_error": false,
       "unused_imports": [],
       "qgis_compliance": {
@@ -2348,7 +2396,7 @@
         "i18n_usage": {
           "tr": 0,
           "translate": 0,
-          "total_strings": 1
+          "total_strings": 4
         },
         "gdal_import_style": "Modern",
         "qt_transition": {
@@ -2379,7 +2427,7 @@
       "ast_security": [],
       "patterns": {}
     },
-    "timestamp": 1771126008.8887975
+    "timestamp": 1774049778.857961
   },
   "src/analyzer/utils/logging_utils.py": {
     "hash": "574cfb5de178ead8f6a08db8ee3d9f45169f0a56ed30356c7159a0d891581d5e",
@@ -2433,16 +2481,16 @@
     "size": 1257
   },
   "src/analyzer/engine.py": {
-    "hash": "fa5ed574fc2f073206eec3770d6d0905bf00304a84b3ffbbf83c0356eaf636b7",
-    "mtime": 1770617032.6132014,
-    "size": 28052,
+    "hash": "b17c1f0abc6936e98f0948ffb2dc6eaf5a120d3dc97af73bbc020603081fe1aa",
+    "mtime": 1771128314.4825618,
+    "size": 31468,
     "data": {
       "path": "src/analyzer/engine.py",
-      "lines": 748,
-      "sloc": 530,
-      "loc": 530,
-      "file_size_kb": 27.39453125,
-      "complexity": 61,
+      "lines": 838,
+      "sloc": 595,
+      "loc": 595,
+      "file_size_kb": 30.73046875,
+      "complexity": 70,
       "imports": [
         "json",
         "math",
@@ -2500,7 +2548,7 @@
         "_get_security_penalty(2 args)",
         "__init__(4 args)",
         "run_ruff_audit(1 args)",
-        "_run_parallel_analysis(3 args)",
+        "_run_parallel_analysis(4 args)",
         "_run_qgis_specific_checks(4 args)",
         "_run_semantic_analysis(2 args)",
         "_build_analysis_results(7 args)",
@@ -2508,7 +2556,9 @@
         "_get_security_summary(3 args)",
         "_get_research_summary(2 args)",
         "_save_reports(2 args)",
-        "run(1 args)"
+        "run(2 args)",
+        "_filter_issues_by_scope(3 args)",
+        "_run_parallel_analysis_with_scope(4 args)"
       ],
       "docstrings": {
         "module": false,
@@ -2538,7 +2588,9 @@
           "_get_security_summary": true,
           "_get_research_summary": true,
           "_save_reports": true,
-          "run": true
+          "run": true,
+          "_filter_issues_by_scope": true,
+          "_run_parallel_analysis_with_scope": true
         }
       },
       "entry_point_info": {
@@ -2547,18 +2599,18 @@
       },
       "has_main": false,
       "type_hints": {
-        "total_functions": 18,
-        "typed_functions": 18,
+        "total_functions": 20,
+        "typed_functions": 20,
         "coverage": 100.0
       },
       "halstead": {
-        "vocabulary": 319,
-        "length": 1443,
-        "volume": 11544,
-        "difficulty": 37.67,
-        "effort": 434913.49
+        "vocabulary": 354,
+        "length": 1565,
+        "volume": 12520,
+        "difficulty": 36.56,
+        "effort": 457762.5
       },
-      "maintenance_index": 3.92,
+      "maintenance_index": 1.37,
       "syntax_error": false,
       "unused_imports": [],
       "qgis_compliance": {
@@ -2566,7 +2618,7 @@
         "i18n_usage": {
           "tr": 0,
           "translate": 0,
-          "total_strings": 63
+          "total_strings": 77
         },
         "gdal_import_style": "Modern",
         "qt_transition": {
@@ -2807,7 +2859,7 @@
           "type": "magic_number",
           "severity": "low",
           "message": "Magic number detected: 2",
-          "line": 546,
+          "line": 547,
           "value": 2
         },
         {
@@ -2828,35 +2880,35 @@
           "type": "magic_number",
           "severity": "low",
           "message": "Magic number detected: 0.5",
-          "line": 533,
+          "line": 534,
           "value": 0.5
         },
         {
           "type": "magic_number",
           "severity": "low",
           "message": "Magic number detected: 0.5",
-          "line": 533,
+          "line": 534,
           "value": 0.5
         },
         {
           "type": "magic_number",
           "severity": "low",
           "message": "Magic number detected: 100",
-          "line": 637,
+          "line": 638,
           "value": 100
         },
         {
           "type": "magic_number",
           "severity": "low",
           "message": "Magic number detected: 100",
-          "line": 641,
+          "line": 642,
           "value": 100
         },
         {
           "type": "magic_number",
           "severity": "low",
           "message": "Magic number detected: 100",
-          "line": 643,
+          "line": 644,
           "value": 100
         },
         {
@@ -2898,7 +2950,7 @@
       ],
       "patterns": {}
     },
-    "timestamp": 1771126008.876446
+    "timestamp": 1774049778.8576546
   },
   "src/analyzer/utils/config_utils.py": {
     "hash": "ade3725289e68a4f13a70c7445b6ac96c8a27a722a3c37a25c17e1e0fbf6dff1",
@@ -3642,16 +3694,16 @@
     "size": 9423
   },
   "src/analyzer/scanner.py": {
-    "hash": "843e4ea4177d98ac7c76f2aa760c2d3d39ac2cc6c89a84f9a09bbabc866f678f",
-    "mtime": 1770616387.9509056,
-    "size": 11411,
+    "hash": "688aae5c192c54d00e5f7511534bc5762df8b6a805c1c733cb9b07807fad99cf",
+    "mtime": 1771389231.0286255,
+    "size": 11823,
     "data": {
       "path": "src/analyzer/scanner.py",
-      "lines": 333,
-      "sloc": 214,
-      "loc": 214,
-      "file_size_kb": 11.1435546875,
-      "complexity": 22,
+      "lines": 341,
+      "sloc": 221,
+      "loc": 221,
+      "file_size_kb": 11.5458984375,
+      "complexity": 23,
       "imports": [
         "ast",
         "pathlib",
@@ -3667,6 +3719,7 @@
         "utils.ast_utils.extract_classes_from_ast",
         "utils.ast_utils.extract_functions_from_ast",
         "utils.ast_utils.extract_imports_from_ast",
+        "utils.ast_utils.extract_runtime_imports_from_ast",
         "visitors.QGISASTVisitor",
         "visitors.QGISSecurityVisitor"
       ],
@@ -3676,7 +3729,7 @@
       ],
       "functions": [
         "init_worker(1 args)",
-        "analyze_module_worker(4 args)",
+        "analyze_module_worker(5 args)",
         "_get_relative_path(2 args)",
         "_read_file_content(1 args)",
         "_parse_ast(3 args)",
@@ -3718,13 +3771,13 @@
         "coverage": 100.0
       },
       "halstead": {
-        "vocabulary": 159,
-        "length": 534,
-        "volume": 3738,
-        "difficulty": 21.59,
-        "effort": 80712.64
+        "vocabulary": 167,
+        "length": 557,
+        "volume": 3899,
+        "difficulty": 24.92,
+        "effort": 97154.36
       },
-      "maintenance_index": 21.19,
+      "maintenance_index": 20.62,
       "syntax_error": false,
       "unused_imports": [],
       "qgis_compliance": {
@@ -3732,7 +3785,7 @@
         "i18n_usage": {
           "tr": 0,
           "translate": 0,
-          "total_strings": 20
+          "total_strings": 25
         },
         "gdal_import_style": "Modern",
         "qt_transition": {
@@ -3749,21 +3802,21 @@
           "type": "magic_number",
           "severity": "low",
           "message": "Magic number detected: 1024",
-          "line": 211,
+          "line": 219,
           "value": 1024
         },
         {
           "type": "magic_number",
           "severity": "low",
           "message": "Magic number detected: 1024",
-          "line": 153,
+          "line": 159,
           "value": 1024
         },
         {
           "type": "magic_number",
           "severity": "low",
           "message": "Magic number detected: 20",
-          "line": 306,
+          "line": 314,
           "value": 20
         }
       ],
@@ -3771,19 +3824,19 @@
         {
           "pattern": "except Exception:",
           "severity": "low",
-          "line": 175,
+          "line": 183,
           "description": "Too broad exception handler"
         },
         {
           "pattern": "except Exception:",
           "severity": "low",
-          "line": 191,
+          "line": 199,
           "description": "Too broad exception handler"
         }
       ],
       "patterns": {}
     },
-    "timestamp": 1771126008.8886747
+    "timestamp": 1774049778.85778
   },
   ".ai-context/analyze_project_optfixed.py": {
     "hash": "fbb20ee557ceeb032d6d4ce9b2e4a72c6cab7d9a3117b807a512678c15ef6456",
@@ -5289,15 +5342,15 @@
     "size": 4691
   },
   "src/analyzer/commands.py": {
-    "hash": "ed18189547ba7f46402f0a1bcabc5828df42075ac5673d76cf59832895ddf8df",
-    "mtime": 1770616566.104333,
-    "size": 5613,
+    "hash": "5db7052616817f151dbd04f687435834bfdff1f8e51f0b3c4030bc6fd34642ad",
+    "mtime": 1771127145.3346786,
+    "size": 5666,
     "data": {
       "path": "src/analyzer/commands.py",
-      "lines": 171,
-      "sloc": 101,
-      "loc": 101,
-      "file_size_kb": 5.4814453125,
+      "lines": 172,
+      "sloc": 102,
+      "loc": 102,
+      "file_size_kb": 5.533203125,
       "complexity": 25,
       "imports": [
         "argparse",
@@ -5343,13 +5396,13 @@
         "coverage": 100.0
       },
       "halstead": {
-        "vocabulary": 105,
-        "length": 308,
-        "volume": 1848,
-        "difficulty": 12.38,
-        "effort": 22869.0
+        "vocabulary": 107,
+        "length": 314,
+        "volume": 1884,
+        "difficulty": 12.4,
+        "effort": 23357.76
       },
-      "maintenance_index": 30.04,
+      "maintenance_index": 29.89,
       "syntax_error": false,
       "unused_imports": [],
       "qgis_compliance": {
@@ -5357,7 +5410,7 @@
         "i18n_usage": {
           "tr": 0,
           "translate": 0,
-          "total_strings": 41
+          "total_strings": 43
         },
         "gdal_import_style": "Modern",
         "qt_transition": {
@@ -5374,14 +5427,14 @@
           "type": "magic_number",
           "severity": "low",
           "message": "Magic number detected: 30",
-          "line": 114,
+          "line": 115,
           "value": 30
         }
       ],
       "ast_security": [],
       "patterns": {}
     },
-    "timestamp": 1771126008.8763244
+    "timestamp": 1774049778.8572946
   },
   "src/analyzer/secrets.py": {
     "hash": "325fa14521602e502c8ba29e0f6579dceb90d44f2a584ffae72cc39bf443dc01",
@@ -6009,16 +6062,16 @@
     "timestamp": 1771126008.875977
   },
   "src/analyzer/cli/commands/analyze.py": {
-    "hash": "19ee408a1f45d5874a94c08cfee177acf737ae203a14f84cf77488a75ea43a1b",
-    "mtime": 1770615054.0701895,
-    "size": 1298,
+    "hash": "45d8be608ae5b5e70b7f6e8b6ddf5f6da242beedf8b6360e8cc32f93cf43e370",
+    "mtime": 1771128287.7122593,
+    "size": 2067,
     "data": {
       "path": "src/analyzer/cli/commands/analyze.py",
-      "lines": 48,
-      "sloc": 22,
-      "loc": 22,
-      "file_size_kb": 1.267578125,
-      "complexity": 1,
+      "lines": 69,
+      "sloc": 39,
+      "loc": 39,
+      "file_size_kb": 2.0185546875,
+      "complexity": 3,
       "imports": [
         "argparse",
         "commands.handle_analyze",
@@ -6056,13 +6109,13 @@
         "coverage": 100.0
       },
       "halstead": {
-        "vocabulary": 27,
-        "length": 35,
-        "volume": 140,
-        "difficulty": 1.2,
-        "effort": 168.0
+        "vocabulary": 41,
+        "length": 62,
+        "volume": 310,
+        "difficulty": 3.75,
+        "effort": 1162.5
       },
-      "maintenance_index": 55.55,
+      "maintenance_index": 47.44,
       "syntax_error": false,
       "unused_imports": [],
       "qgis_compliance": {
@@ -6070,7 +6123,7 @@
         "i18n_usage": {
           "tr": 0,
           "translate": 0,
-          "total_strings": 4
+          "total_strings": 12
         },
         "gdal_import_style": "Modern",
         "qt_transition": {
@@ -6086,7 +6139,7 @@
       "ast_security": [],
       "patterns": {}
     },
-    "timestamp": 1771126008.8760862
+    "timestamp": 1774049778.857136
   },
   "src/analyzer/cli/commands/init.py": {
     "hash": "eb353d8b2f31945968f32561f8b3394fa1f80790183a34e0069c19e5beccfa81",
@@ -6653,16 +6706,16 @@
     "timestamp": 1771126008.8888516
   },
   "src/analyzer/visitors/base.py": {
-    "hash": "979c1db0e1a94f55b4ac376d919f7c8d4095eb05d9ecc0eb3344fe4e1d31c062",
-    "mtime": 1770616639.4354334,
-    "size": 3756,
+    "hash": "b9e0ef3f9d16224d2a9d89929aa158246fa6c715cfdd316797c05918eaed63b1",
+    "mtime": 1771127351.1034768,
+    "size": 5487,
     "data": {
       "path": "src/analyzer/visitors/base.py",
-      "lines": 108,
-      "sloc": 54,
-      "loc": 54,
-      "file_size_kb": 3.66796875,
-      "complexity": 8,
+      "lines": 159,
+      "sloc": 96,
+      "loc": 96,
+      "file_size_kb": 5.3583984375,
+      "complexity": 13,
       "imports": [
         "ast",
         "typing.Any",
@@ -6676,7 +6729,7 @@
         "BaseVisitor(ast)"
       ],
       "functions": [
-        "__init__(3 args)",
+        "__init__(4 args)",
         "generic_visit(2 args)",
         "enter_node(3 args)",
         "exit_node(3 args)",
@@ -6710,13 +6763,13 @@
         "coverage": 100.0
       },
       "halstead": {
-        "vocabulary": 56,
-        "length": 147,
-        "volume": 735,
-        "difficulty": 9.14,
-        "effort": 6720.0
+        "vocabulary": 87,
+        "length": 208,
+        "volume": 1248,
+        "difficulty": 8.81,
+        "effort": 10995.04
       },
-      "maintenance_index": 41.06,
+      "maintenance_index": 33.33,
       "syntax_error": false,
       "unused_imports": [],
       "qgis_compliance": {
@@ -6724,7 +6777,7 @@
         "i18n_usage": {
           "tr": 0,
           "translate": 0,
-          "total_strings": 9
+          "total_strings": 14
         },
         "gdal_import_style": "Modern",
         "qt_transition": {
@@ -6740,19 +6793,19 @@
       "ast_security": [],
       "patterns": {}
     },
-    "timestamp": 1771126008.8889093
+    "timestamp": 1774049778.858005
   },
   "src/analyzer/visitors/composite_visitor.py": {
-    "hash": "9f4f92d3088abf4f87678de657d0ad81f767c46b73dcabd0873a8d38f6189856",
-    "mtime": 1770616566.104333,
-    "size": 4666,
+    "hash": "1c3a232d28aa8cb323ce30ec241b076a5eeb037995e7e62ac4f06ae9ad7d34ca",
+    "mtime": 1771127387.9825351,
+    "size": 5153,
     "data": {
       "path": "src/analyzer/visitors/composite_visitor.py",
-      "lines": 124,
-      "sloc": 72,
-      "loc": 72,
-      "file_size_kb": 4.556640625,
-      "complexity": 6,
+      "lines": 136,
+      "sloc": 80,
+      "loc": 80,
+      "file_size_kb": 5.0322265625,
+      "complexity": 12,
       "imports": [
         "ast",
         "typing.Any",
@@ -6769,7 +6822,7 @@
         "CompositeVisitor(ast)"
       ],
       "functions": [
-        "__init__(3 args)",
+        "__init__(4 args)",
         "docstring_styles(1 args)",
         "type_hint_stats(1 args)",
         "docstring_stats(1 args)",
@@ -6801,13 +6854,13 @@
         "coverage": 100.0
       },
       "halstead": {
-        "vocabulary": 42,
-        "length": 141,
-        "volume": 705,
-        "difficulty": 10.67,
-        "effort": 7520.0
+        "vocabulary": 49,
+        "length": 174,
+        "volume": 870,
+        "difficulty": 12.5,
+        "effort": 10875.0
       },
-      "maintenance_index": 38.73,
+      "maintenance_index": 36.29,
       "syntax_error": false,
       "unused_imports": [],
       "qgis_compliance": {
@@ -6815,7 +6868,7 @@
         "i18n_usage": {
           "tr": 0,
           "translate": 0,
-          "total_strings": 0
+          "total_strings": 5
         },
         "gdal_import_style": "Modern",
         "qt_transition": {
@@ -6831,7 +6884,7 @@
       "ast_security": [],
       "patterns": {}
     },
-    "timestamp": 1771126008.8889616
+    "timestamp": 1774049778.8580697
   },
   "src/analyzer/visitors/imports_visitor.py": {
     "hash": "8e9b614e2c9cc60eda32e5f2fa0db33beb01f3619731f358363da974cd2011b1",
@@ -6954,15 +7007,15 @@
     "size": 1675
   },
   "src/analyzer/visitors/metrics_visitor.py": {
-    "hash": "5583d87996534f2aa7385b27d460cc945b2bf4692aa0936c61c7198ba38e7225",
-    "mtime": 1770616247.130465,
-    "size": 5452,
+    "hash": "8be4d8ad3ca7f05d66984fd6ba4364ec8de8b09e1078b9bb09bb13be53953566",
+    "mtime": 1771127260.8247542,
+    "size": 5553,
     "data": {
       "path": "src/analyzer/visitors/metrics_visitor.py",
-      "lines": 159,
-      "sloc": 96,
-      "loc": 96,
-      "file_size_kb": 5.32421875,
+      "lines": 165,
+      "sloc": 101,
+      "loc": 101,
+      "file_size_kb": 5.4228515625,
       "complexity": 19,
       "imports": [
         "ast",
@@ -6978,7 +7031,7 @@
         "MetricsVisitor(BaseVisitor)"
       ],
       "functions": [
-        "__init__(3 args)",
+        "__init__(4 args)",
         "visit_Module(2 args)",
         "visit_FunctionDef(2 args)",
         "visit_ClassDef(2 args)",
@@ -7012,13 +7065,13 @@
         "coverage": 100.0
       },
       "halstead": {
-        "vocabulary": 70,
-        "length": 238,
-        "volume": 1428,
-        "difficulty": 14.39,
-        "effort": 20542.13
+        "vocabulary": 72,
+        "length": 241,
+        "volume": 1446,
+        "difficulty": 14.14,
+        "effort": 20450.57
       },
-      "maintenance_index": 32.11,
+      "maintenance_index": 31.59,
       "syntax_error": false,
       "unused_imports": [],
       "qgis_compliance": {
@@ -7043,26 +7096,26 @@
           "type": "magic_number",
           "severity": "low",
           "message": "Magic number detected: 15",
-          "line": 65,
+          "line": 71,
           "value": 15
         }
       ],
       "ast_security": [],
       "patterns": {}
     },
-    "timestamp": 1771126008.8890154
+    "timestamp": 1774049778.7722394
   },
   "src/analyzer/visitors/standards_visitor.py": {
-    "hash": "6670d41785c3bf1c97aa5423d99b6bd8fe4f19b52ef35bee04679518eadeae41",
-    "mtime": 1771123742.9107857,
-    "size": 13497,
+    "hash": "f2acd3c58670dc9e26d6926651302a4677278bd35ffdb0514ca8f6087c163ba1",
+    "mtime": 1771128289.7324471,
+    "size": 14523,
     "data": {
       "path": "src/analyzer/visitors/standards_visitor.py",
-      "lines": 385,
-      "sloc": 253,
-      "loc": 253,
-      "file_size_kb": 13.1806640625,
-      "complexity": 90,
+      "lines": 429,
+      "sloc": 291,
+      "loc": 291,
+      "file_size_kb": 14.1826171875,
+      "complexity": 94,
       "imports": [
         "ast",
         "typing.Any",
@@ -7077,7 +7130,7 @@
         "StandardsVisitor(BaseVisitor)"
       ],
       "functions": [
-        "__init__(3 args)",
+        "__init__(4 args)",
         "visit_ClassDef(2 args)",
         "leave_ClassDef(2 args)",
         "visit_FunctionDef(2 args)",
@@ -7131,13 +7184,13 @@
         "coverage": 100.0
       },
       "halstead": {
-        "vocabulary": 165,
-        "length": 614,
-        "volume": 4298,
-        "difficulty": 22.16,
-        "effort": 95239.13
+        "vocabulary": 187,
+        "length": 660,
+        "volume": 4620,
+        "difficulty": 22.54,
+        "effort": 104151.45
       },
-      "maintenance_index": 10.03,
+      "maintenance_index": 7.95,
       "syntax_error": false,
       "unused_imports": [],
       "qgis_compliance": {
@@ -7145,7 +7198,7 @@
         "i18n_usage": {
           "tr": 0,
           "translate": 0,
-          "total_strings": 47
+          "total_strings": 68
         },
         "gdal_import_style": "Modern",
         "qt_transition": {
@@ -7161,34 +7214,44 @@
         {
           "type": "magic_number",
           "severity": "low",
+          "message": "Magic number detected: 5",
+          "line": 293,
+          "value": 5
+        },
+        {
+          "type": "magic_number",
+          "severity": "low",
           "message": "Magic number detected: 3",
-          "line": 259,
+          "line": 280,
           "value": 3
         }
       ],
       "ast_security": [],
       "patterns": {}
     },
-    "timestamp": 1771126008.8386972
+    "timestamp": 1774049778.7725637
   },
   "tests/test_semantic.py": {
-    "hash": "df75996b1a669f0e9489f16ca2b48b3080f67a9e1c0e121cd149a99d28696051",
-    "mtime": 1767373226.4949248,
-    "size": 2541,
+    "hash": "d36b870fcfba16dcb11a63eb95b126b1ba555b617a607c6470c6dea23f717d72",
+    "mtime": 1771389427.457237,
+    "size": 4578,
     "data": {
       "path": "tests/test_semantic.py",
-      "lines": 75,
-      "sloc": 45,
-      "loc": 45,
-      "file_size_kb": 2.4814453125,
+      "lines": 127,
+      "sloc": 83,
+      "loc": 83,
+      "file_size_kb": 4.470703125,
       "complexity": 4,
       "imports": [
+        "ast",
         "pathlib",
         "shutil",
         "tempfile",
         "unittest",
         "analyzer.semantic.DependencyGraph",
-        "analyzer.semantic.ResourceValidator"
+        "analyzer.semantic.ResourceValidator",
+        "analyzer.utils.ast_utils.extract_runtime_imports_from_ast",
+        "shutil"
       ],
       "classes": [
         "TestSemanticAnalysis(unittest)"
@@ -7198,7 +7261,10 @@
         "tearDown(1 args)",
         "test_cycle_detection(1 args)",
         "test_coupling_metrics(1 args)",
-        "test_resource_validator(1 args)"
+        "test_resource_validator(1 args)",
+        "test_cycle_deduplication(1 args)",
+        "test_resolve_nonexistent_file(1 args)",
+        "test_type_checking_imports_excluded(1 args)"
       ],
       "docstrings": {
         "module": false,
@@ -7210,7 +7276,10 @@
           "tearDown": true,
           "test_cycle_detection": false,
           "test_coupling_metrics": false,
-          "test_resource_validator": false
+          "test_resource_validator": false,
+          "test_cycle_deduplication": true,
+          "test_resolve_nonexistent_file": true,
+          "test_type_checking_imports_excluded": true
         }
       },
       "entry_point_info": {
@@ -7219,18 +7288,18 @@
       },
       "has_main": true,
       "type_hints": {
-        "total_functions": 5,
+        "total_functions": 8,
         "typed_functions": 2,
-        "coverage": 40.0
+        "coverage": 25.0
       },
       "halstead": {
-        "vocabulary": 44,
-        "length": 112,
-        "volume": 560,
-        "difficulty": 9.46,
-        "effort": 5297.3
+        "vocabulary": 65,
+        "length": 176,
+        "volume": 1056,
+        "difficulty": 11.16,
+        "effort": 11782.74
       },
-      "maintenance_index": 44.16,
+      "maintenance_index": 36.43,
       "syntax_error": false,
       "unused_imports": [],
       "qgis_compliance": {
@@ -7238,7 +7307,7 @@
         "i18n_usage": {
           "tr": 0,
           "translate": 0,
-          "total_strings": 0
+          "total_strings": 3
         },
         "gdal_import_style": "Modern",
         "qt_transition": {
@@ -7255,21 +7324,21 @@
           "type": "magic_number",
           "severity": "low",
           "message": "Magic number detected: 2",
-          "line": 46,
+          "line": 48,
           "value": 2
         },
         {
           "type": "magic_number",
           "severity": "low",
           "message": "Magic number detected: 2",
-          "line": 47,
+          "line": 49,
           "value": 2
         }
       ],
       "ast_security": [],
       "patterns": {}
     },
-    "timestamp": 1771126008.7879367
+    "timestamp": 1774049778.772663
   },
   "tests/test_validators.py": {
     "hash": "c9964bb81ac54ce6a52cb254a9ff9270660e07321e74f30c0270899c9831dc42",
@@ -8759,15 +8828,15 @@
     "timestamp": 1771126008.8762534
   },
   "src/analyzer/visitors/qgis_rules_visitor.py": {
-    "hash": "fcd0cff931de8e6ad2efc590a578345560d6fa114bc6791801e97fd7eb88d700",
-    "mtime": 1770616639.4344335,
-    "size": 3443,
+    "hash": "8aa6f8845e980870d36d136acd772533f3c847239f5b93c1f273c47713ce1bb9",
+    "mtime": 1771127280.68227,
+    "size": 3763,
     "data": {
       "path": "src/analyzer/visitors/qgis_rules_visitor.py",
-      "lines": 95,
-      "sloc": 65,
-      "loc": 65,
-      "file_size_kb": 3.3623046875,
+      "lines": 107,
+      "sloc": 70,
+      "loc": 70,
+      "file_size_kb": 3.6748046875,
       "complexity": 15,
       "imports": [
         "ast",
@@ -8781,7 +8850,7 @@
         "QGISRulesVisitor(BaseVisitor)"
       ],
       "functions": [
-        "__init__(3 args)",
+        "__init__(4 args)",
         "visit_Import(2 args)",
         "visit_ImportFrom(2 args)",
         "visit_ClassDef(2 args)",
@@ -8795,7 +8864,7 @@
           "QGISRulesVisitor": true
         },
         "functions": {
-          "__init__": false,
+          "__init__": true,
           "visit_Import": true,
           "visit_ImportFrom": true,
           "visit_ClassDef": true,
@@ -8815,13 +8884,13 @@
         "coverage": 100.0
       },
       "halstead": {
-        "vocabulary": 64,
-        "length": 164,
-        "volume": 984,
-        "difficulty": 12.59,
-        "effort": 12391.11
+        "vocabulary": 67,
+        "length": 168,
+        "volume": 1008,
+        "difficulty": 12.28,
+        "effort": 12378.95
       },
-      "maintenance_index": 37.48,
+      "maintenance_index": 36.7,
       "syntax_error": false,
       "unused_imports": [],
       "qgis_compliance": {
@@ -8845,18 +8914,18 @@
       "ast_security": [],
       "patterns": {}
     },
-    "timestamp": 1771126008.8890657
+    "timestamp": 1774049778.7724342
   },
   "src/analyzer/visitors/safety_visitor.py": {
-    "hash": "4c55d98fc99ab46b078b972e054be9cf577f6855e4671a2480ba963c0794e6d3",
-    "mtime": 1770617028.5661128,
-    "size": 4846,
+    "hash": "aac61c4ba76b673f0a4739a977b4f8a3b29c5bdc6476cfd2592f0fc6360de0f2",
+    "mtime": 1771127287.2699485,
+    "size": 5162,
     "data": {
       "path": "src/analyzer/visitors/safety_visitor.py",
-      "lines": 116,
-      "sloc": 71,
-      "loc": 71,
-      "file_size_kb": 4.732421875,
+      "lines": 128,
+      "sloc": 76,
+      "loc": 76,
+      "file_size_kb": 5.041015625,
       "complexity": 22,
       "imports": [
         "ast",
@@ -8871,7 +8940,7 @@
         "SafetyVisitor(BaseVisitor)"
       ],
       "functions": [
-        "__init__(3 args)",
+        "__init__(4 args)",
         "visit_FunctionDef(2 args)",
         "leave_FunctionDef(2 args)",
         "visit_Call(2 args)",
@@ -8887,7 +8956,7 @@
           "SafetyVisitor": true
         },
         "functions": {
-          "__init__": false,
+          "__init__": true,
           "visit_FunctionDef": true,
           "leave_FunctionDef": true,
           "visit_Call": true,
@@ -8909,13 +8978,13 @@
         "coverage": 100.0
       },
       "halstead": {
-        "vocabulary": 74,
-        "length": 219,
-        "volume": 1314,
-        "difficulty": 15.71,
-        "effort": 20648.57
+        "vocabulary": 77,
+        "length": 223,
+        "volume": 1338,
+        "difficulty": 15.33,
+        "effort": 20516.0
       },
-      "maintenance_index": 34.82,
+      "maintenance_index": 34.12,
       "syntax_error": false,
       "unused_imports": [],
       "qgis_compliance": {
@@ -8939,6 +9008,90 @@
       "ast_security": [],
       "patterns": {}
     },
-    "timestamp": 1771126008.8891125
+    "timestamp": 1774049778.7724996
+  },
+  "tests/test_i18n_heuristics.py": {
+    "hash": "d48293f6df8f5a163585f23f57e5c3a66d0f48950e970a13cf7232b55bee2a6f",
+    "mtime": 1771128314.479562,
+    "size": 1848,
+    "data": {
+      "path": "tests/test_i18n_heuristics.py",
+      "lines": 45,
+      "sloc": 33,
+      "loc": 33,
+      "file_size_kb": 1.8046875,
+      "complexity": 6,
+      "imports": [
+        "ast",
+        "unittest",
+        "src.analyzer.visitors.standards_visitor.StandardsVisitor"
+      ],
+      "classes": [
+        "TestI18nHeuristics(unittest)"
+      ],
+      "functions": [
+        "setUp(1 args)",
+        "analyze_code(2 args)",
+        "test_should_ignore_short_technical_strings(1 args)",
+        "test_should_ignore_dict_keys_and_values(1 args)",
+        "test_should_report_user_facing_strings(1 args)",
+        "test_should_ignore_snake_case_and_technical_patterns(1 args)"
+      ],
+      "docstrings": {
+        "module": false,
+        "classes": {
+          "TestI18nHeuristics": false
+        },
+        "functions": {
+          "setUp": false,
+          "analyze_code": false,
+          "test_should_ignore_short_technical_strings": false,
+          "test_should_ignore_dict_keys_and_values": false,
+          "test_should_report_user_facing_strings": false,
+          "test_should_ignore_snake_case_and_technical_patterns": false
+        }
+      },
+      "entry_point_info": {
+        "is_entry_point": true,
+        "type": "main_guard"
+      },
+      "has_main": true,
+      "type_hints": {
+        "total_functions": 6,
+        "typed_functions": 0,
+        "coverage": 0.0
+      },
+      "halstead": {
+        "vocabulary": 31,
+        "length": 83,
+        "volume": 332,
+        "difficulty": 6.73,
+        "effort": 2234.62
+      },
+      "maintenance_index": 48.42,
+      "syntax_error": false,
+      "unused_imports": [],
+      "qgis_compliance": {
+        "processing_framework": false,
+        "i18n_usage": {
+          "tr": 0,
+          "translate": 0,
+          "total_strings": 7
+        },
+        "gdal_import_style": "Modern",
+        "qt_transition": {
+          "pyqt5_imports": [],
+          "pyqt6_imports": []
+        },
+        "signals_slots": {
+          "legacy": 0,
+          "modern": 0
+        }
+      },
+      "antipatterns": [],
+      "ast_security": [],
+      "patterns": {}
+    },
+    "timestamp": 1774049778.7726204
   }
 }

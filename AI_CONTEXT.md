@@ -93,9 +93,9 @@ Motor de análisis estático y auto-fix para plugins de QGIS (PyQGIS). Combina r
 
 
 ## 📈 COMPLEXITY AND METRICS
-- **Total Modules**: 67
-- **Source Lines (SLOC)**: 2,929
-- **Total Physical Lines**: 11,700
+- **Total Modules**: 68
+- **Source Lines (SLOC)**: 3,293
+- **Total Physical Lines**: 12,179
 - **Functions**: 0
 - **Classes**: 0
 - **Average Complexity**: 0.0
@@ -118,8 +118,8 @@ Motor de análisis estático y auto-fix para plugins de QGIS (PyQGIS). Combina r
 ## 🔗 PRIMARY DEPENDENCIES
 ### Third Party (most frequent):
 - `commands` (15 imports)
-- `utils` (14 imports)
-- `ast_utils` (6 imports)
+- `utils` (15 imports)
+- `ast_utils` (7 imports)
 - `path_utils` (5 imports)
 - `transformers` (5 imports)
 - `reporters` (4 imports)
@@ -134,23 +134,20 @@ Motor de análisis estático y auto-fix para plugins de QGIS (PyQGIS). Combina r
 - `logging_utils` (2 imports)
 
 ## ⚠️ UNUSED IMPORTS
+- **src/analyzer/cli/commands/__init__.py**: analyze.AnalyzeCommand, fix.FixCommand, graph.GraphCommand, init.InitCommand, list_rules.ListRulesCommand
 - **src/analyzer/models/__init__.py**: analysis_models.ModuleAnalysis, analysis_models.ProjectContext
 - **src/analyzer/reporters/__init__.py**: html_reporter.generate_html_report, markdown_reporter.generate_markdown_summary, markdown_reporter.save_json_context
 - **src/analyzer/rules/__init__.py**: modernization_rules.get_modernization_rules, qgis_rules.I18N_METHODS, qgis_rules.get_qgis_audit_rules
-- **src/analyzer/utils/__init__.py**: ast_utils.calculate_complexity, ast_utils.calculate_module_complexity, ast_utils.check_main_guard, ast_utils.extract_classes_from_ast, ast_utils.extract_functions_from_ast
-- **src/analyzer/cli/commands/__init__.py**: analyze.AnalyzeCommand, fix.FixCommand, graph.GraphCommand, init.InitCommand, list_rules.ListRulesCommand
+- **src/analyzer/visitors/__init__.py**: qgis_rules_visitor.QGISRulesVisitor, safety_visitor.SafetyVisitor
 
 ## 🕸️  DEPENDENCY STRUCTURE
-- **Nodes**: 67
-- **Edges**: 17
+- **Nodes**: 68
+- **Edges**: 18
 - **Density**: 0.004
 
 ## 🕸️ DEPENDENCY DIAGRAM (Conceptual)
 ```mermaid
 graph TD
-    test_semantic --> py
-    test_validators --> py
-    test_vulnerability --> py
     test_advanced_features --> py
     test_analyzer --> py
     test_fixer --> py
@@ -160,47 +157,50 @@ graph TD
     test_scanner --> py
     test_scoring --> py
     test_security --> py
+    test_validators --> py
+    test_vulnerability --> py
+    test_semantic --> py
     classDef module fill:#f9f,stroke:#333,stroke-width:2px;
-    test_semantic
-    class test_semantic module;
-    skill_sync
-    class skill_sync module;
-    test_safety
-    class test_safety module;
     test_high_complexity
     class test_high_complexity module;
-    test_i18n_standards
-    class test_i18n_standards module;
     analyze_project_optfixed
     class analyze_project_optfixed module;
-    test_analyzer
-    class test_analyzer module;
-    test_vulnerability
-    class test_vulnerability module;
-    test_fixer
-    class test_fixer module;
-    test_scanner
-    class test_scanner module;
-    fix
-    class fix module;
-    test_advanced_features
-    class test_advanced_features module;
     ai_workflow
     class ai_workflow module;
-    init
-    class init module;
-    test_validators
-    class test_validators module;
-    test_security
-    class test_security module;
-    test_scoring
-    class test_scoring module;
-    init
-    class init module;
     context_manager
     class context_manager module;
+    test_scoring
+    class test_scoring module;
+    run_tests_in_qgis
+    class run_tests_in_qgis module;
+    test_security
+    class test_security module;
     init
     class init module;
+    test_safety
+    class test_safety module;
+    skill_sync
+    class skill_sync module;
+    test_scanner
+    class test_scanner module;
+    test_i18n_standards
+    class test_i18n_standards module;
+    test_analyzer
+    class test_analyzer module;
+    test_fixer
+    class test_fixer module;
+    app
+    class app module;
+    init
+    class init module;
+    test_vulnerability
+    class test_vulnerability module;
+    test_semantic
+    class test_semantic module;
+    test_advanced_features
+    class test_advanced_features module;
+    test_validators
+    class test_validators module;
 ```
 
 ## 💡 OPTIMIZATION RECOMMENDATIONS
@@ -219,13 +219,11 @@ graph TD
 
 ## 🔄 GIT AND EVOLUTION
 ### Top Hotspots:
-- `src/analyzer/engine.py` (27 commits)
-- `src/analyzer/scanner.py` (22 commits)
+- `src/analyzer/engine.py` (28 commits)
+- `src/analyzer/scanner.py` (24 commits)
 - `src/analyzer/cli.py` (18 commits)
 - `src/analyzer/utils.py` (14 commits)
 - `src/analyzer/validators.py` (10 commits)
-### Recent Churn (30 days):
-- Total lines changed: 30766
 
 ## 🔑 PROJECT KEYWORDS
 - **Technologies**: .json, .md, .py, .yaml, .0, .sample, .log, .1

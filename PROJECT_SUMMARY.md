@@ -1,16 +1,16 @@
 # PROJECT SUMMARY - qgis_plugin_analyzer
-Analysis Date: 2026-02-14 22:26:49
+Analysis Date: 2026-03-20 19:36:18
 Analyzer Version: 3.1.1 (Ai-Context-Core)
 
 ## 📊 KEY METRICS
-- **Quality Score**: 69.3/100
-- **Source Lines (SLOC)**: 2,929
-- **Total Physical Lines**: 11,700
-- **Maintainability**: 43.4
-- **Test Coverage**: 13 test files
+- **Quality Score**: 66.6/100
+- **Source Lines (SLOC)**: 3,293
+- **Total Physical Lines**: 12,179
+- **Maintainability**: 42.4
+- **Test Coverage**: 14 test files
 
 ## 📁 STRUCTURE
-**Total Modules**: 67
+**Total Modules**: 68
 
 ```tree
 ./
@@ -93,10 +93,10 @@ Analyzer Version: 3.1.1 (Ai-Context-Core)
         test_analyzer.py
         test_fixer.py
         test_high_complexity.py
+        test_i18n_heuristics.py
         test_i18n_standards.py
         test_safety.py
-        test_scanner.py
-        ... (+4 more)
+        ... (+5 more)
     english_test_results/
         PROJECT_SUMMARY.md
         project_context.json
@@ -114,7 +114,7 @@ Analyzer Version: 3.1.1 (Ai-Context-Core)
                 RELEASE_NOTES_v0.5.0.md
                 RELEASE_NOTES_v0.5.1.md
                 RELEASE_NOTES_v0.6.0.md
-                ... (+10 more)
+                ... (+11 more)
             github/
                 GITHUB_RELEASE_v0.6.1.md
                 GITHUB_RELEASE_v0.6.2.md
@@ -125,14 +125,14 @@ Analyzer Version: 3.1.1 (Ai-Context-Core)
                 GITHUB_RELEASE_v1.2.0.md
                 GITHUB_RELEASE_v1.4.0.md
         research/
+            CLI_COMMANDS_ROADMAP.md
             COMPETITIVE_ANALYSIS.md
             FUTURE_ROADMAP.md
             PYPI_STANDARDS_RESEARCH.md
             PYTHON_QUALITY_RESEARCH.md
             QWEN.md
             ROADMAP_IMPROVEMENTS.md
-            qgis_analyzer_issues.md
-            release-package.md
+            ... (+3 more)
         development/
             COMMIT_GUIDELINES.md
             DEVELOPMENT_LOG.md
@@ -147,6 +147,8 @@ Analyzer Version: 3.1.1 (Ai-Context-Core)
         dev_sessions/
             2026-02-02_refactor_architecture.md
             2026-02-03_repository_validation.md
+            session_2026-02-14_task.md
+            session_2026-02-14_walkthrough.md
     debug_summary/
     scripts/
         run_tests_in_qgis.py
@@ -169,15 +171,15 @@ Analyzer Version: 3.1.1 (Ai-Context-Core)
         analyzer.log
         project_context.json
     dist/
-        qgis_plugin_analyzer-1.8.0b1-py3-none-any.whl
-        qgis_plugin_analyzer-1.8.0b1.tar.gz
+        qgis_plugin_analyzer-1.10.0-py3-none-any.whl
+        qgis_plugin_analyzer-1.10.0.tar.gz
 ```
 
 ## 🚨 CRITICAL ISSUES
 ### 🔒 Security Issues:
 - **.agent/scripts/skill_sync.py**: 2 issues (Max: HIGH)
 - **.ai-context/analyze_project_optfixed.py**: 24 issues (Max: HIGH)
-- **src/analyzer/fixer.py**: 2 issues (Max: HIGH)
+- **src/analyzer/cli/app.py**: 1 issues (Max: HIGH)
 
 ## 💡 MAIN RECOMMENDATIONS
 ### .ai-context/ai_workflow.py
@@ -236,19 +238,14 @@ Motor de análisis estático y auto-fix para plugins de QGIS (PyQGIS). Combina r
 
 
 ## 🔄 GIT ANALYSIS
-### Code Churn (last 30 days)
-- **Files Changed**: 172
-- **Additions**: +25241
-- **Deletions**: -5525
-- **Total Churn**: 30766
 
 ### 🔥 Hotspots
-- `src/analyzer/engine.py`: 27 commits
-- `src/analyzer/scanner.py`: 22 commits
+- `src/analyzer/engine.py`: 28 commits
+- `src/analyzer/scanner.py`: 24 commits
 - `src/analyzer/cli.py`: 18 commits
 - `src/analyzer/utils.py`: 14 commits
 - `src/analyzer/validators.py`: 10 commits
 
 ## 📈 COMPLEXITY DISTRIBUTION
-- **Average Complexity**: 19.13
+- **Average Complexity**: 19.78
 - **Max Complexity**: 397
