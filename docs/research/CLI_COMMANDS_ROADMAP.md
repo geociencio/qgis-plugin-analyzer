@@ -1,60 +1,60 @@
-# QGIS Plugin Analyzer - Roadmap de Comandos CLI
+# QGIS Plugin Analyzer - CLI Commands Roadmap
 
-Este documento define la estrategia de implementación de nuevos comandos y subcomandos para `qgis-analyzer`, organizada en fases basadas en valor/esfuerzo.
+This document defines the implementation strategy for new commands and subcommands for `qgis-analyzer`, organized into phases based on value/effort.
 
 ---
 
-## 📊 Matriz de Priorización
+## 📊 Prioritization Matrix
 
-| Comando/Subcomando | Valor | Esfuerzo | Fase | Prioridad |
+| Command/Subcommand | Value | Effort | Phase | Priority |
 |-------------------|-------|----------|------|-----------|
-| `analyze` subcomandos | ✅ Alto | ✅ Bajo | **Completado** | - |
-| `fix` subcomandos | 🔥 Alto | 🟢 Bajo | 1 | P0 |
-| `docs validate` | 🔥 Alto | 🟢 Bajo | 1 | P0 |
-| `search deprecated` | 🔥 Alto | 🟢 Medio | 1 | P1 |
-| `analyze compatibility` | 🔥 Alto | 🟡 Medio | 2 | P1 |
-| `migrate pyqt5-to-pyqt6` | 🔥 Alto | 🟡 Medio | 2 | P0 |
-| `test generate` | 🟠 Medio | 🟡 Medio | 2 | P2 |
-| `package build/validate` | 🟠 Medio | 🟡 Medio | 2 | P2 |
-| `benchmark profile` | 🟠 Medio | 🔴 Alto | 3 | P3 |
-| `docs generate` | 🟠 Medio | 🔴 Alto | 3 | P3 |
-| `init plugin` | 🟡 Bajo | 🔴 Alto | 3 | P4 |
-| `report` avanzado | 🟡 Bajo | 🔴 Alto | 3 | P4 |
+| `analyze` subcommands | ✅ High | ✅ Low | **Completed** | - |
+| `fix` subcommands | 🔥 High | 🟢 Low | 1 | P0 |
+| `docs validate` | 🔥 High | 🟢 Low | 1 | P0 |
+| `search deprecated` | 🔥 High | 🟢 Medium | 1 | P1 |
+| `analyze compatibility` | 🔥 High | 🟡 Medium | 2 | P1 |
+| `migrate pyqt5-to-pyqt6` | 🔥 High | 🟡 Medium | 2 | P0 |
+| `test generate` | 🟠 Medium | 🟡 Medium | 2 | P2 |
+| `package build/validate` | 🟠 Medium | 🟡 Medium | 2 | P2 |
+| `benchmark profile` | 🟠 Medium | 🔴 High | 3 | P3 |
+| `docs generate` | 🟠 Medium | 🔴 High | 3 | P3 |
+| `init plugin` | 🟡 Low | 🔴 High | 3 | P4 |
+| Advanced `report` | 🟡 Low | 🔴 High | 3 | P4 |
 
 ---
 
-## 🎯 Fase 1: Comandos de Alto Impacto (v1.9.0)
+## 🎯 Phase 1: High Impact Commands (v1.9.0)
 
-**Objetivo**: Mejorar la experiencia de desarrollo diario con comandos de corrección y validación.
+**Objective**: Improve the daily development experience with correction and validation commands.
 
-**Duración estimada**: 2-3 semanas
+**Estimated Duration**: 2-3 weeks
 
-### 1.1 `fix` con Subcomandos
+### 1.1 `fix` with Subcommands
 
-**Prioridad**: P0 | **Esfuerzo**: 3-5 días
+**Priority**: P0 | **Effort**: 3-5 days
 
 ```bash
-qgis-analyzer fix i18n [path]           # Auto-wrap strings en tr()
-qgis-analyzer fix imports [path]        # Corrige imports (GDAL, PyQt)
-qgis-analyzer fix formatting [path]     # Aplica black/isort
-qgis-analyzer fix types [path]          # Agrega type hints básicos
-qgis-analyzer fix all [path]            # Aplica todas las correcciones
-qgis-analyzer fix --interactive [path]  # Modo interactivo con confirmación
-qgis-analyzer fix --dry-run [path]      # Vista previa sin cambios
+qgis-analyzer fix i18n [path]           # Auto-wrap strings in tr()
+qgis-analyzer fix imports [path]        # Corrects imports (GDAL, PyQt)
+qgis-analyzer fix formatting [path]     # Applies black/isort
+qgis-analyzer fix types [path]          # Adds basic type hints
+qgis-analyzer fix all [path]            # Applies all corrections
+qgis-analyzer fix --interactive [path]  # Interactive mode with confirmation
+qgis-analyzer fix --dry-run [path]      # Preview without changes
 ```
 
-**Implementación**:
-- [ ] Crear `FixCommand` con subparsers
-- [ ] Implementar `I18nFixer` (wrapping automático)
-- [ ] Implementar `ImportsFixer` (reescritura de imports)
-- [ ] Implementar `FormattingFixer` (integración black/isort)
-- [ ] Implementar `TypeHintsFixer` (inferencia básica)
-- [ ] Modo interactivo con `rich.prompt`
-- [ ] Tests de regresión para cada fixer
+**Implementation**:
+- [ ] Create `FixCommand` with subparsers
+- [ ] Implement `I18nFixer` (automatic wrapping)
+- [ ] Implement `ImportsFixer` (import rewriting)
+- [ ] Implement `FormattingFixer` (black/isort integration)
+- [ ] Implement `TypeHintsFixer` (basic inference)
+- [ ] Interactive mode with `rich.prompt`
+- [ ] Regression tests for each fixer
 
-**Archivos afectados**:
-- `src/analyzer/cli/commands/fix.py` (nuevo)
-- `src/analyzer/fixers/` (nuevo paquete)
+**Affected Files**:
+- `src/analyzer/cli/commands/fix.py` (new)
+- `src/analyzer/fixers/` (new package)
   - `base_fixer.py`
   - `i18n_fixer.py`
   - `imports_fixer.py`
@@ -65,169 +65,169 @@ qgis-analyzer fix --dry-run [path]      # Vista previa sin cambios
 
 ### 1.2 `docs validate`
 
-**Prioridad**: P0 | **Esfuerzo**: 2-3 días
+**Priority**: P0 | **Effort**: 2-3 days
 
 ```bash
-qgis-analyzer docs validate [path]              # Valida docstrings
-qgis-analyzer docs validate --style=google      # Fuerza estilo Google
-qgis-analyzer docs validate --strict            # Modo estricto
-qgis-analyzer docs validate --fix               # Auto-corrige formato
+qgis-analyzer docs validate [path]              # Validates docstrings
+qgis-analyzer docs validate --style=google      # Enforces Google style
+qgis-analyzer docs validate --strict            # Strict mode
+qgis-analyzer docs validate --fix               # Auto-corrects format
 ```
 
-**Implementación**:
-- [ ] Crear `DocsCommand` con subcomando `validate`
-- [ ] Parser de docstrings (Google/NumPy/Sphinx)
-- [ ] Validador de estructura (Args, Returns, Raises)
-- [ ] Auto-corrección de formato
-- [ ] Integración con `MetricsVisitor` existente
+**Implementation**:
+- [ ] Create `DocsCommand` with `validate` subcommand
+- [ ] Docstring parser (Google/NumPy/Sphinx)
+- [ ] Structure validator (Args, Returns, Raises)
+- [ ] Format auto-correction
+- [ ] Integration with existing `MetricsVisitor`
 
-**Archivos afectados**:
-- `src/analyzer/cli/commands/docs.py` (nuevo)
-- `src/analyzer/validators/docstring_validator.py` (nuevo)
-- Extensión de `MetricsVisitor`
+**Affected Files**:
+- `src/analyzer/cli/commands/docs.py` (new)
+- `src/analyzer/validators/docstring_validator.py` (new)
+- `MetricsVisitor` extension
 
 ---
 
 ### 1.3 `search deprecated`
 
-**Prioridad**: P1 | **Esfuerzo**: 3-4 días
+**Priority**: P1 | **Effort**: 3-4 days
 
 ```bash
-qgis-analyzer search deprecated [path]          # APIs deprecadas
-qgis-analyzer search api "QgsVectorLayer" [path] # Uso de API específica
-qgis-analyzer search pattern "*.connect(*)"     # Patrones de código
+qgis-analyzer search deprecated [path]          # Deprecated QGIS APIs
+qgis-analyzer search api "QgsVectorLayer" [path] # Specific API usage
+qgis-analyzer search pattern "*.connect(*)"     # Code patterns
 qgis-analyzer search todos [path]               # TODOs/FIXMEs/NOTEs
 ```
 
-**Implementación**:
-- [ ] Crear `SearchCommand`
-- [ ] Base de datos de APIs deprecadas QGIS
-- [ ] Motor de búsqueda AST para patrones
-- [ ] Extractor de comentarios especiales
-- [ ] Output formateado con contexto
+**Implementation**:
+- [ ] Create `SearchCommand`
+- [ ] QGIS deprecated API database
+- [ ] AST search engine for patterns
+- [ ] Special comment extractor
+- [ ] Formatted output with context
 
-**Archivos afectados**:
-- `src/analyzer/cli/commands/search.py` (nuevo)
-- `src/analyzer/search/` (nuevo paquete)
+**Affected Files**:
+- `src/analyzer/cli/commands/search.py` (new)
+- `src/analyzer/search/` (new package)
   - `deprecated_apis.py`
   - `pattern_matcher.py`
   - `comment_extractor.py`
-- `data/deprecated_apis.json` (nuevo)
+- `data/deprecated_apis.json` (new)
 
 ---
 
-## 🚀 Fase 2: Migración y Compatibilidad (v2.0.0)
+## 🚀 Phase 2: Migration and Compatibility (v2.0.0)
 
-**Objetivo**: Facilitar migraciones entre versiones de QGIS/PyQt y mejorar testing.
+**Objective**: Facilitate migrations between QGIS/PyQt versions and improve testing.
 
-**Duración estimada**: 4-6 semanas
+**Estimated Duration**: 4-6 weeks
 
 ### 2.1 `migrate pyqt5-to-pyqt6`
 
-**Prioridad**: P0 | **Esfuerzo**: 1-2 semanas
+**Priority**: P0 | **Effort**: 1-2 weeks
 
 ```bash
-qgis-analyzer migrate pyqt5-to-pyqt6 [path]     # Migración PyQt5 → PyQt6
-qgis-analyzer migrate qgis3-to-qgis4 [path]     # Preparación QGIS 4.x
-qgis-analyzer migrate python38-to-39 [path]     # Actualización Python
-qgis-analyzer migrate --dry-run [path]          # Vista previa
-qgis-analyzer migrate --report [path]           # Reporte de cambios
+qgis-analyzer migrate pyqt5-to-pyqt6 [path]     # PyQt5 → PyQt6 migration
+qgis-analyzer migrate qgis3-to-qgis4 [path]     # QGIS 4.x preparation
+qgis-analyzer migrate python38-to-39 [path]     # Python update
+qgis-analyzer migrate --dry-run [path]          # Preview
+qgis-analyzer migrate --report [path]           # Change report
 ```
 
-**Implementación**:
-- [ ] Motor de transformación AST (`libcst` o `rope`)
-- [ ] Reglas de migración PyQt5→PyQt6
-- [ ] Reglas de migración QGIS 3→4
-- [ ] Detección de cambios breaking
-- [ ] Generación de reporte de migración
-- [ ] Modo interactivo para decisiones
+**Implementation**:
+- [ ] AST transformation engine (`libcst` or `rope`)
+- [ ] PyQt5→PyQt6 migration rules
+- [ ] QGIS 3→4 migration rules
+- [ ] Breaking change detection
+- [ ] Migration report generation
+- [ ] Interactive mode for decisions
 
-**Archivos afectados**:
-- `src/analyzer/cli/commands/migrate.py` (nuevo)
-- `src/analyzer/migrations/` (nuevo paquete)
+**Affected Files**:
+- `src/analyzer/cli/commands/migrate.py` (new)
+- `src/analyzer/migrations/` (new package)
   - `base_migration.py`
   - `pyqt_migration.py`
   - `qgis_migration.py`
   - `python_migration.py`
-- `data/migration_rules/` (nuevos JSONs)
+- `data/migration_rules/` (new JSONs)
 
 ---
 
 ### 2.2 `analyze compatibility`
 
-**Prioridad**: P1 | **Esfuerzo**: 1 semana
+**Priority**: P1 | **Effort**: 1 week
 
 ```bash
-qgis-analyzer analyze compatibility [path]      # Compatibilidad general
-qgis-analyzer analyze compatibility --qgis=3.28 # Versión específica
+qgis-analyzer analyze compatibility [path]      # General compatibility
+qgis-analyzer analyze compatibility --qgis=3.28 # Specific version
 qgis-analyzer analyze compatibility --python=3.9
 ```
 
-**Implementación**:
-- [ ] Extender `analyze` con subcomando `compatibility`
-- [ ] Matriz de compatibilidad QGIS/PyQt/Python
-- [ ] Detección de APIs específicas de versión
-- [ ] Validación de dependencias
-- [ ] Reporte de incompatibilidades
+**Implementation**:
+- [ ] Extend `analyze` with `compatibility` subcommand
+- [ ] QGIS/PyQt/Python compatibility matrix
+- [ ] Version-specific API detection
+- [ ] Dependency validation
+- [ ] Incompatibility report
 
-**Archivos afectados**:
-- `src/analyzer/cli/commands/analyze.py` (extensión)
-- `src/analyzer/compatibility/` (nuevo paquete)
+**Affected Files**:
+- `src/analyzer/cli/commands/analyze.py` (extension)
+- `src/analyzer/compatibility/` (new package)
   - `version_checker.py`
   - `api_compatibility.py`
-- `data/compatibility_matrix.json` (nuevo)
+- `data/compatibility_matrix.json` (new)
 
 ---
 
 ### 2.3 `test generate`
 
-**Prioridad**: P2 | **Esfuerzo**: 1-2 semanas
+**Priority**: P2 | **Effort**: 1-2 weeks
 
 ```bash
-qgis-analyzer test generate [path]              # Genera tests unitarios
-qgis-analyzer test run [path]                   # Ejecuta tests
-qgis-analyzer test coverage [path]              # Reporte de cobertura
-qgis-analyzer test integration [path]           # Tests de integración
+qgis-analyzer test generate [path]              # Generates unit tests
+qgis-analyzer test run [path]                   # Runs tests
+qgis-analyzer test coverage [path]              # Coverage report
+qgis-analyzer test integration [path]           # Integration tests
 ```
 
-**Implementación**:
-- [ ] Generador de tests basado en AST
-- [ ] Templates de tests para QGIS
-- [ ] Integración con pytest
-- [ ] Runner de tests en entorno QGIS
-- [ ] Reporte de cobertura
+**Implementation**:
+- [ ] AST-based test generator
+- [ ] QGIS test templates
+- [ ] pytest integration
+- [ ] Test runner in QGIS environment
+- [ ] Coverage reporting
 
-**Archivos afectados**:
-- `src/analyzer/cli/commands/test.py` (nuevo)
-- `src/analyzer/testing/` (nuevo paquete)
+**Affected Files**:
+- `src/analyzer/cli/commands/test.py` (new)
+- `src/analyzer/testing/` (new package)
   - `test_generator.py`
   - `test_runner.py`
   - `coverage_reporter.py`
-- `templates/test_templates/` (nuevos)
+- `templates/test_templates/` (new)
 
 ---
 
 ### 2.4 `package build/validate`
 
-**Prioridad**: P2 | **Esfuerzo**: 1 semana
+**Priority**: P2 | **Effort**: 1 week
 
 ```bash
-qgis-analyzer package build [path]              # Construye .zip
-qgis-analyzer package validate [zip]            # Valida paquete
-qgis-analyzer package metadata [path]           # Genera metadata.txt
-qgis-analyzer package publish [zip]             # Publica a repositorio
+qgis-analyzer package build [path]              # Builds .zip
+qgis-analyzer package validate [zip]            # Validates package
+qgis-analyzer package metadata [path]           # Generates metadata.txt
+qgis-analyzer package publish [zip]             # Publishes to repository
 ```
 
-**Implementación**:
-- [ ] Constructor de paquetes QGIS
-- [ ] Validador de estructura
-- [ ] Generador de metadata.txt
-- [ ] Cliente para repositorios QGIS
-- [ ] Validación de firma digital
+**Implementation**:
+- [ ] QGIS package builder
+- [ ] Structure validator
+- [ ] metadata.txt generator
+- [ ] Client for QGIS repositories
+- [ ] Digital signature validation
 
-**Archivos afectados**:
-- `src/analyzer/cli/commands/package.py` (nuevo)
-- `src/analyzer/packaging/` (nuevo paquete)
+**Affected Files**:
+- `src/analyzer/cli/commands/package.py` (new)
+- `src/analyzer/packaging/` (new package)
   - `builder.py`
   - `validator.py`
   - `metadata_generator.py`
@@ -235,33 +235,33 @@ qgis-analyzer package publish [zip]             # Publica a repositorio
 
 ---
 
-## 🔬 Fase 3: Análisis Avanzado (v2.5.0)
+## 🔬 Phase 3: Advanced Analysis (v2.5.0)
 
-**Objetivo**: Herramientas avanzadas de profiling, documentación y scaffolding.
+**Objective**: Advanced profiling, documentation, and scaffolding tools.
 
-**Duración estimada**: 6-8 semanas
+**Estimated Duration**: 6-8 weeks
 
 ### 3.1 `benchmark profile`
 
-**Prioridad**: P3 | **Esfuerzo**: 2-3 semanas
+**Priority**: P3 | **Effort**: 2-3 weeks
 
 ```bash
-qgis-analyzer benchmark profile [path]          # Profiling de funciones
-qgis-analyzer benchmark memory [path]           # Análisis de memoria
-qgis-analyzer benchmark startup [path]          # Tiempo de carga
-qgis-analyzer benchmark compare [v1] [v2]       # Comparación
+qgis-analyzer benchmark profile [path]          # Function profiling
+qgis-analyzer benchmark memory [path]           # Memory analysis
+qgis-analyzer benchmark startup [path]          # Startup time
+qgis-analyzer benchmark compare [v1] [v2]       # Comparison
 ```
 
-**Implementación**:
-- [ ] Integración con `cProfile`/`line_profiler`
-- [ ] Análisis de memoria con `memory_profiler`
-- [ ] Benchmarking de startup
-- [ ] Comparación entre versiones
-- [ ] Visualización de resultados
+**Implementation**:
+- [ ] `cProfile`/`line_profiler` integration
+- [ ] Memory analysis with `memory_profiler`
+- [ ] Startup benchmarking
+- [ ] Version comparison
+- [ ] Result visualization
 
-**Archivos afectados**:
-- `src/analyzer/cli/commands/benchmark.py` (nuevo)
-- `src/analyzer/benchmarking/` (nuevo paquete)
+**Affected Files**:
+- `src/analyzer/cli/commands/benchmark.py` (new)
+- `src/analyzer/benchmarking/` (new package)
   - `profiler.py`
   - `memory_analyzer.py`
   - `comparator.py`
@@ -270,25 +270,25 @@ qgis-analyzer benchmark compare [v1] [v2]       # Comparación
 
 ### 3.2 `docs generate`
 
-**Prioridad**: P3 | **Esfuerzo**: 2-3 semanas
+**Priority**: P3 | **Effort**: 2-3 weeks
 
 ```bash
-qgis-analyzer docs generate [path]              # Genera documentación
-qgis-analyzer docs export --format=html         # Exporta a HTML/PDF
-qgis-analyzer docs i18n [path]                  # Extrae strings
-qgis-analyzer docs serve [path]                 # Servidor local
+qgis-analyzer docs generate [path]              # Generates documentation
+qgis-analyzer docs export --format=html         # Exports to HTML/PDF
+qgis-analyzer docs i18n [path]                  # Extracts strings
+qgis-analyzer docs serve [path]                 # Local server
 ```
 
-**Implementación**:
-- [ ] Generador de documentación API
-- [ ] Integración con Sphinx/MkDocs
-- [ ] Extractor de strings traducibles
-- [ ] Servidor de documentación local
-- [ ] Exportación a múltiples formatos
+**Implementation**:
+- [ ] API documentation generator
+- [ ] Sphinx/MkDocs integration
+- [ ] Translatable string extractor
+- [ ] Local documentation server
+- [ ] Multi-format export
 
-**Archivos afectados**:
-- `src/analyzer/cli/commands/docs.py` (extensión)
-- `src/analyzer/documentation/` (nuevo paquete)
+**Affected Files**:
+- `src/analyzer/cli/commands/docs.py` (extension)
+- `src/analyzer/documentation/` (new package)
   - `generator.py`
   - `exporter.py`
   - `i18n_extractor.py`
@@ -298,194 +298,194 @@ qgis-analyzer docs serve [path]                 # Servidor local
 
 ### 3.3 `init plugin`
 
-**Prioridad**: P4 | **Esfuerzo**: 2 semanas
+**Priority**: P4 | **Effort**: 2 weeks
 
 ```bash
-qgis-analyzer init plugin [name]                # Scaffold completo
-qgis-analyzer init processing [name]            # Algoritmo processing
-qgis-analyzer init tests [path]                 # Estructura de tests
-qgis-analyzer init ci [path]                    # Configuración CI/CD
+qgis-analyzer init plugin [name]                # Full scaffold
+qgis-analyzer init processing [name]            # Processing algorithm
+qgis-analyzer init tests [path]                 # Test structure
+qgis-analyzer init ci [path]                    # CI/CD configuration
 qgis-analyzer init --template=modern            # Templates
 ```
 
-**Implementación**:
-- [ ] Sistema de templates (Jinja2)
-- [ ] Scaffolding de plugin completo
-- [ ] Generador de algoritmos Processing
-- [ ] Configuración CI/CD (GitHub Actions)
-- [ ] Templates modernos y legacy
+**Implementation**:
+- [ ] Template system (Jinja2)
+- [ ] Full plugin scaffolding
+- [ ] Processing algorithm generator
+- [ ] CI/CD generator (GitHub Actions)
+- [ ] Modern and legacy templates
 
-**Archivos afectados**:
-- `src/analyzer/cli/commands/init.py` (extensión)
-- `src/analyzer/scaffolding/` (nuevo paquete)
+**Affected Files**:
+- `src/analyzer/cli/commands/init.py` (extension)
+- `src/analyzer/scaffolding/` (new package)
   - `template_engine.py`
   - `plugin_generator.py`
   - `ci_generator.py`
-- `templates/plugin_templates/` (nuevos)
+- `templates/plugin_templates/` (new)
 
 ---
 
-### 3.4 `report` Avanzado
+### 3.4 Advanced `report`
 
-**Prioridad**: P4 | **Esfuerzo**: 1-2 semanas
+**Priority**: P4 | **Effort**: 1-2 weeks
 
 ```bash
-qgis-analyzer report quality [path]             # Reporte de calidad
-qgis-analyzer report security [path]            # Reporte de seguridad
-qgis-analyzer report compliance [path]          # Cumplimiento QGIS
-qgis-analyzer report --format=pdf               # Exportar a PDF
-qgis-analyzer report --dashboard                # Dashboard interactivo
+qgis-analyzer report quality [path]             # Quality report
+qgis-analyzer report security [path]            # Security report
+qgis-analyzer report compliance [path]          # QGIS compliance
+qgis-analyzer report --format=pdf               # Export to PDF
+qgis-analyzer report --dashboard                # Interactive dashboard
 ```
 
-**Implementación**:
-- [ ] Generador de reportes avanzados
-- [ ] Exportación a PDF (WeasyPrint)
-- [ ] Dashboard interactivo (Streamlit/Dash)
-- [ ] Gráficos y visualizaciones
-- [ ] Reportes comparativos
+**Implementation**:
+- [ ] Advanced report generator
+- [ ] PDF export (WeasyPrint)
+- [ ] Interactive dashboard (Streamlit/Dash)
+- [ ] Charts and visualizations
+- [ ] Comparative reports
 
-**Archivos afectados**:
-- `src/analyzer/cli/commands/report.py` (nuevo)
-- `src/analyzer/reporting/` (extensión)
+**Affected Files**:
+- `src/analyzer/cli/commands/report.py` (new)
+- `src/analyzer/reporting/` (extension)
   - `advanced_reporter.py`
   - `pdf_exporter.py`
   - `dashboard.py`
 
 ---
 
-## 🌟 Características Transversales
+## 🌟 Transversal Features
 
-Estas mejoras se aplicarán a **todos** los comandos de forma incremental:
+These improvements will be applied to **all** commands incrementally:
 
-### Fase 1 (v1.9.0)
-- [ ] `--json` output para todos los comandos
+### Phase 1 (v1.9.0)
+- [ ] `--json` output for all commands
 - [ ] `--config` file support (TOML/YAML)
-- [ ] Logging mejorado con `rich`
-- [ ] Progress bars consistentes
+- [ ] Improved logging with `rich`
+- [ ] Consistent progress bars
 
-### Fase 2 (v2.0.0)
-- [ ] `--watch` mode (análisis continuo)
-- [ ] `--cache` (resultados incrementales)
-- [ ] `--parallel` (control de workers)
-- [ ] `--exclude`/`--include` patterns avanzados
+### Phase 2 (v2.0.0)
+- [ ] `--watch` mode (continuous analysis)
+- [ ] `--cache` (incremental results)
+- [ ] `--parallel` (worker control)
+- [ ] Advanced `--exclude`/`--include` patterns
 
-### Fase 3 (v2.5.0)
-- [ ] Plugin system para extensiones
-- [ ] API pública para integraciones
-- [ ] Telemetría opcional (opt-in)
-- [ ] Auto-actualización
+### Phase 3 (v2.5.0)
+- [ ] Plugin system for extensions
+- [ ] Public API for integrations
+- [ ] Optional telemetry (opt-in)
+- [ ] Auto-update
 
 ---
 
-## 📋 Dependencias Nuevas
+## 📋 New Dependencies
 
-### Fase 1
-- `black` - Formateo de código
-- `isort` - Ordenamiento de imports
-- `rich` - UI mejorada en terminal
+### Phase 1
+- `black` - Code formatting
+- `isort` - Import sorting
+- `rich` - Improved terminal UI
 
-### Fase 2
-- `libcst` o `rope` - Transformaciones AST
+### Phase 2
+- `libcst` or `rope` - AST transformations
 - `pytest` - Testing framework
-- `coverage` - Cobertura de tests
+- `coverage` - Test coverage
 
-### Fase 3
+### Phase 3
 - `cProfile`, `line_profiler` - Profiling
-- `memory_profiler` - Análisis de memoria
-- `sphinx` o `mkdocs` - Generación de docs
+- `memory_profiler` - Memory analysis
+- `sphinx` or `mkdocs` - Docs generation
 - `jinja2` - Templates
-- `weasyprint` - Exportación PDF
-- `streamlit` - Dashboard interactivo
+- `weasyprint` - PDF export
+- `streamlit` - Interactive dashboard
 
 ---
 
-## 🎯 Métricas de Éxito
+## 🎯 Success Metrics
 
-### Fase 1
-- [ ] 80% de issues `MISSING_I18N` auto-corregibles
-- [ ] 90% de imports incorrectos detectados y corregidos
-- [ ] Tiempo de validación de docstrings < 5s para proyectos medianos
+### Phase 1
+- [ ] 80% of `MISSING_I18N` issues auto-correctable
+- [ ] 90% of incorrect imports detected and corrected
+- [ ] Docstring validation time < 5s for medium projects
 
-### Fase 2
-- [ ] 95% de migraciones PyQt5→PyQt6 exitosas sin intervención
-- [ ] Cobertura de tests generados > 60%
-- [ ] Paquetes validados 100% compatibles con repositorio QGIS
+### Phase 2
+- [ ] 95% of successful PyQt5→PyQt6 migrations without intervention
+- [ ] Generated test coverage > 60%
+- [ ] Packages validated 100% compatible with QGIS repository
 
-### Fase 3
-- [ ] Identificación de cuellos de botella en < 1 minuto
-- [ ] Documentación generada lista para publicación
-- [ ] Plugins scaffolded funcionando sin modificaciones
+### Phase 3
+- [ ] Bottleneck identification in < 1 minute
+- [ ] Generated documentation ready for publication
+- [ ] Scaffolded plugins working without modifications
 
 ---
 
-## 📅 Timeline Estimado
+## 📅 Estimated Timeline
 
 ```mermaid
 gantt
-    title QGIS Analyzer - Roadmap de Comandos
+    title QGIS Analyzer - Commands Roadmap
     dateFormat  YYYY-MM-DD
-    section Fase 1
-    fix subcomandos           :2026-02-15, 5d
+    section Phase 1
+    fix subcommands           :2026-02-15, 5d
     docs validate             :2026-02-20, 3d
     search deprecated         :2026-02-23, 4d
     
-    section Fase 2
+    section Phase 2
     migrate pyqt5-to-pyqt6    :2026-03-01, 14d
     analyze compatibility     :2026-03-15, 7d
     test generate             :2026-03-22, 14d
     package build/validate    :2026-04-05, 7d
     
-    section Fase 3
+    section Phase 3
     benchmark profile         :2026-04-15, 21d
     docs generate             :2026-05-06, 21d
     init plugin               :2026-05-27, 14d
-    report avanzado           :2026-06-10, 14d
+    advanced report           :2026-06-10, 14d
 ```
 
 ---
 
-## 🔄 Proceso de Implementación
+## 🔄 Implementation Process
 
-Para cada comando/subcomando:
+For each command/subcommand:
 
-1. **Diseño** (1-2 días)
-   - Especificación de CLI
-   - Diseño de arquitectura
-   - Definición de tests
+1. **Design** (1-2 days)
+   - CLI specification
+   - Architecture design
+   - Test definition
 
-2. **Implementación** (según esfuerzo)
-   - Código base
-   - Tests unitarios
-   - Documentación inline
+2. **Implementation** (according to effort)
+   - Base code
+   - Unit tests
+   - Inline documentation
 
-3. **Testing** (1-2 días)
-   - Tests de integración
-   - Testing manual
-   - Validación con plugins reales
+3. **Testing** (1-2 days)
+   - Integration tests
+   - Manual testing
+   - Validation with real plugins
 
-4. **Documentación** (1 día)
-   - README actualizado
-   - Ejemplos de uso
+4. **Documentation** (1 day)
+   - Updated README
+   - Usage examples
    - CHANGELOG
 
-5. **Release** (1 día)
-   - Tag de versión
-   - Publicación a PyPI
-   - Anuncio en comunidad
+5. **Release** (1 day)
+   - Version tag
+   - PyPI publication
+   - Community announcement
 
 ---
 
-## 📝 Notas de Implementación
+## 📝 Implementation Notes
 
-- Todos los comandos deben seguir el patrón establecido en `BaseCommand`
-- Mantener compatibilidad hacia atrás en cada release
-- Documentar breaking changes claramente
-- Incluir tests de regresión para cada feature
-- Usar type hints en todo el código nuevo
-- Seguir Google docstring style
+- All commands must follow the pattern established in `BaseCommand`
+- Maintain backward compatibility in each release
+- Document breaking changes clearly
+- Include regression tests for each feature
+- Use type hints in all new code
+- Follow Google docstring style
 
 ---
 
-**Última actualización**: 2026-02-14
-**Versión actual**: 1.8.0-beta.1
-**Próximo release**: 1.9.0 (Fase 1)
+**Last updated**: 2026-02-14
+**Current version**: 1.8.0-beta.1
+**Next release**: 1.9.0 (Phase 1)

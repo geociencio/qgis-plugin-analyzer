@@ -22,4 +22,4 @@ try:
     __version__ = importlib.metadata.version("qgis-plugin-analyzer")
 except importlib.metadata.PackageNotFoundError:
     # Fallback for development when package is not installed
-    __version__ = "1.8.0-beta.1"  # Default fallback if metadata is missing
+    __version__ = "1.10.1"  # Default fallback if metadata is missing

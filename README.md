@@ -42,20 +42,18 @@ The **QGIS Plugin Analyzer** is a static analysis tool designed specifically for
 - **AI-Ready**: Generates structured summaries and optimized contexts for LLMs.
 - **Zero Runtime Dependencies**: Works using only the Python standard library (Ruff as an external tool).
 
-## 🆕 What's New in v1.10.0
+## 🆕 What's New in v1.10.1
 
-**Architectural Precision & False Positive Elimination** - We've rewritten the dependency graph engine to be 100% accurate:
+**Enhanced Metrics Accuracy for Modern Plugins** - We've optimized the analysis visitor to properly account for asynchronous code patterns:
 
-- 🧠 **Smart Cycle Detection** - Eliminates "ghost cycles" caused by `TYPE_CHECKING` imports and file resolution artifacts.
-- 🎯 **Accurate Stability Score** - Large projects will no longer see artificially low scores due to false positive cycles.
-- ⚡ **Canonical Deduplication** - Detected cycles are reported exactly once, preventing penalty inflation.
+- ⚡ **Async Support** - The `MetricsVisitor` now natively parses `ast.AsyncFunctionDef`, ensuring that type hint and docstring coverage calculations are accurate for plugins using background tasks.
+- 📊 **Reliable Coverage Stats** - Fixed a statistical drift where heavily asynchronous projects (like those using `QgsTask`) would show artificially low return type hint coverage.
 
-**Benefits:**
-- ✅ **Trustworthy Metrics**: Score reflects true code quality.
-- 📉 **Reduced Noise**: Focus only on real architectural issues.
-- 🚀 **Large Project Support**: Optimized for codebases with hundreds of files.
+**From v1.10.0:**
+- 🧠 **Smart Cycle Detection** - Eliminates "ghost cycles" caused by `TYPE_CHECKING` imports.
+- 🎯 **Accurate Stability Score** - Large projects reflect true architectural quality.
 
-[**📖 Full Release Notes**](docs/releases/notes/v1.10.0.md) | [**🗺️ CLI Commands Roadmap**](docs/research/CLI_COMMANDS_ROADMAP.md)
+[**📖 Full Release Notes**](docs/releases/notes/v1.10.1.md) | [**🗺️ CLI Commands Roadmap**](docs/research/CLI_COMMANDS_ROADMAP.md)
 
 ## ⚖️ Why use this Analyzer? (Comparison)
 

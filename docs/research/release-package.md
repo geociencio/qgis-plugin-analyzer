@@ -1,5 +1,5 @@
 ---
-description: "Automatiza el proceso de release: validación de calidad, versionado, git tagging y build."
+description: "Automates the release process: quality validation, versioning, git tagging, and build."
 agent: QA Engineer
 skills:
   - project-context
@@ -7,69 +7,69 @@ skills:
   - commit-standards
 ---
 
-# Workflow: Liberar Versión (Release)
+# Workflow: Version Release (Release)
 
-Este workflow asegura que cada versión pública de `qgis-plugin-analyzer` sea estable, esté documentada y sea trazable.
+This workflow ensures that every public version of `qgis-plugin-analyzer` is stable, documented, and traceable.
 
-## 1. Auditoría de Calidad (Puerta de Enlace)
+## 1. Quality Audit (Gateway)
 
-Antes de cualquier cambio de versión, el sistema debe ser auditado de forma profesional.
+Before any version change, the system must be professionally audited.
 
 // turbo
 ```bash
-# 1. Auditoría de estándares QGIS (Perfil Release)
+# 1. QGIS standards audit (Release Profile)
 uv run qgis-analyzer analyze . --profile release
 
-# 2. Análisis estático y estilo
+# 2. Static analysis and styling
 uv run ruff check .
 
-# 3. Verificación de tipos estricta
+# 3. Strict type checking
 uv run mypy . 
 
-# 4. Tests unitarios
+# 4. Unit tests
 uv run pytest
 ```
 
-> **STOP**: No procedas si hay errores en MyPy, fallos en Tests o si los scores de calidad son insuficientes.
+> **STOP**: Do not proceed if there are MyPy errors, test failures, or if quality scores are insufficient.
 
-## 2. Preparación del Release
+## 2. Release Preparation
 
-1.  **Versionado**: Actualiza `version` en `pyproject.toml`.
-2.  **Changelog**: Registra los cambios de la nueva versión en `CHANGELOG.md` siguiendo el formato "Keep a Changelog".
-3.  **Release Notes**: Crea un documento en `docs/releases/notes/v[VERSION].md` con un **título descriptivo y profesional** (ej: `# v1.6.0: Official Repository Validation...`).
-4.  **Sincronización de Docs**: Revisa que `README.md` y otros manuales estén al día.
-5.  **Entorno**: Asegúrate de que `uv.lock` esté actualizado (`uv sync`).
+1.  **Versioning**: Update `version` in `pyproject.toml`.
+2.  **Changelog**: Record changes for the new version in `CHANGELOG.md` following the "Keep a Changelog" format.
+3.  **Release Notes**: Create a document in `docs/releases/notes/v[VERSION].md` with a **descriptive and professional title** (e.g., `# v1.6.0: Official Repository Validation...`).
+4.  **Docs Synchronization**: Ensure `README.md` and other manuals are up to date.
+5.  **Environment**: Ensure `uv.lock` is updated (`uv sync`).
 
-## 3. Operaciones de Git
+## 3. Git Operations
 
-Estandariza los mensajes y etiquetas siguiendo Conventional Commits.
+Standardize messages and tags following Conventional Commits.
 
 ```bash
 git add pyproject.toml CHANGELOG.md README.md docs/ uv.lock
 git commit -m "chore(release): prepare v[VERSION]"
-git tag -a "v[VERSION]" -m "Release v[VERSION] - [Título Descriptivo]"
+git tag -a "v[VERSION]" -m "Release v[VERSION] - [Descriptive Title]"
 git push origin main --tags
 ```
 
-## 4. Construcción y Publicación
+## 4. Build and Publication
 
-Genera los artefactos y prepara la release en GitHub.
+Generate artifacts and prepare the release on GitHub.
 
 // turbo
 ```bash
-# Limpiar builds previos
+# Clean previous builds
 rm -rf dist/
 
-# Construir sdist y wheel
+# Build sdist and wheel
 uv run python -m build
 
-# Crear Release en GitHub (opcional si usas 'gh' cli)
-gh release create "v[VERSION]" --title "v[VERSION] - [Título]" --notes-file docs/releases/notes/v[VERSION].md
+# Create GitHub Release (optional if using 'gh' cli)
+gh release create "v[VERSION]" --title "v[VERSION] - [Title]" --notes-file docs/releases/notes/v[VERSION].md
 gh release upload "v[VERSION]" dist/*
 ```
 
-## Resultado Esperado
-- Versión actualizada en `pyproject.toml`.
-- Etiqueta de Git creada y subida al remoto.
-- Notas de versión con títulos descriptivos.
-- Artefactos de distribución generados correctamente en `dist/`.
+## Expected Outcome
+- Version updated in `pyproject.toml`.
+- Git tag created and pushed to remote.
+- Release notes with descriptive titles.
+- Distribution artifacts correctly generated in `dist/`.
