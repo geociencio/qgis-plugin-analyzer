@@ -114,7 +114,9 @@ def validate_metadata_urls(metadata: Dict[str, str]) -> Dict[str, str]:
     return results
 
 
-def validate_package_constraints(total_size_mb: float, binaries: List[str]) -> Dict[str, Any]:
+def validate_package_constraints(
+    total_size_mb: float, binaries: List[str]
+) -> Dict[str, Any]:
     """Validates package size and binary constraints against Official Repository rules.
 
     Args:
@@ -251,7 +253,9 @@ def validate_metadata(metadata_path: pathlib.Path) -> Dict[str, Any]:
         }
 
     missing = [f for f in required_fields if f not in metadata or not metadata[f]]
-    recommended_missing = [f for f in recommended_fields if f not in metadata or not metadata[f]]
+    recommended_missing = [
+        f for f in recommended_fields if f not in metadata or not metadata[f]
+    ]
 
     return {
         "is_valid": len(missing) == 0,

@@ -146,7 +146,9 @@ class ScoringEngine:
         if ruff_findings and (maintainability_score + modernization_bonus) >= 100.0:
             maintainability_score = 99.9
         else:
-            maintainability_score = min(100.0, maintainability_score + modernization_bonus)
+            maintainability_score = min(
+                100.0, maintainability_score + modernization_bonus
+            )
 
         # Security context
         security_penalty = self._get_security_penalty(modules_data)
@@ -204,11 +206,15 @@ class ScoringEngine:
             for f in m.get("functions", []):
                 all_func_comp.append(f["complexity"])
 
-        avg_func_comp = sum(all_func_comp) / len(all_func_comp) if all_func_comp else 1.0
+        avg_func_comp = (
+            sum(all_func_comp) / len(all_func_comp) if all_func_comp else 1.0
+        )
         func_score = max(0, 100 - (max(0, avg_func_comp - 10) * 5))
 
         total_lines = sum(m.get("lines", 0) for m in modules_data)
-        errors = sum(1 for f in ruff_findings if f.get("code", "").startswith(("E", "F")))
+        errors = sum(
+            1 for f in ruff_findings if f.get("code", "").startswith(("E", "F"))
+        )
         warnings = sum(1 for f in ruff_findings if f.get("code", "").startswith("W"))
         others = len(ruff_findings) - errors - warnings
 
@@ -222,7 +228,9 @@ class ScoringEngine:
 
         return float((func_score * 0.7) + (lint_score * 0.3))
 
-    def _get_modernization_bonus(self, modules_data: List[ModuleAnalysisResult]) -> float:
+    def _get_modernization_bonus(
+        self, modules_data: List[ModuleAnalysisResult]
+    ) -> float:
         """Calculates modernization bonuses based on type hints and documentation styles."""
         total_functions = 0
         total_params = 0
@@ -391,7 +399,10 @@ class ProjectAnalyzer:
             }
 
     def _run_parallel_analysis(
-        self, files: List[pathlib.Path], rules_config: Dict[str, Any], scope: str = "all"
+        self,
+        files: List[pathlib.Path],
+        rules_config: Dict[str, Any],
+        scope: str = "all",
     ) -> List[ModuleAnalysisResult]:
         """Runs parallel analysis on all Python files.
 
@@ -415,7 +426,9 @@ class ProjectAnalyzer:
         }
 
         with ProcessPoolExecutor(
-            max_workers=self.max_workers, initializer=init_worker, initargs=(shared_context,)
+            max_workers=self.max_workers,
+            initializer=init_worker,
+            initargs=(shared_context,),
         ) as executor:
             # We no longer need to pass project_path or rules_config to every call
             futures = {executor.submit(analyze_module_worker, f): f for f in files}
@@ -546,13 +559,19 @@ class ProjectAnalyzer:
                 "binaries": qgis_checks["binaries"],
                 "package_size_mb": round(qgis_checks["package_size"], 2),
                 "url_validation": qgis_checks["url_status"],
-                "folder_name_valid": qgis_checks["structure"].get("folder_name_valid", True),
-                "constraint_errors": qgis_checks["package_constraints"].get("errors", []),
+                "folder_name_valid": qgis_checks["structure"].get(
+                    "folder_name_valid", True
+                ),
+                "constraint_errors": qgis_checks["package_constraints"].get(
+                    "errors", []
+                ),
                 "is_compliant": qgis_checks["package_constraints"].get("is_valid", True)
                 and qgis_checks["structure"].get("is_valid", True),
             }
             analyses["ruff_metadata"] = (
-                ruff_findings.get("metadata", {}) if isinstance(ruff_findings, dict) else {}
+                ruff_findings.get("metadata", {})
+                if isinstance(ruff_findings, dict)
+                else {}
             )
 
         return analyses
@@ -586,7 +605,9 @@ class ProjectAnalyzer:
             "score": round(scores["security_score"], 1),
         }
 
-    def _get_research_summary(self, modules_data: List[ModuleAnalysisResult]) -> Dict[str, Any]:
+    def _get_research_summary(
+        self, modules_data: List[ModuleAnalysisResult]
+    ) -> Dict[str, Any]:
         """Aggregates research metrics for summary."""
         total_functions = 0
         total_params = 0
@@ -635,15 +656,21 @@ class ProjectAnalyzer:
             all_signal_leaks.update(q_ctx.get("signal_leaks", []))
 
         return {
-            "type_hint_coverage": round((annotated_params / max(1, total_params)) * 100, 1)
-            if total_params > 0
-            else 0.0,
-            "return_hint_coverage": (
-                round((has_return_hint / total_functions) * 100, 1) if total_functions > 0 else 0.0
+            "type_hint_coverage": (
+                round((annotated_params / max(1, total_params)) * 100, 1)
+                if total_params > 0
+                else 0.0
             ),
-            "docstring_coverage": round((has_docstring_count / max(1, total_public_items)) * 100, 1)
-            if total_public_items > 0
-            else 0.0,
+            "return_hint_coverage": (
+                round((has_return_hint / total_functions) * 100, 1)
+                if total_functions > 0
+                else 0.0
+            ),
+            "docstring_coverage": (
+                round((has_docstring_count / max(1, total_public_items)) * 100, 1)
+                if total_public_items > 0
+                else 0.0
+            ),
             "detected_docstring_styles": sorted(list(detected_styles)),
             "qgis_context_summary": {
                 "gdal_styles": gdal_styles,
@@ -707,7 +734,9 @@ class ProjectAnalyzer:
         # 3. QGIS-specific checks (Metadata, structure, constraints)
         qgis_checks: Optional[QGISChecksResult] = None
         if self.project_type == "qgis" and scope in ["all", "metadata", "performance"]:
-            qgis_checks = self._run_qgis_specific_checks(modules_data, rules_config, discovery)
+            qgis_checks = self._run_qgis_specific_checks(
+                modules_data, rules_config, discovery
+            )
 
         # 4. Semantic Analysis (Dependencies, coupling, cycles)
         semantic: SemanticAnalysisResult = {

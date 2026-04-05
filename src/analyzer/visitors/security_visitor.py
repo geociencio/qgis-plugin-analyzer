@@ -43,9 +43,11 @@ class SecurityVisitor(ast.NodeVisitor):
                         "severity": finding.severity.lower(),
                         "message": finding.message,
                         "code": finding.code_snippet,
-                        "confidence": finding.confidence.lower()
-                        if hasattr(finding, "confidence")
-                        else "medium",
+                        "confidence": (
+                            finding.confidence.lower()
+                            if hasattr(finding, "confidence")
+                            else "medium"
+                        ),
                     }
                 )
 

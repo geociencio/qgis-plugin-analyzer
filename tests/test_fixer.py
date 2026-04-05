@@ -35,7 +35,9 @@ class TestTransformers(unittest.TestCase):
         self.assertIn("from osgeo import gdal", new_code)
         # Verify it's not a standalone "import gdal" statement
         self.assertNotRegex(
-            new_code, r"^\s*import gdal\s*$", msg="Should not have standalone 'import gdal'"
+            new_code,
+            r"^\s*import gdal\s*$",
+            msg="Should not have standalone 'import gdal'",
         )
 
     def test_legacy_import_transformer(self):

@@ -81,7 +81,9 @@ class TestSemanticAnalysis(unittest.TestCase):
         self.graph.adjacency_list["b.py"] = {"a.py"}
 
         cycles = self.graph.detect_cycles()
-        self.assertEqual(len(cycles), 1, f"Expected 1 cycle, got {len(cycles)}: {cycles}")
+        self.assertEqual(
+            len(cycles), 1, f"Expected 1 cycle, got {len(cycles)}: {cycles}"
+        )
 
     def test_resolve_nonexistent_file(self):
         """_resolve_import must return '' for modules that don't exist on disk."""
@@ -90,7 +92,9 @@ class TestSemanticAnalysis(unittest.TestCase):
             # Create only module_a.py; module_b does NOT exist
             (project / "module_a.py").write_text("")
             self.graph.add_node("module_a.py", {"imports": ["module_b"]})
-            self.graph.add_node("module_b.py", {})  # node exists in graph but not on disk
+            self.graph.add_node(
+                "module_b.py", {}
+            )  # node exists in graph but not on disk
 
             self.graph.build_edges(project)
 

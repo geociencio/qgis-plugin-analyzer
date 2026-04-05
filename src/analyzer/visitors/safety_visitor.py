@@ -34,7 +34,14 @@ class SafetyVisitor(BaseVisitor):
         self.has_qgs_task = False
 
         # Heuristics for UI-bound methods in QGIS plugins
-        self.ui_handlers = {"run", "initGui", "unload", "moveEvent", "resizeEvent", "showEvent"}
+        self.ui_handlers = {
+            "run",
+            "initGui",
+            "unload",
+            "moveEvent",
+            "resizeEvent",
+            "showEvent",
+        }
 
     def visit_FunctionDef(self, node: ast.FunctionDef) -> None:
         """Tracks if we are inside a UI-critical handler."""
@@ -43,7 +50,9 @@ class SafetyVisitor(BaseVisitor):
         self._old_ui_handler = self.in_ui_handler
         self._old_has_task = self.has_qgs_task
 
-        self.in_ui_handler = node.name in self.ui_handlers or node.name.endswith("Event")
+        self.in_ui_handler = node.name in self.ui_handlers or node.name.endswith(
+            "Event"
+        )
         self.has_qgs_task = False  # Reset for this function
 
         # Check if function body uses QgsTask (we still use walk here as a shorthand)
@@ -102,7 +111,9 @@ class SafetyVisitor(BaseVisitor):
             if isinstance(sub_node, ast.Call):
                 name = self._get_full_attribute_name(sub_node.func)
                 # Operations that suggest large data processing or latency
-                if any(x in name for x in (".getFeatures", ".request", "sleep", "exec_")):
+                if any(
+                    x in name for x in (".getFeatures", ".request", "sleep", "exec_")
+                ):
                     is_intensive = True
                     break
 

@@ -37,13 +37,19 @@ def _get_version() -> str:
     try:
         current_path = pathlib.Path(__file__).resolve()
         # Search up to 3 levels for pyproject.toml
-        for parent in [current_path.parent, current_path.parents[1], current_path.parents[2]]:
+        for parent in [
+            current_path.parent,
+            current_path.parents[1],
+            current_path.parents[2],
+        ]:
             pyproject = parent / "pyproject.toml"
             if pyproject.exists():
-                with open(pyproject, "r", encoding="utf-8") as f:
+                with open(pyproject, encoding="utf-8") as f:
                     content = f.read()
                     # Match version = "X.Y.Z" under [project] or [tool.poetry]
-                    match = re.search(r'^version\s*=\s*["\']([^"\']+)["\']', content, re.MULTILINE)
+                    match = re.search(
+                        r'^version\s*=\s*["\']([^"\']+)["\']', content, re.MULTILINE
+                    )
                     if match:
                         return match.group(1)
     except Exception:

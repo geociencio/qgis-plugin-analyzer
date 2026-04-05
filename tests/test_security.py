@@ -28,7 +28,8 @@ class TestSecurity(unittest.TestCase):
         # Safe paths
         self.assertEqual(safe_path_resolve(base, "metadata.txt"), base / "metadata.txt")
         self.assertEqual(
-            safe_path_resolve(base, "src/analyzer/engine.py"), base / "src/analyzer/engine.py"
+            safe_path_resolve(base, "src/analyzer/engine.py"),
+            base / "src/analyzer/engine.py",
         )
 
         # Traversal attempts

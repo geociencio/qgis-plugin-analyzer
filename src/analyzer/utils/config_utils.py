@@ -23,7 +23,9 @@ def _parse_toml_value(val_str: str) -> Any:
     return val_str
 
 
-def _process_section_header(line: str, profile_regex: re.Pattern, rules_regex: re.Pattern) -> tuple:
+def _process_section_header(
+    line: str, profile_regex: re.Pattern, rules_regex: re.Pattern
+) -> tuple:
     """Processes a TOML section header."""
     rules_match = rules_regex.match(line)
     if rules_match:
@@ -41,7 +43,10 @@ def _ensure_profile_structure(data: dict, profile_name: str, is_rules: bool) -> 
     if profile_name not in data["tool"]["qgis-analyzer"]["profiles"]:
         data["tool"]["qgis-analyzer"]["profiles"][profile_name] = {}
 
-    if is_rules and "rules" not in data["tool"]["qgis-analyzer"]["profiles"][profile_name]:
+    if (
+        is_rules
+        and "rules" not in data["tool"]["qgis-analyzer"]["profiles"][profile_name]
+    ):
         data["tool"]["qgis-analyzer"]["profiles"][profile_name]["rules"] = {}
 
 
@@ -62,7 +67,9 @@ def _minimal_toml_load(file_obj) -> Dict[str, Any]:
                 continue
 
             if line.startswith("[") and line.endswith("]"):
-                profile_name, is_rules = _process_section_header(line, profile_regex, rules_regex)
+                profile_name, is_rules = _process_section_header(
+                    line, profile_regex, rules_regex
+                )
                 if profile_name:
                     current_profile = profile_name
                     in_rules_section = is_rules
@@ -78,9 +85,13 @@ def _minimal_toml_load(file_obj) -> Dict[str, Any]:
                 val = _parse_toml_value(val.strip())
 
                 if in_rules_section:
-                    data["tool"]["qgis-analyzer"]["profiles"][current_profile]["rules"][key] = val
+                    data["tool"]["qgis-analyzer"]["profiles"][current_profile]["rules"][
+                        key
+                    ] = val
                 else:
-                    data["tool"]["qgis-analyzer"]["profiles"][current_profile][key] = val
+                    data["tool"]["qgis-analyzer"]["profiles"][current_profile][
+                        key
+                    ] = val
     except Exception as e:
         logger.error(f"Error in minimal TOML parser: {e}")
 
@@ -130,7 +141,9 @@ def load_profile_config(
 
         if not profile_data:
             if profile_name != "default":
-                logger.warning(f"Profile '{profile_name}' not found. Using default values.")
+                logger.warning(
+                    f"Profile '{profile_name}' not found. Using default values."
+                )
             return default_config
 
         rules_config = profile_data.get("rules", {})

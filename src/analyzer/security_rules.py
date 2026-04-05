@@ -29,12 +29,16 @@ def check_exec_eval(context: SecurityContext) -> Optional[SecurityFinding]:
 
 
 @security_check(node_type=ast.Call)
-def check_insecure_deserialization(context: SecurityContext) -> Optional[SecurityFinding]:
+def check_insecure_deserialization(
+    context: SecurityContext,
+) -> Optional[SecurityFinding]:
     """B301: Detect unsafe pickle.load()."""
     if context.call_function_name == "load":
         # Check if it's from 'pickle'
         node = cast(ast.Call, context.node)
-        if isinstance(node.func, ast.Attribute) and isinstance(node.func.value, ast.Name):
+        if isinstance(node.func, ast.Attribute) and isinstance(
+            node.func.value, ast.Name
+        ):
             if node.func.value.id == "pickle":
                 return SecurityFinding(
                     id="B301",
@@ -83,7 +87,9 @@ def check_sql_injection(context: SecurityContext) -> Optional[SecurityFinding]:
                 is_unsafe = True
             elif isinstance(sql_arg, ast.BinOp) and isinstance(sql_arg.op, ast.Mod):
                 is_unsafe = True
-            elif isinstance(sql_arg, ast.Call) and isinstance(sql_arg.func, ast.Attribute):
+            elif isinstance(sql_arg, ast.Call) and isinstance(
+                sql_arg.func, ast.Attribute
+            ):
                 if sql_arg.func.attr == "format":
                     is_unsafe = True
 
@@ -110,8 +116,12 @@ def check_hardcoded_secrets(context: SecurityContext) -> Optional[SecurityFindin
     sensitive_names = {"password", "token", "api_key", "secret", "access_key"}
 
     for target in node.targets:
-        if isinstance(target, ast.Name) and any(s in target.id.lower() for s in sensitive_names):
-            if isinstance(node.value, ast.Constant) and isinstance(node.value.value, str):
+        if isinstance(target, ast.Name) and any(
+            s in target.id.lower() for s in sensitive_names
+        ):
+            if isinstance(node.value, ast.Constant) and isinstance(
+                node.value.value, str
+            ):
                 # Only flag if it's not empty and looks like a secret
                 val = node.value.value
                 if len(val) > 8:

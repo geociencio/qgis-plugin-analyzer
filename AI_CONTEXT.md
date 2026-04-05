@@ -94,8 +94,8 @@ Motor de análisis estático y auto-fix para plugins de QGIS (PyQGIS). Combina r
 
 ## 📈 COMPLEXITY AND METRICS
 - **Total Modules**: 68
-- **Source Lines (SLOC)**: 3,293
-- **Total Physical Lines**: 12,179
+- **Source Lines (SLOC)**: 3,430
+- **Total Physical Lines**: 12,234
 - **Functions**: 0
 - **Classes**: 0
 - **Average Complexity**: 0.0
@@ -138,7 +138,7 @@ Motor de análisis estático y auto-fix para plugins de QGIS (PyQGIS). Combina r
 - **src/analyzer/models/__init__.py**: analysis_models.ModuleAnalysis, analysis_models.ProjectContext
 - **src/analyzer/reporters/__init__.py**: html_reporter.generate_html_report, markdown_reporter.generate_markdown_summary, markdown_reporter.save_json_context
 - **src/analyzer/rules/__init__.py**: modernization_rules.get_modernization_rules, qgis_rules.I18N_METHODS, qgis_rules.get_qgis_audit_rules
-- **src/analyzer/visitors/__init__.py**: qgis_rules_visitor.QGISRulesVisitor, safety_visitor.SafetyVisitor
+- **src/analyzer/utils/__init__.py**: ast_utils.calculate_complexity, ast_utils.calculate_module_complexity, ast_utils.check_main_guard, ast_utils.extract_classes_from_ast, ast_utils.extract_functions_from_ast
 
 ## 🕸️  DEPENDENCY STRUCTURE
 - **Nodes**: 68
@@ -157,50 +157,50 @@ graph TD
     test_scanner --> py
     test_scoring --> py
     test_security --> py
+    test_semantic --> py
     test_validators --> py
     test_vulnerability --> py
-    test_semantic --> py
     classDef module fill:#f9f,stroke:#333,stroke-width:2px;
-    test_high_complexity
-    class test_high_complexity module;
-    analyze_project_optfixed
-    class analyze_project_optfixed module;
-    ai_workflow
-    class ai_workflow module;
-    context_manager
-    class context_manager module;
-    test_scoring
-    class test_scoring module;
-    run_tests_in_qgis
-    class run_tests_in_qgis module;
-    test_security
-    class test_security module;
+    test_i18n_standards
+    class test_i18n_standards module;
     init
     class init module;
     test_safety
     class test_safety module;
     skill_sync
     class skill_sync module;
-    test_scanner
-    class test_scanner module;
-    test_i18n_standards
-    class test_i18n_standards module;
-    test_analyzer
-    class test_analyzer module;
-    test_fixer
-    class test_fixer module;
-    app
-    class app module;
-    init
-    class init module;
-    test_vulnerability
-    class test_vulnerability module;
+    ai_workflow
+    class ai_workflow module;
+    run_tests_in_qgis
+    class run_tests_in_qgis module;
     test_semantic
     class test_semantic module;
-    test_advanced_features
-    class test_advanced_features module;
     test_validators
     class test_validators module;
+    test_high_complexity
+    class test_high_complexity module;
+    init
+    class init module;
+    test_advanced_features
+    class test_advanced_features module;
+    test_fixer
+    class test_fixer module;
+    test_analyzer
+    class test_analyzer module;
+    test_scoring
+    class test_scoring module;
+    app
+    class app module;
+    test_vulnerability
+    class test_vulnerability module;
+    analyze_project_optfixed
+    class analyze_project_optfixed module;
+    test_security
+    class test_security module;
+    context_manager
+    class context_manager module;
+    test_scanner
+    class test_scanner module;
 ```
 
 ## 💡 OPTIMIZATION RECOMMENDATIONS
@@ -212,18 +212,20 @@ graph TD
 - **module_too_large**: Large module (2611 lines)
 ### .ai-context/context_manager.py
 - **complexity_refactoring**: Consider breaking down large logic
-### src/analyzer/fixer.py
+### src/analyzer/commands.py
 - **complexity_refactoring**: Consider breaking down large logic
-### src/analyzer/reporters/html_reporter.py
+### src/analyzer/fixer.py
 - **complexity_refactoring**: Consider breaking down large logic
 
 ## 🔄 GIT AND EVOLUTION
 ### Top Hotspots:
-- `src/analyzer/engine.py` (28 commits)
+- `src/analyzer/engine.py` (29 commits)
 - `src/analyzer/scanner.py` (24 commits)
 - `src/analyzer/cli.py` (18 commits)
 - `src/analyzer/utils.py` (14 commits)
 - `src/analyzer/validators.py` (10 commits)
+### Recent Churn (30 days):
+- Total lines changed: 7913
 
 ## 🔑 PROJECT KEYWORDS
-- **Technologies**: .json, .md, .py, .yaml, .0, .sample, .log, .1
+- **Technologies**: .json, .md, .py, .yaml, .0, .sample, .1, .log

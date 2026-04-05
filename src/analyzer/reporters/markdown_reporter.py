@@ -64,7 +64,9 @@ def _build_markdown_qgis_findings(analyses: Dict[str, Any]) -> List[str]:
     compliance = analyses.get("qgis_compliance", {})
     best_practices = compliance.get("best_practices", {})
     lines.append("## 🛠️ QGIS Standard Findings")
-    lines.append(f"Detected **{best_practices.get('issues_count', 0)}** technical deviations.")
+    lines.append(
+        f"Detected **{best_practices.get('issues_count', 0)}** technical deviations."
+    )
 
     for issue in best_practices.get("issues", []):
         icon = "🔴" if issue["severity"] == "high" else "🟡"
@@ -164,7 +166,9 @@ def _build_markdown_research_metrics(research: Dict[str, Any]) -> List[str]:
         f"- **Type Hint Coverage (Returns)**: {research.get('return_hint_coverage')}%",
         f"- **Docstring Coverage**: {research.get('docstring_coverage')}% (PEP 257)",
     ]
-    styles = ", ".join(research.get("detected_docstring_styles", [])) or "PEP 257 (Default)"
+    styles = (
+        ", ".join(research.get("detected_docstring_styles", [])) or "PEP 257 (Default)"
+    )
     lines.append(f"- **Detected Documentation Style**: {styles}")
     return lines
 
@@ -216,7 +220,9 @@ def _build_markdown_security_section(security: Dict[str, Any]) -> List[str]:
     return lines
 
 
-def generate_markdown_summary(analyses: Dict[str, Any], output_path: pathlib.Path) -> None:
+def generate_markdown_summary(
+    analyses: Dict[str, Any], output_path: pathlib.Path
+) -> None:
     """Generates a professional PROJECT_SUMMARY.md report.
 
     Args:

@@ -137,7 +137,9 @@ class BaseVisitor(ast.NodeVisitor):
         }
         return severity_map.get(config_severity, "medium")
 
-    def _report_issue(self, rule_id: str, line: int, message: str, code: str = "") -> None:
+    def _report_issue(
+        self, rule_id: str, line: int, message: str, code: str = ""
+    ) -> None:
         """Helper to report an issue if enabled.
 
         Args:

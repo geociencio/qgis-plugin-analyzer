@@ -1,12 +1,12 @@
 # PROJECT SUMMARY - qgis_plugin_analyzer
-Analysis Date: 2026-03-20 19:36:18
+Analysis Date: 2026-04-05 14:31:27
 Analyzer Version: 3.1.1 (Ai-Context-Core)
 
 ## 📊 KEY METRICS
-- **Quality Score**: 66.6/100
-- **Source Lines (SLOC)**: 3,293
-- **Total Physical Lines**: 12,179
-- **Maintainability**: 42.4
+- **Quality Score**: 66.0/100
+- **Source Lines (SLOC)**: 3,430
+- **Total Physical Lines**: 12,234
+- **Maintainability**: 42.1
 - **Test Coverage**: 14 test files
 
 ## 📁 STRUCTURE
@@ -103,7 +103,6 @@ Analyzer Version: 3.1.1 (Ai-Context-Core)
     docs/
         user_guide/
             COMMANDS_GUIDE.md
-            GUIA_COMANDOS.md
             TESTING_IN_QGIS.md
         releases/
             notes/
@@ -114,7 +113,7 @@ Analyzer Version: 3.1.1 (Ai-Context-Core)
                 RELEASE_NOTES_v0.5.0.md
                 RELEASE_NOTES_v0.5.1.md
                 RELEASE_NOTES_v0.6.0.md
-                ... (+11 more)
+                ... (+13 more)
             github/
                 GITHUB_RELEASE_v0.6.1.md
                 GITHUB_RELEASE_v0.6.2.md
@@ -171,8 +170,8 @@ Analyzer Version: 3.1.1 (Ai-Context-Core)
         analyzer.log
         project_context.json
     dist/
-        qgis_plugin_analyzer-1.10.0-py3-none-any.whl
-        qgis_plugin_analyzer-1.10.0.tar.gz
+        qgis_plugin_analyzer-1.11.0-py3-none-any.whl
+        qgis_plugin_analyzer-1.11.0.tar.gz
 ```
 
 ## 🚨 CRITICAL ISSUES
@@ -238,14 +237,19 @@ Motor de análisis estático y auto-fix para plugins de QGIS (PyQGIS). Combina r
 
 
 ## 🔄 GIT ANALYSIS
+### Code Churn (last 30 days)
+- **Files Changed**: 24
+- **Additions**: +4147
+- **Deletions**: -3766
+- **Total Churn**: 7913
 
 ### 🔥 Hotspots
-- `src/analyzer/engine.py`: 28 commits
+- `src/analyzer/engine.py`: 29 commits
 - `src/analyzer/scanner.py`: 24 commits
 - `src/analyzer/cli.py`: 18 commits
 - `src/analyzer/utils.py`: 14 commits
 - `src/analyzer/validators.py`: 10 commits
 
 ## 📈 COMPLEXITY DISTRIBUTION
-- **Average Complexity**: 19.78
+- **Average Complexity**: 19.88
 - **Max Complexity**: 397
