@@ -1,16 +1,16 @@
 # PROJECT SUMMARY - qgis_plugin_analyzer
-Analysis Date: 2026-04-05 14:31:27
+Analysis Date: 2026-04-05 16:34:45
 Analyzer Version: 3.1.1 (Ai-Context-Core)
 
 ## 📊 KEY METRICS
-- **Quality Score**: 66.0/100
-- **Source Lines (SLOC)**: 3,430
-- **Total Physical Lines**: 12,234
-- **Maintainability**: 42.1
+- **Quality Score**: 66.4/100
+- **Source Lines (SLOC)**: 8,595
+- **Total Physical Lines**: 13,243
+- **Maintainability**: 42.0
 - **Test Coverage**: 14 test files
 
 ## 📁 STRUCTURE
-**Total Modules**: 68
+**Total Modules**: 71
 
 ```tree
 ./
@@ -101,6 +101,7 @@ Analyzer Version: 3.1.1 (Ai-Context-Core)
         PROJECT_SUMMARY.md
         project_context.json
     docs/
+        DEVELOPMENT_LOG.md
         user_guide/
             COMMANDS_GUIDE.md
             TESTING_IN_QGIS.md
@@ -146,11 +147,17 @@ Analyzer Version: 3.1.1 (Ai-Context-Core)
         dev_sessions/
             2026-02-02_refactor_architecture.md
             2026-02-03_repository_validation.md
+            2026-04-05_v1.11.0_release.md
             session_2026-02-14_task.md
             session_2026-02-14_walkthrough.md
+        maintenance/
+            session_2026-04-05_agent_gen5_sync.md
     debug_summary/
     scripts/
+        mcp_server.py
         run_tests_in_qgis.py
+        security_scan.py
+        skill_sync.py
     migration/
     self_analysis_results/
         PROJECT_SUMMARY.md
@@ -172,21 +179,40 @@ Analyzer Version: 3.1.1 (Ai-Context-Core)
     dist/
         qgis_plugin_analyzer-1.11.0-py3-none-any.whl
         qgis_plugin_analyzer-1.11.0.tar.gz
+    scaffold/
+        qgis/
+            skills/
+                qa-docker/
+                    SKILL.md
+                qgis-core/
+                    SKILL.md
+                qgis-migration-4x/
+                    SKILL.md
+                ui-framework/
+                    SKILL.md
+            workflows/
+                audit-plugin.md
+                release-plugin.md
+                run-tests-in-qgis.md
+        mining/
+            skills/
+                geological-logic/
+                    SKILL.md
 ```
 
 ## 🚨 CRITICAL ISSUES
 ### 🔒 Security Issues:
 - **.agent/scripts/skill_sync.py**: 2 issues (Max: HIGH)
 - **.ai-context/analyze_project_optfixed.py**: 24 issues (Max: HIGH)
-- **src/analyzer/cli/app.py**: 1 issues (Max: HIGH)
+- **scripts/mcp_server.py**: 4 issues (Max: HIGH)
 
 ## 💡 MAIN RECOMMENDATIONS
 ### .ai-context/ai_workflow.py
 - Consider breaking down large logic
-- Large module (972 lines)
+- Large module (1010 lines)
 ### .ai-context/analyze_project_optfixed.py
 - Consider breaking down large logic
-- Large module (2611 lines)
+- Large module (2785 lines)
 ### .ai-context/context_manager.py
 - Consider breaking down large logic
 
@@ -194,8 +220,8 @@ Analyzer Version: 3.1.1 (Ai-Context-Core)
 ### Factory
 - **AIContextManager** in `.ai-context/context_manager.py` (70%)
 ### Decorator
-- **create_ast_handler** in `src/analyzer/fixer.py` (50%)
 - **register** in `src/analyzer/fixer.py` (50%)
+- **create_ast_handler** in `src/analyzer/fixer.py` (50%)
 - **register** in `src/analyzer/security_checker.py` (50%)
 
 ## 📝 ARCHITECTURE NOTES
@@ -238,18 +264,18 @@ Motor de análisis estático y auto-fix para plugins de QGIS (PyQGIS). Combina r
 
 ## 🔄 GIT ANALYSIS
 ### Code Churn (last 30 days)
-- **Files Changed**: 24
-- **Additions**: +4147
-- **Deletions**: -3766
-- **Total Churn**: 7913
+- **Files Changed**: 97
+- **Additions**: +9433
+- **Deletions**: -6521
+- **Total Churn**: 15954
 
 ### 🔥 Hotspots
-- `src/analyzer/engine.py`: 29 commits
-- `src/analyzer/scanner.py`: 24 commits
+- `src/analyzer/engine.py`: 30 commits
+- `src/analyzer/scanner.py`: 25 commits
 - `src/analyzer/cli.py`: 18 commits
 - `src/analyzer/utils.py`: 14 commits
-- `src/analyzer/validators.py`: 10 commits
+- `src/analyzer/validators.py`: 11 commits
 
 ## 📈 COMPLEXITY DISTRIBUTION
-- **Average Complexity**: 19.88
-- **Max Complexity**: 397
+- **Average Complexity**: 19.58
+- **Max Complexity**: 372
