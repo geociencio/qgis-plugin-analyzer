@@ -683,10 +683,12 @@ class ProjectAnalyzer:
         files = discovery["python_files"]
         rules_config = self.config.rules
 
-        # Update Project Type if it was auto
+        # Refine Project Type based on discovered metadata
         if self.config.project_type == "auto":
-            self.project_type = "qgis" if discovery["has_metadata"] else "generic"
-            logger.info(f"📁 Project type: {self.project_type.upper()}")
+            new_type = "qgis" if discovery["has_metadata"] else "generic"
+            if new_type != self.project_type:
+                logger.info(f"📁 Project type updated to: {new_type.upper()}")
+                self.project_type = new_type
 
         # 1. Parallel analysis (AST/Visitors)
         # We pass the scope to filter which visitors run inside the workers

@@ -42,18 +42,18 @@ The **QGIS Plugin Analyzer** is a static analysis tool designed specifically for
 - **AI-Ready**: Generates structured summaries and optimized contexts for LLMs.
 - **Zero Runtime Dependencies**: Works using only the Python standard library (Ruff as an external tool).
 
-## 🆕 What's New in v1.10.1
+## 🆕 What's New in v1.11.0
 
-**Enhanced Metrics Accuracy for Modern Plugins** - We've optimized the analysis visitor to properly account for asynchronous code patterns:
+**Robust Project Discovery & Dynamic Versioning** - Major improvements to the core engine and project identification logic:
 
-- ⚡ **Async Support** - The `MetricsVisitor` now natively parses `ast.AsyncFunctionDef`, ensuring that type hint and docstring coverage calculations are accurate for plugins using background tasks.
-- 📊 **Reliable Coverage Stats** - Fixed a statistical drift where heavily asynchronous projects (like those using `QgsTask`) would show artificially low return type hint coverage.
+- 📁 **Bulletproof Project Detection** - Fixed a critical issue where QGIS plugins were incorrectly identified as generic projects if `metadata.txt` was listed in `.analyzerignore`. Metadata detection now correctly prioritizes plugin identification over ignore rules.
+- 🔄 **Dynamic Versioning** - The analyzer now uses a dynamic versioning system that automatically stays in sync with `pyproject.toml`, ensuring accuracy across all interfaces without hardcoded values.
+- 🧹 **Clean Analysis Logs** - Removed redundant project type reporting to provide a more focused and professional terminal output.
 
-**From v1.10.0:**
-- 🧠 **Smart Cycle Detection** - Eliminates "ghost cycles" caused by `TYPE_CHECKING` imports.
-- 🎯 **Accurate Stability Score** - Large projects reflect true architectural quality.
+**From v1.10.1:**
+- ⚡ **Async Support** - Full AST support for `AsyncFunctionDef` in metrics calculations.
 
-[**📖 Full Release Notes**](docs/releases/notes/v1.10.1.md) | [**🗺️ CLI Commands Roadmap**](docs/research/CLI_COMMANDS_ROADMAP.md)
+[**📖 Full Release Notes**](docs/releases/notes/v1.11.0.md) | [**🗺️ CLI Commands Roadmap**](docs/research/CLI_COMMANDS_ROADMAP.md)
 
 ## ⚖️ Why use this Analyzer? (Comparison)
 

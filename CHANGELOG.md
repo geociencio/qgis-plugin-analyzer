@@ -5,6 +5,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.11.0] - 2026-04-05
+
+### Added
+- **Dynamic Versioning**: Implemented a dynamic version retrieval system in `__init__.py` that automatically reads from `pyproject.toml` in development environments, eliminating hardcoded version strings.
+
+### Fixed
+- **Project Type Detection**: Fixed a critical bug where QGIS plugins were incorrectly detected as `GENERIC` projects if `metadata.txt` was ignored in `.analyzerignore`. Detección de metadatos ahora tiene prioridad sobre las reglas de ignorado.
+- **Engine Logs**: Reduced redundant "Project type" logging messages during analysis.
+
 ## [1.10.1] - 2026-03-20
 
 ### Fixed

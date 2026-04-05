@@ -17,9 +17,39 @@
 #  *   (at your option) any later version.                                   *
 #  *                                                                         *
 import importlib.metadata
+import pathlib
+import re
 
-try:
-    __version__ = importlib.metadata.version("qgis-plugin-analyzer")
-except importlib.metadata.PackageNotFoundError:
-    # Fallback for development when package is not installed
-    __version__ = "1.10.1"  # Default fallback if metadata is missing
+
+def _get_version() -> str:
+    """Dynamically identifies the project version.
+
+    Prioritizes official metadata (installed package) and falls back to
+    parsing pyproject.toml for development environments.
+    """
+    # 1. Try official metadata (Installed mode)
+    try:
+        return importlib.metadata.version("qgis-plugin-analyzer")
+    except importlib.metadata.PackageNotFoundError:
+        pass
+
+    # 2. Fallback to pyproject.toml (Development mode)
+    try:
+        current_path = pathlib.Path(__file__).resolve()
+        # Search up to 3 levels for pyproject.toml
+        for parent in [current_path.parent, current_path.parents[1], current_path.parents[2]]:
+            pyproject = parent / "pyproject.toml"
+            if pyproject.exists():
+                with open(pyproject, "r", encoding="utf-8") as f:
+                    content = f.read()
+                    # Match version = "X.Y.Z" under [project] or [tool.poetry]
+                    match = re.search(r'^version\s*=\s*["\']([^"\']+)["\']', content, re.MULTILINE)
+                    if match:
+                        return match.group(1)
+    except Exception:
+        pass
+
+    return "unknown"
+
+
+__version__ = _get_version()

@@ -162,15 +162,15 @@ def discover_project_files(project_path: pathlib.Path, matcher: IgnoreMatcher) -
         if not file_path.is_file():
             continue
 
+        # Check metadata (before ignore to ensure project type detection is robust)
+        if file_path.name == "metadata.txt" and file_path.parent == project_path:
+            has_metadata = True
+
         if matcher.is_ignored(file_path):
             continue
 
         # Basics
         total_bytes += file_path.stat().st_size
-
-        # Check metadata
-        if file_path.name == "metadata.txt" and file_path.parent == project_path:
-            has_metadata = True
 
         # Classify by extension
         ext = file_path.suffix.lower()
