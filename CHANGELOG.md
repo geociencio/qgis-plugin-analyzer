@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.12.0] - 2026-04-26
+
 ### Added
 - **Framework Upgrade**: Modernized agentic system to Gen 5 architecture. Integrated English-based workflows, specialized skills (`agentic-memory`, `domain-logic`), and global MCP scripts.
 - **Scaffold System**: Added `scaffold` blueprints for QGIS and mining specific plugin generation.
@@ -14,6 +16,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - Refactored `.agent` directory, unifying conventions and deleting legacy Spanish workflows.
 - Adjusted source codebase via `ruff` checks and code formatting.
+
+### Fixed
+- **Cache Staleness**: Fixed an issue where the `summary` command read cached JSON data without warning if the underlying source code was modified.
+- **Metrics Accuracy**: Refactored `metrics_visitor.py` to robustly detect return type hints on multi-line function signatures, eliminating false positive `MISSING_TYPE_HINTS` violations.
 
 ## [1.11.0] - 2026-04-05
 
