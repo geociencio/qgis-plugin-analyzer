@@ -138,6 +138,25 @@ def handle_summary(args: argparse.Namespace) -> None:
         args: Parsed command line arguments.
     """
     input_path = pathlib.Path(args.input).resolve()
+
+    if input_path.exists():
+        try:
+            json_mtime = input_path.stat().st_mtime
+            newer_files = False
+            for f in pathlib.Path(".").rglob("*.py"):
+                if any(part in (".venv", "venv", ".env") for part in f.parts):
+                    continue
+                if f.is_file() and f.stat().st_mtime > json_mtime:
+                    newer_files = True
+                    break
+
+            if newer_files:
+                print(
+                    "\n\033[93m⚠️  Warning: Source files have changed since the last analysis. Results may be stale. Run 'analyze' to refresh.\033[0m\n"
+                )
+        except Exception:
+            pass
+
     report_summary(input_path, by=args.by)
 
 

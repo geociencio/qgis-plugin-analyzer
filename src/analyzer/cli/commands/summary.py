@@ -17,7 +17,7 @@ class SummaryCommand(BaseCommand):
     @property
     def help(self) -> str:
         """Command help text."""
-        return "Show a quick terminal summary of analysis results"
+        return "Show a quick terminal summary of cached analysis results (does not re-scan)"
 
     def configure_parser(self, parser: argparse.ArgumentParser) -> None:
         """Configure summary command arguments.
@@ -28,7 +28,7 @@ class SummaryCommand(BaseCommand):
         parser.add_argument(
             "-i",
             "--input",
-            help="Path to the research JSON file",
+            help="Path to the research JSON file (viewer only, does not trigger scan)",
             default="analysis_results/project_context.json",
         )
         parser.add_argument(

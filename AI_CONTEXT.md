@@ -94,8 +94,8 @@ Motor de análisis estático y auto-fix para plugins de QGIS (PyQGIS). Combina r
 
 ## 📈 COMPLEXITY AND METRICS
 - **Total Modules**: 72
-- **Source Lines (SLOC)**: 8,620
-- **Total Physical Lines**: 13,275
+- **Source Lines (SLOC)**: 8,664
+- **Total Physical Lines**: 13,299
 - **Functions**: 0
 - **Classes**: 0
 - **Average Complexity**: 0.0
@@ -134,11 +134,11 @@ Motor de análisis estático y auto-fix para plugins de QGIS (PyQGIS). Combina r
 - `logging_utils` (2 imports)
 
 ## ⚠️ UNUSED IMPORTS
-- **scripts/mcp_server.py**: __future__.annotations
 - **src/analyzer/cli/commands/__init__.py**: analyze.AnalyzeCommand, fix.FixCommand, graph.GraphCommand, init.InitCommand, list_rules.ListRulesCommand
 - **src/analyzer/models/__init__.py**: analysis_models.ModuleAnalysis, analysis_models.ProjectContext
 - **src/analyzer/reporters/__init__.py**: html_reporter.generate_html_report, markdown_reporter.generate_markdown_summary, markdown_reporter.save_json_context
 - **src/analyzer/rules/__init__.py**: modernization_rules.get_modernization_rules, qgis_rules.I18N_METHODS, qgis_rules.get_qgis_audit_rules
+- **src/analyzer/utils/__init__.py**: ast_utils.calculate_complexity, ast_utils.calculate_module_complexity, ast_utils.check_main_guard, ast_utils.extract_classes_from_ast, ast_utils.extract_functions_from_ast
 
 ## 🕸️  DEPENDENCY STRUCTURE
 - **Nodes**: 72
@@ -148,7 +148,6 @@ Motor de análisis estático y auto-fix para plugins de QGIS (PyQGIS). Combina r
 ## 🕸️ DEPENDENCY DIAGRAM (Conceptual)
 ```mermaid
 graph TD
-    reproduce_bug --> py
     test_advanced_features --> py
     test_analyzer --> py
     test_fixer --> py
@@ -161,47 +160,48 @@ graph TD
     test_semantic --> py
     test_validators --> py
     test_vulnerability --> py
+    reproduce_bug --> py
     classDef module fill:#f9f,stroke:#333,stroke-width:2px;
-    skill_sync
-    class skill_sync module;
-    test_i18n_standards
-    class test_i18n_standards module;
+    init
+    class init module;
     test_high_complexity
     class test_high_complexity module;
     context_manager
     class context_manager module;
-    test_vulnerability
-    class test_vulnerability module;
-    reproduce_bug
-    class reproduce_bug module;
-    test_safety
-    class test_safety module;
-    test_fixer
-    class test_fixer module;
     test_analyzer
     class test_analyzer module;
-    test_scanner
-    class test_scanner module;
-    test_semantic
-    class test_semantic module;
-    ai_workflow
-    class ai_workflow module;
-    mcp_server
-    class mcp_server module;
-    security_scan
-    class security_scan module;
-    test_scoring
-    class test_scoring module;
-    test_validators
-    class test_validators module;
-    analyze_project_optfixed
-    class analyze_project_optfixed module;
-    test_security
-    class test_security module;
     run_tests_in_qgis
     class run_tests_in_qgis module;
+    init
+    class init module;
+    test_fixer
+    class test_fixer module;
+    test_scoring
+    class test_scoring module;
+    reproduce_bug
+    class reproduce_bug module;
+    test_i18n_standards
+    class test_i18n_standards module;
+    ai_workflow
+    class ai_workflow module;
     test_advanced_features
     class test_advanced_features module;
+    test_validators
+    class test_validators module;
+    test_safety
+    class test_safety module;
+    analyze_project_optfixed
+    class analyze_project_optfixed module;
+    test_vulnerability
+    class test_vulnerability module;
+    test_security
+    class test_security module;
+    test_semantic
+    class test_semantic module;
+    test_scanner
+    class test_scanner module;
+    skill_sync
+    class skill_sync module;
 ```
 
 ## 💡 OPTIMIZATION RECOMMENDATIONS
@@ -213,9 +213,10 @@ graph TD
 - **module_too_large**: Large module (2785 lines)
 ### .ai-context/context_manager.py
 - **complexity_refactoring**: Consider breaking down large logic
-### scripts/mcp_server.py
+### src/analyzer/engine.py
 - **complexity_refactoring**: Consider breaking down large logic
-### scripts/security_scan.py
+- **module_too_large**: Large module (869 lines)
+### src/analyzer/fixer.py
 - **complexity_refactoring**: Consider breaking down large logic
 
 ## 🔄 GIT AND EVOLUTION
@@ -226,7 +227,7 @@ graph TD
 - `src/analyzer/utils.py` (14 commits)
 - `src/analyzer/validators.py` (11 commits)
 ### Recent Churn (30 days):
-- Total lines changed: 19231
+- Total lines changed: 20036
 
 ## 🔑 PROJECT KEYWORDS
 - **Technologies**: .json, .md, .py, .yaml, .0, .sample, .1, .log

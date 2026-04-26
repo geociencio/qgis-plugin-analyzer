@@ -1,11 +1,11 @@
 # PROJECT SUMMARY - qgis_plugin_analyzer
-Analysis Date: 2026-04-26 19:28:58
+Analysis Date: 2026-04-26 19:44:11
 Analyzer Version: 3.1.1 (Ai-Context-Core)
 
 ## 📊 KEY METRICS
-- **Quality Score**: 67.1/100
-- **Source Lines (SLOC)**: 8,620
-- **Total Physical Lines**: 13,275
+- **Quality Score**: 66.9/100
+- **Source Lines (SLOC)**: 8,664
+- **Total Physical Lines**: 13,299
 - **Maintainability**: 42.2
 - **Test Coverage**: 14 test files
 
@@ -205,7 +205,7 @@ Analyzer Version: 3.1.1 (Ai-Context-Core)
 ### 🔒 Security Issues:
 - **.agent/scripts/skill_sync.py**: 2 issues (Max: HIGH)
 - **.ai-context/analyze_project_optfixed.py**: 24 issues (Max: HIGH)
-- **scripts/mcp_server.py**: 4 issues (Max: HIGH)
+- **src/analyzer/__init__.py**: 1 issues (Max: HIGH)
 
 ## 💡 MAIN RECOMMENDATIONS
 ### .ai-context/ai_workflow.py
@@ -265,10 +265,10 @@ Motor de análisis estático y auto-fix para plugins de QGIS (PyQGIS). Combina r
 
 ## 🔄 GIT ANALYSIS
 ### Code Churn (last 30 days)
-- **Files Changed**: 92
-- **Additions**: +11676
-- **Deletions**: -7555
-- **Total Churn**: 19231
+- **Files Changed**: 104
+- **Additions**: +12279
+- **Deletions**: -7757
+- **Total Churn**: 20036
 
 ### 🔥 Hotspots
 - `src/analyzer/engine.py`: 30 commits
@@ -278,5 +278,5 @@ Motor de análisis estático y auto-fix para plugins de QGIS (PyQGIS). Combina r
 - `src/analyzer/validators.py`: 11 commits
 
 ## 📈 COMPLEXITY DISTRIBUTION
-- **Average Complexity**: 19.35
+- **Average Complexity**: 19.47
 - **Max Complexity**: 372

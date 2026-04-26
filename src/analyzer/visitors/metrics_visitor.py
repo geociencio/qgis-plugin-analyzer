@@ -174,12 +174,15 @@ class MetricsVisitor(BaseVisitor):
         self.type_hint_stats["total_functions"] += 1
         params = [a for a in node.args.args if a.arg != "self" and a.arg != "cls"]
         self.type_hint_stats["total_parameters"] += len(params)
-        annotated = [a for a in params if a.annotation]
-        self.type_hint_stats["annotated_parameters"] += len(annotated)
-        if node.returns:
+
+        has_returns = node.returns is not None
+        if has_returns:
             self.type_hint_stats["has_return_hint"] += 1
 
-        if params and not annotated and not node.returns:
+        annotated = [a for a in params if a.annotation is not None]
+        self.type_hint_stats["annotated_parameters"] += len(annotated)
+
+        if params and not annotated and not has_returns:
             self._report_issue(
                 "MISSING_TYPE_HINTS",
                 node.lineno,

@@ -3,7 +3,7 @@ from __future__ import annotations
 import json
 import logging
 import sys
-from typing import Any, Dict, List
+from typing import Any
 
 # Configure logging to stderr to keep stdout clean for JSON-RPC
 logging.basicConfig(level=logging.INFO, stream=sys.stderr)
@@ -14,7 +14,7 @@ class SecInterpMCPServer:
     """Lightweight MCP server for SecInterp skills orchestration."""
 
     def __init__(self):
-        self.tools: Dict[str, Any] = {
+        self.tools: dict[str, Any] = {
             "get_architectural_pattern": {
                 "description": "Retrieve SecInterp architectural patterns (Extract-then-Compute).",
                 "parameters": {
@@ -89,7 +89,7 @@ class SecInterpMCPServer:
             except Exception as e:
                 logger.exception(f"Unexpected error: {e}")
 
-    def handle_request(self, request: Dict[str, Any]) -> Dict[str, Any]:
+    def handle_request(self, request: dict[str, Any]) -> dict[str, Any]:
         """Handle incoming JSON-RPC requests."""
         request_id = request.get("id")
         method = request.get("method")
@@ -126,8 +126,8 @@ class SecInterpMCPServer:
         }
 
     def call_tool(
-        self, request_id: Any, name: str, args: Dict[str, Any]
-    ) -> Dict[str, Any]:
+        self, request_id: Any, name: str, args: dict[str, Any]
+    ) -> dict[str, Any]:
         """Execute a specific tool logic."""
         logger.info(f"Calling tool: {name} with args: {args}")
 
@@ -209,10 +209,10 @@ class Test{class_name}(BaseTestCase):
             with open(lessons_path) as f:
                 content = f.read()
                 # Very simple parser for proof of concept
-                lessons: List[str] = content.split("  - date:")[1:]
+                lessons: list[str] = content.split("  - date:")[1:]
                 latest_list = lessons[:limit]
                 return "Latest Lessons:\n" + "\n".join(
-                    [" - date:" + l.strip() for l in latest_list]
+                    [" - date:" + lesson.strip() for lesson in latest_list]
                 )
         except Exception as e:
             return f"Error reading lessons: {e}"

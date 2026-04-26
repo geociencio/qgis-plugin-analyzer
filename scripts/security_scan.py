@@ -137,7 +137,7 @@ class SecurityScanner:
         critical_issues = 0
         warnings = 0
 
-        for tool, (code, output, report) in self.results.items():
+        for tool, (code, _output, report) in self.results.items():
             # Determine severity
             if tool in ["bandit", "detect-secrets"]:
                 severity = "CRITICAL" if code != 0 else "✅ PASS"

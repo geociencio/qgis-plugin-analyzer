@@ -86,7 +86,7 @@ def sync_workflows():
     """Sync workflows metadata into AGENTS.md workflow table."""
     base_path = Path(__file__).parent.parent
     workflows_dir = base_path / ".agent" / "workflows"
-    agents_file = base_path / ".agent" / "AGENTS.md"
+    base_path / ".agent" / "AGENTS.md"
 
     if not workflows_dir.exists():
         print(f"Error: {workflows_dir} not found.")

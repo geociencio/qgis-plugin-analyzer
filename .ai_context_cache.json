@@ -516,7 +516,7 @@
   },
   "src/analyzer/__init__.py": {
     "hash": "f6b1aaad0aeeb8f7db78252a37ba2dd6f45e2a1320db8e4cddf2bf01fdf38cd9",
-    "mtime": 1775421206.1927514,
+    "mtime": 1777247049.990476,
     "size": 2450,
     "data": {
       "path": "src/analyzer/__init__.py",
@@ -1014,15 +1014,15 @@
     "timestamp": 1770089110.68706
   },
   "scripts/skill_sync.py": {
-    "hash": "c6e70b1189d500325224302243a2abd6a5ed41d3bdf5ba9997cd9880cdbe4be8",
-    "mtime": 1775421206.391049,
-    "size": 4788,
+    "hash": "3faaf6fcd484d2d02d81c6e30624ccfc0bce5790ffde51db3a808b02c7305c18",
+    "mtime": 1777247050.1321292,
+    "size": 4774,
     "data": {
       "path": "scripts/skill_sync.py",
       "lines": 143,
       "sloc": 104,
       "loc": 104,
-      "file_size_kb": 4.67578125,
+      "file_size_kb": 4.662109375,
       "complexity": 20,
       "imports": [
         "re",
@@ -1054,12 +1054,12 @@
       },
       "halstead": {
         "vocabulary": 102,
-        "length": 296,
-        "volume": 1776,
-        "difficulty": 16.87,
-        "effort": 29955.2
+        "length": 295,
+        "volume": 1770,
+        "difficulty": 16.8,
+        "effort": 29736.0
       },
-      "maintenance_index": 30.56,
+      "maintenance_index": 30.57,
       "syntax_error": false,
       "unused_imports": [],
       "qgis_compliance": {
@@ -1096,7 +1096,7 @@
       ],
       "patterns": {}
     },
-    "timestamp": 1775421049.8864615
+    "timestamp": 1777247051.310222
   },
   "src/analyzer/reporters/__init__.py": {
     "hash": "7d5b2eda00ae05d0ddfd24c3f7b264bbca2d70ede3ecd66bc7177fa46cdfe92c",
@@ -1358,7 +1358,7 @@
   },
   "src/analyzer/rules/qgis_rules.py": {
     "hash": "94de59a97474109f429163067b3556009193c4736797ec5cfd257692cb90108d",
-    "mtime": 1775421206.4277463,
+    "mtime": 1777247050.0500457,
     "size": 2638,
     "data": {
       "path": "src/analyzer/rules/qgis_rules.py",
@@ -1429,7 +1429,7 @@
   },
   "src/analyzer/fixer.py": {
     "hash": "e50d143ef969323cd382d7eb34c1ad29741c9a36bbda790352ccadd3ccd5d2a1",
-    "mtime": 1775421206.6429257,
+    "mtime": 1777247050.4425585,
     "size": 12855,
     "data": {
       "path": "src/analyzer/fixer.py",
@@ -1614,7 +1614,7 @@
   },
   "src/analyzer/reporters/markdown_reporter.py": {
     "hash": "b8938bb582bd05aab0609cd3286dc29dd507addf3f219fc4c92eb77ce184f2cf",
-    "mtime": 1775421206.6816812,
+    "mtime": 1777247050.3605478,
     "size": 10443,
     "data": {
       "path": "src/analyzer/reporters/markdown_reporter.py",
@@ -1732,7 +1732,7 @@
   },
   "src/analyzer/reporters/summary_reporter.py": {
     "hash": "011393028006c9b74027f505f9622f1c66eca5a9b41bc479236fec5e5d9dc09a",
-    "mtime": 1775421206.8282022,
+    "mtime": 1777247050.5081344,
     "size": 13222,
     "data": {
       "path": "src/analyzer/reporters/summary_reporter.py",
@@ -2088,7 +2088,7 @@
   },
   "src/analyzer/reporters/html_reporter.py": {
     "hash": "ed9c5ca32112861d8ee08cba7ac281867277a0852efcad6b0f756c5772e859b7",
-    "mtime": 1775421206.7600648,
+    "mtime": 1777247050.4582443,
     "size": 15047,
     "data": {
       "path": "src/analyzer/reporters/html_reporter.py",
@@ -2385,7 +2385,7 @@
   },
   "src/analyzer/transformers.py": {
     "hash": "0a0b619eff4f6c9e850ab9d278dddcb05b5d08fba3b11aa33167ff5fbff069e6",
-    "mtime": 1775421206.5606842,
+    "mtime": 1777247050.3209732,
     "size": 7795,
     "data": {
       "path": "src/analyzer/transformers.py",
@@ -2494,7 +2494,7 @@
   },
   "src/analyzer/utils/ast_utils.py": {
     "hash": "3d7ffa1dd7b6c0034ea9aa078ebcd29880139f7ad2475dd4006926d700201f91",
-    "mtime": 1775421206.6416297,
+    "mtime": 1777247050.4075718,
     "size": 7725,
     "data": {
       "path": "src/analyzer/utils/ast_utils.py",
@@ -2647,7 +2647,7 @@
   },
   "src/analyzer/engine.py": {
     "hash": "9668ac7688ccdf9d963f13d899a7ebb31d8b1891437d409dfc16118aa2959e1d",
-    "mtime": 1775421207.0916028,
+    "mtime": 1777247050.8369935,
     "size": 31974,
     "data": {
       "path": "src/analyzer/engine.py",
@@ -3119,7 +3119,7 @@
   },
   "src/analyzer/utils/config_utils.py": {
     "hash": "318834a39e36e64253e0fdf419aebb05e521841424d2b5b599cc22156d7075ae",
-    "mtime": 1775421206.6146395,
+    "mtime": 1777247050.2989023,
     "size": 4888,
     "data": {
       "path": "src/analyzer/utils/config_utils.py",
@@ -3214,7 +3214,7 @@
   },
   "src/analyzer/utils/path_utils.py": {
     "hash": "17ef41957cf1bf29c73354429a0a3ce1a7ecf9ed7bc365f3a4962a2c0112e75e",
-    "mtime": 1775421206.5880241,
+    "mtime": 1777247050.3516154,
     "size": 5950,
     "data": {
       "path": "src/analyzer/utils/path_utils.py",
@@ -3766,7 +3766,7 @@
   },
   "src/analyzer/validators.py": {
     "hash": "9a3801b85bf4c5816366b216116e7da71756f745b2ecaacd77856349525dfb7e",
-    "mtime": 1775421206.724155,
+    "mtime": 1777247050.5067408,
     "size": 9443,
     "data": {
       "path": "src/analyzer/validators.py",
@@ -3937,7 +3937,7 @@
   },
   "src/analyzer/scanner.py": {
     "hash": "d6cb511414a3f5e5a40ccafea3a87363112e4108cd826e19ec688aae7b7ad283",
-    "mtime": 1775421206.795666,
+    "mtime": 1777247050.4785948,
     "size": 11887,
     "data": {
       "path": "src/analyzer/scanner.py",
@@ -5544,7 +5544,7 @@
   },
   ".agent/scripts/skill_sync.py": {
     "hash": "9b063fa952223b58690175839965caedd8aed38a1fa5cc73ab343665213ca39e",
-    "mtime": 1775421206.2839346,
+    "mtime": 1777247050.127626,
     "size": 4749,
     "data": {
       "path": ".agent/scripts/skill_sync.py",
@@ -5628,16 +5628,16 @@
     "timestamp": 1775421049.8857217
   },
   "src/analyzer/commands.py": {
-    "hash": "5db7052616817f151dbd04f687435834bfdff1f8e51f0b3c4030bc6fd34642ad",
-    "mtime": 1771127145.3346786,
-    "size": 5666,
+    "hash": "91d5c06f22a2245b68bf6349a71d2eae12faa962cc596561e4e5a64e314114c0",
+    "mtime": 1777247049.4025977,
+    "size": 6357,
     "data": {
       "path": "src/analyzer/commands.py",
-      "lines": 172,
-      "sloc": 102,
-      "loc": 102,
-      "file_size_kb": 5.533203125,
-      "complexity": 25,
+      "lines": 191,
+      "sloc": 118,
+      "loc": 118,
+      "file_size_kb": 6.2080078125,
+      "complexity": 33,
       "imports": [
         "argparse",
         "dataclasses",
@@ -5682,13 +5682,13 @@
         "coverage": 100.0
       },
       "halstead": {
-        "vocabulary": 107,
-        "length": 314,
-        "volume": 1884,
-        "difficulty": 12.4,
-        "effort": 23357.76
+        "vocabulary": 119,
+        "length": 348,
+        "volume": 2088,
+        "difficulty": 15.02,
+        "effort": 31368.33
       },
-      "maintenance_index": 29.89,
+      "maintenance_index": 27.12,
       "syntax_error": false,
       "unused_imports": [],
       "qgis_compliance": {
@@ -5696,7 +5696,7 @@
         "i18n_usage": {
           "tr": 0,
           "translate": 0,
-          "total_strings": 43
+          "total_strings": 45
         },
         "gdal_import_style": "Modern",
         "qt_transition": {
@@ -5717,14 +5717,21 @@
           "value": 30
         }
       ],
-      "ast_security": [],
+      "ast_security": [
+        {
+          "pattern": "except Exception:",
+          "severity": "low",
+          "line": 157,
+          "description": "Too broad exception handler"
+        }
+      ],
       "patterns": {}
     },
-    "timestamp": 1774049778.8572946
+    "timestamp": 1777247051.310359
   },
   "src/analyzer/secrets.py": {
     "hash": "db660aa3a16136718cb1ad8a3ee1c3524a277967e0dd963f2240815ad49cd103",
-    "mtime": 1775421206.5056858,
+    "mtime": 1777247050.074261,
     "size": 2963,
     "data": {
       "path": "src/analyzer/secrets.py",
@@ -5834,7 +5841,7 @@
   },
   "src/analyzer/security_checker.py": {
     "hash": "ccf01f8fed29dbb596a7883180b85b1c1ee0e5d60da6c2f43f78d88b094a247e",
-    "mtime": 1775421206.350041,
+    "mtime": 1777247050.1262603,
     "size": 2853,
     "data": {
       "path": "src/analyzer/security_checker.py",
@@ -5941,7 +5948,7 @@
   },
   "src/analyzer/security_rules.py": {
     "hash": "d87080fcd577d65c253e9226024eacddd73dcc8e645ac5e9f378e1572e0ba7ba",
-    "mtime": 1775421206.6012142,
+    "mtime": 1777247050.2621293,
     "size": 5293,
     "data": {
       "path": "src/analyzer/security_rules.py",
@@ -6547,7 +6554,7 @@
   },
   "src/analyzer/cli/commands/fix.py": {
     "hash": "c8805f1a376eff9a10b548cb88dcde80013981057a2b365cffb1e300b1f12c15",
-    "mtime": 1775421206.224559,
+    "mtime": 1777247050.0223,
     "size": 1666,
     "data": {
       "path": "src/analyzer/cli/commands/fix.py",
@@ -6688,7 +6695,7 @@
   },
   "src/analyzer/cli/app.py": {
     "hash": "06ac5d28599489966e61d121008cbfe9bdc2041a1980f2bca64470df17cd4505",
-    "mtime": 1775421206.3512337,
+    "mtime": 1777247050.1164074,
     "size": 4545,
     "data": {
       "path": "src/analyzer/cli/app.py",
@@ -6876,12 +6883,16 @@
     "timestamp": 1771126008.876197
   },
   "src/analyzer/cli/commands/summary.py": {
-    "hash": "52e42e025dfdcfcf7cbbf38773be6af08be03915ffacf19717c6e6c87de6b091",
+    "hash": "1373046283fddf872392f1317782e117cc5a2e66b18cec11743c9b3375e63e74",
+    "mtime": 1777246724.472905,
+    "size": 1446,
     "data": {
       "path": "src/analyzer/cli/commands/summary.py",
       "lines": 52,
-      "file_size_kb": 1.3505859375,
-      "complexity": 0,
+      "sloc": 27,
+      "loc": 27,
+      "file_size_kb": 1.412109375,
+      "complexity": 1,
       "imports": [
         "argparse",
         "commands.handle_summary",
@@ -6925,16 +6936,31 @@
         "difficulty": 1.17,
         "effort": 182.9
       },
+      "maintenance_index": 53.29,
+      "syntax_error": false,
+      "unused_imports": [],
+      "qgis_compliance": {
+        "processing_framework": false,
+        "i18n_usage": {
+          "tr": 0,
+          "translate": 0,
+          "total_strings": 11
+        },
+        "gdal_import_style": "Modern",
+        "qt_transition": {
+          "pyqt5_imports": [],
+          "pyqt6_imports": []
+        },
+        "signals_slots": {
+          "legacy": 0,
+          "modern": 0
+        }
+      },
       "antipatterns": [],
       "ast_security": [],
-      "patterns": {},
-      "unused_imports": [],
-      "maintenance_index": 47.21,
-      "syntax_error": false
+      "patterns": {}
     },
-    "timestamp": 1770089110.685951,
-    "mtime": 1770086635.985221,
-    "size": 1383
+    "timestamp": 1777246987.7124193
   },
   "src/analyzer/cli/commands/version.py": {
     "hash": "1a19fd4e71309c3bf3a93db9ab16628546b7517befa3c46a02d285fe52d70e79",
@@ -7069,7 +7095,7 @@
   },
   "src/analyzer/visitors/base.py": {
     "hash": "3b3bf1cab1f5ccb05be565109e93961dc66ce4ab3aee94ae680c92dcfcc07c7a",
-    "mtime": 1775421206.5950837,
+    "mtime": 1777247050.3929427,
     "size": 5501,
     "data": {
       "path": "src/analyzer/visitors/base.py",
@@ -7388,15 +7414,15 @@
     "timestamp": 1775421049.6216857
   },
   "src/analyzer/visitors/metrics_visitor.py": {
-    "hash": "f3e7c6245e86a80c38476f58f52b8ce8211188ca78b43785f527cd21bedb4617",
-    "mtime": 1774050496.9079106,
-    "size": 6528,
+    "hash": "b71722bb9d9cf7274b4f4971881f3ed6a53b02080271be0e6f1fb86f46d78017",
+    "mtime": 1777246979.376386,
+    "size": 6587,
     "data": {
       "path": "src/analyzer/visitors/metrics_visitor.py",
-      "lines": 188,
-      "sloc": 116,
-      "loc": 116,
-      "file_size_kb": 6.375,
+      "lines": 191,
+      "sloc": 117,
+      "loc": 117,
+      "file_size_kb": 6.4326171875,
       "complexity": 22,
       "imports": [
         "ast",
@@ -7448,13 +7474,13 @@
         "coverage": 100.0
       },
       "halstead": {
-        "vocabulary": 76,
-        "length": 280,
-        "volume": 1680,
-        "difficulty": 15.51,
-        "effort": 26065.07
+        "vocabulary": 78,
+        "length": 286,
+        "volume": 1716,
+        "difficulty": 17.28,
+        "effort": 29651.47
       },
-      "maintenance_index": 29.42,
+      "maintenance_index": 29.28,
       "syntax_error": false,
       "unused_imports": [],
       "qgis_compliance": {
@@ -7493,11 +7519,11 @@
       "ast_security": [],
       "patterns": {}
     },
-    "timestamp": 1775411837.3783967
+    "timestamp": 1777246987.7359169
   },
   "src/analyzer/visitors/standards_visitor.py": {
     "hash": "62e0c773af3f4d0a09f4f961e1d43a1284093d388ba9aa2e86baf767ac2ed88e",
-    "mtime": 1775421206.8957765,
+    "mtime": 1777247050.6443338,
     "size": 14867,
     "data": {
       "path": "src/analyzer/visitors/standards_visitor.py",
@@ -7623,7 +7649,7 @@
   },
   "tests/test_semantic.py": {
     "hash": "9f43e55b18825321b41856d4a93a0619b78232608be0150ae82c9bdb827c6cf6",
-    "mtime": 1775421206.757744,
+    "mtime": 1777247050.5041401,
     "size": 4630,
     "data": {
       "path": "tests/test_semantic.py",
@@ -7890,7 +7916,7 @@
   },
   "tests/test_vulnerability.py": {
     "hash": "919f054b5005c42967226e8fc13156b558552bba0f9923636f3254721de00c1c",
-    "mtime": 1775421206.7216623,
+    "mtime": 1777247050.4759386,
     "size": 2408,
     "data": {
       "path": "tests/test_vulnerability.py",
@@ -7970,7 +7996,7 @@
   },
   "tests/test_advanced_features.py": {
     "hash": "a5799caf848057c3374c9e6eb251ba36f92d1653c6d28535ab5bfcf24c9e4d2c",
-    "mtime": 1775421206.6577017,
+    "mtime": 1777247050.4151297,
     "size": 3745,
     "data": {
       "path": "tests/test_advanced_features.py",
@@ -8614,7 +8640,7 @@
   },
   "tests/test_scanner.py": {
     "hash": "eed42f839bab8c7d1a02fb844d8328830c6aefdecd4f17a571cfff82e91498e9",
-    "mtime": 1775421206.7351544,
+    "mtime": 1777247050.4449995,
     "size": 2991,
     "data": {
       "path": "tests/test_scanner.py",
@@ -8704,7 +8730,7 @@
   },
   "tests/test_scoring.py": {
     "hash": "0bbf1f05368e5dd9ff811bbe053f4b80c6401ed2e426cfc13d96ff59eef3b9da",
-    "mtime": 1775421206.7276156,
+    "mtime": 1777247050.4738228,
     "size": 2944,
     "data": {
       "path": "tests/test_scoring.py",
@@ -9308,7 +9334,7 @@
   },
   "src/analyzer/visitors/safety_visitor.py": {
     "hash": "7c406807841a10a03e3407322d8d67716972637d03bfb067d0c53915396ebf8f",
-    "mtime": 1775421206.6450586,
+    "mtime": 1777247050.4504673,
     "size": 5305,
     "data": {
       "path": "src/analyzer/visitors/safety_visitor.py",
@@ -9402,7 +9428,7 @@
   },
   "tests/test_i18n_heuristics.py": {
     "hash": "6cb3283e878fb60362f3107b0f3c5bb5aeec2f398d31a0c17954f54966e866a4",
-    "mtime": 1775421206.651321,
+    "mtime": 1777247050.3472867,
     "size": 1939,
     "data": {
       "path": "tests/test_i18n_heuristics.py",
@@ -9485,15 +9511,15 @@
     "timestamp": 1775421049.5433187
   },
   "scripts/mcp_server.py": {
-    "hash": "b8795e493673c24b0827bac3760e4f8eee8cc3d2c94c5160dca34edbac6302a1",
-    "mtime": 1775421206.482134,
-    "size": 8474,
+    "hash": "4cde1c75cf3c3aca4b7e01fd80e10b653fae736dfdf949a7bdefdb425de8081b",
+    "mtime": 1777247050.257838,
+    "size": 8472,
     "data": {
       "path": "scripts/mcp_server.py",
       "lines": 223,
       "sloc": 194,
       "loc": 194,
-      "file_size_kb": 8.275390625,
+      "file_size_kb": 8.2734375,
       "complexity": 26,
       "imports": [
         "__future__.annotations",
@@ -9501,8 +9527,6 @@
         "logging",
         "sys",
         "typing.Any",
-        "typing.Dict",
-        "typing.List",
         "os"
       ],
       "classes": [
@@ -9636,18 +9660,18 @@
       ],
       "patterns": {}
     },
-    "timestamp": 1775421049.886373
+    "timestamp": 1777247051.3099492
   },
   "scripts/security_scan.py": {
-    "hash": "b0837089bd5ccf7369523a13b7d9813614c18bab512e41d464661f073b26837c",
-    "mtime": 1775421206.363695,
-    "size": 6123,
+    "hash": "52a8ba46783e80011647328bb9c71890fb279b4a9e2ac13fbfe613005132ef58",
+    "mtime": 1777247050.2059207,
+    "size": 6124,
     "data": {
       "path": "scripts/security_scan.py",
       "lines": 195,
       "sloc": 133,
       "loc": 133,
-      "file_size_kb": 5.9794921875,
+      "file_size_kb": 5.98046875,
       "complexity": 19,
       "imports": [
         "argparse",
@@ -9699,11 +9723,11 @@
         "coverage": 62.5
       },
       "halstead": {
-        "vocabulary": 125,
+        "vocabulary": 126,
         "length": 340,
         "volume": 2040,
-        "difficulty": 18.73,
-        "effort": 38208.65
+        "difficulty": 18.56,
+        "effort": 37867.5
       },
       "maintenance_index": 27.94,
       "syntax_error": false,
@@ -9779,23 +9803,23 @@
       ],
       "patterns": {}
     },
-    "timestamp": 1775421049.8864222
+    "timestamp": 1777247051.3101244
   },
   "reproduce_bug.py": {
-    "hash": "d0025c2b13c726f012364eb0e809c6750048702227b496b2091756021726c8a0",
-    "mtime": 1777245626.32408,
-    "size": 697,
+    "hash": "3305adfef0fa35e2cfea89601c31f7181a08151d29a5da7f5d5ae6ac6839789f",
+    "mtime": 1777247049.3985977,
+    "size": 691,
     "data": {
       "path": "reproduce_bug.py",
-      "lines": 32,
+      "lines": 34,
       "sloc": 25,
       "loc": 25,
-      "file_size_kb": 0.6806640625,
+      "file_size_kb": 0.6748046875,
       "complexity": 3,
       "imports": [
         "ast",
-        "sys",
         "os",
+        "sys",
         "analyzer.visitors.metrics_visitor.MetricsVisitor"
       ],
       "classes": [],
@@ -9850,6 +9874,6 @@
       "ast_security": [],
       "patterns": {}
     },
-    "timestamp": 1777246060.4550123
+    "timestamp": 1777247051.3095596
   }
 }
