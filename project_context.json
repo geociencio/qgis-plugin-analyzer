@@ -1,19 +1,19 @@
 {
   "project_name": "qgis_plugin_analyzer",
   "metrics": {
-    "quality_score": 66.40232394366197,
-    "total_lines_code": 8595,
-    "total_physical_lines": 13243,
-    "avg_complexity": 19.58,
+    "quality_score": 67.11534722222223,
+    "total_lines_code": 8620,
+    "total_physical_lines": 13275,
+    "avg_complexity": 19.35,
     "max_complexity": 372,
-    "avg_maintainability": 42.04,
+    "avg_maintainability": 42.21,
     "test_files_count": 14,
-    "entry_points_count": 20
+    "entry_points_count": 21
   },
   "complexity": {
-    "total_modules": 71,
-    "total_lines": 8595,
-    "total_physical_lines": 13243,
+    "total_modules": 72,
+    "total_lines": 8620,
+    "total_physical_lines": 13275,
     "total_functions": 0,
     "total_classes": 0,
     "average_complexity": 0,
@@ -2105,6 +2105,71 @@
           }
         ]
       }
+    },
+    {
+      "path": "reproduce_bug.py",
+      "lines": 32,
+      "sloc": 25,
+      "loc": 25,
+      "file_size_kb": 0.6806640625,
+      "complexity": 3,
+      "imports": [
+        "ast",
+        "sys",
+        "os",
+        "analyzer.visitors.metrics_visitor.MetricsVisitor"
+      ],
+      "classes": [],
+      "functions": [
+        "reproduce_issue"
+      ],
+      "docstrings": {
+        "module": false,
+        "classes": {},
+        "functions": {
+          "reproduce_issue": false
+        }
+      },
+      "entry_point_info": {
+        "is_entry_point": true,
+        "type": "main_guard"
+      },
+      "has_main": true,
+      "type_hints": {
+        "total_functions": 1,
+        "typed_functions": 0,
+        "coverage": 0.0
+      },
+      "halstead": {
+        "vocabulary": 24,
+        "length": 34,
+        "volume": 136,
+        "difficulty": 2.07,
+        "effort": 281.71
+      },
+      "maintenance_index": 54.16,
+      "syntax_error": false,
+      "unused_imports": [],
+      "qgis_compliance": {
+        "processing_framework": false,
+        "i18n_usage": {
+          "tr": 0,
+          "translate": 0,
+          "total_strings": 5
+        },
+        "gdal_import_style": "Modern",
+        "qt_transition": {
+          "pyqt5_imports": [],
+          "pyqt6_imports": []
+        },
+        "signals_slots": {
+          "legacy": 0,
+          "modern": 0
+        }
+      },
+      "antipatterns": [],
+      "ast_security": [],
+      "patterns": {}
     },
     {
       "path": "scripts/mcp_server.py",
@@ -8690,6 +8755,7 @@
       "analyzer.validators.validate_package_constraints",
       "analyzer.validators.validate_plugin_structure",
       "analyzer.visitors.composite_visitor.CompositeVisitor",
+      "analyzer.visitors.metrics_visitor.MetricsVisitor",
       "analyzer.visitors.qgis_rules_visitor.QGISRulesVisitor",
       "analyzer.visitors.safety_visitor.SafetyVisitor",
       "analyzer.visitors.standards_visitor.StandardsVisitor"
@@ -8881,6 +8947,9 @@
       ".ai-context/ai_workflow.py": [],
       ".ai-context/analyze_project_optfixed.py": [],
       ".ai-context/context_manager.py": [],
+      "reproduce_bug.py": [
+        "src/analyzer/visitors/metrics_visitor.py"
+      ],
       "scripts/mcp_server.py": [],
       "scripts/run_tests_in_qgis.py": [],
       "scripts/security_scan.py": [],
@@ -8936,13 +9005,13 @@
       "src/analyzer/visitors/security_visitor.py": [],
       "src/analyzer/visitors/standards_visitor.py": [],
       "tests/test_advanced_features.py": [
-        "src/analyzer/visitors/standards_visitor.py",
+        "src/analyzer/utils/ast_utils.py",
         "src/analyzer/visitors/qgis_rules_visitor.py",
-        "src/analyzer/utils/ast_utils.py"
+        "src/analyzer/visitors/standards_visitor.py"
       ],
       "tests/test_analyzer.py": [
-        "src/analyzer/utils/__init__.py",
-        "src/analyzer/reporters/__init__.py"
+        "src/analyzer/reporters/__init__.py",
+        "src/analyzer/utils/__init__.py"
       ],
       "tests/test_fixer.py": [
         "src/analyzer/transformers.py"
@@ -8958,8 +9027,8 @@
         "src/analyzer/visitors/safety_visitor.py"
       ],
       "tests/test_scanner.py": [
-        "src/analyzer/validators.py",
-        "src/analyzer/scanner.py"
+        "src/analyzer/scanner.py",
+        "src/analyzer/validators.py"
       ],
       "tests/test_scoring.py": [
         "src/analyzer/engine.py"
@@ -8969,8 +9038,8 @@
         "src/analyzer/utils/__init__.py"
       ],
       "tests/test_semantic.py": [
-        "src/analyzer/semantic.py",
-        "src/analyzer/utils/ast_utils.py"
+        "src/analyzer/utils/ast_utils.py",
+        "src/analyzer/semantic.py"
       ],
       "tests/test_validators.py": [
         "src/analyzer/validators.py"
@@ -8981,74 +9050,14 @@
     },
     "circular_dependencies": [],
     "graph_metrics": {
-      "nodes": 71,
-      "edges": 18,
-      "density": 0.0036217303822937627,
+      "nodes": 72,
+      "edges": 19,
+      "density": 0.0037167449139280124,
       "is_dag": true,
       "weakly_connected_components": 53
     },
     "coupling_metrics": {
-      "src/analyzer/cli/__init__.py": {
-        "fan_in": 0,
-        "fan_out": 0,
-        "cbo": 0
-      },
-      "src/analyzer/cli/commands/version.py": {
-        "fan_in": 0,
-        "fan_out": 0,
-        "cbo": 0
-      },
-      "src/analyzer/fixer.py": {
-        "fan_in": 0,
-        "fan_out": 0,
-        "cbo": 0
-      },
-      "src/analyzer/cli.py": {
-        "fan_in": 0,
-        "fan_out": 0,
-        "cbo": 0
-      },
-      "src/analyzer/utils/performance_utils.py": {
-        "fan_in": 0,
-        "fan_out": 0,
-        "cbo": 0
-      },
-      "src/analyzer/reporters/html_reporter.py": {
-        "fan_in": 0,
-        "fan_out": 0,
-        "cbo": 0
-      },
-      "tests/test_i18n_standards.py": {
-        "fan_in": 0,
-        "fan_out": 1,
-        "cbo": 1
-      },
-      "tests/test_security.py": {
-        "fan_in": 0,
-        "fan_out": 2,
-        "cbo": 2
-      },
-      "tests/test_semantic.py": {
-        "fan_in": 0,
-        "fan_out": 2,
-        "cbo": 2
-      },
-      "src/analyzer/visitors/imports_visitor.py": {
-        "fan_in": 0,
-        "fan_out": 0,
-        "cbo": 0
-      },
-      "tests/test_fixer.py": {
-        "fan_in": 0,
-        "fan_out": 1,
-        "cbo": 1
-      },
-      "src/analyzer/cli/app.py": {
-        "fan_in": 0,
-        "fan_out": 0,
-        "cbo": 0
-      },
-      "scripts/run_tests_in_qgis.py": {
+      "src/analyzer/models/__init__.py": {
         "fan_in": 0,
         "fan_out": 0,
         "cbo": 0
@@ -9058,197 +9067,12 @@
         "fan_out": 0,
         "cbo": 0
       },
-      "src/analyzer/visitors/__init__.py": {
+      "src/analyzer/visitors/imports_visitor.py": {
         "fan_in": 0,
         "fan_out": 0,
         "cbo": 0
       },
-      "src/analyzer/__init__.py": {
-        "fan_in": 0,
-        "fan_out": 0,
-        "cbo": 0
-      },
-      "src/analyzer/cli/commands/init.py": {
-        "fan_in": 0,
-        "fan_out": 0,
-        "cbo": 0
-      },
-      "src/analyzer/security_rules.py": {
-        "fan_in": 0,
-        "fan_out": 0,
-        "cbo": 0
-      },
-      "src/analyzer/cli/commands/__init__.py": {
-        "fan_in": 0,
-        "fan_out": 0,
-        "cbo": 0
-      },
-      "src/analyzer/cli/commands/fix.py": {
-        "fan_in": 0,
-        "fan_out": 0,
-        "cbo": 0
-      },
-      "src/analyzer/reporters/markdown_reporter.py": {
-        "fan_in": 0,
-        "fan_out": 0,
-        "cbo": 0
-      },
-      "src/analyzer/cli/commands/graph.py": {
-        "fan_in": 0,
-        "fan_out": 0,
-        "cbo": 0
-      },
-      "src/analyzer/semantic.py": {
-        "fan_in": 1,
-        "fan_out": 0,
-        "cbo": 1
-      },
-      "src/analyzer/transformers.py": {
-        "fan_in": 1,
-        "fan_out": 0,
-        "cbo": 1
-      },
-      "src/analyzer/visitors/composite_visitor.py": {
-        "fan_in": 1,
-        "fan_out": 0,
-        "cbo": 1
-      },
-      "src/analyzer/visitors/standards_visitor.py": {
-        "fan_in": 1,
-        "fan_out": 0,
-        "cbo": 1
-      },
-      "tests/test_high_complexity.py": {
-        "fan_in": 0,
-        "fan_out": 1,
-        "cbo": 1
-      },
-      "src/analyzer/rules/__init__.py": {
-        "fan_in": 0,
-        "fan_out": 0,
-        "cbo": 0
-      },
-      "src/analyzer/cli/commands/security.py": {
-        "fan_in": 0,
-        "fan_out": 0,
-        "cbo": 0
-      },
-      ".ai-context/context_manager.py": {
-        "fan_in": 0,
-        "fan_out": 0,
-        "cbo": 0
-      },
-      "scripts/skill_sync.py": {
-        "fan_in": 0,
-        "fan_out": 0,
-        "cbo": 0
-      },
-      "src/analyzer/visitors/base.py": {
-        "fan_in": 0,
-        "fan_out": 0,
-        "cbo": 0
-      },
-      "tests/test_safety.py": {
-        "fan_in": 0,
-        "fan_out": 1,
-        "cbo": 1
-      },
-      "src/analyzer/scanner.py": {
-        "fan_in": 3,
-        "fan_out": 0,
-        "cbo": 3
-      },
-      "src/analyzer/reporters/__init__.py": {
-        "fan_in": 1,
-        "fan_out": 0,
-        "cbo": 1
-      },
-      "tests/test_validators.py": {
-        "fan_in": 0,
-        "fan_out": 1,
-        "cbo": 1
-      },
-      "src/analyzer/cli/commands/analyze.py": {
-        "fan_in": 0,
-        "fan_out": 0,
-        "cbo": 0
-      },
-      "scripts/security_scan.py": {
-        "fan_in": 0,
-        "fan_out": 0,
-        "cbo": 0
-      },
-      "src/analyzer/utils/config_utils.py": {
-        "fan_in": 0,
-        "fan_out": 0,
-        "cbo": 0
-      },
-      "tests/test_scanner.py": {
-        "fan_in": 0,
-        "fan_out": 2,
-        "cbo": 2
-      },
-      "src/analyzer/utils/__init__.py": {
-        "fan_in": 2,
-        "fan_out": 0,
-        "cbo": 2
-      },
-      "src/analyzer/visitors/qgis_rules_visitor.py": {
-        "fan_in": 1,
-        "fan_out": 0,
-        "cbo": 1
-      },
-      "scripts/mcp_server.py": {
-        "fan_in": 0,
-        "fan_out": 0,
-        "cbo": 0
-      },
-      "src/__init__.py": {
-        "fan_in": 0,
-        "fan_out": 0,
-        "cbo": 0
-      },
-      "src/analyzer/models/analysis_models.py": {
-        "fan_in": 0,
-        "fan_out": 0,
-        "cbo": 0
-      },
-      "src/analyzer/commands.py": {
-        "fan_in": 0,
-        "fan_out": 0,
-        "cbo": 0
-      },
-      "src/analyzer/utils/logging_utils.py": {
-        "fan_in": 0,
-        "fan_out": 0,
-        "cbo": 0
-      },
-      "src/analyzer/validators.py": {
-        "fan_in": 3,
-        "fan_out": 0,
-        "cbo": 3
-      },
-      "src/analyzer/visitors/security_visitor.py": {
-        "fan_in": 0,
-        "fan_out": 0,
-        "cbo": 0
-      },
-      "src/analyzer/utils/ast_utils.py": {
-        "fan_in": 2,
-        "fan_out": 0,
-        "cbo": 2
-      },
-      "src/analyzer/reporters/summary_reporter.py": {
-        "fan_in": 0,
-        "fan_out": 0,
-        "cbo": 0
-      },
-      "src/analyzer/secrets.py": {
-        "fan_in": 0,
-        "fan_out": 0,
-        "cbo": 0
-      },
-      "src/analyzer/visitors/metrics_visitor.py": {
+      "src/analyzer/utils/path_utils.py": {
         "fan_in": 0,
         "fan_out": 0,
         "cbo": 0
@@ -9258,22 +9082,57 @@
         "fan_out": 0,
         "cbo": 0
       },
-      "src/analyzer/security_checker.py": {
+      "src/analyzer/cli/commands/fix.py": {
         "fan_in": 0,
         "fan_out": 0,
         "cbo": 0
       },
-      ".ai-context/analyze_project_optfixed.py": {
+      "src/analyzer/reporters/summary_reporter.py": {
         "fan_in": 0,
         "fan_out": 0,
         "cbo": 0
       },
-      "src/analyzer/rules/modernization_rules.py": {
+      "tests/test_i18n_standards.py": {
+        "fan_in": 0,
+        "fan_out": 1,
+        "cbo": 1
+      },
+      "tests/test_high_complexity.py": {
+        "fan_in": 0,
+        "fan_out": 1,
+        "cbo": 1
+      },
+      ".ai-context/context_manager.py": {
         "fan_in": 0,
         "fan_out": 0,
         "cbo": 0
       },
-      "tests/test_i18n_heuristics.py": {
+      "reproduce_bug.py": {
+        "fan_in": 0,
+        "fan_out": 1,
+        "cbo": 1
+      },
+      "tests/test_vulnerability.py": {
+        "fan_in": 0,
+        "fan_out": 1,
+        "cbo": 1
+      },
+      "src/analyzer/cli.py": {
+        "fan_in": 0,
+        "fan_out": 0,
+        "cbo": 0
+      },
+      "src/analyzer/utils/__init__.py": {
+        "fan_in": 2,
+        "fan_out": 0,
+        "cbo": 2
+      },
+      "tests/test_safety.py": {
+        "fan_in": 0,
+        "fan_out": 1,
+        "cbo": 1
+      },
+      "src/analyzer/visitors/__init__.py": {
         "fan_in": 0,
         "fan_out": 0,
         "cbo": 0
@@ -9283,19 +9142,59 @@
         "fan_out": 0,
         "cbo": 0
       },
-      "tests/test_scoring.py": {
-        "fan_in": 0,
-        "fan_out": 1,
+      "src/analyzer/visitors/metrics_visitor.py": {
+        "fan_in": 1,
+        "fan_out": 0,
         "cbo": 1
       },
-      "src/analyzer/utils/path_utils.py": {
+      "src/analyzer/reporters/__init__.py": {
+        "fan_in": 1,
+        "fan_out": 0,
+        "cbo": 1
+      },
+      "src/analyzer/__init__.py": {
         "fan_in": 0,
         "fan_out": 0,
         "cbo": 0
       },
-      "tests/test_vulnerability.py": {
+      "tests/test_fixer.py": {
         "fan_in": 0,
         "fan_out": 1,
+        "cbo": 1
+      },
+      "src/analyzer/commands.py": {
+        "fan_in": 0,
+        "fan_out": 0,
+        "cbo": 0
+      },
+      "src/analyzer/visitors/standards_visitor.py": {
+        "fan_in": 1,
+        "fan_out": 0,
+        "cbo": 1
+      },
+      "src/analyzer/cli/commands/analyze.py": {
+        "fan_in": 0,
+        "fan_out": 0,
+        "cbo": 0
+      },
+      "src/analyzer/rules/modernization_rules.py": {
+        "fan_in": 0,
+        "fan_out": 0,
+        "cbo": 0
+      },
+      "src/analyzer/cli/commands/version.py": {
+        "fan_in": 0,
+        "fan_out": 0,
+        "cbo": 0
+      },
+      "src/analyzer/cli/commands/__init__.py": {
+        "fan_in": 0,
+        "fan_out": 0,
+        "cbo": 0
+      },
+      "src/analyzer/transformers.py": {
+        "fan_in": 1,
+        "fan_out": 0,
         "cbo": 1
       },
       "src/analyzer/engine.py": {
@@ -9303,12 +9202,7 @@
         "fan_out": 0,
         "cbo": 1
       },
-      ".ai-context/ai_workflow.py": {
-        "fan_in": 0,
-        "fan_out": 0,
-        "cbo": 0
-      },
-      "src/analyzer/models/__init__.py": {
+      "src/analyzer/visitors/base.py": {
         "fan_in": 0,
         "fan_out": 0,
         "cbo": 0
@@ -9318,22 +9212,137 @@
         "fan_out": 2,
         "cbo": 2
       },
-      "src/analyzer/cli/commands/list_rules.py": {
+      "src/analyzer/rules/__init__.py": {
         "fan_in": 0,
         "fan_out": 0,
         "cbo": 0
       },
-      "tests/test_advanced_features.py": {
+      "src/analyzer/reporters/markdown_reporter.py": {
         "fan_in": 0,
-        "fan_out": 3,
-        "cbo": 3
+        "fan_out": 0,
+        "cbo": 0
       },
-      "src/analyzer/visitors/safety_visitor.py": {
+      "src/analyzer/cli/commands/security.py": {
+        "fan_in": 0,
+        "fan_out": 0,
+        "cbo": 0
+      },
+      "tests/test_scanner.py": {
+        "fan_in": 0,
+        "fan_out": 2,
+        "cbo": 2
+      },
+      "src/analyzer/fixer.py": {
+        "fan_in": 0,
+        "fan_out": 0,
+        "cbo": 0
+      },
+      "src/analyzer/semantic.py": {
         "fan_in": 1,
         "fan_out": 0,
         "cbo": 1
       },
-      "src/analyzer/cli/commands/serve.py": {
+      "src/analyzer/validators.py": {
+        "fan_in": 3,
+        "fan_out": 0,
+        "cbo": 3
+      },
+      "tests/test_semantic.py": {
+        "fan_in": 0,
+        "fan_out": 2,
+        "cbo": 2
+      },
+      "src/analyzer/utils/ast_utils.py": {
+        "fan_in": 2,
+        "fan_out": 0,
+        "cbo": 2
+      },
+      ".ai-context/ai_workflow.py": {
+        "fan_in": 0,
+        "fan_out": 0,
+        "cbo": 0
+      },
+      "src/analyzer/security_rules.py": {
+        "fan_in": 0,
+        "fan_out": 0,
+        "cbo": 0
+      },
+      "scripts/mcp_server.py": {
+        "fan_in": 0,
+        "fan_out": 0,
+        "cbo": 0
+      },
+      "src/analyzer/utils/logging_utils.py": {
+        "fan_in": 0,
+        "fan_out": 0,
+        "cbo": 0
+      },
+      "scripts/security_scan.py": {
+        "fan_in": 0,
+        "fan_out": 0,
+        "cbo": 0
+      },
+      "src/analyzer/visitors/qgis_rules_visitor.py": {
+        "fan_in": 1,
+        "fan_out": 0,
+        "cbo": 1
+      },
+      "src/analyzer/models/analysis_models.py": {
+        "fan_in": 0,
+        "fan_out": 0,
+        "cbo": 0
+      },
+      "tests/test_security.py": {
+        "fan_in": 0,
+        "fan_out": 2,
+        "cbo": 2
+      },
+      "src/analyzer/security_checker.py": {
+        "fan_in": 0,
+        "fan_out": 0,
+        "cbo": 0
+      },
+      "scripts/skill_sync.py": {
+        "fan_in": 0,
+        "fan_out": 0,
+        "cbo": 0
+      },
+      "src/analyzer/cli/__init__.py": {
+        "fan_in": 0,
+        "fan_out": 0,
+        "cbo": 0
+      },
+      "src/analyzer/reporters/html_reporter.py": {
+        "fan_in": 0,
+        "fan_out": 0,
+        "cbo": 0
+      },
+      "src/analyzer/cli/commands/graph.py": {
+        "fan_in": 0,
+        "fan_out": 0,
+        "cbo": 0
+      },
+      "src/analyzer/secrets.py": {
+        "fan_in": 0,
+        "fan_out": 0,
+        "cbo": 0
+      },
+      "tests/test_i18n_heuristics.py": {
+        "fan_in": 0,
+        "fan_out": 0,
+        "cbo": 0
+      },
+      "src/analyzer/cli/app.py": {
+        "fan_in": 0,
+        "fan_out": 0,
+        "cbo": 0
+      },
+      "src/analyzer/scanner.py": {
+        "fan_in": 3,
+        "fan_out": 0,
+        "cbo": 3
+      },
+      "src/analyzer/visitors/security_visitor.py": {
         "fan_in": 0,
         "fan_out": 0,
         "cbo": 0
@@ -9342,6 +9351,71 @@
         "fan_in": 0,
         "fan_out": 0,
         "cbo": 0
+      },
+      "tests/test_scoring.py": {
+        "fan_in": 0,
+        "fan_out": 1,
+        "cbo": 1
+      },
+      "tests/test_validators.py": {
+        "fan_in": 0,
+        "fan_out": 1,
+        "cbo": 1
+      },
+      ".ai-context/analyze_project_optfixed.py": {
+        "fan_in": 0,
+        "fan_out": 0,
+        "cbo": 0
+      },
+      "src/analyzer/cli/commands/serve.py": {
+        "fan_in": 0,
+        "fan_out": 0,
+        "cbo": 0
+      },
+      "src/analyzer/cli/commands/init.py": {
+        "fan_in": 0,
+        "fan_out": 0,
+        "cbo": 0
+      },
+      "src/analyzer/utils/performance_utils.py": {
+        "fan_in": 0,
+        "fan_out": 0,
+        "cbo": 0
+      },
+      "src/analyzer/visitors/composite_visitor.py": {
+        "fan_in": 1,
+        "fan_out": 0,
+        "cbo": 1
+      },
+      "src/__init__.py": {
+        "fan_in": 0,
+        "fan_out": 0,
+        "cbo": 0
+      },
+      "scripts/run_tests_in_qgis.py": {
+        "fan_in": 0,
+        "fan_out": 0,
+        "cbo": 0
+      },
+      "src/analyzer/cli/commands/list_rules.py": {
+        "fan_in": 0,
+        "fan_out": 0,
+        "cbo": 0
+      },
+      "src/analyzer/visitors/safety_visitor.py": {
+        "fan_in": 1,
+        "fan_out": 0,
+        "cbo": 1
+      },
+      "src/analyzer/utils/config_utils.py": {
+        "fan_in": 0,
+        "fan_out": 0,
+        "cbo": 0
+      },
+      "tests/test_advanced_features.py": {
+        "fan_in": 0,
+        "fan_out": 3,
+        "cbo": 3
       }
     },
     "unused_imports": {
@@ -10169,7 +10243,7 @@
     {
       "category": "Project Health",
       "priority": "High",
-      "message": "Quality Score (66.40232394366197/100) has room for improvement."
+      "message": "Quality Score (67.11534722222223/100) has room for improvement."
     },
     {
       "category": "Documentation",
@@ -10251,21 +10325,21 @@
     "churn": {
       "available": true,
       "period_days": 30,
-      "added": 9433,
-      "deleted": 6521,
-      "total_churn": 15954,
-      "files_changed": 97
+      "added": 11676,
+      "deleted": 7555,
+      "total_churn": 19231,
+      "files_changed": 92
     },
     "is_repo": true
   },
-  "timestamp": 1775421285.7217205,
+  "timestamp": 1777246138.4537802,
   "structure": {
-    "tree": "./\n    .ai_context_cache.json\n    .analyzer_state.json\n    .analyzerignore\n    .gitignore\n    .pre-commit-hooks.yaml\n    AI_CONTEXT.md\n    CHANGELOG.md\n    ... (+14 more)\n    src/\n        .analyzer_state.json\n        AI_CONTEXT.md\n        PROJECT_SUMMARY.md\n        __init__.py\n        analysis_errors.json\n        project_context.json\n        analyzer/\n            __init__.py\n            cli.py\n            commands.py\n            engine.py\n            fixer.py\n            scanner.py\n            secrets.py\n            ... (+4 more)\n            rules/\n                __init__.py\n                modernization_rules.py\n                qgis_rules.py\n            utils/\n                __init__.py\n                ast_utils.py\n                config_utils.py\n                logging_utils.py\n                path_utils.py\n                performance_utils.py\n            reporters/\n                __init__.py\n                html_reporter.py\n                markdown_reporter.py\n                summary_reporter.py\n            models/\n                __init__.py\n                analysis_models.py\n            visitors/\n                __init__.py\n                base.py\n                composite_visitor.py\n                imports_visitor.py\n                metrics_visitor.py\n                qgis_rules_visitor.py\n                safety_visitor.py\n                ... (+1 more)\n            cli/\n                __init__.py\n                app.py\n                base.py\n                commands/\n                    __init__.py\n                    analyze.py\n                    fix.py\n                    graph.py\n                    init.py\n                    list_rules.py\n                    security.py\n                    ... (+2 more)\n        qgis_plugin_analyzer.egg-info/\n            PKG-INFO\n            SOURCES.txt\n            dependency_links.txt\n            entry_points.txt\n            top_level.txt\n    test_sec_interp_results/\n        PROJECT_SUMMARY.md\n        project_context.json\n    tests/\n        test_advanced_features.py\n        test_analyzer.py\n        test_fixer.py\n        test_high_complexity.py\n        test_i18n_heuristics.py\n        test_i18n_standards.py\n        test_safety.py\n        ... (+5 more)\n    english_test_results/\n        PROJECT_SUMMARY.md\n        project_context.json\n    docs/\n        DEVELOPMENT_LOG.md\n        user_guide/\n            COMMANDS_GUIDE.md\n            TESTING_IN_QGIS.md\n        releases/\n            notes/\n                RELEASE_NOTES_v0.2.0.md\n                RELEASE_NOTES_v0.3.0.md\n                RELEASE_NOTES_v0.3.1.md\n                RELEASE_NOTES_v0.4.0.md\n                RELEASE_NOTES_v0.5.0.md\n                RELEASE_NOTES_v0.5.1.md\n                RELEASE_NOTES_v0.6.0.md\n                ... (+13 more)\n            github/\n                GITHUB_RELEASE_v0.6.1.md\n                GITHUB_RELEASE_v0.6.2.md\n                GITHUB_RELEASE_v0.7.0.md\n                GITHUB_RELEASE_v0.9.0.md\n                GITHUB_RELEASE_v1.0.0.md\n                GITHUB_RELEASE_v1.1.0.md\n                GITHUB_RELEASE_v1.2.0.md\n                GITHUB_RELEASE_v1.4.0.md\n        research/\n            CLI_COMMANDS_ROADMAP.md\n            COMPETITIVE_ANALYSIS.md\n            FUTURE_ROADMAP.md\n            PYPI_STANDARDS_RESEARCH.md\n            PYTHON_QUALITY_RESEARCH.md\n            QWEN.md\n            ROADMAP_IMPROVEMENTS.md\n            ... (+3 more)\n        development/\n            COMMIT_GUIDELINES.md\n            DEVELOPMENT_LOG.md\n            REMAINING_ISSUES.md\n            ROADMAP.md\n            SCORING_STANDARDS.md\n            SUGERENCIAS_AI_CONTEXT.md\n            SUGGESTED_IMPROVEMENTS.md\n            uv_modernization_guide.md\n        reports/\n            ANALYSIS_REPORT.md\n        dev_sessions/\n            2026-02-02_refactor_architecture.md\n            2026-02-03_repository_validation.md\n            2026-04-05_v1.11.0_release.md\n            session_2026-02-14_task.md\n            session_2026-02-14_walkthrough.md\n        maintenance/\n            session_2026-04-05_agent_gen5_sync.md\n    debug_summary/\n    scripts/\n        mcp_server.py\n        run_tests_in_qgis.py\n        security_scan.py\n        skill_sync.py\n    migration/\n    self_analysis_results/\n        PROJECT_SUMMARY.md\n        analyzer.log\n        project_context.json\n    self_analysis_results_v2/\n        PROJECT_SUMMARY.md\n        analyzer.log\n        project_context.json\n    analysis_results/\n        PROJECT_SUMMARY.html\n        PROJECT_SUMMARY.md\n        analyzer.log\n        project_context.json\n    analysis_results_release/\n        PROJECT_SUMMARY.md\n        analyzer.log\n        project_context.json\n    dist/\n        qgis_plugin_analyzer-1.11.0-py3-none-any.whl\n        qgis_plugin_analyzer-1.11.0.tar.gz\n    scaffold/\n        qgis/\n            skills/\n                qa-docker/\n                    SKILL.md\n                qgis-core/\n                    SKILL.md\n                qgis-migration-4x/\n                    SKILL.md\n                ui-framework/\n                    SKILL.md\n            workflows/\n                audit-plugin.md\n                release-plugin.md\n                run-tests-in-qgis.md\n        mining/\n            skills/\n                geological-logic/\n                    SKILL.md",
-    "modules_count": 71,
+    "tree": "./\n    .ai_context_cache.json\n    .analyzer_state.json\n    .analyzerignore\n    .gitignore\n    .pre-commit-hooks.yaml\n    AI_CONTEXT.md\n    CHANGELOG.md\n    ... (+16 more)\n    src/\n        .analyzer_state.json\n        AI_CONTEXT.md\n        PROJECT_SUMMARY.md\n        __init__.py\n        analysis_errors.json\n        project_context.json\n        analyzer/\n            __init__.py\n            cli.py\n            commands.py\n            engine.py\n            fixer.py\n            scanner.py\n            secrets.py\n            ... (+4 more)\n            rules/\n                __init__.py\n                modernization_rules.py\n                qgis_rules.py\n            utils/\n                __init__.py\n                ast_utils.py\n                config_utils.py\n                logging_utils.py\n                path_utils.py\n                performance_utils.py\n            reporters/\n                __init__.py\n                html_reporter.py\n                markdown_reporter.py\n                summary_reporter.py\n            models/\n                __init__.py\n                analysis_models.py\n            visitors/\n                __init__.py\n                base.py\n                composite_visitor.py\n                imports_visitor.py\n                metrics_visitor.py\n                qgis_rules_visitor.py\n                safety_visitor.py\n                ... (+1 more)\n            cli/\n                __init__.py\n                app.py\n                base.py\n                commands/\n                    __init__.py\n                    analyze.py\n                    fix.py\n                    graph.py\n                    init.py\n                    list_rules.py\n                    security.py\n                    ... (+2 more)\n        qgis_plugin_analyzer.egg-info/\n            PKG-INFO\n            SOURCES.txt\n            dependency_links.txt\n            entry_points.txt\n            top_level.txt\n    test_sec_interp_results/\n        PROJECT_SUMMARY.md\n        project_context.json\n    tests/\n        test_advanced_features.py\n        test_analyzer.py\n        test_fixer.py\n        test_high_complexity.py\n        test_i18n_heuristics.py\n        test_i18n_standards.py\n        test_safety.py\n        ... (+5 more)\n    english_test_results/\n        PROJECT_SUMMARY.md\n        project_context.json\n    docs/\n        DEVELOPMENT_LOG.md\n        user_guide/\n            COMMANDS_GUIDE.md\n            TESTING_IN_QGIS.md\n        releases/\n            notes/\n                RELEASE_NOTES_v0.2.0.md\n                RELEASE_NOTES_v0.3.0.md\n                RELEASE_NOTES_v0.3.1.md\n                RELEASE_NOTES_v0.4.0.md\n                RELEASE_NOTES_v0.5.0.md\n                RELEASE_NOTES_v0.5.1.md\n                RELEASE_NOTES_v0.6.0.md\n                ... (+13 more)\n            github/\n                GITHUB_RELEASE_v0.6.1.md\n                GITHUB_RELEASE_v0.6.2.md\n                GITHUB_RELEASE_v0.7.0.md\n                GITHUB_RELEASE_v0.9.0.md\n                GITHUB_RELEASE_v1.0.0.md\n                GITHUB_RELEASE_v1.1.0.md\n                GITHUB_RELEASE_v1.2.0.md\n                GITHUB_RELEASE_v1.4.0.md\n        research/\n            CLI_COMMANDS_ROADMAP.md\n            COMPETITIVE_ANALYSIS.md\n            FUTURE_ROADMAP.md\n            PYPI_STANDARDS_RESEARCH.md\n            PYTHON_QUALITY_RESEARCH.md\n            QWEN.md\n            ROADMAP_IMPROVEMENTS.md\n            ... (+3 more)\n        development/\n            COMMIT_GUIDELINES.md\n            DEVELOPMENT_LOG.md\n            REMAINING_ISSUES.md\n            ROADMAP.md\n            SCORING_STANDARDS.md\n            SUGERENCIAS_AI_CONTEXT.md\n            SUGGESTED_IMPROVEMENTS.md\n            uv_modernization_guide.md\n        reports/\n            ANALYSIS_REPORT.md\n        dev_sessions/\n            2026-02-02_refactor_architecture.md\n            2026-02-03_repository_validation.md\n            2026-04-05_v1.11.0_release.md\n            session_2026-02-14_task.md\n            session_2026-02-14_walkthrough.md\n        maintenance/\n            session_2026-04-05_agent_gen5_sync.md\n            session_2026-04-26_bug_audit.md\n    debug_summary/\n    scripts/\n        mcp_server.py\n        run_tests_in_qgis.py\n        security_scan.py\n        skill_sync.py\n    migration/\n    self_analysis_results/\n        PROJECT_SUMMARY.md\n        analyzer.log\n        project_context.json\n    self_analysis_results_v2/\n        PROJECT_SUMMARY.md\n        analyzer.log\n        project_context.json\n    analysis_results/\n        PROJECT_SUMMARY.html\n        PROJECT_SUMMARY.md\n        analyzer.log\n        project_context.json\n    analysis_results_release/\n        PROJECT_SUMMARY.md\n        analyzer.log\n        project_context.json\n    dist/\n        qgis_plugin_analyzer-1.11.0-py3-none-any.whl\n        qgis_plugin_analyzer-1.11.0.tar.gz\n    scaffold/\n        qgis/\n            skills/\n                qa-docker/\n                    SKILL.md\n                qgis-core/\n                    SKILL.md\n                qgis-migration-4x/\n                    SKILL.md\n                ui-framework/\n                    SKILL.md\n            workflows/\n                audit-plugin.md\n                release-plugin.md\n                run-tests-in-qgis.md\n        mining/\n            skills/\n                geological-logic/\n                    SKILL.md",
+    "modules_count": 72,
     "file_types": {
       ".json": 581,
-      ".md": 130,
-      ".py": 71,
+      ".md": 134,
+      ".py": 72,
       ".yaml": 19,
       ".0": 18,
       ".sample": 14,
@@ -10280,11 +10354,11 @@
       ".sh": 1
     },
     "size_stats": {
-      "total_files": 2334,
-      "total_size_mb": 77.81,
-      "python_files": 71,
+      "total_files": 2357,
+      "total_size_mb": 77.93,
+      "python_files": 72,
       "python_size_mb": 0.44,
-      "avg_file_size_kb": 34.14,
+      "avg_file_size_kb": 33.86,
       "python_percentage": 0.57
     }
   },

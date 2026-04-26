@@ -1,16 +1,16 @@
 # PROJECT SUMMARY - qgis_plugin_analyzer
-Analysis Date: 2026-04-05 16:34:45
+Analysis Date: 2026-04-26 19:28:58
 Analyzer Version: 3.1.1 (Ai-Context-Core)
 
 ## 📊 KEY METRICS
-- **Quality Score**: 66.4/100
-- **Source Lines (SLOC)**: 8,595
-- **Total Physical Lines**: 13,243
-- **Maintainability**: 42.0
+- **Quality Score**: 67.1/100
+- **Source Lines (SLOC)**: 8,620
+- **Total Physical Lines**: 13,275
+- **Maintainability**: 42.2
 - **Test Coverage**: 14 test files
 
 ## 📁 STRUCTURE
-**Total Modules**: 71
+**Total Modules**: 72
 
 ```tree
 ./
@@ -21,7 +21,7 @@ Analyzer Version: 3.1.1 (Ai-Context-Core)
     .pre-commit-hooks.yaml
     AI_CONTEXT.md
     CHANGELOG.md
-    ... (+14 more)
+    ... (+16 more)
     src/
         .analyzer_state.json
         AI_CONTEXT.md
@@ -152,6 +152,7 @@ Analyzer Version: 3.1.1 (Ai-Context-Core)
             session_2026-02-14_walkthrough.md
         maintenance/
             session_2026-04-05_agent_gen5_sync.md
+            session_2026-04-26_bug_audit.md
     debug_summary/
     scripts/
         mcp_server.py
@@ -264,10 +265,10 @@ Motor de análisis estático y auto-fix para plugins de QGIS (PyQGIS). Combina r
 
 ## 🔄 GIT ANALYSIS
 ### Code Churn (last 30 days)
-- **Files Changed**: 97
-- **Additions**: +9433
-- **Deletions**: -6521
-- **Total Churn**: 15954
+- **Files Changed**: 92
+- **Additions**: +11676
+- **Deletions**: -7555
+- **Total Churn**: 19231
 
 ### 🔥 Hotspots
 - `src/analyzer/engine.py`: 30 commits
@@ -277,5 +278,5 @@ Motor de análisis estático y auto-fix para plugins de QGIS (PyQGIS). Combina r
 - `src/analyzer/validators.py`: 11 commits
 
 ## 📈 COMPLEXITY DISTRIBUTION
-- **Average Complexity**: 19.58
+- **Average Complexity**: 19.35
 - **Max Complexity**: 372

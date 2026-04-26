@@ -9780,5 +9780,76 @@
       "patterns": {}
     },
     "timestamp": 1775421049.8864222
+  },
+  "reproduce_bug.py": {
+    "hash": "d0025c2b13c726f012364eb0e809c6750048702227b496b2091756021726c8a0",
+    "mtime": 1777245626.32408,
+    "size": 697,
+    "data": {
+      "path": "reproduce_bug.py",
+      "lines": 32,
+      "sloc": 25,
+      "loc": 25,
+      "file_size_kb": 0.6806640625,
+      "complexity": 3,
+      "imports": [
+        "ast",
+        "sys",
+        "os",
+        "analyzer.visitors.metrics_visitor.MetricsVisitor"
+      ],
+      "classes": [],
+      "functions": [
+        "reproduce_issue"
+      ],
+      "docstrings": {
+        "module": false,
+        "classes": {},
+        "functions": {
+          "reproduce_issue": false
+        }
+      },
+      "entry_point_info": {
+        "is_entry_point": true,
+        "type": "main_guard"
+      },
+      "has_main": true,
+      "type_hints": {
+        "total_functions": 1,
+        "typed_functions": 0,
+        "coverage": 0.0
+      },
+      "halstead": {
+        "vocabulary": 24,
+        "length": 34,
+        "volume": 136,
+        "difficulty": 2.07,
+        "effort": 281.71
+      },
+      "maintenance_index": 54.16,
+      "syntax_error": false,
+      "unused_imports": [],
+      "qgis_compliance": {
+        "processing_framework": false,
+        "i18n_usage": {
+          "tr": 0,
+          "translate": 0,
+          "total_strings": 5
+        },
+        "gdal_import_style": "Modern",
+        "qt_transition": {
+          "pyqt5_imports": [],
+          "pyqt6_imports": []
+        },
+        "signals_slots": {
+          "legacy": 0,
+          "modern": 0
+        }
+      },
+      "antipatterns": [],
+      "ast_security": [],
+      "patterns": {}
+    },
+    "timestamp": 1777246060.4550123
   }
 }
