@@ -14,17 +14,19 @@
 
 **Quality Metrics:**
 
-![Module Stability](https://img.shields.io/badge/Module%20Stability-45.1%2F100-orange?style=flat-square)
+![Module Stability](https://img.shields.io/badge/Module%20Stability-44.4%2F100-orange?style=flat-square)
 ![Maintainability](https://img.shields.io/badge/Maintainability-90.0%2F100-brightgreen?style=flat-square)
 ![Security Score](https://img.shields.io/badge/Security--Bandit-100.0%2F100-brightgreen?style=flat-square)
-![Type Coverage](https://img.shields.io/badge/Type%20Hints%20(Params)-97.1%25-brightgreen?style=flat-square)
-![Docstring Coverage](https://img.shields.io/badge/Docstrings-77.9%25-green?style=flat-square)
-![Tests](https://img.shields.io/badge/Tests-49%2F49%20passing-brightgreen?style=flat-square&logo=pytest)
+![Type Coverage](https://img.shields.io/badge/Type%20Hints%20(Params)-97.6%25-brightgreen?style=flat-square)
+![Docstring Coverage](https://img.shields.io/badge/Docstrings-77.6%25-green?style=flat-square)
+![Tests](https://img.shields.io/badge/Tests-47%2F47%20passing-brightgreen?style=flat-square&logo=pytest)
 
 The **QGIS Plugin Analyzer** is a static analysis tool designed specifically for QGIS (PyQGIS) plugin developers. Its goal is to elevate plugin quality by ensuring they follow community best practices and are optimized for AI-assisted development.
 
 ## ✨ Main Features
 
+- **Gen 5 Architecture**: Modernized agentic system with English-based workflows and specialized skill modules for maximum precision.
+- **Scaffold System**: Integrated blueprints for standardizing QGIS and mining plugin generation.
 - **Security Core (Bandit-inspired)**: Professional vulnerability scanning detecting `eval`, `exec`, shell injections, and SQL injection risks.
 - **Deep Entropy Secret Scanner**: Detects hardcoded API keys, passwords, and sensitive tokens using regex and information entropy.
 - **High-Performance Engine**: Parallel analysis powered by `ProcessPoolExecutor` with single-pass AST traversal and shared worker context.
@@ -42,18 +44,19 @@ The **QGIS Plugin Analyzer** is a static analysis tool designed specifically for
 - **AI-Ready**: Generates structured summaries and optimized contexts for LLMs.
 - **Zero Runtime Dependencies**: Works using only the Python standard library (Ruff as an external tool).
 
-## 🆕 What's New in v1.11.0
+## 🆕 What's New in v1.12.0
 
-**Robust Project Discovery & Dynamic Versioning** - Major improvements to the core engine and project identification logic:
+**Gen 5 Architecture & Precision Analytics** - A major leap in stability and analysis depth:
 
-- 📁 **Bulletproof Project Detection** - Fixed a critical issue where QGIS plugins were incorrectly identified as generic projects if `metadata.txt` was listed in `.analyzerignore`. Metadata detection now correctly prioritizes plugin identification over ignore rules.
-- 🔄 **Dynamic Versioning** - The analyzer now uses a dynamic versioning system that automatically stays in sync with `pyproject.toml`, ensuring accuracy across all interfaces without hardcoded values.
-- 🧹 **Clean Analysis Logs** - Removed redundant project type reporting to provide a more focused and professional terminal output.
+- 🛡️ **Gen 5 Framework Upgrade** - Full modernization of the underlying agentic system, standardized in English for maximum compatibility with MCP and global developer standards.
+- 🏗️ **Scaffold System** - New command-line blueprints for standardizing plugin generation across domains (QGIS, Mining).
+- 🧠 **Precision Metrics** - Refactored AST engine to robustly handle multi-line function signatures, ensuring 100% accuracy in type hint coverage regardless of formatting.
+- ⚡ **Smart Cache Validation** - The `summary` command now performs a freshness check, warning you if results are stale compared to your source code.
 
-**From v1.10.1:**
-- ⚡ **Async Support** - Full AST support for `AsyncFunctionDef` in metrics calculations.
+**From v1.11.0:**
+- 📁 **Bulletproof Project Detection** - Fixed metadata priority logic in `.analyzerignore`.
 
-[**📖 Full Release Notes**](docs/releases/notes/v1.11.0.md) | [**🗺️ CLI Commands Roadmap**](docs/research/CLI_COMMANDS_ROADMAP.md)
+[**📖 Full Release Notes**](docs/releases/notes/v1.12.0.md) | [**🗺️ CLI Commands Roadmap**](docs/research/CLI_COMMANDS_ROADMAP.md)
 
 ## ⚖️ Why use this Analyzer? (Comparison)
 
