@@ -1,5 +1,9 @@
 # Development Log
 
+## [2026-04-26] v1.13.1: Metadata Synchronization
+- Released version `1.13.1` to ensure consistency across all distribution artifacts.
+- Synchronized `README.md` metrics and project metadata in build packages and GitHub releases.
+
 ## [2026-04-26] v1.13.0: Quality Blindage & Architectural Refactor
 - Released version `1.13.0` on GitHub with 76% global test coverage.
 - Decomposed `StandardsVisitor` into `I18nVisitor` and extracted `ScoringEngine`.

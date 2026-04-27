@@ -1,5 +1,5 @@
 # PROJECT SUMMARY - qgis_plugin_analyzer
-Analysis Date: 2026-04-26 21:37:21
+Analysis Date: 2026-04-26 22:19:16
 Analyzer Version: 3.1.1 (Ai-Context-Core)
 
 ## 📊 KEY METRICS
@@ -114,7 +114,7 @@ Analyzer Version: 3.1.1 (Ai-Context-Core)
                 RELEASE_NOTES_v0.5.0.md
                 RELEASE_NOTES_v0.5.1.md
                 RELEASE_NOTES_v0.6.0.md
-                ... (+15 more)
+                ... (+16 more)
             github/
                 GITHUB_RELEASE_v0.6.1.md
                 GITHUB_RELEASE_v0.6.2.md
@@ -199,8 +199,8 @@ Analyzer Version: 3.1.1 (Ai-Context-Core)
                 geological-logic/
                     SKILL.md
     dist/
-        qgis_plugin_analyzer-1.13.0-py3-none-any.whl
-        qgis_plugin_analyzer-1.13.0.tar.gz
+        qgis_plugin_analyzer-1.13.1-py3-none-any.whl
+        qgis_plugin_analyzer-1.13.1.tar.gz
 ```
 
 ## 🚨 CRITICAL ISSUES
@@ -212,9 +212,10 @@ Analyzer Version: 3.1.1 (Ai-Context-Core)
 ## 💡 MAIN RECOMMENDATIONS
 ### src/analyzer/commands.py
 - Consider breaking down large logic
-### src/analyzer/fixer.py
+### src/analyzer/engine.py
 - Consider breaking down large logic
-### src/analyzer/reporters/html_reporter.py
+- Large module (458 lines)
+### src/analyzer/fixer.py
 - Consider breaking down large logic
 
 ## 🏗️ DESIGN PATTERNS
@@ -263,17 +264,17 @@ Motor de análisis estático y auto-fix para plugins de QGIS (PyQGIS). Combina r
 
 ## 🔄 GIT ANALYSIS
 ### Code Churn (last 30 days)
-- **Files Changed**: 250
-- **Additions**: +25178
-- **Deletions**: -19873
-- **Total Churn**: 45051
+- **Files Changed**: 293
+- **Additions**: +33072
+- **Deletions**: -31771
+- **Total Churn**: 64843
 
 ### 🔥 Hotspots
-- `src/analyzer/engine.py`: 32 commits
-- `src/analyzer/scanner.py`: 27 commits
+- `src/analyzer/engine.py`: 33 commits
+- `src/analyzer/scanner.py`: 28 commits
 - `src/analyzer/cli.py`: 18 commits
+- `src/analyzer/validators.py`: 14 commits
 - `src/analyzer/utils.py`: 14 commits
-- `src/analyzer/validators.py`: 13 commits
 
 ## 📈 COMPLEXITY DISTRIBUTION
 - **Average Complexity**: 14.85

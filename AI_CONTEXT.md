@@ -145,70 +145,70 @@ Motor de análisis estático y auto-fix para plugins de QGIS (PyQGIS). Combina r
 ```mermaid
 graph TD
     classDef module fill:#f9f,stroke:#333,stroke-width:2px;
-    summary
-    class summary module;
-    init
-    class init module;
-    graph
-    class graph module;
     list_rules
     class list_rules module;
-    analyze
-    class analyze module;
-    fixer
-    class fixer module;
-    version
-    class version module;
-    fix
-    class fix module;
-    base
-    class base module;
-    init
-    class init module;
-    init
-    class init module;
-    init
-    class init module;
-    init
-    class init module;
-    init
-    class init module;
-    serve
-    class serve module;
     init
     class init module;
     commands
     class commands module;
+    version
+    class version module;
+    fixer
+    class fixer module;
     security
     class security module;
+    summary
+    class summary module;
     app
     class app module;
-    analysis_models
-    class analysis_models module;
+    engine
+    class engine module;
+    init
+    class init module;
+    init
+    class init module;
+    aggregators
+    class aggregators module;
+    fix
+    class fix module;
+    graph
+    class graph module;
+    init
+    class init module;
+    analyze
+    class analyze module;
+    main
+    class main module;
+    base
+    class base module;
+    init
+    class init module;
+    serve
+    class serve module;
 ```
 
 ## 💡 OPTIMIZATION RECOMMENDATIONS
 ### src/analyzer/commands.py
 - **complexity_refactoring**: Consider breaking down large logic
+### src/analyzer/engine.py
+- **complexity_refactoring**: Consider breaking down large logic
+- **module_too_large**: Large module (458 lines)
 ### src/analyzer/fixer.py
 - **complexity_refactoring**: Consider breaking down large logic
 ### src/analyzer/reporters/html_reporter.py
 - **complexity_refactoring**: Consider breaking down large logic
 ### src/analyzer/reporters/markdown_reporter.py
 - **complexity_refactoring**: Consider breaking down large logic
-### src/analyzer/reporters/summary_reporter.py
-- **complexity_refactoring**: Consider breaking down large logic
-- **module_too_large**: Large module (424 lines)
 
 ## 🔄 GIT AND EVOLUTION
 ### Top Hotspots:
-- `src/analyzer/engine.py` (32 commits)
-- `src/analyzer/scanner.py` (27 commits)
+- `src/analyzer/engine.py` (33 commits)
+- `src/analyzer/scanner.py` (28 commits)
 - `src/analyzer/cli.py` (18 commits)
+- `src/analyzer/validators.py` (14 commits)
 - `src/analyzer/utils.py` (14 commits)
-- `src/analyzer/validators.py` (13 commits)
 ### Recent Churn (30 days):
-- Total lines changed: 45051
+- Total lines changed: 64843
 
 ## 🔑 PROJECT KEYWORDS
 - **Technologies**: .json, .md, .py, .0, .sample, .1, .log, .tag
