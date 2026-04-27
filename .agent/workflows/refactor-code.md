@@ -1,7 +1,7 @@
 ---
 description: Guided workflow for code refactoring with complexity validation
 agent: Senior Architect
-skills: [domain-logic, domain-logic]
+skills: [domain-logic, coding-standards]
 validation: |
   - Verify that cyclomatic complexity decreased (CC < 15)
   - Confirm that tests still pass after refactoring
@@ -37,7 +37,7 @@ This workflow guides code refactoring following project standards and using spec
 
 3. **Load Specialized Context**:
 
-   🤖 **Agent Action**: Depending on the module, load the appropriate skill (**domain-logic**, **domain-logic**, or **ui-framework**).
+   🤖 **Agent Action**: Load the appropriate skill (**domain-logic** or **coding-standards**).
 
 4. **Apply Refactoring**:
 
@@ -46,7 +46,7 @@ This workflow guides code refactoring following project standards and using spec
 5. **Validate with Tests**:
    // turbo
    ```bash
-   make docker-test
+   env PYTHONPATH=src uv run python3 -m unittest discover tests
    ```
 
    🤖 **Agent Action**: Use **qa-standards** skill to ensure no regressions.
@@ -62,7 +62,7 @@ This workflow guides code refactoring following project standards and using spec
 6.5 Complexity Audit (Auditor Reflection) 🤖
 - **Agent Reflection**: Activate the **@auditor** role.
 - **Verification**: Ensure the refactor didn't introduce new architecture violations or hide complexity in "wrapper" functions.
-- **Pattern Match**: Confirm adherence to the "Extract-then-Compute" standard.
+- **Pattern Match**: Confirm adherence to the project's quality standards.
 
 7. **Refactoring Commit**:
    Use `/create-commit` workflow with a structured technical message.

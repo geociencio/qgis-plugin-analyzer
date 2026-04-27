@@ -3,7 +3,7 @@ description: Workflow for critical review of implementation plans by the Agent A
 agent: Agent Auditor
 skills: [coding-standards, project-context, agentic-memory]
 validation: |
-  - Verify that the plan complies with Core/GUI separation
+  - Verify that the plan complies with architectural boundaries
   - Validate that no obvious technical debt is introduced
   - Confirm that lessons from AGENT_LESSONS.md were taken into account
 ---
@@ -18,12 +18,12 @@ This workflow must be executed after creating an `implementation_plan.md` but be
    🤖 **Agent Action**: Load `AGENT_LESSONS.md` and look for lessons relevant to the current plan.
 
 2. **Compliance Analysis**:
-   🤖 **Agent Action**: Contrast the plan against coding standards (Pathlib, Typing, Google Docstrings).
+   🤖 **Agent Action**: Contrast the plan against project coding standards (Pathlib, Typing, Google Docstrings).
 
 3. **Risk Detection**:
-   - Does it introduce QGIS dependencies in `core/`?
-   - Does it propose changes that break QGIS 4.x compatibility (shim usage)?
-   - Is the verification plan sufficient?
+   - Does it introduce tight coupling between modules?
+   - Does it propose changes that break backward compatibility?
+   - Is the verification plan sufficient to catch regressions?
 
 4. **Verdict Issuance**:
    🤖 **Agent Action**: Generate an audit report indicating:

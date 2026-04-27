@@ -1,9 +1,9 @@
 ---
 description: Standard and robust procedure for starting a "Local First" development session
 agent: Senior Architect
-skills: [qgis-core, qa-docker, agentic-memory]
+skills: [domain-logic, qa-docker, agentic-memory]
 validation: |
-  - Verify that all tests pass in Docker
+  - Verify that all tests pass
   - Confirm that AI_CONTEXT.md is updated with recent metrics
   - Validate that there are no regressions in cyclomatic complexity
 ---
@@ -26,10 +26,10 @@ uv run ai-ctx analyze --path . && cat .agent/next_steps.md && cat .agent/memory/
     *   If it exists: Show the content ("Current Status").
     *   If it DOES NOT exist: Create it based on the active Implementation Plan or `next_steps.md`.
 
-🤖 **Agent Action**: Review `AI_CONTEXT.md` and `project_context.json` using **qgis-core** skill to identify:
-- Critical technical debt related to QGIS API
+🤖 **Agent Action**: Review `AI_CONTEXT.md` and `project_context.json` using **project-context** skill to identify:
+- Critical technical debt
 - Methods with high cyclomatic complexity (CC > 15)
-- Architecture violations (UI in Core)
+- Architecture violations (e.g., Logic in CLI layers)
 
 Review the following files in this order:
 *   `.agent/next_steps.md`: **The Witness (Source of Truth)**. Defines the exact starting point and immediate goals.
@@ -52,7 +52,7 @@ Ensure updated dependencies.
 uv sync
 ```
 
-🤖 **Agent Action**: Verify that there are no dependency conflicts related to PyQGIS.
+🤖 **Agent Action**: Verify that there are no dependency conflicts.
 
 ### 4. Status Verification (Sanity Check)
 Confirm that the system is stable ("in green"). All tests must pass.
@@ -63,11 +63,9 @@ Confirm that the system is stable ("in green"). All tests must pass.
 make docker-test
 ```
 
-🤖 **Agent Action**: Use **qa-docker** skill to interpret test failures and identify regressions.
-
 *Option B (Local):*
 ```bash
-env PYTHONPATH=.. uv run python3 -m unittest discover tests
+env PYTHONPATH=src uv run python3 -m unittest discover tests
 ```
 
 ## Expected Result
@@ -82,8 +80,8 @@ session_init: success
 context_sync: complete
 active_task: [task_name]
 current_metrics:
-  tests: 535
-  quality_score: X
+  tests: [count]
+  quality_score: [score]
 ```
 
 **Philosophy**: Start coding knowing *exactly* what happened yesterday and with specialized context loaded.
