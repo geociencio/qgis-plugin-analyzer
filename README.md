@@ -14,17 +14,18 @@
 
 **Quality Metrics:**
 
-![Module Stability](https://img.shields.io/badge/Module%20Stability-44.4%2F100-orange?style=flat-square)
-![Maintainability](https://img.shields.io/badge/Maintainability-90.0%2F100-brightgreen?style=flat-square)
+![Module Stability](https://img.shields.io/badge/Module%20Stability-55.1%2F100-green?style=flat-square)
+![Maintainability](https://img.shields.io/badge/Maintainability-77.0%2F100-green?style=flat-square)
 ![Security Score](https://img.shields.io/badge/Security--Bandit-100.0%2F100-brightgreen?style=flat-square)
-![Type Coverage](https://img.shields.io/badge/Type%20Hints%20(Params)-97.6%25-brightgreen?style=flat-square)
-![Docstring Coverage](https://img.shields.io/badge/Docstrings-77.6%25-green?style=flat-square)
-![Tests](https://img.shields.io/badge/Tests-47%2F47%20passing-brightgreen?style=flat-square&logo=pytest)
+![Type Coverage](https://img.shields.io/badge/Type%20Hints-98.0%25-brightgreen?style=flat-square)
+![Docstring Coverage](https://img.shields.io/badge/Docstrings-92.3%25-brightgreen?style=flat-square)
+![Tests](https://img.shields.io/badge/Tests-79%2F79%20passing-brightgreen?style=flat-square&logo=pytest)
 
 The **QGIS Plugin Analyzer** is a static analysis tool designed specifically for QGIS (PyQGIS) plugin developers. Its goal is to elevate plugin quality by ensuring they follow community best practices and are optimized for AI-assisted development.
 
 ## ✨ Main Features
 
+- **Quality Blindage**: Comprehensive test suite with 76% global coverage and >95% on core AST visitors.
 - **Gen 5 Architecture**: Modernized agentic system with English-based workflows and specialized skill modules for maximum precision.
 - **Scaffold System**: Integrated blueprints for standardizing QGIS and mining plugin generation.
 - **Security Core (Bandit-inspired)**: Professional vulnerability scanning detecting `eval`, `exec`, shell injections, and SQL injection risks.
@@ -44,19 +45,20 @@ The **QGIS Plugin Analyzer** is a static analysis tool designed specifically for
 - **AI-Ready**: Generates structured summaries and optimized contexts for LLMs.
 - **Zero Runtime Dependencies**: Works using only the Python standard library (Ruff as an external tool).
 
-## 🆕 What's New in v1.12.0
+## 🆕 What's New in v1.13.0
 
-**Gen 5 Architecture & Precision Analytics** - A major leap in stability and analysis depth:
+**Quality Blindage & Architectural Refactor** - Massive leap in project stability:
 
-- 🛡️ **Gen 5 Framework Upgrade** - Full modernization of the underlying agentic system, standardized in English for maximum compatibility with MCP and global developer standards.
-- 🏗️ **Scaffold System** - New command-line blueprints for standardizing plugin generation across domains (QGIS, Mining).
-- 🧠 **Precision Metrics** - Refactored AST engine to robustly handle multi-line function signatures, ensuring 100% accuracy in type hint coverage regardless of formatting.
-- ⚡ **Smart Cache Validation** - The `summary` command now performs a freshness check, warning you if results are stale compared to your source code.
+- 🛡️ **Test Coverage Blindage** - Reached 76% global coverage. Core AST visitors and utility modules are now secured with >95% coverage.
+- 🏗️ **Architectural Refactor** - Decoupled `ScoringEngine` and `ResultAggregator` for better modularity. Decomposed the massive `StandardsVisitor` into specialized auditing components.
+- 🤖 **English Standardization** - Entire developer framework translated and adapted for a generic Python package lifecycle following global standards.
+- 📈 **Accurate Scoring** - Fixed maintainability calculation bug. Scores now realistically incorporate internal AST-detected rule violations (~77/100).
 
-**From v1.11.0:**
-- 📁 **Bulletproof Project Detection** - Fixed metadata priority logic in `.analyzerignore`.
+**From v1.12.0:**
+- 🧠 **Precision Metrics** - Refactored AST engine to handle multi-line function signatures.
+- ⚡ **Smart Cache Validation** - Added freshness checks to the `summary` command.
 
-[**📖 Full Release Notes**](docs/releases/notes/v1.12.0.md) | [**🗺️ CLI Commands Roadmap**](docs/research/CLI_COMMANDS_ROADMAP.md)
+[**📖 Full Release Notes**](docs/releases/notes/v1.13.0.md) | [**🗺️ CLI Commands Roadmap**](docs/research/CLI_COMMANDS_ROADMAP.md)
 
 ## ⚖️ Why use this Analyzer? (Comparison)
 
