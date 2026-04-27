@@ -21,9 +21,7 @@ class TestScanner(unittest.TestCase):
     def test_validate_plugin_structure(self):
         # Setup: Create a fake plugin structure
         (self.test_dir / "metadata.txt").write_text("name=Test", encoding="utf-8")
-        (self.test_dir / "__init__.py").write_text(
-            "def classFactory(): pass", encoding="utf-8"
-        )
+        (self.test_dir / "__init__.py").write_text("def classFactory(): pass", encoding="utf-8")
         (self.test_dir / "LICENSE").write_text("GPL", encoding="utf-8")
 
         result = validate_plugin_structure(self.test_dir)
@@ -32,9 +30,7 @@ class TestScanner(unittest.TestCase):
         self.assertTrue(result["has_class_factory"])
 
     def test_validate_plugin_structure_missing_file(self):
-        (self.test_dir / "__init__.py").write_text(
-            "def classFactory(): pass", encoding="utf-8"
-        )
+        (self.test_dir / "__init__.py").write_text("def classFactory(): pass", encoding="utf-8")
 
         result = validate_plugin_structure(self.test_dir)
         self.assertFalse(result["is_valid"])

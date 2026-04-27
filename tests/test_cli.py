@@ -1,6 +1,7 @@
 import io
 import unittest
 from contextlib import redirect_stdout
+
 from analyzer.cli.app import CLIApp
 
 
@@ -12,7 +13,7 @@ class TestCLI(unittest.TestCase):
         f = io.StringIO()
         with redirect_stdout(f):
             exit_code = self.app.run(["version"])
-        
+
         self.assertEqual(exit_code, 0)
         output = f.getvalue()
         self.assertIn("qgis-analyzer", output)
@@ -21,7 +22,7 @@ class TestCLI(unittest.TestCase):
         f = io.StringIO()
         with redirect_stdout(f):
             exit_code = self.app.run(["list-rules"])
-        
+
         self.assertEqual(exit_code, 0)
         output = f.getvalue()
         self.assertIn("UNPRECISE_LAYER", output)
@@ -38,8 +39,8 @@ class TestCLI(unittest.TestCase):
         # CLIApp._parse_args defaults to 'analyze' if first arg is a path
         f = io.StringIO()
         with redirect_stdout(f):
-             exit_code = self.app.run(["/tmp"])
-        
+            exit_code = self.app.run(["/tmp"])
+
         self.assertEqual(exit_code, 0)
 
 

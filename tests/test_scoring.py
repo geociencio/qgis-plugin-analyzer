@@ -56,9 +56,7 @@ class TestScoring(unittest.TestCase):
             "missing_resources": [],
         }
 
-        scores = self.scoring.calculate_project_scores(
-            modules_data, ruff_findings, None, semantic
-        )
+        scores = self.scoring.calculate_project_scores(modules_data, ruff_findings, None, semantic)
         self.assertEqual(scores["maint_score"], 100.0)
 
     @patch("subprocess.run")

@@ -7,6 +7,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.13.0] - 2026-04-26
+
+### Added
+- **Test Coverage Blindage**: Achieved 76% global coverage (up from 67%). Core AST visitors and utility modules now feature >95% coverage.
+- **New Specialized Visitors**: Extracted `I18nVisitor` from the monolithic `StandardsVisitor` to improve maintainability and precision in translation auditing.
+
+### Changed
+- **Architectural Refactor**: Decoupled `ScoringEngine` and `ResultAggregator` from the primary analysis engine, improving modularity and allowing for independent testing of scoring logic.
+- **Agentic Standardization**: Fully translated the agentic system (workflows and skills) to English and adapted all developer pipelines for a generic Python package lifecycle.
+- **CLI Restructuring**: Renamed internal `cli.py` to `main.py` to eliminate package shadowing and resolve circular dependency warnings in semantic analysis.
+
+### Fixed
+- **Scoring Accuracy**: Fixed a critical bug in the `ScoringEngine` where internal AST findings were incorrectly excluded from the final maintainability score. The score now reflects the true state of the codebase (~77/100).
+- **Metadata Quality**: Corrected several typos in `pyproject.toml` URLs.
+
 ## [1.12.0] - 2026-04-26
 
 ### Added

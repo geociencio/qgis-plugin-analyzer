@@ -1,5 +1,6 @@
 import ast
 import unittest
+
 from analyzer.visitors.standards_visitor import StandardsVisitor
 
 
@@ -14,7 +15,7 @@ for f in layer.getFeatures(QgsFeatureRequest()):
         tree = ast.parse(code)
         visitor = StandardsVisitor("test.py")
         visitor.visit(tree)
-        
+
         issues = [i for i in visitor.issues if i["type"] == "SPATIAL_INDEX"]
         self.assertEqual(len(issues), 2)
 
@@ -28,7 +29,7 @@ for x in data:
         tree = ast.parse(code)
         visitor = StandardsVisitor("test.py")
         visitor.visit(tree)
-        
+
         issues = [i for i in visitor.issues if i["type"] == "NON_PYTHONIC_LOOP"]
         self.assertEqual(len(issues), 1)
         self.assertIn("Manual counter", issues[0]["message"])
@@ -38,14 +39,14 @@ for x in data:
 class MyPlugin:
     def initGui(self):
         self.btn.clicked.connect(self.not_existent_method)
-    
+
     def existing_method(self):
         pass
 """
         tree = ast.parse(code)
         visitor = StandardsVisitor("test.py")
         visitor.visit(tree)
-        
+
         issues = [i for i in visitor.issues if i["type"] == "POTENTIAL_MISSING_SLOT"]
         self.assertEqual(len(issues), 1)
         self.assertIn("not_existent_method", issues[0]["message"])
@@ -55,7 +56,7 @@ class MyPlugin:
         tree = ast.parse(code)
         visitor = StandardsVisitor("test.py")
         visitor.visit(tree)
-        
+
         issues = [i for i in visitor.issues if i["type"] == "IFACE_AS_ARGUMENT"]
         self.assertEqual(len(issues), 1)
 
@@ -64,7 +65,7 @@ class MyPlugin:
         tree = ast.parse(code)
         visitor = StandardsVisitor("test.py")
         visitor.visit(tree)
-        
+
         issues = [i for i in visitor.issues if i["type"] == "UNSAFE_SUBPROCESS"]
         self.assertEqual(len(issues), 1)
         self.assertIn("shell=True", issues[0]["message"])

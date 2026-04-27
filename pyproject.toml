@@ -1,6 +1,6 @@
 [project]
 name = "qgis-plugin-analyzer"
-version = "1.12.0"
+version = "1.13.0"
 description = "A professional static analysis tool for QGIS (PyQGIS) plugins"
 readme = "README.md"
 requires-python = ">=3.9"
@@ -38,7 +38,7 @@ Homepage = "https://github.com/geociencio/qgis-plugin-analyzer"
 Documentation = "https://github.com/geociencio/qgis-plugin-analyzer/tree/main/docs"
 Repository = "https://github.com/geociencio/qgis-plugin-analyzer.git"
 Issues = "https://github.com/geociencio/qgis-plugin-analyzer/issues"
-Chaneglog = "https://github.com/geociencio/qgis-plugin-analyzer/blob/main/CHANGELOG.md"
+Changelog = "https://github.com/geociencio/qgis-plugin-analyzer/blob/main/CHANGELOG.md"
 
 [project.scripts]
 qgis-analyzer = "analyzer.main:main"

@@ -82,15 +82,11 @@ class ScoringEngine:
 
         # Cap modernization bonus: if there are ANY issues, limit to 99.9
         # to ensure it's not a misleading perfect score.
-        any_issues = any(m.get("ast_issues") for m in modules_data) or bool(
-            ruff_findings
-        )
+        any_issues = any(m.get("ast_issues") for m in modules_data) or bool(ruff_findings)
         if any_issues and (maintainability_score + modernization_bonus) >= 100.0:
             maintainability_score = 99.9
         else:
-            maintainability_score = min(
-                100.0, maintainability_score + modernization_bonus
-            )
+            maintainability_score = min(100.0, maintainability_score + modernization_bonus)
 
         # Security context
         security_penalty = self._get_security_penalty(modules_data)
@@ -148,9 +144,7 @@ class ScoringEngine:
             for f in m.get("functions", []):
                 all_func_comp.append(f["complexity"])
 
-        avg_func_comp = (
-            sum(all_func_comp) / len(all_func_comp) if all_func_comp else 1.0
-        )
+        avg_func_comp = sum(all_func_comp) / len(all_func_comp) if all_func_comp else 1.0
         func_score = max(0, 100 - (max(0, avg_func_comp - 10) * 5))
 
         total_lines = sum(m.get("lines", 0) for m in modules_data)
@@ -184,7 +178,7 @@ class ScoringEngine:
         # Improved penalty formula:
         # We normalize by total lines but ensure a minimum penalty for existing issues
         line_factor = max(1, total_lines / 100)
-        penalty_base = 10 * errors + 3 * warnings + 1 * others
+        penalty_base: float = float(10 * errors + 3 * warnings + 1 * others)
 
         # If there are issues, the base penalty should be at least 0.1 to avoid perfect scores
         if penalty_base > 0:
@@ -195,9 +189,7 @@ class ScoringEngine:
 
         return float((func_score * 0.7) + (lint_score * 0.3))
 
-    def _get_modernization_bonus(
-        self, modules_data: List[ModuleAnalysisResult]
-    ) -> float:
+    def _get_modernization_bonus(self, modules_data: List[ModuleAnalysisResult]) -> float:
         """Calculates modernization bonuses based on type hints and documentation styles."""
         total_functions = 0
         total_params = 0

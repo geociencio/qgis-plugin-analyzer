@@ -16,23 +16,17 @@ class TestI18nHeuristics(unittest.TestCase):
             for child in ast.iter_child_nodes(node):
                 if isinstance(child, ast.Constant):
                     self.visitor.visit_Constant(child, parent=node)
-        return [
-            issue for issue in self.visitor.issues if issue["type"] == "MISSING_I18N"
-        ]
+        return [issue for issue in self.visitor.issues if issue["type"] == "MISSING_I18N"]
 
     def test_should_ignore_short_technical_strings(self):
         code = "self.id = 'id'\nself.data = 'data'"
         issues = self.analyze_code(code)
-        self.assertEqual(
-            len(issues), 0, f"Should ignore short technical strings, found: {issues}"
-        )
+        self.assertEqual(len(issues), 0, f"Should ignore short technical strings, found: {issues}")
 
     def test_should_ignore_dict_keys_and_values(self):
         code = "d = {'key': 'value', 'type': 'internal'}"
         issues = self.analyze_code(code)
-        self.assertEqual(
-            len(issues), 0, f"Should ignore dict technical strings, found: {issues}"
-        )
+        self.assertEqual(len(issues), 0, f"Should ignore dict technical strings, found: {issues}")
 
     def test_should_report_user_facing_strings(self):
         code = "self.label.setText('Please enter your name:')"

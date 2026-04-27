@@ -1,11 +1,12 @@
 import ast
 import unittest
+
 from analyzer.utils.ast_utils import (
     calculate_complexity,
-    extract_runtime_imports_from_ast,
     check_main_guard,
     extract_classes_from_ast,
-    extract_imports_from_ast
+    extract_imports_from_ast,
+    extract_runtime_imports_from_ast,
 )
 
 
@@ -38,7 +39,7 @@ import sys
 """
         tree = ast.parse(code)
         imports = extract_runtime_imports_from_ast(tree)
-        
+
         self.assertIn("os", imports)
         self.assertIn("sys", imports)
         self.assertIn("typing", imports)
@@ -54,7 +55,7 @@ import sys
     def test_check_main_guard(self):
         code_with = "if __name__ == '__main__': main()"
         self.assertTrue(check_main_guard(ast.parse(code_with)))
-        
+
         code_without = "print('hello')"
         self.assertFalse(check_main_guard(ast.parse(code_without)))
 

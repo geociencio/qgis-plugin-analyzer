@@ -1,5 +1,6 @@
 import pathlib
 import unittest
+
 from analyzer.reporters.html_reporter import generate_html_report
 from analyzer.reporters.markdown_reporter import generate_markdown_summary
 
