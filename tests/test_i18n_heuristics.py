@@ -1,12 +1,12 @@
 import ast
 import unittest
 
-from src.analyzer.visitors.standards_visitor import StandardsVisitor
+from src.analyzer.visitors.i18n_visitor import I18nVisitor
 
 
 class TestI18nHeuristics(unittest.TestCase):
     def setUp(self):
-        self.visitor = StandardsVisitor("test.py")
+        self.visitor = I18nVisitor("test.py")
 
     def analyze_code(self, code):
         tree = ast.parse(code)

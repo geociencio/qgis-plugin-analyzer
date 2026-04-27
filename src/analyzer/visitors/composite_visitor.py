@@ -3,6 +3,7 @@
 import ast
 from typing import Any, Dict, List, Optional
 
+from .i18n_visitor import I18nVisitor
 from .imports_visitor import ImportsVisitor
 from .metrics_visitor import MetricsVisitor
 from .qgis_rules_visitor import QGISRulesVisitor
@@ -45,6 +46,7 @@ class CompositeVisitor(ast.NodeVisitor):
         self._imports_visitor = ImportsVisitor(rel_path, rules_config, scope)
         self._metrics_visitor = MetricsVisitor(rel_path, rules_config, scope)
         self._standards_visitor = StandardsVisitor(rel_path, rules_config, scope)
+        self._i18n_visitor = I18nVisitor(rel_path, rules_config, scope)
         self._qgis_rules_visitor = QGISRulesVisitor(rel_path, rules_config, scope)
         self._safety_visitor = SafetyVisitor(rel_path, rules_config, scope)
 
@@ -55,17 +57,18 @@ class CompositeVisitor(ast.NodeVisitor):
                 self._imports_visitor,
                 self._metrics_visitor,
                 self._standards_visitor,
+                self._i18n_visitor,
                 self._qgis_rules_visitor,
                 self._safety_visitor,
             ]
         elif self.scope == "i18n":
-            self._active_visitors = [self._standards_visitor]
+            self._active_visitors = [self._i18n_visitor]
         elif self.scope == "performance":
             self._active_visitors = [self._standards_visitor, self._safety_visitor]
         elif self.scope == "architecture":
             self._active_visitors = [self._imports_visitor, self._metrics_visitor]
         elif self.scope == "security":
-            # StandardsVisitor also has some security rules
+            # StandardsVisitor also has some security rules (subprocess)
             self._active_visitors = [self._standards_visitor]
 
         # Configure visitors for single-pass mode
@@ -73,6 +76,7 @@ class CompositeVisitor(ast.NodeVisitor):
             self._imports_visitor,
             self._metrics_visitor,
             self._standards_visitor,
+            self._i18n_visitor,
             self._qgis_rules_visitor,
             self._safety_visitor,
         ]:

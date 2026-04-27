@@ -1,51 +1,35 @@
+# /***************************************************************************
+#  QGIS Plugin Analyzer
+#                                  A QGIS tool
+#  Static code analysis and standards audit for QGIS plugins.
+#                               -------------------
+#         begin                : 2025-12-28
+#         git sha              : $Format:%H$
+#         copyright            : (C) 2025 by Juan M Bernales
+#         email                : juanbernales@gmail.com
+#  ***************************************************************************/
+#
+# /***************************************************************************
+#  *                                                                         *
+#  *   This program is free software; i18n you can redistribute it and/or modify  *
+#  *   it under the terms of the GNU General Public License as published by  *
+#  *   the Free Software Foundation; either version 2 of the License, or     *
+#  *   (at your option) any later version.                                   *
+#  *                                                                         *
+#  ***************************************************************************/
+
 """AST visitor for QGIS-specific standards and best practices."""
 
 import ast
 from typing import Any, Dict, List, Optional, Set
 
-from ..rules.qgis_rules import I18N_METHODS
 from .base import BaseVisitor
-
-# --- Constants ---
-
-IGNORED_I18N_FUNCTIONS = {
-    "debug",
-    "info",
-    "warning",
-    "error",
-    "critical",
-    "log",
-    "Exception",
-    "ValueError",
-    "TypeError",
-    "RuntimeError",
-    "setObjectName",
-    "addItem",
-    "setValue",
-    "value",
-    "key",
-    "setProperty",
-    "connect",
-    "disconnect",
-    "signal",
-    "slot",
-    "get",
-    "post",
-    "request",
-    "arg",
-    "group",
-    "format",
-    "join",
-    "split",
-    "replace",
-}
 
 
 class StandardsVisitor(BaseVisitor):
     """Visitor focused on QGIS-specific standards and best practices.
 
     Detects issues like:
-    - Missing i18n translations
     - Missing signal slots
     - Mandatory cleanup methods
     - Obsolete API usage
@@ -69,9 +53,6 @@ class StandardsVisitor(BaseVisitor):
         """
         super().__init__(rel_path, rules_config, scope)
         self.class_methods_stack: List[Set[str]] = []
-        self.i18n_methods = I18N_METHODS
-        self._in_ignored_call = False
-        self._in_dict_key = False
 
     def visit_ClassDef(self, node: ast.ClassDef) -> None:
         """Analyzes class definitions.
@@ -128,58 +109,10 @@ class StandardsVisitor(BaseVisitor):
             node: The call AST node.
         """
         self._check_obsolete_api(node)
-        self._check_missing_i18n_call(node)
         self._check_missing_slot(node)
         self._check_unsafe_subprocess(node)
         self._check_blocking_network(node)
-
-        # Context-aware i18n analysis
-        func_name = self._get_func_name(node.func)
-        if func_name in IGNORED_I18N_FUNCTIONS:
-            self._in_ignored_call = True
         self.generic_visit(node)
-
-    def leave_Call(self, node: ast.Call) -> None:
-        """Resets ignored call state."""
-        func_name = self._get_func_name(node.func)
-        if func_name in IGNORED_I18N_FUNCTIONS:
-            self._in_ignored_call = False
-
-    def visit_Dict(self, node: ast.Dict) -> None:
-        """Visits dictionary and ignores its keys for i18n string counting."""
-        # Handled by parent check in visit_Constant
-        pass
-
-    def visit_Constant(
-        self, node: ast.Constant, parent: Optional[ast.AST] = None
-    ) -> None:
-        """Analyzes string constants for missing translations."""
-        # Ignore if inside ignored call or if it's a dict key or value
-        is_dict_key = isinstance(parent, ast.Dict) and node in parent.keys
-        is_dict_value = isinstance(parent, ast.Dict) and node in parent.values
-
-        if (
-            isinstance(node.value, str)
-            and not self._in_ignored_call
-            and not is_dict_key
-            and not is_dict_value
-        ):
-            # Docstring detection: docstrings are strings directly under an Expr node.
-            # In QGIS/Python, we don't wrap standalone strings in tr() as they have no target.
-            # However, strings in Assignments (self.label = "Name"), Calls, etc. SHOULD be checked.
-            if isinstance(parent, ast.Expr):
-                # Standalone string (docstring or comment-like string)
-                return
-
-            self._check_potential_i18n_string(node.value, node.lineno)
-
-    def _get_func_name(self, func: ast.expr) -> str:
-        """Helper to get function name from a call."""
-        if isinstance(func, ast.Name):
-            return func.id
-        if isinstance(func, ast.Attribute):
-            return func.attr
-        return ""
 
     def visit_For(self, node: ast.For) -> None:
         """Analyzes loop nodes.
@@ -248,89 +181,6 @@ class StandardsVisitor(BaseVisitor):
                 "Obsolete writeAsVectorFormat() usage. Use writeAsVectorFormatV3().",
                 ast.unparse(node),
             )
-
-    def _check_missing_i18n_call(self, node: ast.Call) -> None:
-        """Checks for missing i18n translations in known i18n method calls."""
-        if isinstance(node.func, ast.Attribute) and node.func.attr in self.i18n_methods:
-            if (
-                node.args
-                and isinstance(node.args[0], ast.Constant)
-                and isinstance(node.args[0].value, str)
-            ):
-                val = node.args[0].value
-                if val.strip() and not val.startswith("%"):
-                    # This is a direct call to tr/translate, so it's ALREADY translated
-                    # or being marked for translation. We don't report here,
-                    # but we could track it for coverage.
-                    pass
-
-    def _check_potential_i18n_string(self, val: str, lineno: int) -> None:
-        """Heuristic to detect strings that SHOULD be translated but aren't."""
-        if not self.is_translatable_string(val):
-            return
-
-        # If it's a translatable candidate but not wrapped in tr(), report it
-        # Note: In a real QGIS context, strings outside tr() are missing i18n
-        # but we must avoid false positives.
-        self._report_issue(
-            "MISSING_I18N",
-            lineno,
-            f"Untranslated user-facing string: '{val}'. Use self.tr().",
-        )
-
-    @staticmethod
-    def is_translatable_string(value: str) -> bool:
-        """Heuristic to determine if a string is user-facing.
-
-        Ported from ai-context-core and refined.
-        """
-        if not value or len(value) < 3:
-            return False
-
-        # Ignore paths and technical patterns
-        if "/" in value or "\\" in value or value.startswith(":/"):
-            return False
-
-        # If it contains spaces or ends with punctuation, it's very likely user-facing
-        if " " in value or any(value.endswith(p) for p in ":.!?"):
-            return True
-
-        # TECHNICAL STRINGS: Ignore short strings that look like identifiers
-        # Most GUI labels have spaces or more than 5 characters if they are single words
-        if len(value) <= 5:
-            return False
-
-        # Ignore snake_case, dotted names, CamelCase, and UPPERCASE
-        if "_" in value or "." in value:
-            return False
-        if (
-            not value.islower()
-            and not value.isupper()
-            and any(c.isupper() for c in value)
-        ):
-            return False
-        if value.isupper():
-            return False
-
-        # Technical words list (whitelist)
-        technical_words = {
-            "name",
-            "type",
-            "date",
-            "color",
-            "value",
-            "label",
-            "index",
-            "field",
-            "count",
-            "total",
-            "state",
-            "status",
-        }
-        if value.lower() in technical_words:
-            return False
-
-        return True
 
     def _check_missing_slot(self, node: ast.Call) -> None:
         """Checks for potentially missing signal slots.

@@ -6,3 +6,9 @@ dist/
 *.egg-info/
 .analyzerignore
 analysis_results/
+.ai-context/
+.agent/
+.gemini/
+reproduce_bug.py
+tests/
+scripts/

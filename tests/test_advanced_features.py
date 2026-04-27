@@ -2,8 +2,8 @@ import ast
 import unittest
 
 from analyzer.utils.ast_utils import calculate_complexity
+from analyzer.visitors.i18n_visitor import I18nVisitor
 from analyzer.visitors.qgis_rules_visitor import QGISRulesVisitor
-from analyzer.visitors.standards_visitor import StandardsVisitor
 
 
 class TestAdvancedFeatures(unittest.TestCase):
@@ -47,7 +47,7 @@ def func():
 
     def test_i18n_heuristics(self):
         """Test that i18n heuristics correctly filter strings."""
-        visitor = StandardsVisitor("test.py")
+        visitor = I18nVisitor("test.py")
 
         # Valid translatable strings
         self.assertTrue(visitor.is_translatable_string("Click Here"))
