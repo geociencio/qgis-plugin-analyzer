@@ -1,67 +1,67 @@
 ---
 name: release-management
-description: Estándares para el proceso de liberación del paquete Python qgis-plugin-analyzer.
-trigger: al preparar lanzamientos, actualizar versiones o usar el workflow /release-plugin
+description: Standards for the release process of the qgis-plugin-analyzer Python package.
+trigger: when preparing releases, updating versions, or using the /release-plugin workflow
 ---
 
-# Gestión de Releases (Versión Package)
+# Release Management (Package Version)
 
-Controla el ciclo de vida de las versiones del paquete `qgis-plugin-analyzer`, garantizando calidad y consistencia en cada entrega a PyPI/GitHub.
+Controls the version lifecycle of the `qgis-plugin-analyzer` package, ensuring quality and consistency in every delivery to PyPI/GitHub.
 
-## Cuándo usar este skill
-- Al finalizar un sprint o corrección de bugs.
-- Al actualizar `pyproject.toml` para una nueva versión.
-- Al generar notas de versión o actualizar el changelog.
-- Al usar el workflow `/release-plugin`.
+## When to use this skill
+- At the end of a sprint or bug fix cycle.
+- When updating `pyproject.toml` for a new version.
+- When generating version notes or updating the changelog.
+- When using the `/release-plugin` workflow.
 
-## Grado de Libertad
-- **Estricto**: El cumplimiento de Semantic Versioning y los checks de calidad es obligatorio.
+## Freedom of Action
+- **Strict**: Compliance with Semantic Versioning and quality checks is mandatory.
 
-## Workflow Detallado
+## Detailed Workflow
 
-### Fase 1: Calidad y Preparación
-1. **Análisis de Calidad**:
+### Phase 1: Quality and Preparation
+1. **Quality Analysis**:
    ```bash
    uv run qgis-analyzer analyze . -o analysis_results --profile release
    ```
-   - Validar: Score > Aceptable (definido en badges), cobertura de tests > 80%.
+   - Validate: Score > Acceptable (defined in badges), test coverage > 80%.
 2. **Linting & Type Checking**:
    ```bash
    uv run ruff check .
    uv run mypy .
    ```
 
-### Fase 2: Versionado
-1. **Sincronización**: Actualizar `version` en `pyproject.toml`.
-2. **Changelog**: Añadir entrada en `CHANGELOG.md` siguiendo el formato [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
-3. **Reglas Semver**:
-   - MAJOR (X): Cambios incompatibles en la API CLI/Librería.
-   - MINOR (Y): Nuevas reglas de análisis o features.
+### Phase 2: Versioning
+1. **Synchronization**: Update `version` in `pyproject.toml`.
+2. **Changelog**: Add entry in `CHANGELOG.md` following the [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) format.
+3. **Semver Rules**:
+   - MAJOR (X): Incompatible changes in CLI API/Library.
+   - MINOR (Y): New analysis rules or features.
    - PATCH (Z): Bug fixes.
 
-### Fase 3: Verificación Técnica
-1. **Tests Completos**:
+### Phase 3: Technical Verification
+1. **Full Tests**:
    ```bash
    uv run pytest
    ```
-   (Opcional: tests de integración con QGIS si aplica)
+   (Optional: integration tests with QGIS if applicable)
 
-### Fase 4: Git y Etiquetado
-1. Commit de release: `chore(release): prepare vX.Y.Z`.
-2. Etiqueta: `git tag -a vX.Y.Z -m "Release vX.Y.Z"`.
+### Phase 4: Git and Tagging
+1. Release commit: `chore(release): prepare vX.Y.Z`.
+2. Tag: `git tag -a vX.Y.Z -m "Release vX.Y.Z"`.
 3. Push: `git push origin main --tags`.
 
-### Fase 5: Empaquetado y Distribución
+### Phase 5: Packaging and Distribution
 1. **Clean**: `rm -rf dist/ build/`
 2. **Build**:
    ```bash
    uv run python -m build
    ```
-3. **Validación**: Verificar contenido de `.tar.gz` y `.whl`.
-4. **Release**: Crear release en GitHub adjuntando los artefactos. (La publicación a PyPI se suele manejar vía CI).
+3. **Validation**: Verify content of `.tar.gz` and `.whl` using `twine check`.
+4. **Release**: Create GitHub release attaching the artifacts. (PyPI publication is typically handled via CI).
 
-## Checklist de Calidad
-- [ ] ¿El análisis estático pasa sin errores críticos?
-- [ ] ¿La versión en `pyproject.toml` es correcta?
-- [ ] ¿El `CHANGELOG.md` está actualizado?
-- [ ] ¿Los tests pasan localmente?
+## Quality Checklist
+- [ ] Does static analysis pass without critical errors?
+- [ ] Is the version in `pyproject.toml` correct?
+- [ ] Is `CHANGELOG.md` updated?
+- [ ] Do tests pass locally?

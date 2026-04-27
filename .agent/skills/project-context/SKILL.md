@@ -1,41 +1,33 @@
 ---
 name: project-context
-description: Resumen del propósito, arquitectura y estructura del proyecto qgis-plugin-analyzer.
-trigger: al iniciar nuevas tareas, solicitar resúmenes o explicar la arquitectura del analizador.
+description: Summary of the purpose, architecture, and structure of the qgis-plugin-analyzer project.
+trigger: when starting a new session or needing high-level architectural context
 ---
 
-# Contexto del Proyecto qgis-plugin-analyzer
+# Project Context: QGIS Plugin Analyzer
 
-Herramienta de análisis estático diseñada específicamente para Plugins de QGIS (PyQGIS). Ayuda a desarrolladores a mantener estándares de calidad, seguridad y compatibilidad.
+## Purpose
+`qgis-plugin-analyzer` is a static analysis tool designed for QGIS plugin developers. It audits Python code to ensure compliance with QGIS standards, security best practices, and maintainability metrics.
 
-## Cuándo usar este skill
-- Al inicio de una sesión para refrescar la arquitectura.
-- Al proponer cambios estructurales en el motor de análisis.
-- Cuando el usuario solicita un estado actual del proyecto.
+## Key Features
+- **AST-based Analysis**: Custom visitors to detect QGIS-specific hazards (blocking loops, signal leaks).
+- **Quality Scoring**: Combined metrics for Stability and Maintainability.
+- **Automated Reporting**: Generates summaries in Terminal, JSON, Markdown, and HTML.
+- **Legacy Support**: Detects obsolete APIs and GDAL/PyQt import patterns.
 
-## Arquitectura
+## Architecture
+- `src/analyzer/cli/`: Typer-based command line interface.
+- `src/analyzer/visitors/`: Core analysis logic using Python's `ast` module.
+- `src/analyzer/reporters/`: Transformation of raw data into user-facing reports.
+- `src/analyzer/engine.py`: Orchestrator of the analysis pipeline.
+- `src/analyzer/scoring.py`: Logic for quality index calculation.
 
-### Core (`src/analyzer`)
-El núcleo de la aplicación.
-- **Scanner**: Recorre directorios y archivos.
-- **Parser**: Analiza código Python, metadatos y estructura.
-- **Rules**: Definición de reglas de calidad y compatibilidad QGIS.
-- **Report**: Generación de reportes (HTML, JSON, Markdown).
+## Tech Stack
+- **Language**: Python 3.9+
+- **Tooling**: `uv` (Package management), `ruff` (Linting), `pytest` (Testing).
+- **Core Libs**: `ast` (Standard library), `jinja2` (HTML reports), `typer` (CLI).
 
-### Interfaz
-- **CLI**: Punto de entrada principal (`analyzer/cli.py`).
-
-### Filosofía
-- **Lightweight**: No requiere una instalación completa de QGIS para correr análisis básicos (usa AST y regex donde es posible).
-- **Extensible**: Fácil de añadir nuevas reglas.
-- **Agentic-Ready**: Diseñado para ser usado por agentes de IA para validar código.
-
-## Estructura de Carpetas
-- `src/analyzer`: Código fuente.
-- `tests/`: Suite de pruebas (pytest).
-- `.agent/`: Configuración del sistema agentico.
-- `docs/`: Documentación del usuario.
-
-## Checklist de Calidad para Contribuciones
-- [ ] ¿El cambio mantiene la compatibilidad con versiones antiguas de Python (3.8+)?
-- [ ] ¿Se han añadido tests para las nuevas reglas de análisis?
+## Design Philosophy
+- **Stateless & Static**: No execution of the plugin code; only source analysis.
+- **Fast & Parallel**: Uses process pooling for multi-file analysis.
+- **Extensible**: New rules can be added by implementing a new `BaseVisitor`.

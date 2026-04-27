@@ -1,39 +1,44 @@
 ---
 name: qa-docker
-description: Estándares para pruebas y aseguramiento de calidad.
-trigger: al escribir o ejecutar tests, usar mocks o depurar fallos en CI.
+description: Standards for testing and quality assurance using Docker environments.
+trigger: when running integration tests or validating the package in clean environments
 ---
 
-# QA y Automatización
+# QA & Docker Standards
 
-Garantiza la estabilidad del código mediante testing riguroso, uso de mocks para dependencias de QGIS (cuando sea necesario) y ejecución en entornos limpios.
+Ensures that `qgis-plugin-analyzer` works correctly across different environments and Python versions by using isolated Docker containers.
 
-## Cuándo usar este skill
-- Al crear nuevos casos de prueba unitarios o de integración.
-- Al depurar fallos en los tests.
-- Al configurar o modificar la estrategia de testing.
+## Core Principles
+- **Isolation**: Tests must run in clean environments to avoid "works on my machine" issues.
+- **Reproducibility**: Dockerfiles must be versioned and stable.
+- **Multi-version**: Validate against multiple Python versions (3.9 to 3.12).
 
-## Grado de Libertad
-- **Guiado**: Se deben seguir las estrategias de testing definidas (Pytest).
+## Docker Workflow
 
-## Workflow
-1. **Diseño**: Tests unitarios para lógica pura (analyzer core).
-2. **Implementación**: Usar `pytest` y fixtures.
-3. **Ejecución**: `uv run pytest`.
-4. **Cobertura**: Mantener cobertura alta en módulos críticos (`src/analyzer`).
+### 1. Build Verification
+To verify the package in a clean environment:
+```bash
+docker build -t qgis-analyzer-qa -f docker/QA.Dockerfile .
+```
 
-## Instrucciones y Reglas
+### 2. Integration Tests
+Run the suite inside a container:
+```bash
+docker run --rm qgis-analyzer-qa pytest
+```
 
-### Estrategia de Mocking
-- Para código que importa `qgis.core` o `qgis.gui`, usar estrategias de mocking (ej. `unittest.mock` o `pytest-mock`) si no se está ejecutando dentro de un entorno QGIS real.
-- El proyecto usa `qgis-stubs` para tipado, pero en runtime necesitará mocks o QGIS real.
+### 3. CLI Validation
+Ensure the installed package works correctly:
+```bash
+docker run --rm qgis-analyzer-qa qgis-analyzer --version
+```
 
-### Comandos
-- **Test completos**: `uv run pytest`
-- **Linting**: `uv run ruff check .`
-- **Type Check**: `uv run mypy .`
+## Standards for Dockerfiles
+- Use official `python:3.x-slim` images to minimize size.
+- Install `uv` for fast dependency management.
+- Copy only necessary files (use `.dockerignore`).
 
-## Checklist de Calidad
-- [ ] ¿Los nuevos tests cubren los casos de borde?
-- [ ] ¿Pasan `mypy` y `ruff` sin errores?
-- [ ] ¿Se han añadido tests para regresiones encontradas?
+## Quality Gates
+- All tests must pass in the Docker container.
+- No permission issues when running as a non-root user.
+- Package size must be within expected limits.
