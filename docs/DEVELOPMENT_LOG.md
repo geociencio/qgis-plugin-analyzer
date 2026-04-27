@@ -1,5 +1,12 @@
 # Development Log
 
+## [2026-04-26] v1.13.0: Quality Blindage & Architectural Refactor
+- Released version `1.13.0` on GitHub with 76% global test coverage.
+- Decomposed `StandardsVisitor` into `I18nVisitor` and extracted `ScoringEngine`.
+- Blinded AST Visitors with >95% coverage across all core auditing rules.
+- Fixed Maintainability scoring bug by incorporating internal AST violations.
+- Standardized the entire agentic system to English and adapted for generic projects.
+
 ## [2026-04-26] v1.12.0: Gen 5 Architecture & Precision Analytics
 - Released version `1.12.0` on GitHub with complete build assets.
 - Resolved cache staleness by implementing modification time comparison in `handle_summary`.

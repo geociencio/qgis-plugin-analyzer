@@ -48,9 +48,7 @@ class SecretScanner:
                             type=p_name,
                             message=f"Possible hardcoded secret detected: {p_name}",
                             line=i,
-                            confidence=(
-                                "HIGH" if p_name != "GENERIC_SECRET" else "MEDIUM"
-                            ),
+                            confidence=("HIGH" if p_name != "GENERIC_SECRET" else "MEDIUM"),
                         )
                     )
 

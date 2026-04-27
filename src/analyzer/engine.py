@@ -331,9 +331,7 @@ class ProjectAnalyzer:
         # 3. QGIS-specific checks (Metadata, structure, constraints)
         qgis_checks: Optional[QGISChecksResult] = None
         if self.project_type == "qgis" and scope in ["all", "metadata", "performance"]:
-            qgis_checks = self._run_qgis_specific_checks(
-                modules_data, rules_config, discovery
-            )
+            qgis_checks = self._run_qgis_specific_checks(modules_data, rules_config, discovery)
 
         # 4. Semantic Analysis (Dependencies, coupling, cycles)
         semantic: SemanticAnalysisResult = {

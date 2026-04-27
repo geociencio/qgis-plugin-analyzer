@@ -99,9 +99,7 @@ class I18nVisitor(BaseVisitor):
         if func_name in IGNORED_I18N_FUNCTIONS:
             self._in_ignored_call = False
 
-    def visit_Constant(
-        self, node: ast.Constant, parent: Optional[ast.AST] = None
-    ) -> None:
+    def visit_Constant(self, node: ast.Constant, parent: Optional[ast.AST] = None) -> None:
         """Analyzes string constants for missing translations."""
         # Ignore if inside ignored call or if it's a dict key or value
         is_dict_key = isinstance(parent, ast.Dict) and node in parent.keys
@@ -159,11 +157,7 @@ class I18nVisitor(BaseVisitor):
         # Ignore snake_case, dotted names, CamelCase, and UPPERCASE
         if "_" in value or "." in value:
             return False
-        if (
-            not value.islower()
-            and not value.isupper()
-            and any(c.isupper() for c in value)
-        ):
+        if not value.islower() and not value.isupper() and any(c.isupper() for c in value):
             return False
         if value.isupper():
             return False

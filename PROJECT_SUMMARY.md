@@ -1,27 +1,27 @@
 # PROJECT SUMMARY - qgis_plugin_analyzer
-Analysis Date: 2026-04-26 20:17:41
+Analysis Date: 2026-04-26 21:37:21
 Analyzer Version: 3.1.1 (Ai-Context-Core)
 
 ## 📊 KEY METRICS
-- **Quality Score**: 67.3/100
-- **Source Lines (SLOC)**: 8,465
-- **Total Physical Lines**: 13,100
-- **Maintainability**: 42.5
-- **Test Coverage**: 14 test files
+- **Quality Score**: 49.8/100
+- **Source Lines (SLOC)**: 4,164
+- **Total Physical Lines**: 7,390
+- **Maintainability**: 44.9
+- **Test Coverage**: 0 test files
 
 ## 📁 STRUCTURE
-**Total Modules**: 72
+**Total Modules**: 53
 
 ```tree
 ./
     .ai_context_cache.json
     .analyzer_state.json
     .analyzerignore
+    .coverage
     .gitignore
     .pre-commit-hooks.yaml
     AI_CONTEXT.md
-    CHANGELOG.md
-    ... (+16 more)
+    ... (+17 more)
     src/
         .analyzer_state.json
         AI_CONTEXT.md
@@ -31,13 +31,13 @@ Analyzer Version: 3.1.1 (Ai-Context-Core)
         project_context.json
         analyzer/
             __init__.py
-            cli.py
+            aggregators.py
             commands.py
             engine.py
             fixer.py
+            main.py
             scanner.py
-            secrets.py
-            ... (+4 more)
+            ... (+6 more)
             rules/
                 __init__.py
                 modernization_rules.py
@@ -61,11 +61,11 @@ Analyzer Version: 3.1.1 (Ai-Context-Core)
                 __init__.py
                 base.py
                 composite_visitor.py
+                i18n_visitor.py
                 imports_visitor.py
                 metrics_visitor.py
                 qgis_rules_visitor.py
-                safety_visitor.py
-                ... (+1 more)
+                ... (+2 more)
             cli/
                 __init__.py
                 app.py
@@ -91,12 +91,12 @@ Analyzer Version: 3.1.1 (Ai-Context-Core)
     tests/
         test_advanced_features.py
         test_analyzer.py
+        test_ast_utils_extended.py
+        test_cli.py
         test_fixer.py
         test_high_complexity.py
         test_i18n_heuristics.py
-        test_i18n_standards.py
-        test_safety.py
-        ... (+5 more)
+        ... (+11 more)
     english_test_results/
         PROJECT_SUMMARY.md
         project_context.json
@@ -114,7 +114,7 @@ Analyzer Version: 3.1.1 (Ai-Context-Core)
                 RELEASE_NOTES_v0.5.0.md
                 RELEASE_NOTES_v0.5.1.md
                 RELEASE_NOTES_v0.6.0.md
-                ... (+14 more)
+                ... (+15 more)
             github/
                 GITHUB_RELEASE_v0.6.1.md
                 GITHUB_RELEASE_v0.6.2.md
@@ -153,6 +153,7 @@ Analyzer Version: 3.1.1 (Ai-Context-Core)
         maintenance/
             session_2026-04-05_agent_gen5_sync.md
             session_2026-04-26_bug_audit.md
+            session_2026-04-26_quality_blindage.md
             session_2026-04-26_v1.12.0_release.md
     debug_summary/
     scripts/
@@ -198,29 +199,25 @@ Analyzer Version: 3.1.1 (Ai-Context-Core)
                 geological-logic/
                     SKILL.md
     dist/
-        qgis_plugin_analyzer-1.12.0-py3-none-any.whl
-        qgis_plugin_analyzer-1.12.0.tar.gz
+        qgis_plugin_analyzer-1.13.0-py3-none-any.whl
+        qgis_plugin_analyzer-1.13.0.tar.gz
 ```
 
 ## 🚨 CRITICAL ISSUES
 ### 🔒 Security Issues:
-- **.agent/scripts/skill_sync.py**: 2 issues (Max: HIGH)
-- **.ai-context/analyze_project_optfixed.py**: 24 issues (Max: HIGH)
-- **scripts/mcp_server.py**: 4 issues (Max: HIGH)
+- **src/analyzer/__init__.py**: 1 issues (Max: HIGH)
+- **src/analyzer/cli/app.py**: 1 issues (Max: HIGH)
+- **src/analyzer/cli/commands/serve.py**: 1 issues (Max: HIGH)
 
 ## 💡 MAIN RECOMMENDATIONS
-### .ai-context/ai_workflow.py
+### src/analyzer/commands.py
 - Consider breaking down large logic
-- Large module (1010 lines)
-### .ai-context/analyze_project_optfixed.py
+### src/analyzer/fixer.py
 - Consider breaking down large logic
-- Large module (2785 lines)
-### .ai-context/context_manager.py
+### src/analyzer/reporters/html_reporter.py
 - Consider breaking down large logic
 
 ## 🏗️ DESIGN PATTERNS
-### Factory
-- **AIContextManager** in `.ai-context/context_manager.py` (70%)
 ### Decorator
 - **register** in `src/analyzer/fixer.py` (50%)
 - **create_ast_handler** in `src/analyzer/fixer.py` (50%)
@@ -266,18 +263,18 @@ Motor de análisis estático y auto-fix para plugins de QGIS (PyQGIS). Combina r
 
 ## 🔄 GIT ANALYSIS
 ### Code Churn (last 30 days)
-- **Files Changed**: 161
-- **Additions**: +18849
-- **Deletions**: -14323
-- **Total Churn**: 33172
+- **Files Changed**: 250
+- **Additions**: +25178
+- **Deletions**: -19873
+- **Total Churn**: 45051
 
 ### 🔥 Hotspots
-- `src/analyzer/engine.py`: 31 commits
-- `src/analyzer/scanner.py`: 26 commits
+- `src/analyzer/engine.py`: 32 commits
+- `src/analyzer/scanner.py`: 27 commits
 - `src/analyzer/cli.py`: 18 commits
 - `src/analyzer/utils.py`: 14 commits
-- `src/analyzer/validators.py`: 12 commits
+- `src/analyzer/validators.py`: 13 commits
 
 ## 📈 COMPLEXITY DISTRIBUTION
-- **Average Complexity**: 19.47
-- **Max Complexity**: 372
+- **Average Complexity**: 14.85
+- **Max Complexity**: 58

@@ -130,14 +130,10 @@ def get_research_summary(modules_data: List[ModuleAnalysisResult]) -> Dict[str, 
 
     return {
         "type_hint_coverage": (
-            round((annotated_params / max(1, total_params)) * 100, 1)
-            if total_params > 0
-            else 0.0
+            round((annotated_params / max(1, total_params)) * 100, 1) if total_params > 0 else 0.0
         ),
         "return_hint_coverage": (
-            round((has_return_hint / total_functions) * 100, 1)
-            if total_functions > 0
-            else 0.0
+            round((has_return_hint / total_functions) * 100, 1) if total_functions > 0 else 0.0
         ),
         "docstring_coverage": (
             round((has_docstring_count / max(1, total_public_items)) * 100, 1)
@@ -197,9 +193,7 @@ def build_analysis_results(
             "binaries": qgis_checks["binaries"],
             "package_size_mb": round(qgis_checks["package_size"], 2),
             "url_validation": qgis_checks["url_status"],
-            "folder_name_valid": qgis_checks["structure"].get(
-                "folder_name_valid", True
-            ),
+            "folder_name_valid": qgis_checks["structure"].get("folder_name_valid", True),
             "constraint_errors": qgis_checks["package_constraints"].get("errors", []),
             "is_compliant": qgis_checks["package_constraints"].get("is_valid", True)
             and qgis_checks["structure"].get("is_valid", True),
