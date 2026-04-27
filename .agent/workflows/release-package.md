@@ -23,7 +23,9 @@ Release workflow for `qgis-plugin-analyzer`.
     - **Local Verification**: `uv sync` and then `uv run qgis-analyzer version` to ensure the engine detects the new version.
     - **Changelog**: Update `CHANGELOG.md` (you can use the `changelog-generator` skill to automate this).
     - **Generate Release Notes**: Create `docs/releases/notes/v[VERSION].md` with a descriptive and professional title.
-    - **Documentation Update**: Ensure `README.md` and `RULES.md` reflect the latest changes.
+    - **README Update**: Update metrics badges (Module Stability, Maintainability, Test counts) and the "What's New" section in `README.md`.
+    - **Development Log**: Add a milestone entry in `docs/DEVELOPMENT_LOG.md`.
+    - **Documentation Audit**: Ensure `RULES.md` and other docs reflect the latest changes.
 
 3. **Technical Verification**:
     // turbo
@@ -50,5 +52,5 @@ Release workflow for `qgis-plugin-analyzer`.
     uv run python -m build
     uv run twine check dist/*
     ```
-    - **PyPI Upload** (if applicable): `uv run twine upload dist/*`.
-    - Create Release on GitHub using `gh release create` linking the created notes.
+    - **PyPI Upload**: Upload artifacts to PyPI. (Can be done manually or via `uv run twine upload dist/*`).
+    - **GitHub Release**: Create the release on GitHub using `gh release create v[VERSION] --title "v[VERSION]: [Title]" --notes-file docs/releases/notes/v[VERSION].md dist/*`.
