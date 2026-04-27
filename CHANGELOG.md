@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.13.1] - 2026-04-26
+
+### Fixed
+- **Metadata Synchronization**: Re-synchronized `README.md` metrics and project metadata across all distribution artifacts and GitHub release assets.
+
 ## [1.13.0] - 2026-04-26
 
 ### Added

@@ -45,20 +45,17 @@ The **QGIS Plugin Analyzer** is a static analysis tool designed specifically for
 - **AI-Ready**: Generates structured summaries and optimized contexts for LLMs.
 - **Zero Runtime Dependencies**: Works using only the Python standard library (Ruff as an external tool).
 
-## 🆕 What's New in v1.13.0
+## 🆕 What's New in v1.13.1
 
-**Quality Blindage & Architectural Refactor** - Massive leap in project stability:
+**Metadata Synchronization** - Consistency fix for distribution artifacts.
 
+**From v1.13.0:**
 - 🛡️ **Test Coverage Blindage** - Reached 76% global coverage. Core AST visitors and utility modules are now secured with >95% coverage.
-- 🏗️ **Architectural Refactor** - Decoupled `ScoringEngine` and `ResultAggregator` for better modularity. Decomposed the massive `StandardsVisitor` into specialized auditing components.
-- 🤖 **English Standardization** - Entire developer framework translated and adapted for a generic Python package lifecycle following global standards.
-- 📈 **Accurate Scoring** - Fixed maintainability calculation bug. Scores now realistically incorporate internal AST-detected rule violations (~77/100).
+- 🏗️ **Architectural Refactor** - Decoupled `ScoringEngine` and `ResultAggregator` for better modularity.
+- 🤖 **English Standardization** - Entire developer framework translated and adapted for a generic Python package lifecycle.
+- 📈 **Accurate Scoring** - Fixed maintainability calculation bug (~77/100).
 
-**From v1.12.0:**
-- 🧠 **Precision Metrics** - Refactored AST engine to handle multi-line function signatures.
-- ⚡ **Smart Cache Validation** - Added freshness checks to the `summary` command.
-
-[**📖 Full Release Notes**](docs/releases/notes/v1.13.0.md) | [**🗺️ CLI Commands Roadmap**](docs/research/CLI_COMMANDS_ROADMAP.md)
+[**📖 Full Release Notes**](docs/releases/notes/v1.13.1.md) | [**🗺️ CLI Commands Roadmap**](docs/research/CLI_COMMANDS_ROADMAP.md)
 
 ## ⚖️ Why use this Analyzer? (Comparison)
 
