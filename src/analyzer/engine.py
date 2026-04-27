@@ -19,23 +19,26 @@
 #  ***************************************************************************/
 
 import json
-import math
 import os
 import pathlib
 import subprocess
 from concurrent.futures import ProcessPoolExecutor, as_completed
 from dataclasses import dataclass, field
-from typing import Any, Dict, List, Optional, Set, TypedDict, cast
+from typing import Any, Dict, List, Optional, cast
 
-from .reporters import (
-    generate_html_report,
-    generate_markdown_summary,
-    save_json_context,
+from .aggregators import (
+    build_analysis_results,
+    save_reports,
 )
 from .scanner import (
     ModuleAnalysisResult,
     analyze_module_worker,
     audit_qgis_standards,
+)
+from .scoring import (
+    QGISChecksResult,
+    ScoringEngine,
+    SemanticAnalysisResult,
 )
 from .semantic import DependencyGraph, ResourceValidator
 from .utils import (
@@ -67,227 +70,6 @@ class ProjectConfig:
     project_type: str = "auto"
     rules: Dict[str, Any] = field(default_factory=dict)
     fail_on_critical: bool = False
-
-
-class QGISChecksResult(TypedDict):
-    """Result of QGIS-specific validation checks."""
-
-    compliance: Dict[str, Any]
-    structure: Dict[str, Any]
-    metadata: Dict[str, Any]
-    binaries: List[str]
-    package_size: float
-    package_constraints: Dict[str, Any]
-    url_status: Dict[str, str]
-
-
-class SemanticAnalysisResult(TypedDict):
-    """Result of semantic analysis."""
-
-    cycles: List[List[str]]
-    graph: Dict[str, List[str]]
-    metrics: Dict[str, Any]
-    missing_resources: List[str]
-
-
-class ProjectScores(TypedDict):
-    """Calculated project quality scores."""
-
-    code_score: float
-    maint_score: float
-    qgis_score: float
-    security_score: float
-
-
-class FullAnalysisResult(TypedDict, total=False):
-    """Consolidated analysis result for the entire project."""
-
-    project_name: str
-    project_type: str
-    metrics: Dict[str, Any]
-    ruff_findings: List[Dict[str, Any]]
-    security: Dict[str, Any]
-    semantic: Dict[str, Any]
-    modules: List[ModuleAnalysisResult]
-    research_summary: Dict[str, Any]
-    qgis_compliance: Dict[str, Any]
-    repository_compliance: Dict[str, Any]
-    ruff_metadata: Dict[str, Any]
-
-
-class ScoringEngine:
-    """Specialized engine for calculating project quality scores."""
-
-    def __init__(self, project_type: str) -> None:
-        self.project_type = project_type
-
-    def calculate_project_scores(
-        self,
-        modules_data: List[ModuleAnalysisResult],
-        ruff_findings: List[Dict[str, Any]],
-        qgis_checks: Optional[QGISChecksResult],
-        semantic: SemanticAnalysisResult,
-    ) -> ProjectScores:
-        """Calculates project quality scores based on industry-standard formulas."""
-        if not modules_data:
-            return {
-                "code_score": 0.0,
-                "maint_score": 0.0,
-                "qgis_score": 0.0,
-                "security_score": 0.0,
-            }
-
-        module_score = self._get_mi_score(modules_data)
-        maintainability_score = self._get_maint_score(modules_data, ruff_findings)
-        modernization_bonus = self._get_modernization_bonus(modules_data)
-
-        # Cap modernization bonus: if there are linting issues, limit to 99.9
-        # unless it's already a perfect score (which shouldn't happen with warnings)
-        if ruff_findings and (maintainability_score + modernization_bonus) >= 100.0:
-            maintainability_score = 99.9
-        else:
-            maintainability_score = min(100.0, maintainability_score + modernization_bonus)
-
-        # Security context
-        security_penalty = self._get_security_penalty(modules_data)
-        security_score = max(0.0, 100.0 - security_penalty)
-
-        # Global penalties (e.g., circular dependencies)
-        cycles = semantic["cycles"]
-        penalty = len(cycles) * 10
-        module_score = max(0, module_score - penalty)
-        maintainability_score = max(0, maintainability_score - penalty)
-
-        if self.project_type == "generic" or not qgis_checks:
-            return {
-                "code_score": round(module_score, 1),
-                "maint_score": round(maintainability_score, 1),
-                "qgis_score": 0.0,
-                "security_score": round(security_score, 1),
-            }
-
-        qgis_score = self._get_qgis_score(
-            qgis_checks["compliance"],
-            qgis_checks["structure"],
-            qgis_checks["metadata"],
-            semantic["missing_resources"],
-            qgis_checks["binaries"],
-            qgis_checks["package_size"],
-            security_penalty,
-        )
-
-        return {
-            "code_score": round(module_score, 1),
-            "maint_score": round(maintainability_score, 1),
-            "qgis_score": round(qgis_score, 1),
-            "security_score": round(security_score, 1),
-        }
-
-    def _get_mi_score(self, modules_data: List[ModuleAnalysisResult]) -> float:
-        """Calculates module stability based on Maintainability Index (MI)."""
-        mi_scores = []
-        for m in modules_data:
-            cc = m.get("complexity", 1)
-            sloc = max(1, m.get("lines", 1))
-            mi = (171 - 0.23 * cc - 16.2 * math.log(sloc)) * 100 / 171
-            mi_scores.append(max(0, mi))
-        return sum(mi_scores) / len(mi_scores) if mi_scores else 0.0
-
-    def _get_maint_score(
-        self,
-        modules_data: List[ModuleAnalysisResult],
-        ruff_findings: List[Dict[str, Any]],
-    ) -> float:
-        """Calculates maintainability based on function complexity and linting penalties."""
-        all_func_comp = []
-        for m in modules_data:
-            for f in m.get("functions", []):
-                all_func_comp.append(f["complexity"])
-
-        avg_func_comp = sum(all_func_comp) / len(all_func_comp) if all_func_comp else 1.0
-        func_score = max(0, 100 - (max(0, avg_func_comp - 10) * 5))
-
-        total_lines = sum(m.get("lines", 0) for m in modules_data)
-        errors = sum(1 for f in ruff_findings if f.get("code", "").startswith(("E", "F")))
-        warnings = sum(1 for f in ruff_findings if f.get("code", "").startswith("W"))
-        others = len(ruff_findings) - errors - warnings
-
-        # Improved penalty formula:
-        # 1. Increase weight for errors and warnings
-        # 2. Use a logarithmic-ish scale for lines to not dilute penalties too much in large projects
-        line_factor = max(1, total_lines / 100)
-        penalty_base = 10 * errors + 3 * warnings + others
-        lint_penalty = (penalty_base / line_factor) * 5
-        lint_score = max(0, 100 - lint_penalty)
-
-        return float((func_score * 0.7) + (lint_score * 0.3))
-
-    def _get_modernization_bonus(self, modules_data: List[ModuleAnalysisResult]) -> float:
-        """Calculates modernization bonuses based on type hints and documentation styles."""
-        total_functions = 0
-        total_params = 0
-        annotated_params = 0
-        has_return_hint = 0
-        detected_styles = set()
-
-        for m in modules_data:
-            metrics = m.get("research_metrics", {})
-            t_stats = metrics.get("type_hint_stats", {})
-            total_functions += t_stats.get("total_functions", 0)
-            total_params += t_stats.get("total_parameters", 0)
-            annotated_params += t_stats.get("annotated_parameters", 0)
-            has_return_hint += t_stats.get("has_return_hint", 0)
-            detected_styles.update(metrics.get("docstring_styles", []))
-
-        bonus = 0.0
-        if total_params > 0 or total_functions > 0:
-            param_cov = annotated_params / max(1, total_params)
-            ret_cov = has_return_hint / max(1, total_functions)
-            if param_cov >= 0.8 and ret_cov >= 0.8:
-                bonus += 5.0
-
-        if detected_styles:
-            bonus += 2.0
-        return bonus
-
-    def _get_qgis_score(
-        self,
-        compliance: Dict[str, Any],
-        structure: Dict[str, Any],
-        metadata: Dict[str, Any],
-        missing_resources: List[str],
-        binaries: List[str],
-        package_size: float,
-        security_penalty: float = 0.0,
-    ) -> float:
-        """Calculates QGIS-specific compliance score."""
-        score = 100.0
-        score -= compliance.get("issues_count", 0) * 2
-        if not structure.get("is_valid", True):
-            score -= 20
-        if not metadata.get("is_valid", True):
-            score -= 10
-        score -= len(missing_resources) * 5
-        score -= len(binaries) * 50
-        if package_size > 20:
-            score -= 10
-
-        score -= security_penalty
-        return float(max(0, score))
-
-    def _get_security_penalty(self, modules_data: List[ModuleAnalysisResult]) -> float:
-        """Calculates total penalty for security vulnerabilities."""
-        penalty = 0.0
-        for m in modules_data:
-            for issue in m.get("security_issues", []):
-                sev = issue.get("severity", "medium").lower()
-                if sev == "high":
-                    penalty += 10.0
-                elif sev == "medium":
-                    penalty += 5.0
-                else:
-                    penalty += 2.0
-        return penalty
 
 
 class ProjectAnalyzer:
@@ -510,171 +292,6 @@ class ProjectAnalyzer:
             "missing_resources": missing_resources,
         }
 
-    def _build_analysis_results(
-        self,
-        files: List[pathlib.Path],
-        modules_data: List[ModuleAnalysisResult],
-        ruff_findings: List[Dict[str, Any]],
-        scores: ProjectScores,
-        qgis_checks: Optional[QGISChecksResult],
-        semantic: SemanticAnalysisResult,
-    ) -> FullAnalysisResult:
-        """Consolidates analysis results into a single dictionary."""
-        analyses: FullAnalysisResult = {
-            "project_name": self.project_path.name,
-            "project_type": self.project_type,
-            "metrics": self._get_metrics_summary(files, modules_data, scores),
-            "ruff_findings": ruff_findings,
-            "security": self._get_security_summary(modules_data, scores),
-            "semantic": {
-                "circular_dependencies": semantic["cycles"],
-                "coupling_metrics": semantic["metrics"],
-            },
-            "modules": modules_data,
-            "research_summary": self._get_research_summary(modules_data),
-        }
-
-        if self.project_type == "qgis" and qgis_checks:
-            analyses["metrics"]["overall_score"] = round(
-                (scores["code_score"] * 0.5) + (scores["qgis_score"] * 0.5), 1
-            )
-            analyses["qgis_compliance"] = {
-                "compliance_score": round(scores["qgis_score"], 1),
-                "best_practices": qgis_checks["compliance"],
-                "repository_standards": {
-                    "structure": qgis_checks["structure"],
-                    "metadata": qgis_checks["metadata"],
-                },
-            }
-            analyses["semantic"]["missing_resources"] = semantic["missing_resources"]
-            analyses["repository_compliance"] = {
-                "binaries": qgis_checks["binaries"],
-                "package_size_mb": round(qgis_checks["package_size"], 2),
-                "url_validation": qgis_checks["url_status"],
-                "folder_name_valid": qgis_checks["structure"].get("folder_name_valid", True),
-                "constraint_errors": qgis_checks["package_constraints"].get("errors", []),
-                "is_compliant": qgis_checks["package_constraints"].get("is_valid", True)
-                and qgis_checks["structure"].get("is_valid", True),
-            }
-            analyses["ruff_metadata"] = (
-                ruff_findings.get("metadata", {}) if isinstance(ruff_findings, dict) else {}
-            )
-
-        return analyses
-
-    def _get_metrics_summary(
-        self,
-        files: List[pathlib.Path],
-        modules_data: List[ModuleAnalysisResult],
-        scores: ProjectScores,
-    ) -> Dict[str, Any]:
-        """Generates the metrics summary portion of the results."""
-        return {
-            "total_files": len(files),
-            "total_lines": sum(m["lines"] for m in modules_data),
-            "quality_score": round(scores["code_score"], 1),
-            "maintainability_score": round(scores["maint_score"], 1),
-            "security_score": round(scores["security_score"], 1),
-        }
-
-    def _get_security_summary(
-        self, modules_data: List[ModuleAnalysisResult], scores: ProjectScores
-    ) -> Dict[str, Any]:
-        """Generates the security summary portion of the results."""
-        all_security_issues = []
-        for m in modules_data:
-            all_security_issues.extend(m.get("security_issues", []))
-
-        return {
-            "findings": all_security_issues,
-            "count": len(all_security_issues),
-            "score": round(scores["security_score"], 1),
-        }
-
-    def _get_research_summary(self, modules_data: List[ModuleAnalysisResult]) -> Dict[str, Any]:
-        """Aggregates research metrics for summary."""
-        total_functions = 0
-        total_params = 0
-        annotated_params = 0
-        has_return_hint = 0
-        has_docstring_count = 0
-        total_public_items = 0
-        detected_styles = set()
-
-        # QGIS context aggregation
-        gdal_styles: Dict[str, int] = {}
-        pyqt_versions: Dict[str, int] = {"PyQt5": 0, "PyQt6": 0}
-        processing_usage = False
-        total_legacy_signals = 0
-        all_signal_leaks: Set[str] = set()
-
-        for m in modules_data:
-            r_metrics = m.get("research_metrics", {})
-            d_stats = r_metrics.get("docstring_stats", {})
-            total_public_items += d_stats.get("total_public_items", 0)
-            has_docstring_count += d_stats.get("has_docstring", 0)
-
-            t_stats = r_metrics.get("type_hint_stats", {})
-            total_functions += t_stats.get("total_functions", 0)
-            total_params += t_stats.get("total_parameters", 0)
-            annotated_params += t_stats.get("annotated_parameters", 0)
-            has_return_hint += t_stats.get("has_return_hint", 0)
-
-            detected_styles.update(r_metrics.get("docstring_styles", []))
-
-            # QGIS Context
-            q_ctx = r_metrics.get("qgis_context", {})
-            style = q_ctx.get("gdal_style", "Modern")
-            gdal_styles[style] = gdal_styles.get(style, 0) + 1
-
-            p_trans = q_ctx.get("pyqt_transition", {})
-            if p_trans.get("PyQt5"):
-                pyqt_versions["PyQt5"] += 1
-            if p_trans.get("PyQt6"):
-                pyqt_versions["PyQt6"] += 1
-
-            if q_ctx.get("processing_framework"):
-                processing_usage = True
-
-            total_legacy_signals += q_ctx.get("legacy_signals_count", 0)
-            all_signal_leaks.update(q_ctx.get("signal_leaks", []))
-
-        return {
-            "type_hint_coverage": (
-                round((annotated_params / max(1, total_params)) * 100, 1)
-                if total_params > 0
-                else 0.0
-            ),
-            "return_hint_coverage": (
-                round((has_return_hint / total_functions) * 100, 1) if total_functions > 0 else 0.0
-            ),
-            "docstring_coverage": (
-                round((has_docstring_count / max(1, total_public_items)) * 100, 1)
-                if total_public_items > 0
-                else 0.0
-            ),
-            "detected_docstring_styles": sorted(list(detected_styles)),
-            "qgis_context_summary": {
-                "gdal_styles": gdal_styles,
-                "pyqt_usage": pyqt_versions,
-                "uses_processing": processing_usage,
-                "total_legacy_signals": total_legacy_signals,
-                "signal_leaks": sorted(list(all_signal_leaks)),
-            },
-        }
-
-    def _save_reports(self, analyses: FullAnalysisResult) -> None:
-        """Saves all generated analysis reports to the output directory.
-
-        Args:
-            analyses: The consolidated analysis results dictionary.
-        """
-        data = cast(Dict[str, Any], analyses)
-        generate_markdown_summary(data, self.output_dir / "PROJECT_SUMMARY.md")
-        if self.config.generate_html:
-            generate_html_report(data, self.output_dir / "PROJECT_SUMMARY.html")
-        save_json_context(data, self.output_dir / "project_context.json")
-
     def run(self, scope: str = "all") -> bool:
         """Executes the analysis pipeline based on the specified scope.
 
@@ -703,9 +320,7 @@ class ProjectAnalyzer:
         # We pass the scope to filter which visitors run inside the workers
         modules_data = []
         if scope in ["all", "i18n", "security", "performance", "architecture"]:
-            # Inject scope into shared context for workers
-            self._run_parallel_analysis_with_scope(files, rules_config, scope)
-            modules_data = self._run_parallel_analysis(files, rules_config)
+            modules_data = self._run_parallel_analysis(files, rules_config, scope)
 
         # 2. Ruff audit (Generic linting)
         ruff_findings = []
@@ -716,7 +331,9 @@ class ProjectAnalyzer:
         # 3. QGIS-specific checks (Metadata, structure, constraints)
         qgis_checks: Optional[QGISChecksResult] = None
         if self.project_type == "qgis" and scope in ["all", "metadata", "performance"]:
-            qgis_checks = self._run_qgis_specific_checks(modules_data, rules_config, discovery)
+            qgis_checks = self._run_qgis_specific_checks(
+                modules_data, rules_config, discovery
+            )
 
         # 4. Semantic Analysis (Dependencies, coupling, cycles)
         semantic: SemanticAnalysisResult = {
@@ -740,7 +357,9 @@ class ProjectAnalyzer:
         modules_data = self._filter_issues_by_scope(modules_data, scope)
 
         # Build results
-        analyses = self._build_analysis_results(
+        analyses = build_analysis_results(
+            self.project_path,
+            self.project_type,
             files,
             modules_data,
             ruff_findings,
@@ -750,7 +369,7 @@ class ProjectAnalyzer:
         )
 
         # Save reports
-        self._save_reports(analyses)
+        save_reports(analyses, self.output_dir, self.config.generate_html)
 
         logger.info(f"✅ Analysis completed. Reports in: {self.output_dir}")
 
@@ -839,11 +458,3 @@ class ProjectAnalyzer:
             filtered_modules.append(filtered_module)
 
         return filtered_modules
-
-    def _run_parallel_analysis_with_scope(
-        self, files: List[pathlib.Path], rules_config: Dict[str, Any], scope: str
-    ) -> None:
-        """Helper to update worker context with scope before analysis."""
-        # This is a bit tricky because _run_parallel_analysis recreates the context
-        # I should probably just modify _run_parallel_analysis to accept scope
-        pass

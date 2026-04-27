@@ -30,7 +30,9 @@ def get_qgis_audit_rules() -> List[Dict[str, Any]]:
         },
         {
             "id": "MANUAL_RESOURCE_PATH",
-            "pattern": re.compile(r"QIcon\(\s*['\"](?!\s*:\/)[^'\"]*?(?:icons|images|ui)/"),
+            "pattern": re.compile(
+                r"QIcon\(\s*['\"](?!\s*:\/)[^'\"]*?(?:icons|images|ui)/"
+            ),
             "message": "Manual resource path detected. Use :/plugins/...",
             "severity": "medium",
         },
@@ -50,7 +52,9 @@ def get_qgis_audit_rules() -> List[Dict[str, Any]]:
         },
         {
             "id": "UNSAFE_SUBPROCESS",
-            "pattern": re.compile(r"\bsubprocess\.(?:run|call|Popen|check_call|check_output)\("),
+            "pattern": re.compile(
+                r"\bsubprocess\.(?:run|call|Popen|check_call|check_output)\("
+            ),
             "message": "Potential unsafe subprocess usage. Avoid shell=True and ensure arguments are properly quoted.",
             "severity": "high",
         },

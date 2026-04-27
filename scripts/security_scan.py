@@ -181,7 +181,9 @@ def main():
     parser = argparse.ArgumentParser(
         description="Security scanner for SecInterp (QGIS Portal compatible)"
     )
-    parser.add_argument("-v", "--verbose", action="store_true", help="Show detailed output")
+    parser.add_argument(
+        "-v", "--verbose", action="store_true", help="Show detailed output"
+    )
     args = parser.parse_args()
 
     plugin_dir = Path(__file__).parent.parent

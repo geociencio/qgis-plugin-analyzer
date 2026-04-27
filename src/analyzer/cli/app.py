@@ -60,7 +60,9 @@ class CLIApp:
         parser = argparse.ArgumentParser(
             description="QGIS Plugin Analyzer - A guardian for your PyQGIS code"
         )
-        parser.add_argument("-v", "--version", action="version", version=f"%(prog)s {__version__}")
+        parser.add_argument(
+            "-v", "--version", action="version", version=f"%(prog)s {__version__}"
+        )
         subparsers = parser.add_subparsers(dest="command", help="Command to execute")
 
         # Register all commands
@@ -97,7 +99,9 @@ class CLIApp:
         Args:
             args: Parsed command-line arguments.
         """
-        output_dir = pathlib.Path(getattr(args, "output", "./analysis_results")).resolve()
+        output_dir = pathlib.Path(
+            getattr(args, "output", "./analysis_results")
+        ).resolve()
         output_dir.mkdir(parents=True, exist_ok=True)
         setup_logger(output_dir)
 

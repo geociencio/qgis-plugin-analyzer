@@ -32,7 +32,9 @@ class FixCommand(BaseCommand):
             default=True,
             help="Show proposed changes without applying (default: True)",
         )
-        parser.add_argument("--apply", action="store_true", help="Apply fixes (disables dry-run)")
+        parser.add_argument(
+            "--apply", action="store_true", help="Apply fixes (disables dry-run)"
+        )
         parser.add_argument(
             "--auto-approve",
             action="store_true",

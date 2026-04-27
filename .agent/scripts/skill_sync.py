@@ -47,7 +47,9 @@ def sync_skills():
         desc = s.get("description", "N/A")
         trigger = s.get("trigger", "N/A")
         path = s.get("path", "")
-        table_lines.append(f"| [{name}](file://{base_path}/{path}) | {desc} | {trigger} |")
+        table_lines.append(
+            f"| [{name}](file://{base_path}/{path}) | {desc} | {trigger} |"
+        )
 
     table_content = "\n".join(table_lines)
 
@@ -59,10 +61,14 @@ def sync_skills():
     start_marker = "<!-- SKILLS_TABLE_START -->"
     end_marker = "<!-- SKILLS_TABLE_END -->"
 
-    pattern = re.compile(f"{re.escape(start_marker)}.*?{re.escape(end_marker)}", re.DOTALL)
+    pattern = re.compile(
+        f"{re.escape(start_marker)}.*?{re.escape(end_marker)}", re.DOTALL
+    )
 
     if pattern.search(agents_content):
-        new_content = pattern.sub(f"{start_marker}\n{table_content}\n{end_marker}", agents_content)
+        new_content = pattern.sub(
+            f"{start_marker}\n{table_content}\n{end_marker}", agents_content
+        )
     else:
         # If not found, append at the end of the Skills section or file
         new_content = (

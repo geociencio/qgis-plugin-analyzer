@@ -48,14 +48,18 @@ class LegacyImportTransformer(ast.NodeTransformer):
             if alias.name.startswith(("PyQt4", "PyQt5")):
                 self.changes_made = True
                 # Replace PyQt5.QtCore -> qgis.PyQt.QtCore
-                new_name = alias.name.replace("PyQt5", "qgis.PyQt").replace("PyQt4", "qgis.PyQt")
+                new_name = alias.name.replace("PyQt5", "qgis.PyQt").replace(
+                    "PyQt4", "qgis.PyQt"
+                )
                 alias.name = new_name
         return node
 
     def visit_ImportFrom(self, node: ast.ImportFrom) -> ast.ImportFrom:
         if node.module and node.module.startswith(("PyQt4", "PyQt5")):
             self.changes_made = True
-            node.module = node.module.replace("PyQt5", "qgis.PyQt").replace("PyQt4", "qgis.PyQt")
+            node.module = node.module.replace("PyQt5", "qgis.PyQt").replace(
+                "PyQt4", "qgis.PyQt"
+            )
         return node
 
 
@@ -177,7 +181,9 @@ def apply_transformation_to_content(
             # Add necessary imports if needed
             if hasattr(transformer, "needs_import") and transformer.needs_import:
                 if "from qgis.core import QgsMessageLog, Qgis" not in new_code:
-                    new_code = "from qgis.core import QgsMessageLog, Qgis\n\n" + new_code
+                    new_code = (
+                        "from qgis.core import QgsMessageLog, Qgis\n\n" + new_code
+                    )
 
             return new_code
 
@@ -187,7 +193,9 @@ def apply_transformation_to_content(
         return None
 
 
-def apply_transformation(file_path: pathlib.Path, transformer: ast.NodeTransformer) -> bool:
+def apply_transformation(
+    file_path: pathlib.Path, transformer: ast.NodeTransformer
+) -> bool:
     """Applies an AST transformation to a file and writes back the modified code.
 
     Args:

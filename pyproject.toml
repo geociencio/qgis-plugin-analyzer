@@ -41,7 +41,7 @@ Issues = "https://github.com/geociencio/qgis-plugin-analyzer/issues"
 Chaneglog = "https://github.com/geociencio/qgis-plugin-analyzer/blob/main/CHANGELOG.md"
 
 [project.scripts]
-qgis-analyzer = "analyzer.cli:main"
+qgis-analyzer = "analyzer.main:main"
 
 [build-system]
 requires = ["setuptools>=61.0"]
