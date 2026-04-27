@@ -1,18 +1,17 @@
-# Next Steps: qgis-plugin-analyzer
+# Next Steps - Handover
 
-## Current Context
-- Version `1.12.0` has been released on GitHub.
-- Critical bug fixes for multi-line type hints and cache staleness are implemented and verified.
-- README and CHANGELOG are updated.
-- A "Future Technical Debt" section was added to `task.md` to address the Module Stability score (<50).
+## Immediate Goals
+- **Refactor `src/analyzer/utils/ast_utils.py`**: It still has a high cyclomatic complexity (CC=44) due to large extraction functions.
+- **Implement HTML Report UX Improvements**: Now that we have tests, we can safely improve the UI/UX of the generated reports.
+- **PyPI Release**: Prepare for the next version release using the updated `/release-package` workflow.
 
-## Pending Tasks
-- [ ] **Technical Debt**: Extract `ScoringEngine` from `engine.py` to `scoring.py`.
-- [ ] **Technical Debt**: Rename `src/analyzer/cli.py` to resolve circular dependency with the `cli/` package.
-- [ ] **Documentation**: Update `RULES.md` to reflect Gen 5 architecture (if needed).
-- [ ] **Maintenance**: Periodically check PyPI release status (managed via `uv publish`).
+## Summary of the Last Session
+- **Coverage**: Increased from 67% to 76%. All visitors have >95% coverage.
+- **Refactoring**: Decomposed `StandardsVisitor` and extracted `ScoringEngine`.
+- **Bug Fix**: Maintainability score is now calculated correctly using internal AST findings.
+- **Agentic System**: Fully translated to English and adapted for a generic Python project.
 
-## Resumption Command
-```bash
-/start-session
-```
+## How to Resume
+1. Run `/start-session`.
+2. Review `AI_CONTEXT.md` for updated complexity hotspots.
+3. Target `ast_utils.py` for the next decomposition phase.
