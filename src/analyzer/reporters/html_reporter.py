@@ -118,12 +118,8 @@ def _build_html_qgis_findings(analyses: Dict[str, Any]) -> str:
         for issue in issues:
             severity = issue.get("severity", "medium")
             html.append(f"<div class='issue {severity}'>")
-            html.append(
-                f"<span class='severity'>{severity}</span> - {issue['message']}<br>"
-            )
-            html.append(
-                f"<span class='file-path'>{issue['file']}:{issue['line']}</span>"
-            )
+            html.append(f"<span class='severity'>{severity}</span> - {issue['message']}<br>")
+            html.append(f"<span class='file-path'>{issue['file']}:{issue['line']}</span>")
             if issue.get("code"):
                 html.append(f"<pre>{issue['code']}</pre>")
             html.append("</div>")
@@ -171,9 +167,7 @@ def _build_html_semantic_section(semantic: Dict[str, Any]) -> str:
         html.append(
             "<table style='width:100%; border-collapse: collapse;'><thead><tr style='background:#eee;'><th>Module</th><th>Fan-In (Incoming)</th><th>Fan-Out (Outgoing)</th></tr></thead><tbody>"
         )
-        for mod, vals in sorted(
-            metrics.items(), key=lambda x: x[1]["fan_in"], reverse=True
-        )[:10]:
+        for mod, vals in sorted(metrics.items(), key=lambda x: x[1]["fan_in"], reverse=True)[:10]:
             html.append(
                 f"<tr><td style='border:1px solid #ddd; padding:8px;'>{mod}</td><td style='border:1px solid #ddd; padding:8px;'>{vals['fan_in']}</td><td style='border:1px solid #ddd; padding:8px;'>{vals['fan_out']}</td></tr>"
             )
@@ -216,9 +210,7 @@ def _build_html_repo_compliance(repo_comp: Dict[str, Any]) -> str:
             f"<div class='issue medium'><b>Package Size:</b> {package_size:.2f} MB (exceeds 20MB limit)</div>"
         )
     else:
-        html.append(
-            f"<div class='info'><b>Package Size:</b> {package_size:.2f} MB</div>"
-        )
+        html.append(f"<div class='info'><b>Package Size:</b> {package_size:.2f} MB</div>")
 
     url_status = repo_comp.get("url_validation", {})
     if url_status:
@@ -277,10 +269,7 @@ def _build_html_research_section(research_summary: Dict[str, Any]) -> str:
     if not research_summary:
         return ""
 
-    styles = (
-        ", ".join(research_summary.get("detected_docstring_styles", []))
-        or "PEP 257 (Default)"
-    )
+    styles = ", ".join(research_summary.get("detected_docstring_styles", [])) or "PEP 257 (Default)"
     th_cov = research_summary.get("type_hint_coverage", 0)
     ds_cov = research_summary.get("docstring_coverage", 0)
     ret_cov = research_summary.get("return_hint_coverage", 0)

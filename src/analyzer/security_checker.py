@@ -59,9 +59,7 @@ class SecurityContext:
 class SecurityRegistry:
     """Registry for security checks managed by decorators."""
 
-    _checks: Dict[
-        Type[ast.AST], List[Callable[[SecurityContext], Optional[SecurityFinding]]]
-    ] = {}
+    _checks: Dict[Type[ast.AST], List[Callable[[SecurityContext], Optional[SecurityFinding]]]] = {}
 
     @classmethod
     def register(cls, node_type: Type[ast.AST]) -> Callable:

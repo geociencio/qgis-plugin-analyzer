@@ -126,9 +126,7 @@ class FixRegistry:
 registry = FixRegistry()
 
 
-def create_ast_handler(
-    issue_type: str, transformer_cls: Any, description_msg: str
-) -> Any:
+def create_ast_handler(issue_type: str, transformer_cls: Any, description_msg: str) -> Any:
     """Factory function to create standard AST-based handlers.
 
     Args:
@@ -280,9 +278,7 @@ class AutoFixer:
         is_clean = check_git_status(self.project_path)
         if not is_clean:
             print("\n⚠️  WARNING: Working directory has uncommitted changes.")
-            print(
-                "   It's recommended to commit or stash changes before applying fixes."
-            )
+            print("   It's recommended to commit or stash changes before applying fixes.")
             if interactive:
                 response = input("   Continue anyway? [y/N]: ").lower()
                 if response != "y":
@@ -303,9 +299,7 @@ class AutoFixer:
             by_file[file_path].append(issue)
         return by_file
 
-    def apply_fixes(
-        self, issues: List[Dict[str, Any]], interactive: bool = True
-    ) -> Dict[str, int]:
+    def apply_fixes(self, issues: List[Dict[str, Any]], interactive: bool = True) -> Dict[str, int]:
         """Applies fixes to identified issues, grouping by file.
 
         Args:
@@ -378,9 +372,7 @@ class AutoFixer:
                         print(f"    ✅ Applied: {result['message']}")
                     else:
                         stats["failed"] += 1
-                        error = result.get(
-                            "error", "Transformation returned no changes"
-                        )
+                        error = result.get("error", "Transformation returned no changes")
                         print(f"    ❌ Failed: {error}")
                 else:
                     # Simulation

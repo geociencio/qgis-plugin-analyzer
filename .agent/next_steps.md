@@ -1,5 +1,18 @@
-# Next Steps
-- Implement a "Freshness Check" in `src/analyzer/cli/commands/summary.py` (or `commands.py`) to warn users if `project_context.json` is older than source files.
-- Improve `MISSING_TYPE_HINTS` reporting in `MetricsVisitor.py` to use ranges or clearer messaging for multi-line functions.
-- Verify if any other legacy rules or scripts are causing the "Regex-based" confusion mentioned in the bug report.
-- Run the `/start-session` workflow to resume.
+# Next Steps: qgis-plugin-analyzer
+
+## Current Context
+- Version `1.12.0` has been released on GitHub.
+- Critical bug fixes for multi-line type hints and cache staleness are implemented and verified.
+- README and CHANGELOG are updated.
+- A "Future Technical Debt" section was added to `task.md` to address the Module Stability score (<50).
+
+## Pending Tasks
+- [ ] **Technical Debt**: Extract `ScoringEngine` from `engine.py` to `scoring.py`.
+- [ ] **Technical Debt**: Rename `src/analyzer/cli.py` to resolve circular dependency with the `cli/` package.
+- [ ] **Documentation**: Update `RULES.md` to reflect Gen 5 architecture (if needed).
+- [ ] **Maintenance**: Periodically check PyPI release status (managed via `uv publish`).
+
+## Resumption Command
+```bash
+/start-session
+```

@@ -150,9 +150,7 @@ class StandardsVisitor(BaseVisitor):
         # Handled by parent check in visit_Constant
         pass
 
-    def visit_Constant(
-        self, node: ast.Constant, parent: Optional[ast.AST] = None
-    ) -> None:
+    def visit_Constant(self, node: ast.Constant, parent: Optional[ast.AST] = None) -> None:
         """Analyzes string constants for missing translations."""
         # Ignore if inside ignored call or if it's a dict key or value
         is_dict_key = isinstance(parent, ast.Dict) and node in parent.keys
@@ -216,9 +214,7 @@ class StandardsVisitor(BaseVisitor):
 
         # NON_PYTHONIC_LOOP
         for body_node in ast.walk(node):
-            if isinstance(body_node, ast.AugAssign) and isinstance(
-                body_node.op, ast.Add
-            ):
+            if isinstance(body_node, ast.AugAssign) and isinstance(body_node.op, ast.Add):
                 if (
                     isinstance(body_node.target, ast.Name)
                     and isinstance(body_node.value, ast.Constant)
@@ -238,10 +234,7 @@ class StandardsVisitor(BaseVisitor):
         Args:
             node: The call AST node.
         """
-        if (
-            isinstance(node.func, ast.Attribute)
-            and node.func.attr == "writeAsVectorFormat"
-        ):
+        if isinstance(node.func, ast.Attribute) and node.func.attr == "writeAsVectorFormat":
             self._report_issue(
                 "OBSOLETE_API",
                 node.lineno,
@@ -303,11 +296,7 @@ class StandardsVisitor(BaseVisitor):
         # Ignore snake_case, dotted names, CamelCase, and UPPERCASE
         if "_" in value or "." in value:
             return False
-        if (
-            not value.islower()
-            and not value.isupper()
-            and any(c.isupper() for c in value)
-        ):
+        if not value.islower() and not value.isupper() and any(c.isupper() for c in value):
             return False
         if value.isupper():
             return False
@@ -338,11 +327,7 @@ class StandardsVisitor(BaseVisitor):
         Args:
             node: The call AST node.
         """
-        if (
-            isinstance(node.func, ast.Attribute)
-            and node.func.attr == "connect"
-            and node.args
-        ):
+        if isinstance(node.func, ast.Attribute) and node.func.attr == "connect" and node.args:
             arg = node.args[0]
             if (
                 isinstance(arg, ast.Attribute)
@@ -350,10 +335,7 @@ class StandardsVisitor(BaseVisitor):
                 and arg.value.id == "self"
             ):
                 slot = arg.attr
-                if (
-                    self.class_methods_stack
-                    and slot not in self.class_methods_stack[-1]
-                ):
+                if self.class_methods_stack and slot not in self.class_methods_stack[-1]:
                     self._report_issue(
                         "POTENTIAL_MISSING_SLOT",
                         node.lineno,
@@ -367,9 +349,7 @@ class StandardsVisitor(BaseVisitor):
             node: The call AST node.
         """
         is_subprocess = False
-        if isinstance(node.func, ast.Attribute) and isinstance(
-            node.func.value, ast.Name
-        ):
+        if isinstance(node.func, ast.Attribute) and isinstance(node.func.value, ast.Name):
             if node.func.value.id == "subprocess" and node.func.attr in {
                 "run",
                 "call",
@@ -384,11 +364,7 @@ class StandardsVisitor(BaseVisitor):
 
         shell_true = False
         for kw in node.keywords:
-            if (
-                kw.arg == "shell"
-                and isinstance(kw.value, ast.Constant)
-                and kw.value.value is True
-            ):
+            if kw.arg == "shell" and isinstance(kw.value, ast.Constant) and kw.value.value is True:
                 shell_true = True
                 break
 
@@ -418,9 +394,7 @@ class StandardsVisitor(BaseVisitor):
             node: The call AST node.
         """
         is_network = False
-        if isinstance(node.func, ast.Attribute) and isinstance(
-            node.func.value, ast.Name
-        ):
+        if isinstance(node.func, ast.Attribute) and isinstance(node.func.value, ast.Name):
             if node.func.value.id == "requests" and node.func.attr in {
                 "get",
                 "post",

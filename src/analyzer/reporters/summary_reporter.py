@@ -112,12 +112,8 @@ def _print_quality_indicators(metrics: Dict[str, Any]) -> None:
     """
     print_header("📊 Quality Indicators")
     print_colored_score("- Module Stability Score", metrics.get("quality_score", "N/A"))
-    print_colored_score(
-        "- Code Maintainability Score", metrics.get("maintainability_score", "N/A")
-    )
-    print_colored_score(
-        "- Security Score (Bandit)", metrics.get("security_score", "N/A")
-    )
+    print_colored_score("- Code Maintainability Score", metrics.get("maintainability_score", "N/A"))
+    print_colored_score("- Security Score (Bandit)", metrics.get("security_score", "N/A"))
 
 
 def _print_research_metrics(research: Dict[str, Any]) -> None:
@@ -261,8 +257,7 @@ def _report_by_modules(data: Dict[str, Any]) -> bool:
         mod_stats.append(
             {
                 "path": m.get("path"),
-                "issues": len(m.get("ast_issues", []))
-                + len(m.get("security_issues", [])),
+                "issues": len(m.get("ast_issues", [])) + len(m.get("security_issues", [])),
                 "complexity": m.get("complexity", 1),
                 "lines": m.get("lines", 0),
             }
@@ -274,9 +269,7 @@ def _report_by_modules(data: Dict[str, Any]) -> bool:
     print(f"{'Module Path':<40} | {'Issues':<6} | {'CC':<3} | {'Lines':<5}")
     print("-" * 60)
     for m in mod_stats[:10]:
-        print(
-            f"{m['path']:<40} | {m['issues']:<6} | {m['complexity']:<3} | {m['lines']:<5}"
-        )
+        print(f"{m['path']:<40} | {m['issues']:<6} | {m['complexity']:<3} | {m['lines']:<5}")
 
     print("\n" + "=" * 60)
     return True
@@ -370,9 +363,7 @@ def _print_security_finding(finding: Dict[str, Any], severity: str) -> None:
         severity: The severity level (high, medium, low).
     """
     sev_color = (
-        "\033[91m"
-        if severity == "high"
-        else ("\033[93m" if severity == "medium" else "\033[94m")
+        "\033[91m" if severity == "high" else ("\033[93m" if severity == "medium" else "\033[94m")
     )
     print(
         f"{sev_color}[{severity.upper()}]\033[0m {finding.get('file')}:{finding.get('line')} - {finding.get('type')}"

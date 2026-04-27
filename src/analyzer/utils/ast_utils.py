@@ -217,9 +217,7 @@ def calculate_module_complexity(tree: ast.AST) -> int:
     """
     complexity = 1
     for node in ast.walk(tree):
-        if isinstance(
-            node, (ast.If, ast.For, ast.While, ast.And, ast.Or, ast.ExceptHandler)
-        ):
+        if isinstance(node, (ast.If, ast.For, ast.While, ast.And, ast.Or, ast.ExceptHandler)):
             complexity += 1
     return complexity
 
@@ -235,9 +233,7 @@ def check_main_guard(tree: ast.AST) -> bool:
     """
     for node in ast.walk(tree):
         if isinstance(node, ast.If):
-            if isinstance(node.test, ast.Compare) and isinstance(
-                node.test.left, ast.Name
-            ):
+            if isinstance(node.test, ast.Compare) and isinstance(node.test.left, ast.Name):
                 if node.test.left.id == "__name__":
                     for cmp in node.test.comparators:
                         if isinstance(cmp, ast.Constant) and cmp.value == "__main__":

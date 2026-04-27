@@ -205,9 +205,7 @@ def _parse_ast(content: str, rel_path: str, py_file: pathlib.Path) -> Any:
     try:
         return ast.parse(content)
     except SyntaxError:
-        return _create_empty_analysis_result(
-            rel_path, py_file, content, syntax_error=True
-        )
+        return _create_empty_analysis_result(rel_path, py_file, content, syntax_error=True)
 
 
 def _create_empty_analysis_result(
@@ -246,9 +244,7 @@ def _create_empty_analysis_result(
     }
 
 
-def _collect_security_issues(
-    tree: ast.AST, content: str, rel_path: str
-) -> List[Dict[str, Any]]:
+def _collect_security_issues(tree: ast.AST, content: str, rel_path: str) -> List[Dict[str, Any]]:
     """Consolidates issues from AST security visitor and secret scanner."""
     security_visitor = QGISSecurityVisitor(rel_path)
     security_visitor.visit(tree)
@@ -287,9 +283,7 @@ def audit_qgis_standards(
         content = module.get("content") or _try_read_module_file(path, project_path)
 
         if content:
-            _run_regex_audit_on_module(
-                content, path, rules, rules_config, results["issues"]
-            )
+            _run_regex_audit_on_module(content, path, rules, rules_config, results["issues"])
 
     results["issues_count"] = len(results["issues"])
     return results
@@ -322,9 +316,7 @@ def _run_regex_audit_on_module(
             )
 
 
-def _try_read_module_file(
-    path: Optional[str], project_path: pathlib.Path
-) -> Optional[str]:
+def _try_read_module_file(path: Optional[str], project_path: pathlib.Path) -> Optional[str]:
     """Attempts to read a module file from path if content is missing."""
     if not path:
         return None

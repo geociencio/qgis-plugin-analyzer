@@ -47,9 +47,7 @@ def _get_version() -> str:
                 with open(pyproject, encoding="utf-8") as f:
                     content = f.read()
                     # Match version = "X.Y.Z" under [project] or [tool.poetry]
-                    match = re.search(
-                        r'^version\s*=\s*["\']([^"\']+)["\']', content, re.MULTILINE
-                    )
+                    match = re.search(r'^version\s*=\s*["\']([^"\']+)["\']', content, re.MULTILINE)
                     if match:
                         return match.group(1)
     except Exception:

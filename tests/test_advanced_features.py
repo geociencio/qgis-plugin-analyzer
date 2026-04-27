@@ -52,21 +52,15 @@ def func():
         # Valid translatable strings
         self.assertTrue(visitor.is_translatable_string("Click Here"))
         self.assertTrue(visitor.is_translatable_string("Are you sure?"))
-        self.assertTrue(
-            visitor.is_translatable_string("cancel")
-        )  # lowercase word is candidate
+        self.assertTrue(visitor.is_translatable_string("cancel"))  # lowercase word is candidate
 
         # Invalid strings (technical)
         self.assertFalse(visitor.is_translatable_string("id"))  # too short
         self.assertFalse(visitor.is_translatable_string("/path/to/icon.png"))  # path
         self.assertFalse(visitor.is_translatable_string("column_name"))  # snake_case
-        self.assertFalse(
-            visitor.is_translatable_string("PascalCase")
-        )  # Camel/PascalCase
+        self.assertFalse(visitor.is_translatable_string("PascalCase"))  # Camel/PascalCase
         self.assertFalse(visitor.is_translatable_string("CONSTANT_NAME"))  # Uppercase
-        self.assertFalse(
-            visitor.is_translatable_string(":/plugins/myicon.svg")
-        )  # QRC path
+        self.assertFalse(visitor.is_translatable_string(":/plugins/myicon.svg"))  # QRC path
 
     def test_qgis_rules_visitor_imports(self):
         """Test QGISRulesVisitor import detection."""

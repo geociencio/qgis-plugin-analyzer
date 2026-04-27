@@ -1,12 +1,12 @@
 # PROJECT SUMMARY - qgis_plugin_analyzer
-Analysis Date: 2026-04-26 19:44:11
+Analysis Date: 2026-04-26 20:08:37
 Analyzer Version: 3.1.1 (Ai-Context-Core)
 
 ## 📊 KEY METRICS
-- **Quality Score**: 66.9/100
-- **Source Lines (SLOC)**: 8,664
-- **Total Physical Lines**: 13,299
-- **Maintainability**: 42.2
+- **Quality Score**: 67.3/100
+- **Source Lines (SLOC)**: 8,465
+- **Total Physical Lines**: 13,100
+- **Maintainability**: 42.5
 - **Test Coverage**: 14 test files
 
 ## 📁 STRUCTURE
@@ -114,7 +114,7 @@ Analyzer Version: 3.1.1 (Ai-Context-Core)
                 RELEASE_NOTES_v0.5.0.md
                 RELEASE_NOTES_v0.5.1.md
                 RELEASE_NOTES_v0.6.0.md
-                ... (+13 more)
+                ... (+14 more)
             github/
                 GITHUB_RELEASE_v0.6.1.md
                 GITHUB_RELEASE_v0.6.2.md
@@ -153,6 +153,7 @@ Analyzer Version: 3.1.1 (Ai-Context-Core)
         maintenance/
             session_2026-04-05_agent_gen5_sync.md
             session_2026-04-26_bug_audit.md
+            session_2026-04-26_v1.12.0_release.md
     debug_summary/
     scripts/
         mcp_server.py
@@ -177,9 +178,6 @@ Analyzer Version: 3.1.1 (Ai-Context-Core)
         PROJECT_SUMMARY.md
         analyzer.log
         project_context.json
-    dist/
-        qgis_plugin_analyzer-1.11.0-py3-none-any.whl
-        qgis_plugin_analyzer-1.11.0.tar.gz
     scaffold/
         qgis/
             skills/
@@ -199,13 +197,16 @@ Analyzer Version: 3.1.1 (Ai-Context-Core)
             skills/
                 geological-logic/
                     SKILL.md
+    dist/
+        qgis_plugin_analyzer-1.12.0-py3-none-any.whl
+        qgis_plugin_analyzer-1.12.0.tar.gz
 ```
 
 ## 🚨 CRITICAL ISSUES
 ### 🔒 Security Issues:
-- **.agent/scripts/skill_sync.py**: 2 issues (Max: HIGH)
 - **.ai-context/analyze_project_optfixed.py**: 24 issues (Max: HIGH)
-- **src/analyzer/__init__.py**: 1 issues (Max: HIGH)
+- **src/analyzer/cli/commands/serve.py**: 1 issues (Max: HIGH)
+- **src/analyzer/commands.py**: 1 issues (Max: HIGH)
 
 ## 💡 MAIN RECOMMENDATIONS
 ### .ai-context/ai_workflow.py
@@ -221,9 +222,9 @@ Analyzer Version: 3.1.1 (Ai-Context-Core)
 ### Factory
 - **AIContextManager** in `.ai-context/context_manager.py` (70%)
 ### Decorator
+- **register** in `src/analyzer/security_checker.py` (50%)
 - **register** in `src/analyzer/fixer.py` (50%)
 - **create_ast_handler** in `src/analyzer/fixer.py` (50%)
-- **register** in `src/analyzer/security_checker.py` (50%)
 
 ## 📝 ARCHITECTURE NOTES
 # Cerebro del Proyecto: qgis-plugin-analyzer
@@ -265,10 +266,10 @@ Motor de análisis estático y auto-fix para plugins de QGIS (PyQGIS). Combina r
 
 ## 🔄 GIT ANALYSIS
 ### Code Churn (last 30 days)
-- **Files Changed**: 104
-- **Additions**: +12279
-- **Deletions**: -7757
-- **Total Churn**: 20036
+- **Files Changed**: 120
+- **Additions**: +14026
+- **Deletions**: -9384
+- **Total Churn**: 23410
 
 ### 🔥 Hotspots
 - `src/analyzer/engine.py`: 30 commits

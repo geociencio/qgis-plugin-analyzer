@@ -108,11 +108,7 @@ class SecInterpMCPServer:
         if method == "listTools":
             return {
                 "id": request_id,
-                "result": {
-                    "tools": [
-                        {"name": name, **info} for name, info in self.tools.items()
-                    ]
-                },
+                "result": {"tools": [{"name": name, **info} for name, info in self.tools.items()]},
             }
 
         if method == "callTool":
@@ -125,9 +121,7 @@ class SecInterpMCPServer:
             "error": {"code": -32601, "message": f"Method not found: {method}"},
         }
 
-    def call_tool(
-        self, request_id: Any, name: str, args: dict[str, Any]
-    ) -> dict[str, Any]:
+    def call_tool(self, request_id: Any, name: str, args: dict[str, Any]) -> dict[str, Any]:
         """Execute a specific tool logic."""
         logger.info(f"Calling tool: {name} with args: {args}")
 

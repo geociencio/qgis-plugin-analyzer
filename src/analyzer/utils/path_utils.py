@@ -64,9 +64,7 @@ class IgnoreMatcher:
         """
         self.root_path = root_path
         # Combine user patterns with defaults
-        all_patterns = set(
-            p.strip() for p in patterns if p.strip() and not p.startswith("#")
-        )
+        all_patterns = set(p.strip() for p in patterns if p.strip() and not p.startswith("#"))
         all_patterns.update(DEFAULT_EXCLUDE)
         self.patterns = list(all_patterns)
         self._cache: Dict[str, bool] = {}
@@ -120,9 +118,7 @@ class IgnoreMatcher:
                 else:
                     if fnmatch.fnmatch(str_rel_path, clean_pattern):
                         return True
-                    if "/" not in clean_pattern and fnmatch.fnmatch(
-                        name, clean_pattern
-                    ):
+                    if "/" not in clean_pattern and fnmatch.fnmatch(name, clean_pattern):
                         return True
         return False
 
@@ -142,9 +138,7 @@ def load_ignore_patterns(ignore_file: pathlib.Path) -> List[str]:
         return f.readlines()
 
 
-def discover_project_files(
-    project_path: pathlib.Path, matcher: IgnoreMatcher
-) -> Dict[str, Any]:
+def discover_project_files(project_path: pathlib.Path, matcher: IgnoreMatcher) -> Dict[str, Any]:
     """Scans the project directory once to discover all relevant files and metrics.
     This replaces multiple redundant rglob calls, optimizing I/O performance.
 
