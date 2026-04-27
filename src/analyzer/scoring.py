@@ -80,9 +80,12 @@ class ScoringEngine:
         maintainability_score = self._get_maint_score(modules_data, ruff_findings)
         modernization_bonus = self._get_modernization_bonus(modules_data)
 
-        # Cap modernization bonus: if there are linting issues, limit to 99.9
-        # unless it's already a perfect score (which shouldn't happen with warnings)
-        if ruff_findings and (maintainability_score + modernization_bonus) >= 100.0:
+        # Cap modernization bonus: if there are ANY issues, limit to 99.9
+        # to ensure it's not a misleading perfect score.
+        any_issues = any(m.get("ast_issues") for m in modules_data) or bool(
+            ruff_findings
+        )
+        if any_issues and (maintainability_score + modernization_bonus) >= 100.0:
             maintainability_score = 99.9
         else:
             maintainability_score = min(
@@ -151,15 +154,42 @@ class ScoringEngine:
         func_score = max(0, 100 - (max(0, avg_func_comp - 10) * 5))
 
         total_lines = sum(m.get("lines", 0) for m in modules_data)
-        errors = sum(
-            1 for f in ruff_findings if f.get("code", "").startswith(("E", "F"))
-        )
-        warnings = sum(1 for f in ruff_findings if f.get("code", "").startswith("W"))
-        others = len(ruff_findings) - errors - warnings
+
+        # Harmonize findings from Ruff and internal AST analysis
+        errors = 0
+        warnings = 0
+        others = 0
+
+        # Process Ruff findings
+        for f in ruff_findings:
+            code = f.get("code", "")
+            if code.startswith(("E", "F")):
+                errors += 1
+            elif code.startswith("W"):
+                warnings += 1
+            else:
+                others += 1
+
+        # Process internal AST issues
+        for m in modules_data:
+            for issue in m.get("ast_issues", []):
+                severity = issue.get("severity", "medium").lower()
+                if severity == "high":
+                    errors += 1
+                elif severity == "medium":
+                    warnings += 1
+                else:
+                    others += 1
 
         # Improved penalty formula:
+        # We normalize by total lines but ensure a minimum penalty for existing issues
         line_factor = max(1, total_lines / 100)
-        penalty_base = 10 * errors + 3 * warnings + others
+        penalty_base = 10 * errors + 3 * warnings + 1 * others
+
+        # If there are issues, the base penalty should be at least 0.1 to avoid perfect scores
+        if penalty_base > 0:
+            penalty_base = max(0.1, penalty_base)
+
         lint_penalty = (penalty_base / line_factor) * 5
         lint_score = max(0, 100 - lint_penalty)
 
