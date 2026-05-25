@@ -47,6 +47,7 @@ This system uses technical triggers to load context on demand.
 | [qa-docker](file:///home/jmbernales/qgispluginsdev/qgis-plugin-analyzer/qgis_plugin_analyzer/.agent/skills/qa-docker/SKILL.md) | Standards for testing and quality assurance using Docker environments. | when running integration tests or validating the package in clean environments |
 | [qa-standards](file:///home/jmbernales/qgispluginsdev/qgis-plugin-analyzer/qgis_plugin_analyzer/.agent/skills/qa-standards/SKILL.md) | Standards for automated testing, CI/CD, and the use of Mocks. | when writing or executing tests, designing testing strategies, or managing testing infrastructure. |
 | [release-management](file:///home/jmbernales/qgispluginsdev/qgis-plugin-analyzer/qgis_plugin_analyzer/.agent/skills/release-management/SKILL.md) | Standards for the release process of the qgis-plugin-analyzer Python package. | when preparing releases, updating versions, or using the /release-plugin workflow |
+| [i18n-standards](file:///home/jmbernales/qgispluginsdev/qgis-plugin-analyzer/qgis_plugin_analyzer/.agent/skills/i18n-standards/SKILL.md) | Standards and best practices for internationalization (i18n) in the analyzer codebase. | when modifying the i18n visitor, auditing translations, or extending i18n wrapper patterns. |
 <!-- SKILLS_TABLE_END -->
 
 ---
@@ -63,6 +64,7 @@ Foundational workflows in `.agent/workflows/` are designed to orchestrate the ge
 | [/close-session](file:///./workflows/close-session.md) | QA Engineer | commit-standards | Close session and update memory |
 | [/create-commit](file://./workflows/create-commit.md) | QA Engineer | commit-standards | Commit with quality validation |
 | [/refactor-code](file://./workflows/refactor-code.md) | Senior Architect | coding-standards | Refactor with complexity audit |
+| [/audit-plugin](file://./workflows/audit-plugin.md) | Agent Auditor | project-context, qa-standards | Full self-analysis with qgis-analyzer |
 | [/verify-standards](file://./workflows/verify-standards.md) | Senior Architect | coding-standards | Audit agent system integrity |
 
 ---
@@ -77,4 +79,4 @@ The system exposes foundational knowledge through the Model Context Protocol (MC
 2. **Strict Typing**: Mandatory for all new core logic.
 
 ---
-*Antigravity Framework - Generation 5 Core*
+*Antigravity Framework - Generation 6 Core*
