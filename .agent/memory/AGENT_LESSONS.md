@@ -16,6 +16,13 @@ lessons:
 
   # --- ACTIVE LESSONS (< 90 days or not yet in a SKILL.md) ---
   - date: '2026-05-25'
+    category: RELEASE
+    topic: Setuptools License Deprecation
+    lesson: 'setuptools emits deprecation warnings for TOML table license format
+      and License classifiers. pyproject.toml should use SPDX expression string
+      (license = {text = "GPL-3.0-or-later"}) and remove the classifier entry.'
+    action: 'Deferred to next session. Non-blocking for builds until 2027-Feb-18.'
+  - date: '2026-05-25'
     category: AGENTIC_SYSTEM
     topic: I18n Visitor False Positives
     lesson: 'The I18nVisitor heuristic (is_translatable_string) creates the illusion
