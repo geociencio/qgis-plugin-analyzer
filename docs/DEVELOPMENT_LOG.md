@@ -1,5 +1,12 @@
 # Development Log
 
+## [2026-05-25] v1.13.2: I18n False Positive Fix
+- Released version `1.13.2` fixing ~80% of i18n false positives in projects using `QCoreApplication.translate()`.
+- Added `I18N_WRAPPER_FUNCTIONS` and `_in_i18n_wrapper` state tracking to `I18nVisitor`.
+- Added 11 test cases for i18n wrapper recognition (self.tr, translate in static methods, super().__init__, format chains).
+- Upgraded agentic system from Gen 5 to Gen 6: observability, 3-tier memory lifecycle, CodeWhale runtime bridge.
+- Created `scripts/sync_metrics.py` for automated self-analysis and metric tracking.
+
 ## [2026-04-26] v1.13.1: Metadata Synchronization
 - Released version `1.13.1` to ensure consistency across all distribution artifacts.
 - Synchronized `README.md` metrics and project metadata in build packages and GitHub releases.
