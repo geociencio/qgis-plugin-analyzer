@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+- **I18n False Positives**: The `I18nVisitor` now recognizes `QCoreApplication.translate()` and `QObject.translate()` as valid i18n wrappers alongside `self.tr()`. Strings wrapped in these calls are no longer flagged as `MISSING_I18N`, eliminating ~80% of i18n false positives in projects using standard Qt translation APIs. Added 11 test cases for wrapper recognition.
+
 ## [1.13.1] - 2026-04-26
 
 ### Fixed

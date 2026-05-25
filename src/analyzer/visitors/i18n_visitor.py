@@ -60,13 +60,22 @@ IGNORED_I18N_FUNCTIONS = {
     "replace",
 }
 
+# Recognized i18n wrapper functions. Strings passed as arguments to these
+# calls are assumed to be already translated and are not flagged as
+# MISSING_I18N. Covers:
+#   - self.tr("...") / QObject.tr("...")
+#   - QCoreApplication.translate("Context", "...")
+#   - QObject.translate("Context", "...")
+I18N_WRAPPER_FUNCTIONS = {"tr", "translate"}
+
 
 class I18nVisitor(BaseVisitor):
     """Visitor focused on internationalization and missing translations.
 
     Detects:
     - Missing i18n translations in UI-facing strings.
-    - Strings in assignments or calls that should be wrapped in tr().
+    - Strings in assignments or calls that should be wrapped in tr()
+      or QCoreApplication.translate().
     """
 
     def __init__(
@@ -85,12 +94,15 @@ class I18nVisitor(BaseVisitor):
         super().__init__(rel_path, rules_config, scope)
         self.i18n_methods = I18N_METHODS
         self._in_ignored_call = False
+        self._in_i18n_wrapper = False
 
     def visit_Call(self, node: ast.Call) -> None:
         """Analyzes function calls for i18n-ignored context."""
         func_name = self._get_func_name(node.func)
         if func_name in IGNORED_I18N_FUNCTIONS:
             self._in_ignored_call = True
+        if func_name in I18N_WRAPPER_FUNCTIONS:
+            self._in_i18n_wrapper = True
         self.generic_visit(node)
 
     def leave_Call(self, node: ast.Call) -> None:
@@ -98,9 +110,15 @@ class I18nVisitor(BaseVisitor):
         func_name = self._get_func_name(node.func)
         if func_name in IGNORED_I18N_FUNCTIONS:
             self._in_ignored_call = False
+        if func_name in I18N_WRAPPER_FUNCTIONS:
+            self._in_i18n_wrapper = False
 
     def visit_Constant(self, node: ast.Constant, parent: Optional[ast.AST] = None) -> None:
         """Analyzes string constants for missing translations."""
+        # Skip strings that are already inside an i18n wrapper
+        if self._in_i18n_wrapper:
+            return
+
         # Ignore if inside ignored call or if it's a dict key or value
         is_dict_key = isinstance(parent, ast.Dict) and node in parent.keys
         is_dict_value = isinstance(parent, ast.Dict) and node in parent.values
@@ -133,7 +151,8 @@ class I18nVisitor(BaseVisitor):
         self._report_issue(
             "MISSING_I18N",
             lineno,
-            f"Untranslated user-facing string: '{val}'. Use self.tr().",
+            f"Untranslated user-facing string: '{val}'. "
+            "Use self.tr() or QCoreApplication.translate().",
         )
 
     @staticmethod
