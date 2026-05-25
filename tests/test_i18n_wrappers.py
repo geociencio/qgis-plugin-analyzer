@@ -4,7 +4,6 @@ import ast
 import unittest
 
 from analyzer.visitors.composite_visitor import CompositeVisitor
-from analyzer.visitors.i18n_visitor import I18nVisitor
 
 
 def _get_i18n_issues(code: str) -> list:
