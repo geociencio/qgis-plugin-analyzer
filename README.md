@@ -19,14 +19,14 @@
 ![Security Score](https://img.shields.io/badge/Security--Bandit-100.0%2F100-brightgreen?style=flat-square)
 ![Type Coverage](https://img.shields.io/badge/Type%20Hints-98.0%25-brightgreen?style=flat-square)
 ![Docstring Coverage](https://img.shields.io/badge/Docstrings-92.3%25-brightgreen?style=flat-square)
-![Tests](https://img.shields.io/badge/Tests-79%2F79%20passing-brightgreen?style=flat-square&logo=pytest)
+![Tests](https://img.shields.io/badge/Tests-87%2F87%20passing-brightgreen?style=flat-square&logo=pytest)
 
 The **QGIS Plugin Analyzer** is a static analysis tool designed specifically for QGIS (PyQGIS) plugin developers. Its goal is to elevate plugin quality by ensuring they follow community best practices and are optimized for AI-assisted development.
 
 ## ✨ Main Features
 
 - **Quality Blindage**: Comprehensive test suite with 76% global coverage and >95% on core AST visitors.
-- **Gen 5 Architecture**: Modernized agentic system with English-based workflows and specialized skill modules for maximum precision.
+- **Gen 6 Architecture**: Modernized agentic system with observability, memory lifecycle, and CodeWhale runtime bridge.
 - **Scaffold System**: Integrated blueprints for standardizing QGIS and mining plugin generation.
 - **Security Core (Bandit-inspired)**: Professional vulnerability scanning detecting `eval`, `exec`, shell injections, and SQL injection risks.
 - **Deep Entropy Secret Scanner**: Detects hardcoded API keys, passwords, and sensitive tokens using regex and information entropy.
@@ -45,17 +45,18 @@ The **QGIS Plugin Analyzer** is a static analysis tool designed specifically for
 - **AI-Ready**: Generates structured summaries and optimized contexts for LLMs.
 - **Zero Runtime Dependencies**: Works using only the Python standard library (Ruff as an external tool).
 
-## 🆕 What's New in v1.13.1
+## 🆕 What's New in v1.13.2
 
-**Metadata Synchronization** - Consistency fix for distribution artifacts.
+**I18n False Positive Fix** - The analyzer now recognizes `QCoreApplication.translate()` as a valid i18n wrapper alongside `self.tr()`, eliminating ~80% of false positives in projects using standard Qt translation APIs.
 
-**From v1.13.0:**
+**From v1.13.1:**
+- **Metadata Synchronization** - Consistency fix for distribution artifacts.
 - 🛡️ **Test Coverage Blindage** - Reached 76% global coverage. Core AST visitors and utility modules are now secured with >95% coverage.
 - 🏗️ **Architectural Refactor** - Decoupled `ScoringEngine` and `ResultAggregator` for better modularity.
 - 🤖 **English Standardization** - Entire developer framework translated and adapted for a generic Python package lifecycle.
 - 📈 **Accurate Scoring** - Fixed maintainability calculation bug (~77/100).
 
-[**📖 Full Release Notes**](docs/releases/notes/v1.13.1.md) | [**🗺️ CLI Commands Roadmap**](docs/research/CLI_COMMANDS_ROADMAP.md)
+[**📖 Full Release Notes**](docs/releases/notes/v1.13.2.md) | [**🗺️ CLI Commands Roadmap**](docs/research/CLI_COMMANDS_ROADMAP.md)
 
 ## ⚖️ Why use this Analyzer? (Comparison)
 
