@@ -3,6 +3,25 @@
   "project": "qgis-plugin-analyzer",
   "sessions": [
     {
+      "date": "2026-09-14",
+      "session": "output_contract_i18n",
+      "scores": {
+        "stability": 55.2,
+        "maintainability": 77.0,
+        "security": 100.0
+      },
+      "tests": {
+        "pass": 87,
+        "total": 87
+      },
+      "issues": {
+        "critical": 0,
+        "high": 0,
+        "medium": 0,
+        "low": 0
+      }
+    },
+    {
       "date": "2026-05-25",
       "session": "gen5_to_gen6_upgrade",
       "scores": {

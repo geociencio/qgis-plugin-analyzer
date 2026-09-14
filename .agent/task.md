@@ -1,11 +1,18 @@
-# Active Tasks — Phase: Gen 6 Observability Pipeline
+# Active Tasks — Phase: Analyzer Generalization (i18n AST + CC gate)
 
 This task board tracks the current development phase based on `.agent/next_steps.md`.
+Reference plan: `docs/plans/implementation_plan_generalize_analyzer.md`.
 
-## Goal 1: Observability Pipeline
-- [ ] Port `check_cc.py` from sec_interp for CC gate <!-- id: 1.1 -->
-- [ ] Create `scripts/metrics_report.py` for trend dashboard <!-- id: 1.2 -->
-- [ ] Integrate `sync_metrics.py` into `/start-session` and `/close-session` <!-- id: 1.3 -->
+## Goal 1: Analyzer Generalization
+- [x] Fase 0.1 — `schema_version` + `analyzer_version` in `project_context.json` <!-- id: 1.1 -->
+- [x] Fase 0.2 — `--include-content` flag (content optional) <!-- id: 1.2 -->
+- [x] Fase 0.3 — `--json` flag + clean stdout <!-- id: 1.3 -->
+- [x] Fase 0.4 — legacy output dir warning <!-- id: 1.4 -->
+- [ ] Fase 1 — port i18n AST rule to `I18nVisitor` (replace heuristic) <!-- id: 1.5 -->
+- [ ] Fase 2 — CC gate `--max-cc N` <!-- id: 1.6 -->
+- [ ] Fase 3 — bump Python >=3.11 + remove `_minimal_toml_load` <!-- id: 1.7 -->
+- [ ] Fase 4 — tests (golden, synthetic, CC gate, back-compat) <!-- id: 1.8 -->
+- [ ] Fase 5 — docs reconciliation <!-- id: 1.9 -->
 
 ## Goal 2: Release Cleanup
 - [ ] Upload v1.13.2 to PyPI (manual) <!-- id: 2.1 -->
@@ -20,9 +27,10 @@ This task board tracks the current development phase based on `.agent/next_steps
 - [x] I18n fix: `QCoreApplication.translate()` wrapper recognition (v1.13.2)
 - [x] Gen 5→6 agentic system upgrade (13 files, 895 insertions)
 - [x] v1.13.2 GitHub release
+- [x] Fase 0: CI output contract (schema version, `--json`, `--include-content`)
 
 ## Operational Status
-- **Active Phase**: Gen 6 Observability Pipeline
+- **Active Phase**: Analyzer Generalization
 - **Current Metrics**:
   - Tests: 87/87 passing (100%)
   - Stability: 55.2/100

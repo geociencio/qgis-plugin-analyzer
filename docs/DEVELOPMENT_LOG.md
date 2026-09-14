@@ -1,5 +1,11 @@
 # Development Log
 
+## [2026-09-14] Fase 0: CI Output Contract & i18n Generalization Plan
+- Analyzed `docs/plans/` (upstreaming plan + i18n AST reference) against the current codebase; identified broken reference path, TOML-array parser gap, and missing inline comment suppression.
+- Implemented Fase 0 of analyzer generalization: `schema_version`/`analyzer_version`, `--include-content`, `--json`, and legacy output-dir warning.
+- Created `docs/plans/implementation_plan_generalize_analyzer.md` (5-phase plan; decisions: keep `MISSING_I18N` id, bump Python to 3.11).
+- Maintenance: [session_2026-09-14_output_contract_i18n.md](maintenance/session_2026-09-14_output_contract_i18n.md).
+
 ## [2026-05-25] v1.13.2: I18n False Positive Fix
 - Released version `1.13.2` fixing ~80% of i18n false positives in projects using `QCoreApplication.translate()`.
 - Added `I18N_WRAPPER_FUNCTIONS` and `_in_i18n_wrapper` state tracking to `I18nVisitor`.

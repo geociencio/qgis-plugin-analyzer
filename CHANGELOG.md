@@ -5,6 +5,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Added
+- **CI Output Contract**: `project_context.json` now embeds `schema_version` and `analyzer_version`. New `--json` flag on `analyze` emits machine-readable JSON to stdout (logs and progress are routed to stderr). New `--include-content` flag controls whether module source is embedded (omitted by default to avoid source leak and reduce output size). Legacy `json/project_context.json` locations now trigger a migration warning.
+
 ## [1.13.2] - 2026-05-25
 
 ### Fixed

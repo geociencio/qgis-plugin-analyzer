@@ -15,6 +15,32 @@ See `.agent/memory/memory_policy.md` for the full policy.
 lessons:
 
   # --- ACTIVE LESSONS (< 90 days or not yet in a SKILL.md) ---
+  - date: '2026-09-14'
+    category: TECHNICAL
+    topic: Stdout Purity for --json Output
+    lesson: 'The CLI logger (console StreamHandler) and ProgressTracker both write
+      to sys.stdout, polluting machine-readable --json output. Route the logger
+      StreamHandler to stderr and gate ProgressTracker via a module-level flag.'
+    action: 'Added _route_logs_to_stderr() and set_progress_quiet() in commands.py /
+      performance_utils.py. Commit: 7a969ad.'
+  - date: '2026-09-14'
+    category: ARCHITECTURE
+    topic: TOML Array Parsing vs Python Floor
+    lesson: 'The minimal fallback TOML parser (_minimal_toml_load) only handles
+      scalar key=value, so array-valued config (extra_ignore_calls) would be lost
+      on Python <3.11. Prefer raising requires-python to 3.11 and using stdlib
+      tomllib over extending the hand-rolled parser.'
+    action: 'Decision recorded in implementation plan; Fase 3 will raise the floor
+      to 3.11 and delete _minimal_toml_load.'
+  - date: '2026-09-14'
+    category: USER_PREFERENCE
+    topic: Keep Existing Rule IDs for Back-Compat
+    lesson: 'When replacing a heuristic with a precise implementation, keep the
+      existing rule id (MISSING_I18N) instead of introducing a new one. New ids
+      force touching hardcoded scope maps (engine.py, base.py), reporters and tests
+      with no benefit.'
+    action: 'Applied in the analyzer generalization plan: MISSING_I18N retained.'
+
   - date: '2026-05-25'
     category: RELEASE
     topic: Setuptools License Deprecation
