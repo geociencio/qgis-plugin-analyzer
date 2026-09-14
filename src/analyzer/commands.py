@@ -10,6 +10,7 @@ import json
 import logging
 import pathlib
 import sys
+from typing import Any, Dict, List
 
 from .engine import ProjectAnalyzer
 from .fixer import AutoFixer
@@ -110,16 +111,62 @@ def handle_analyze(args: argparse.Namespace) -> None:
 
     success = analyzer.run(scope=scope)
 
+    max_cc = getattr(args, "max_cc", None)
     context_path = analyzer.output_dir / "project_context.json"
     if context_path.exists():
         if as_json:
             with open(context_path, encoding="utf-8") as f:
-                sys.stdout.write(f.read())
+                data = json.load(f)
+            if max_cc is not None:
+                cc_result = _enforce_max_cc(data.get("modules", []), max_cc)
+                data["cc_gate"] = cc_result["gate"]
+                data["cc_violations"] = cc_result["violations"]
+            sys.stdout.write(json.dumps(data))
         else:
             report_summary(context_path)
+            if max_cc is not None:
+                with open(context_path, encoding="utf-8") as f:
+                    data = json.load(f)
+                cc_result = _enforce_max_cc(data.get("modules", []), max_cc)
+                for v in cc_result["violations"]:
+                    print(f"  - {v['path']}:{v['line']} -> {v['name']} (CC={v['complexity']})")
+                if cc_result["gate"] == "FAIL":
+                    print(
+                        f"❌ Cyclomatic complexity gate failed: "
+                        f"{len(cc_result['violations'])} function(s) exceed --max-cc {max_cc}."
+                    )
+                    sys.exit(1)
 
     if not success:
         sys.exit(1)
+
+
+def _enforce_max_cc(modules_data: List[Dict[str, Any]], max_cc: int) -> Dict[str, Any]:
+    """Collects functions exceeding the maximum cyclomatic complexity.
+
+    Args:
+        modules_data: List of module analysis dicts (from project_context.json).
+        max_cc: Maximum allowed cyclomatic complexity per function.
+
+    Returns:
+        Dict with ``gate`` ("PASS" or "FAIL") and ``violations`` list.
+    """
+    violations: List[Dict[str, Any]] = []
+    for mod in modules_data:
+        path = mod.get("path", "")
+        for func in mod.get("functions", []):
+            cc = func.get("complexity", 0)
+            if cc > max_cc:
+                violations.append(
+                    {
+                        "path": path,
+                        "name": func.get("name", ""),
+                        "line": func.get("line", 0),
+                        "complexity": cc,
+                    }
+                )
+    violations.sort(key=lambda v: v["complexity"], reverse=True)
+    return {"gate": "FAIL" if violations else "PASS", "violations": violations}
 
 
 def _route_logs_to_stderr() -> None:

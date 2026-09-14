@@ -55,6 +55,13 @@ class AnalyzeCommand(BaseAnalyzerCommand):
             action="store_true",
             help="Include module source content in the JSON output",
         )
+        parser.add_argument(
+            "--max-cc",
+            type=int,
+            default=None,
+            metavar="N",
+            help="Fail analysis if any function exceeds this cyclomatic complexity",
+        )
 
     def execute(self, args: argparse.Namespace) -> int:
         """Execute the analyze command.
