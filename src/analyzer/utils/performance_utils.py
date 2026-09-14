@@ -9,6 +9,18 @@ from collections import OrderedDict
 from contextlib import contextmanager
 from typing import Any, Dict
 
+_PROGRESS_QUIET = False
+
+
+def set_progress_quiet(quiet: bool = True) -> None:
+    """Toggles progress output suppression (used in --json mode).
+
+    Args:
+        quiet: When True, ProgressTracker emits nothing to stdout.
+    """
+    global _PROGRESS_QUIET
+    _PROGRESS_QUIET = quiet
+
 
 class LRUCache:
     """Efficient Least Recently Used (LRU) Cache.
@@ -105,6 +117,8 @@ class ProgressTracker:
             self.last_update = current_time
 
     def _display_progress(self) -> None:
+        if _PROGRESS_QUIET:
+            return
         percent = (self.processed / self.total) * 100 if self.total > 0 else 0
         if self.processed > 0:
             remaining = self.total - self.processed
@@ -124,7 +138,8 @@ class ProgressTracker:
             A dictionary with elapsed time and throughput.
         """
         elapsed = time.time() - self.start_time
-        print()
+        if not _PROGRESS_QUIET:
+            print()
         return {
             "elapsed": elapsed,
             "files_per_second": self.processed / elapsed if elapsed > 0 else 0,

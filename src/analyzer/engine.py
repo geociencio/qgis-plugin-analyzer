@@ -70,6 +70,7 @@ class ProjectConfig:
     project_type: str = "auto"
     rules: Dict[str, Any] = field(default_factory=dict)
     fail_on_critical: bool = False
+    include_content: bool = False
 
 
 class ProjectAnalyzer:
@@ -105,6 +106,7 @@ class ProjectAnalyzer:
             fail_on_error=raw_config.get("fail_on_error", False),
             project_type=raw_config.get("project_type", "auto"),
             rules=raw_config.get("rules", {}),
+            include_content=raw_config.get("include_content", False),
         )
 
         # Detect project type
@@ -197,6 +199,7 @@ class ProjectAnalyzer:
             "project_path": self.project_path,
             "rules_config": rules_config,
             "scope": scope,
+            "include_content": self.config.include_content,
         }
 
         with ProcessPoolExecutor(

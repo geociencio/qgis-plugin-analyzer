@@ -45,6 +45,16 @@ class AnalyzeCommand(BaseAnalyzerCommand):
             action="store_true",
             help="Generate detailed HTML/Markdown reports",
         )
+        parser.add_argument(
+            "--json",
+            action="store_true",
+            help="Emit machine-readable JSON (project_context.json) to stdout",
+        )
+        parser.add_argument(
+            "--include-content",
+            action="store_true",
+            help="Include module source content in the JSON output",
+        )
 
     def execute(self, args: argparse.Namespace) -> int:
         """Execute the analyze command.

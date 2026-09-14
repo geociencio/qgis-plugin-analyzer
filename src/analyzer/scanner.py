@@ -124,6 +124,7 @@ def analyze_module_worker(
         p_path = project_path or ctx.get("project_path")
         r_config = rules_config or ctx.get("rules_config")
         a_scope = scope if scope != "all" else ctx.get("scope", "all")
+        include_content = ctx.get("include_content", False)
 
         if not p_path:
             return None
@@ -158,8 +159,10 @@ def analyze_module_worker(
             "docstrings": {"module": ast.get_docstring(tree) is not None},
             "file_size_kb": py_file.stat().st_size / 1024,
             "syntax_error": False,
-            "content": content,
         }
+
+        if include_content:
+            results["content"] = content
 
         security_issues = []
         if a_scope in ["all", "security"]:

@@ -21,6 +21,7 @@
 import pathlib
 from typing import Any, Dict, List, Optional, Set, TypedDict, cast
 
+from . import __version__
 from .reporters import (
     generate_html_report,
     generate_markdown_summary,
@@ -37,6 +38,8 @@ from .scoring import (
 class FullAnalysisResult(TypedDict, total=False):
     """Consolidated analysis result for the entire project."""
 
+    schema_version: int
+    analyzer_version: str
     project_name: str
     project_type: str
     metrics: Dict[str, Any]
@@ -163,6 +166,8 @@ def build_analysis_results(
 ) -> FullAnalysisResult:
     """Consolidates analysis results into a single dictionary."""
     analyses: FullAnalysisResult = {
+        "schema_version": 1,
+        "analyzer_version": __version__,
         "project_name": project_path.name,
         "project_type": project_type,
         "metrics": get_metrics_summary(files, modules_data, scores),

@@ -7,6 +7,7 @@ interface definition (cli.py) from execution logic.
 import argparse
 import dataclasses
 import json
+import logging
 import pathlib
 import sys
 
@@ -15,6 +16,7 @@ from .fixer import AutoFixer
 from .reporters.summary_reporter import report_summary
 from .rules import get_qgis_audit_rules
 from .utils import DEFAULT_EXCLUDE
+from .utils.performance_utils import set_progress_quiet
 
 
 def handle_fix(args: argparse.Namespace) -> bool:
@@ -89,6 +91,12 @@ def handle_analyze(args: argparse.Namespace) -> None:
     output_dir = getattr(args, "output", "./analysis_results")
     profile = getattr(args, "profile", "default")
     scope = getattr(args, "scope", "all")
+    as_json = getattr(args, "json", False)
+
+    if as_json:
+        _route_logs_to_stderr()
+
+    _warn_legacy_output_dir(pathlib.Path(project_path))
 
     analyzer = ProjectAnalyzer(str(project_path), output_dir, profile)
 
@@ -97,15 +105,40 @@ def handle_analyze(args: argparse.Namespace) -> None:
         analyzer.config = dataclasses.replace(analyzer.config, strict=True)
     if hasattr(args, "report") and args.report:
         analyzer.config = dataclasses.replace(analyzer.config, generate_html=True)
+    if getattr(args, "include_content", False):
+        analyzer.config = dataclasses.replace(analyzer.config, include_content=True)
 
     success = analyzer.run(scope=scope)
 
     context_path = analyzer.output_dir / "project_context.json"
     if context_path.exists():
-        report_summary(context_path)
+        if as_json:
+            with open(context_path, encoding="utf-8") as f:
+                sys.stdout.write(f.read())
+        else:
+            report_summary(context_path)
 
     if not success:
         sys.exit(1)
+
+
+def _route_logs_to_stderr() -> None:
+    """Redirects console log output to stderr so stdout stays machine-readable."""
+    logger = logging.getLogger("qgis_analyzer")
+    for handler in logger.handlers:
+        if isinstance(handler, logging.StreamHandler) and handler.stream is sys.stdout:
+            handler.setStream(sys.stderr)
+    set_progress_quiet(True)
+
+
+def _warn_legacy_output_dir(project_path: pathlib.Path) -> None:
+    """Warns when a legacy output location (json/project_context.json) is detected."""
+    legacy = project_path / "json" / "project_context.json"
+    if legacy.exists():
+        logging.getLogger("qgis_analyzer").warning(
+            f"⚠️  Legacy output directory detected at {legacy}. "
+            "Results are now written to the canonical --output directory."
+        )
 
 
 def handle_list_rules() -> None:
