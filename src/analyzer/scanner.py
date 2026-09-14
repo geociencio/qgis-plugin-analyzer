@@ -143,7 +143,12 @@ def analyze_module_worker(
         tree = tree_or_error
 
         # Run Audits (using the new CompositeVisitor for single-pass)
-        visitor = QGISASTVisitor(rel_path, rules_config=r_config, scope=a_scope)
+        visitor = QGISASTVisitor(
+            rel_path,
+            rules_config=r_config,
+            scope=a_scope,
+            lines=content.splitlines(),
+        )
         visitor.visit(tree)
 
         # Extract information using helper functions

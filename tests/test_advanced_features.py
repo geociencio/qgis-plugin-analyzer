@@ -2,7 +2,7 @@ import ast
 import unittest
 
 from analyzer.utils.ast_utils import calculate_complexity
-from analyzer.visitors.i18n_visitor import I18nVisitor
+from analyzer.visitors.i18n_visitor import DEFAULT_TECHNICAL_PATTERNS, is_technical_string
 from analyzer.visitors.qgis_rules_visitor import QGISRulesVisitor
 
 
@@ -46,21 +46,17 @@ def func():
         self.assertEqual(comp_high, 7)
 
     def test_i18n_heuristics(self):
-        """Test that i18n heuristics correctly filter strings."""
-        visitor = I18nVisitor("test.py")
+        """Test that technical strings are correctly identified as non-translatable."""
+        # Clearly technical strings
+        self.assertTrue(is_technical_string(".png", DEFAULT_TECHNICAL_PATTERNS))
+        self.assertTrue(is_technical_string("*.shp", DEFAULT_TECHNICAL_PATTERNS))
+        self.assertTrue(is_technical_string("#FF0000", DEFAULT_TECHNICAL_PATTERNS))
+        self.assertTrue(is_technical_string("Point", DEFAULT_TECHNICAL_PATTERNS))
+        self.assertTrue(is_technical_string("<b>", DEFAULT_TECHNICAL_PATTERNS))
 
-        # Valid translatable strings
-        self.assertTrue(visitor.is_translatable_string("Click Here"))
-        self.assertTrue(visitor.is_translatable_string("Are you sure?"))
-        self.assertTrue(visitor.is_translatable_string("cancel"))  # lowercase word is candidate
-
-        # Invalid strings (technical)
-        self.assertFalse(visitor.is_translatable_string("id"))  # too short
-        self.assertFalse(visitor.is_translatable_string("/path/to/icon.png"))  # path
-        self.assertFalse(visitor.is_translatable_string("column_name"))  # snake_case
-        self.assertFalse(visitor.is_translatable_string("PascalCase"))  # Camel/PascalCase
-        self.assertFalse(visitor.is_translatable_string("CONSTANT_NAME"))  # Uppercase
-        self.assertFalse(visitor.is_translatable_string(":/plugins/myicon.svg"))  # QRC path
+        # User-facing strings (not technical)
+        self.assertFalse(is_technical_string("Click Here", DEFAULT_TECHNICAL_PATTERNS))
+        self.assertFalse(is_technical_string("Are you sure?", DEFAULT_TECHNICAL_PATTERNS))
 
     def test_qgis_rules_visitor_imports(self):
         """Test QGISRulesVisitor import detection."""

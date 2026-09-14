@@ -3,7 +3,7 @@
 import ast
 from typing import Any, Dict, List, Optional
 
-from .i18n_visitor import I18nVisitor
+from .i18n_visitor import I18nVisitor, collect_docstring_lines
 from .imports_visitor import ImportsVisitor
 from .metrics_visitor import MetricsVisitor
 from .qgis_rules_visitor import QGISRulesVisitor
@@ -30,6 +30,7 @@ class CompositeVisitor(ast.NodeVisitor):
         rel_path: str,
         rules_config: Optional[Dict[str, Any]] = None,
         scope: str = "all",
+        lines: Optional[List[str]] = None,
     ) -> None:
         """Initializes the composite visitor.
 
@@ -37,6 +38,8 @@ class CompositeVisitor(ast.NodeVisitor):
             rel_path: Relative path to the file being analyzed.
             rules_config: Optional configuration for audit rules and severities.
             scope: The scope of analysis.
+            lines: Source lines of the file, threaded to the i18n visitor for
+                inline ``# no-i18n`` / ``# noqa`` comment detection.
         """
         self.rel_path = rel_path
         self.rules_config = rules_config or {}
@@ -46,7 +49,7 @@ class CompositeVisitor(ast.NodeVisitor):
         self._imports_visitor = ImportsVisitor(rel_path, rules_config, scope)
         self._metrics_visitor = MetricsVisitor(rel_path, rules_config, scope)
         self._standards_visitor = StandardsVisitor(rel_path, rules_config, scope)
-        self._i18n_visitor = I18nVisitor(rel_path, rules_config, scope)
+        self._i18n_visitor = I18nVisitor(rel_path, rules_config, scope, lines)
         self._qgis_rules_visitor = QGISRulesVisitor(rel_path, rules_config, scope)
         self._safety_visitor = SafetyVisitor(rel_path, rules_config, scope)
 
@@ -119,6 +122,10 @@ class CompositeVisitor(ast.NodeVisitor):
             node: The AST node to visit.
         """
         parent = self._node_stack[-1] if self._node_stack else None
+
+        # Pre-compute docstring lines for the i18n visitor before traversal.
+        if isinstance(node, ast.Module):
+            self._i18n_visitor.docstring_lines = collect_docstring_lines(node)
 
         # 1. Notify all visitors (Enter)
         for visitor in self._active_visitors:

@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """Portable AST-based i18n hygiene rule (reference implementation).
 
 This module is the generalized, project-agnostic version of SecInterp's
