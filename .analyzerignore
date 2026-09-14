@@ -8,6 +8,8 @@ dist/
 analysis_results/
 .ai-context/
 .agent/
+opencode.json
+AGENTS.md
 .gemini/
 reproduce_bug.py
 tests/

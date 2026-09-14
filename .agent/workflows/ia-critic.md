@@ -1,6 +1,6 @@
 ---
 description: Workflow for critical review of implementation plans by the Agent Auditor
-agent: Agent Auditor
+agent: auditor
 skills: [coding-standards, project-context, agentic-memory]
 validation: |
   - Verify that the plan complies with architectural boundaries

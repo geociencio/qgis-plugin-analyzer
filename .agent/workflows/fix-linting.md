@@ -1,6 +1,6 @@
 ---
 description: Workflow to automatically correct linting and formatting issues
-agent: QA Engineer
+agent: qa_engineer
 skills: [coding-standards, qa-standards]
 validation: |
   - Verify that ruff and black pass without errors

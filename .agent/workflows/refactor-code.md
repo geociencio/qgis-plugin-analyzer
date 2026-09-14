@@ -1,6 +1,6 @@
 ---
 description: Guided workflow for code refactoring with complexity validation
-agent: Senior Architect
+agent: architect
 skills: [domain-logic, coding-standards]
 validation: |
   - Verify that cyclomatic complexity decreased (CC < 15)

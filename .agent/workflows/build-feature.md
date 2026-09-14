@@ -1,6 +1,6 @@
 ---
 description: Start the Autonomous AI Developer Pipeline sequence for a new feature.
-agent: Architect
+agent: architect
 skills: [domain-logic, qa-docker, coding-standards]
 ---
 # Build Feature Autonomous Pipeline

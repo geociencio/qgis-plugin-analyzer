@@ -1,6 +1,6 @@
 ---
 description: Procedure to end a work session, update logs, and archive results
-agent: QA Engineer
+agent: qa_engineer
 skills: [qa-docker, commit-standards, agentic-memory, documentation-standards, changelog-generator]
 validation: |
   - Verify that all logs are updated
@@ -55,10 +55,10 @@ Verify that `.agent/task.md` exists and is updated before committing.
 
 ### 3. Final Memory Synchronization (AI)
 
-🤖 **Agent Action (Skill Sync)**: Run skill synchronization and update AGENTS.md.
+🤖 **Agent Action (System Validation)**: Validate the agentic system consistency.
 // turbo
 ```bash
-python3 scripts/skill_sync.py
+uv run python scripts/validate_agent_system.py
 ```
 
 🤖 **Agent Action (Learning)**: Explicitly identify the 3 most important technical lessons learned this session.

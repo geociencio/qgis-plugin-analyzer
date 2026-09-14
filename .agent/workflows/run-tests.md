@@ -1,6 +1,6 @@
 ---
 description: How to run unit tests reliably
-agent: QA Engineer
+agent: qa_engineer
 skills: [qa-docker, qa-standards]
 validation: |
   - Verify that all tests pass

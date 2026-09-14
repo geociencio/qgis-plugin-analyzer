@@ -1,5 +1,15 @@
 # Next Steps — Phase: Analyzer Generalization (Handover 2026-09-14)
 
+## 🧠 Gen 8 Agentic System Evolution 2026-09-14 — COMPLETE
+
+Adapted the `.agent/` system to the opencode-native Gen 8 pattern (ported from SecInterp Gen 7→8):
+- **Phase A**: root `AGENTS.md` as single source of truth; `.agent/AGENTS.md` is now a pointer.
+- **Phase B**: retired `skill_sync.py` (x2), `init_agent_system.sh`, `.codewhale/instructions.md`; added `scripts/memory_prune.py` + `scripts/validate_agent_system.py`.
+- **Phase D**: native subagents (`architect`/`qa_engineer`/`auditor`) in `opencode.json` + `skills.paths`.
+- Normalized workflow `agent:` labels to 3 ids; added frontmatter to `i18n-standards`.
+- **Reference**: `.agent/architecture/IMPROVEMENT_PLAN_GEN8.md`
+- **Note**: restart opencode to load `opencode.json` (subagents + `skills.paths`).
+
 ## Session Summary (2026-09-14)
 
 Analyzed the upstreaming plan (`docs/plans/`) against the current codebase and

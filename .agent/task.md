@@ -17,11 +17,17 @@ Reference plan: `docs/plans/implementation_plan_generalize_analyzer.md`.
 ## Goal 2: Release Cleanup
 - [ ] Upload v1.13.2 to PyPI (manual) <!-- id: 2.1 -->
 - [ ] Fix setuptools license deprecation warnings <!-- id: 2.2 -->
-- [ ] Add `i18n-standards` and `audit-plugin` triggers to `skill_sync.py` <!-- id: 2.3 -->
+- [x] ~~Add `i18n-standards` and `audit-plugin` triggers to `skill_sync.py`~~ (obsolete — `skill_sync.py` retired in Gen 8) <!-- id: 2.3 -->
 
 ## Goal 3: Technical Debt
 - [ ] Reduce 570 self-reported MISSING_I18N in analyzer's own codebase <!-- id: 3.1 -->
 - [ ] Address 2 HIGH_COMPLEXITY issues in `ast_utils.py` <!-- id: 3.2 -->
+
+## 🧠 Gen 8 Agentic System Evolution (COMPLETED 2026-09-14)
+- [x] Phase A: root `AGENTS.md` SSoT; retired `skill_sync.py` + `init_agent_system.sh` <!-- id: 8.1 -->
+- [x] Phase B: retired `.codewhale/` bridge; added `memory_prune.py` + `validate_agent_system.py` <!-- id: 8.2 -->
+- [x] Phase D: native subagents in `opencode.json`; normalized workflow `agent:` ids <!-- id: 8.3 -->
+- [ ] Phase E (follow-up): drop `trigger` from SKILL.md files <!-- id: 8.4 -->
 
 ## Completed
 - [x] I18n fix: `QCoreApplication.translate()` wrapper recognition (v1.13.2)

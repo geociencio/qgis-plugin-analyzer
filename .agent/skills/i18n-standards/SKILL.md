@@ -1,3 +1,9 @@
+---
+name: i18n-standards
+description: Internationalization (i18n) standards for the analyzer itself — recognizing tr(), translate(), and wrapper patterns.
+trigger: when modifying the i18n visitor, auditing translations, or extending i18n wrapper patterns.
+---
+
 # i18n Standards — qgis-plugin-analyzer
 
 > Standards and best practices for internationalization in the qgis-plugin-analyzer codebase.

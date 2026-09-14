@@ -1,13 +1,13 @@
 # Quick Reference: Workflows + Skills System
 
-**Created**: 2026-02-14 | **Updated**: 2026-05-25 (Gen 5 → 6)
-**Version**: 2.0
+**Created**: 2026-02-14 | **Updated**: 2026-09-14 (Generation 8)
+**Version**: 3.0
 
 ---
 
 ## Executive Summary
 
-The qgis-plugin-analyzer project features a system of **11 skills** and **11 workflows** integrated to automate AI-assisted development. As of 2026-05-25, the system is transitioning from Generation 5 to Generation 6 with the addition of observability, memory lifecycle, and a CodeWhale runtime bridge.
+The qgis-plugin-analyzer project features a system of **11 skills** and **11 workflows** integrated to automate AI-assisted development. As of 2026-09-14, the system runs **natively under opencode** (Generation 8): the root `AGENTS.md` is the single source of truth, subagents are registered in `opencode.json`, and skills are discovered via `skills.paths`.
 
 ---
 
@@ -15,17 +15,17 @@ The qgis-plugin-analyzer project features a system of **11 skills** and **11 wor
 
 | Skill | Description | When to Use |
 |:------|:------------|:------------|
-| [agentic-memory](file://./skills/agentic-memory/SKILL.md) | Lessons and patterns management | Extracting meta-lessons, preferences |
-| [changelog-generator](file://./skills/changelog-generator/SKILL.md) | Automated changelog from git commits | Writing release notes, CHANGELOG updates |
-| [coding-standards](file://./skills/coding-standards/SKILL.md) | Project coding standards | Writing Python code, refactoring |
-| [commit-standards](file://./skills/commit-standards/SKILL.md) | Conventional Commits standards | Creating commits, validating messages |
-| [documentation-standards](file://./skills/documentation-standards/SKILL.md) | Logs and project history standards | Updating development/maintenance logs |
-| [domain-logic](file://./skills/domain-logic/SKILL.md) | Business logic and data validation | Implementing new rules, core processing |
-| [i18n-standards](file://./skills/i18n-standards/SKILL.md) | i18n standards for the analyzer | Modifying i18n visitor, translation audits |
-| [project-context](file://./skills/project-context/SKILL.md) | Project purpose and architecture | Starting tasks, requesting overviews |
-| [qa-docker](file://./skills/qa-docker/SKILL.md) | Docker testing environments | Running integration tests |
-| [qa-standards](file://./skills/qa-standards/SKILL.md) | Automated testing and CI/CD | Writing tests, designing strategies |
-| [release-management](file://./skills/release-management/SKILL.md) | Python package release process | Preparing releases, versioning |
+| [agentic-memory](file://.agent/skills/agentic-memory/SKILL.md) | Lessons and patterns management | Extracting meta-lessons, preferences |
+| [changelog-generator](file://.agent/skills/changelog-generator/SKILL.md) | Automated changelog from git commits | Writing release notes, CHANGELOG updates |
+| [coding-standards](file://.agent/skills/coding-standards/SKILL.md) | Project coding standards | Writing Python code, refactoring |
+| [commit-standards](file://.agent/skills/commit-standards/SKILL.md) | Conventional Commits standards | Creating commits, validating messages |
+| [documentation-standards](file://.agent/skills/documentation-standards/SKILL.md) | Logs and project history standards | Updating development/maintenance logs |
+| [domain-logic](file://.agent/skills/domain-logic/SKILL.md) | Business logic and data validation | Implementing new rules, core processing |
+| [i18n-standards](file://.agent/skills/i18n-standards/SKILL.md) | i18n standards for the analyzer | Modifying i18n visitor, translation audits |
+| [project-context](file://.agent/skills/project-context/SKILL.md) | Project purpose and architecture | Starting tasks, requesting overviews |
+| [qa-docker](file://.agent/skills/qa-docker/SKILL.md) | Docker testing environments | Running integration tests |
+| [qa-standards](file://.agent/skills/qa-standards/SKILL.md) | Automated testing and CI/CD | Writing tests, designing strategies |
+| [release-management](file://.agent/skills/release-management/SKILL.md) | Python package release process | Preparing releases, versioning |
 
 ---
 
@@ -33,34 +33,34 @@ The qgis-plugin-analyzer project features a system of **11 skills** and **11 wor
 
 ### Daily Development
 
-| Workflow | Agent | Skills | Purpose |
-|:---------|:------|:-------|:---------|
-| [/start-session](file://./workflows/start-session.md) | Senior Architect | project-context, domain-logic | Start session with synced context |
-| [/create-commit](file://./workflows/create-commit.md) | QA Engineer | commit-standards, qa-standards | Commit with quality validation |
-| [/run-tests](file://./workflows/run-tests.md) | QA Engineer | qa-docker, qa-standards | Run tests with interpretation |
-| [/close-session](file://./workflows/close-session.md) | QA Engineer | commit-standards, documentation-standards | Close session with memory update |
+| Workflow | Agent | Purpose |
+|:---------|:------|:---------|
+| [/start-session](file://.agent/workflows/start-session.md) | architect | Start session with synced context |
+| [/create-commit](file://.agent/workflows/create-commit.md) | qa_engineer | Commit with quality validation |
+| [/run-tests](file://.agent/workflows/run-tests.md) | qa_engineer | Run tests with interpretation |
+| [/close-session](file://.agent/workflows/close-session.md) | qa_engineer | Close session with memory update |
 
 ### Refactoring and Quality
 
-| Workflow | Agent | Skills | Purpose |
-|:---------|:------|:-------|:---------|
-| [/refactor-code](file://./workflows/refactor-code.md) | Senior Architect | coding-standards | Refactor code with validation |
-| [/audit-plugin](file://./workflows/audit-plugin.md) | Agent Auditor | project-context, qa-standards | Full self-analysis with qgis-analyzer |
-| [/fix-linting](file://./workflows/fix-linting.md) | QA Engineer | coding-standards | Automatically fix style issues |
+| Workflow | Agent | Purpose |
+|:---------|:------|:---------|
+| [/refactor-code](file://.agent/workflows/refactor-code.md) | architect | Refactor code with validation |
+| [/audit-plugin](file://.agent/workflows/audit-plugin.md) | auditor | Full self-analysis with qgis-analyzer |
+| [/fix-linting](file://.agent/workflows/fix-linting.md) | qa_engineer | Automatically fix style issues |
 
 ### Features and Review
 
-| Workflow | Agent | Skills | Purpose |
-|:---------|:------|:-------|:---------|
-| [/build-feature](file://./workflows/build-feature.md) | Architect | domain-logic | Pipeline for new features |
-| [/ia-critic](file://./workflows/ia-critic.md) | Agent Auditor | agentic-memory | Plan review and validation |
+| Workflow | Agent | Purpose |
+|:---------|:------|:---------|
+| [/build-feature](file://.agent/workflows/build-feature.md) | architect | Pipeline for new features |
+| [/ia-critic](file://.agent/workflows/ia-critic.md) | auditor | Plan review and validation |
 
 ### Release and Standards
 
-| Workflow | Agent | Skills | Purpose |
-|:---------|:------|:-------|:---------|
-| [/release-package](file://./workflows/release-package.md) | QA & Release | release-management, qa-docker | Release to PyPI |
-| [/verify-standards](file://./workflows/verify-standards.md) | Senior Architect | documentation-standards | Audit agent system integrity |
+| Workflow | Agent | Purpose |
+|:---------|:------|:---------|
+| [/release-package](file://.agent/workflows/release-package.md) | qa_engineer | Release to PyPI |
+| [/verify-standards](file://.agent/workflows/verify-standards.md) | architect | Audit agent system integrity |
 
 ---
 
@@ -70,7 +70,8 @@ The qgis-plugin-analyzer project features a system of **11 skills** and **11 wor
 |--------|---------|
 | Full analysis | `uv run qgis-analyzer analyze .` |
 | Metric sync | `uv run python scripts/sync_metrics.py` |
-| Skill sync | `uv run python scripts/skill_sync.py` |
+| Agent system validation | `uv run python scripts/validate_agent_system.py` |
+| Memory prune | `uv run python scripts/memory_prune.py` |
 | Lint check | `uv run ruff check .` |
 | Lint fix | `uv run ruff check --fix . && uv run ruff format .` |
 | Type check | `uv run mypy src/` |
@@ -101,4 +102,4 @@ Verify standards:         /verify-standards
 
 ## Runtime
 
-This system runs on **CodeWhale / DeepSeek V4**. The `workflows/index.md` file maps each workflow to concrete shell commands for the CodeWhale runtime. See `.codewhale/instructions.md` for the runtime bridge configuration.
+This system runs natively on **opencode**. Subagents are registered in `opencode.json`; skills are discovered via `skills.paths`. The root `AGENTS.md` is the single source of truth — see `workflows/index.md` for per-workflow command details.

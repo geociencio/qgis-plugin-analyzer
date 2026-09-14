@@ -1,6 +1,6 @@
 ---
 description: Audits the consistency of the agentic system (Skills and Workflows) against the master standard.
-agent: Senior Architect
+agent: architect
 skills: [domain-logic, commit-standards, documentation-standards]
 validation:
   - Do all Skills have a Quality Checklist?
@@ -26,12 +26,12 @@ Review each file in `.agent/workflows/` looking for:
 2.  **Structure**: Numbered steps and use of `// turbo` where applicable.
 3.  **Expected Result**: Presence of success metrics at the end of the document.
 
-## 3. Automatic Synchronization
+## 3. Automatic Validation
 
-Run synchronization to ensure `AGENTS.md` is up to date.
+Validate the agentic system consistency (skills/workflows/AGENTS.md).
 // turbo
 ```bash
-python3 scripts/skill_sync.py
+uv run python scripts/validate_agent_system.py --graph
 ```
 
 ## Expected Result

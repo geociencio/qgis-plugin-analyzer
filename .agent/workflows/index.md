@@ -1,6 +1,6 @@
-# Workflow Index — CodeWhale Runtime
+# Workflow Quick Reference
 
-> Maps each `.agent/workflows/*.md` to concrete CodeWhale actions.
+> Maps each `.agent/workflows/*.md` to concrete opencode actions.
 > For humans: "I want to run X, what do I tell the agent?"
 > For agents: "User said /X, what do I actually do?"
 
@@ -24,16 +24,15 @@ uv sync
 **Tell the agent**: "Run /close-session with topic [name]"
 **What happens**:
 ```
-# Run full test suite
 python -m pytest tests/ -q
-
-# Update AGENT_LESSONS.md with 3 lessons from session
+uv run python scripts/validate_agent_system.py
+uv run python scripts/memory_prune.py
+# Update AGENT_LESSONS.md with 3 lessons
 # Update next_steps.md with handover
 # Archive next_steps to .agent/history/next_steps/next_steps_YYYY-MM-DD.md
 # Create docs/maintenance/session_YYYY-MM-DD_[topic].md
 # Add entry to docs/DEVELOPMENT_LOG.md
 # Update CHANGELOG.md [Unreleased] from git log
-
 git add . && git commit -m "chore(docs): close session [topic]"
 ```
 
@@ -49,10 +48,7 @@ git add [files] && git commit -m "[msg]"
 
 ### `/run-tests`
 **Tell the agent**: "Run /run-tests"
-**What happens**:
-```
-python -m pytest tests/ -v --tb=short
-```
+**What happens**: `python -m pytest tests/ -v --tb=short`
 
 ---
 
@@ -84,7 +80,7 @@ python -m pytest tests/ -v --tb=short
 
 ---
 
-## Release & Planning
+## Release & Standards
 
 ### `/release-package`
 **Tell the agent**: "Run /release-package"
@@ -92,7 +88,7 @@ python -m pytest tests/ -v --tb=short
 
 ### `/verify-standards`
 **Tell the agent**: "Run /verify-standards"
-**What happens**: Audits all SKILL.md files for YAML structure, English language, and required sections.
+**What happens**: `uv run python scripts/validate_agent_system.py --graph`
 
 ---
 
@@ -104,6 +100,8 @@ python -m pytest tests/ -v --tb=short
 | Lint check | `uv run ruff check .` |
 | Type check | `uv run mypy src/` |
 | Test suite | `python -m pytest tests/ -v` |
+| Agent validation | `uv run python scripts/validate_agent_system.py` |
+| Memory prune | `uv run python scripts/memory_prune.py` |
 | Build check | `uv run python -m build && twine check dist/*` |
 
 ---

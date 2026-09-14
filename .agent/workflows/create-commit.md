@@ -1,6 +1,6 @@
 ---
 description: How to commit changes cleanly (handling hooks)
-agent: QA Engineer
+agent: qa_engineer
 skills: [qa-standards, commit-standards, agentic-memory]
 validation: |
   - Verify that ruff and black pass without errors

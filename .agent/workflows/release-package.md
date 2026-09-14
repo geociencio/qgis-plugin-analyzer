@@ -1,6 +1,6 @@
 ---
 description: Unified process for releasing the Python package.
-agent: QA & Release Engineer
+agent: qa_engineer
 skills: [release-management, qa-docker, commit-standards]
 validation:
   - Tests passing (Green)

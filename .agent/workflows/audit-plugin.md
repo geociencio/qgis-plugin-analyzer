@@ -1,6 +1,6 @@
 ---
 description: Run qgis-analyzer on its own codebase for quality self-audit
-agent: Agent Auditor
+agent: auditor
 skills: [project-context, qa-standards]
 validation: |
   - Verify analysis completes without errors

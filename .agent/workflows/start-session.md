@@ -1,6 +1,6 @@
 ---
 description: Standard and robust procedure for starting a "Local First" development session
-agent: Senior Architect
+agent: architect
 skills: [domain-logic, qa-docker, agentic-memory]
 validation: |
   - Verify that all tests pass
