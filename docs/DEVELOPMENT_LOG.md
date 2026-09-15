@@ -6,6 +6,7 @@
 - Fixed type-hint coverage to count all parameter kinds; added stale-cache detection to `summary`.
 - Refreshed competitive analysis (2026 ecosystem data) and resolved setuptools license deprecation warnings.
 - Release: `1.14.0` (minor — new features + Python 3.11 floor).
+- Maintenance: [session_2026-09-14_generalize_analyzer_v1.14.0.md](maintenance/session_2026-09-14_generalize_analyzer_v1.14.0.md).
 
 ## [2026-09-14] Fase 0: CI Output Contract & i18n Generalization Plan
 - Analyzed `docs/plans/` (upstreaming plan + i18n AST reference) against the current codebase; identified broken reference path, TOML-array parser gap, and missing inline comment suppression.

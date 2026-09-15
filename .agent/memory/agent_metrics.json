@@ -4,6 +4,25 @@
   "sessions": [
     {
       "date": "2026-09-14",
+      "session": "generalize_analyzer_v1.14.0",
+      "scores": {
+        "stability": 54.8,
+        "maintainability": 88.1,
+        "security": 100.0
+      },
+      "tests": {
+        "pass": 126,
+        "total": 126
+      },
+      "issues": {
+        "critical": 0,
+        "high": 0,
+        "medium": 0,
+        "low": 0
+      }
+    },
+    {
+      "date": "2026-09-14",
       "session": "output_contract_i18n",
       "scores": {
         "stability": 55.2,

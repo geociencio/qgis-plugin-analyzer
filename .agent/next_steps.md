@@ -1,43 +1,40 @@
-# Next Steps — Phase: Analyzer Generalization (Handover 2026-09-14)
-
-## 🧠 Gen 8 Agentic System Evolution 2026-09-14 — COMPLETE
-
-Adapted the `.agent/` system to the opencode-native Gen 8 pattern (ported from SecInterp Gen 7→8):
-- **Phase A**: root `AGENTS.md` as single source of truth; `.agent/AGENTS.md` is now a pointer.
-- **Phase B**: retired `skill_sync.py` (x2), `init_agent_system.sh`, `.codewhale/instructions.md`; added `scripts/memory_prune.py` + `scripts/validate_agent_system.py`.
-- **Phase D**: native subagents (`architect`/`qa_engineer`/`auditor`) in `opencode.json` + `skills.paths`.
-- Normalized workflow `agent:` labels to 3 ids; added frontmatter to `i18n-standards`.
-- **Reference**: `.agent/architecture/IMPROVEMENT_PLAN_GEN8.md`
-- **Note**: restart opencode to load `opencode.json` (subagents + `skills.paths`).
+# Next Steps — Handover (2026-09-14, post-v1.14.0)
 
 ## Session Summary (2026-09-14)
 
-Analyzed the upstreaming plan (`docs/plans/`) against the current codebase and
-implemented **Fase 0 (CI output contract)** of the analyzer generalization effort.
-Created the 5-phase implementation plan document.
+Completed the **5-phase analyzer generalization plan** and shipped **v1.14.0**
+(GitHub + PyPI). The analyzer now audits any QGIS plugin with a portable
+AST-based i18n rule, a `--max-cc` complexity gate, Qt6 migration rules, and a
+Python 3.11 floor.
 
 ### Completed This Session
-- [x] Analyzed `docs/plans/upstreaming_qgis_analyzer.md` + `i18n_ast_rule.py`
-- [x] Created `docs/plans/implementation_plan_generalize_analyzer.md`
-- [x] Fase 0.1: `schema_version` + `analyzer_version` in `project_context.json`
-- [x] Fase 0.2: `--include-content` flag (module source omitted by default)
-- [x] Fase 0.3: `--json` flag (pure JSON on stdout; logs/progress routed to stderr)
-- [x] Fase 0.4: legacy `json/project_context.json` migration warning
-- [x] Commits: `7a969ad` (feat), `a8cfd50` (docs)
+- [x] Fase 1 — portable i18n AST rule in `I18nVisitor` (tr/translate, docstrings,
+      technical patterns, `# no-i18n`/`# noqa`, `extra_*` config).
+- [x] Fase 2 — `--max-cc N` gate (`cc_gate`/`cc_violations` in `--json`).
+- [x] Fase 3 — `requires-python >=3.11`, dropped `_minimal_toml_load`, PEP 585/604 typing.
+- [x] Fase 4 — synthetic + CC gate + back-compat tests; golden procedure documented.
+- [x] Fase 5 — docs reconciliation (`upstreaming` + `i18n-improvement`).
+- [x] Qt6 migration rules — 11 `QT6_*` rules via `QtTransitionVisitor` (`QGS4xx` parity).
+- [x] Type-hint coverage counts all parameter kinds (posonly/kwonly/*args/**kwargs).
+- [x] `summary` stale-cache detection (`analyzed_at` + `project_path` in JSON).
+- [x] Setuptools license deprecation fixed (SPDX string).
+- [x] Competitive analysis refreshed (2026 ecosystem data).
+- [x] Released **v1.14.0** (GitHub release + PyPI upload done by user).
 
-### Remaining for Next Session
-- [ ] Fase 1: port i18n AST rule into `I18nVisitor` (replace `is_translatable_string`)
-- [ ] Fase 2: `--max-cc N` complexity gate
-- [ ] Fase 3: bump `requires-python >= 3.11` + remove `_minimal_toml_load`
-- [ ] Fase 4: tests (SecInterp golden corpus, synthetic fixtures, CC gate, back-compat)
-- [ ] Fase 5: reconcile `docs/qgis-analyzer-i18n-improvement.md`
+### Remaining / Next
+- [ ] **Golden SecInterp** (rec. 5): run `qgis-analyzer analyze ./sec_interp --json`
+      and verify 0 false-positive `MISSING_I18N` (procedure in
+      `docs/plans/implementation_plan_generalize_analyzer.md` §4.2).
+- [ ] **`ci-wizard`** (rec. 3): generate a workflow running
+      `qgis-plugin-analyzer` + `qgis-plugin-ci` together.
+- [ ] **OIDC/Trusted Publishers** (rec. 4): deferred — user publishes to PyPI manually.
 
 ### Technical Debt
-- [ ] Reduce 570 self-reported MISSING_I18N in analyzer's own codebase
-- [ ] Address 2 HIGH_COMPLEXITY issues in `ast_utils.py`
-- [ ] Fix setuptools deprecation warnings (license format in `pyproject.toml`)
+- [ ] Reduce 297 self-reported MISSING_I18N in the analyzer's own codebase.
+- [ ] Address 3 HIGH_COMPLEXITY issues.
+- [ ] Phase E (agentic): drop `trigger` from SKILL.md frontmatter.
 
 ## How to Resume
-1. Run `/start-session`
-2. Relocate reference: `git mv docs/plans/i18n_ast_rule.py scripts/upstream/i18n_ast_rule.py`
-3. Implement Fase 1 (port `I18nAstVisitor` + `collect_docstring_lines` + `is_technical_string` to `visitors/i18n_visitor.py`)
+1. Run `/start-session`.
+2. If SecInterp is available locally, run the golden validation (rec. 5).
+3. Otherwise pick up `ci-wizard` (rec. 3) or the MISSING_I18N debt.

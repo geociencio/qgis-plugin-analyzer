@@ -17,6 +17,30 @@ lessons:
   # --- ACTIVE LESSONS (< 90 days or not yet in a SKILL.md) ---
   - date: '2026-09-14'
     category: TECHNICAL
+    topic: PyQt5 Signal Subscript is a Name, not a String Constant
+    lesson: 'QComboBox.activated[str] parses as Subscript(value=Attribute(activated),
+      slice=Name("str")), not a string Constant. Regex or Constant-based detection
+      misses it; flag any Subscript over .activated.'
+    action: 'QtTransitionVisitor.visit_Subscript flags any Subscript whose value is
+      an Attribute named "activated" (QT6_QCOMBOBOX_ACTIVATED).'
+  - date: '2026-09-14'
+    category: ARCHITECTURE
+    topic: ruff target-version Bump Triggers Typing Modernization Cascade
+    lesson: 'Raising ruff target-version to py311 activates UP006/UP035/UP045 across
+      the whole codebase (~38 files: List->list, Dict->dict, Optional->X|None). It
+      is a legitimate part of a Python-floor bump but must be treated as a
+      release-scoped, mechanical change verified with ruff check --fix + mypy + tests.'
+    action: 'Applied in Fase 3 (Python 3.11 bump); documented in CHANGELOG v1.14.0.'
+  - date: '2026-09-14'
+    category: TECHNICAL
+    topic: Stale Cache Masquerades as a Metrics Bug
+    lesson: 'A "0% type-hint coverage" symptom was stale cache, not a metrics-visitor
+      bug. summary reads analysis_results/project_context.json without re-scanning.
+      Diagnose by re-running analyze fresh before blaming the metric.'
+    action: 'Added analyzed_at + project_path to the JSON and stale-cache detection
+      in commands.py (summary now reports age + changed files).'
+  - date: '2026-09-14'
+    category: TECHNICAL
     topic: Stdout Purity for --json Output
     lesson: 'The CLI logger (console StreamHandler) and ProgressTracker both write
       to sys.stdout, polluting machine-readable --json output. Route the logger

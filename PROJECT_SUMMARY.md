@@ -1,16 +1,16 @@
 # PROJECT SUMMARY - qgis_plugin_analyzer
-Analysis Date: 2026-04-26 22:19:16
+Analysis Date: 2026-09-14 22:10:33
 Analyzer Version: 3.1.1 (Ai-Context-Core)
 
 ## 📊 KEY METRICS
-- **Quality Score**: 49.8/100
-- **Source Lines (SLOC)**: 4,164
-- **Total Physical Lines**: 7,390
-- **Maintainability**: 44.9
+- **Quality Score**: 48.4/100
+- **Source Lines (SLOC)**: 4,637
+- **Total Physical Lines**: 7,932
+- **Maintainability**: 44.6
 - **Test Coverage**: 0 test files
 
 ## 📁 STRUCTURE
-**Total Modules**: 53
+**Total Modules**: 54
 
 ```tree
 ./
@@ -20,8 +20,8 @@ Analyzer Version: 3.1.1 (Ai-Context-Core)
     .coverage
     .gitignore
     .pre-commit-hooks.yaml
-    AI_CONTEXT.md
-    ... (+17 more)
+    AGENTS.md
+    ... (+19 more)
     src/
         .analyzer_state.json
         AI_CONTEXT.md
@@ -65,7 +65,7 @@ Analyzer Version: 3.1.1 (Ai-Context-Core)
                 imports_visitor.py
                 metrics_visitor.py
                 qgis_rules_visitor.py
-                ... (+2 more)
+                ... (+3 more)
             cli/
                 __init__.py
                 app.py
@@ -92,16 +92,17 @@ Analyzer Version: 3.1.1 (Ai-Context-Core)
         test_advanced_features.py
         test_analyzer.py
         test_ast_utils_extended.py
+        test_cache_handling.py
         test_cli.py
         test_fixer.py
         test_high_complexity.py
-        test_i18n_heuristics.py
-        ... (+11 more)
+        ... (+16 more)
     english_test_results/
         PROJECT_SUMMARY.md
         project_context.json
     docs/
         DEVELOPMENT_LOG.md
+        qgis-analyzer-i18n-improvement.md
         user_guide/
             COMMANDS_GUIDE.md
             TESTING_IN_QGIS.md
@@ -114,7 +115,7 @@ Analyzer Version: 3.1.1 (Ai-Context-Core)
                 RELEASE_NOTES_v0.5.0.md
                 RELEASE_NOTES_v0.5.1.md
                 RELEASE_NOTES_v0.6.0.md
-                ... (+16 more)
+                ... (+18 more)
             github/
                 GITHUB_RELEASE_v0.6.1.md
                 GITHUB_RELEASE_v0.6.2.md
@@ -155,12 +156,22 @@ Analyzer Version: 3.1.1 (Ai-Context-Core)
             session_2026-04-26_bug_audit.md
             session_2026-04-26_quality_blindage.md
             session_2026-04-26_v1.12.0_release.md
+            session_2026-05-25_gen6_upgrade_release.md
+            session_2026-09-14_generalize_analyzer_v1.14.0.md
+            session_2026-09-14_output_contract_i18n.md
+        plans/
+            implementation_plan_generalize_analyzer.md
+            upstreaming_qgis_analyzer.md
     debug_summary/
     scripts/
         mcp_server.py
+        memory_prune.py
         run_tests_in_qgis.py
         security_scan.py
-        skill_sync.py
+        sync_metrics.py
+        validate_agent_system.py
+        upstream/
+            i18n_ast_rule.py
     migration/
     self_analysis_results/
         PROJECT_SUMMARY.md
@@ -199,30 +210,29 @@ Analyzer Version: 3.1.1 (Ai-Context-Core)
                 geological-logic/
                     SKILL.md
     dist/
-        qgis_plugin_analyzer-1.13.1-py3-none-any.whl
-        qgis_plugin_analyzer-1.13.1.tar.gz
+        qgis_plugin_analyzer-1.14.0-py3-none-any.whl
+        qgis_plugin_analyzer-1.14.0.tar.gz
 ```
 
 ## 🚨 CRITICAL ISSUES
 ### 🔒 Security Issues:
 - **src/analyzer/__init__.py**: 1 issues (Max: HIGH)
-- **src/analyzer/cli/app.py**: 1 issues (Max: HIGH)
 - **src/analyzer/cli/commands/serve.py**: 1 issues (Max: HIGH)
+- **src/analyzer/utils/config_utils.py**: 1 issues (Max: HIGH)
 
 ## 💡 MAIN RECOMMENDATIONS
-### src/analyzer/commands.py
+### src/analyzer/visitors/qt_transition_visitor.py
 - Consider breaking down large logic
-### src/analyzer/engine.py
+### src/analyzer/visitors/safety_visitor.py
 - Consider breaking down large logic
-- Large module (458 lines)
-### src/analyzer/fixer.py
+### src/analyzer/visitors/standards_visitor.py
 - Consider breaking down large logic
 
 ## 🏗️ DESIGN PATTERNS
 ### Decorator
+- **register** in `src/analyzer/security_checker.py` (50%)
 - **register** in `src/analyzer/fixer.py` (50%)
 - **create_ast_handler** in `src/analyzer/fixer.py` (50%)
-- **register** in `src/analyzer/security_checker.py` (50%)
 
 ## 📝 ARCHITECTURE NOTES
 # Cerebro del Proyecto: qgis-plugin-analyzer
@@ -264,18 +274,18 @@ Motor de análisis estático y auto-fix para plugins de QGIS (PyQGIS). Combina r
 
 ## 🔄 GIT ANALYSIS
 ### Code Churn (last 30 days)
-- **Files Changed**: 293
-- **Additions**: +33072
-- **Deletions**: -31771
-- **Total Churn**: 64843
+- **Files Changed**: 116
+- **Additions**: +3704
+- **Deletions**: -1400
+- **Total Churn**: 5104
 
 ### 🔥 Hotspots
-- `src/analyzer/engine.py`: 33 commits
-- `src/analyzer/scanner.py`: 28 commits
+- `src/analyzer/engine.py`: 36 commits
+- `src/analyzer/scanner.py`: 31 commits
 - `src/analyzer/cli.py`: 18 commits
-- `src/analyzer/validators.py`: 14 commits
+- `src/analyzer/validators.py`: 15 commits
 - `src/analyzer/utils.py`: 14 commits
 
 ## 📈 COMPLEXITY DISTRIBUTION
-- **Average Complexity**: 14.85
+- **Average Complexity**: 15.48
 - **Max Complexity**: 58
