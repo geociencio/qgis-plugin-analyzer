@@ -5,10 +5,21 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [1.14.0] - 2026-09-14
 
 ### Added
-- **CI Output Contract**: `project_context.json` now embeds `schema_version` and `analyzer_version`. New `--json` flag on `analyze` emits machine-readable JSON to stdout (logs and progress are routed to stderr). New `--include-content` flag controls whether module source is embedded (omitted by default to avoid source leak and reduce output size). Legacy `json/project_context.json` locations now trigger a migration warning.
+- **CI Output Contract**: `project_context.json` now embeds `schema_version`, `analyzer_version`, `analyzed_at` and `project_path`. New `--json` flag on `analyze` emits machine-readable JSON to stdout (logs and progress are routed to stderr). New `--include-content` flag controls whether module source is embedded (omitted by default to avoid source leak and reduce output size). Legacy `json/project_context.json` locations now trigger a migration warning.
+- **Portable AST i18n Rule**: `I18nVisitor` was rewritten with the portable AST-based rule, recognizing both `self.tr()` and `QCoreApplication.translate()` wrappers, excluding docstrings and technical strings (CSS/HTML, format specifiers, file extensions, colors), and honoring inline `# no-i18n` / `# noqa` exclusions. Per-project configuration via `extra_ignore_calls` / `extra_exact_ignores` under `rules.MISSING_I18N`.
+- **Cyclomatic Complexity Gate**: New `--max-cc N` flag on `analyze` fails the analysis with exit code 1 when any function exceeds the threshold, and exposes `cc_gate` / `cc_violations` in `--json` output.
+- **Qt6 Migration Rules (QGS4xx parity)**: Added 11 AST-based `QT6_*` rules detecting APIs removed in Qt6 (`qApp`, `QRegExp`, `QDesktopWidget`, removed enums, `QFontMetrics.width()`, `QComboBox.activated[str]`, compiled resources, `addAction` multi-arg, `QVariant()`, legacy `QDateTime` signatures).
+- **Stale Cache Detection**: `summary` now detects and reports stale results against the actual analyzed project, showing a human-readable age and changed files.
+
+### Changed
+- **Python 3.11 floor**: `requires-python` raised to `>=3.11`; the minimal TOML fallback parser was removed in favor of the standard-library `tomllib`. Type annotations modernized to PEP 585/604 syntax (`list`/`dict`/`X | None`).
+- **License metadata**: `pyproject.toml` now uses an SPDX license expression string and drops the deprecated license classifier.
+
+### Fixed
+- **Type-hint coverage**: now counts all parameter kinds (positional-only, keyword-only, `*args`, `**kwargs`), not just positional-or-keyword arguments.
 
 ## [1.13.2] - 2026-05-25
 

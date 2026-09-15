@@ -1,5 +1,12 @@
 # Development Log
 
+## [2026-09-14] v1.14.0: Analyzer Generalization & Qt6 Readiness
+- Completed the 5-phase analyzer generalization plan (i18n AST rule, `--max-cc` gate, Python 3.11, CI output contract, tests).
+- Added 11 Qt6 migration rules (`QT6_*`, `QGS4xx` parity) via a dedicated `QtTransitionVisitor`.
+- Fixed type-hint coverage to count all parameter kinds; added stale-cache detection to `summary`.
+- Refreshed competitive analysis (2026 ecosystem data) and resolved setuptools license deprecation warnings.
+- Release: `1.14.0` (minor — new features + Python 3.11 floor).
+
 ## [2026-09-14] Fase 0: CI Output Contract & i18n Generalization Plan
 - Analyzed `docs/plans/` (upstreaming plan + i18n AST reference) against the current codebase; identified broken reference path, TOML-array parser gap, and missing inline comment suppression.
 - Implemented Fase 0 of analyzer generalization: `schema_version`/`analyzer_version`, `--include-content`, `--json`, and legacy output-dir warning.

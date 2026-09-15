@@ -14,12 +14,12 @@
 
 **Quality Metrics:**
 
-![Module Stability](https://img.shields.io/badge/Module%20Stability-55.1%2F100-green?style=flat-square)
-![Maintainability](https://img.shields.io/badge/Maintainability-77.0%2F100-green?style=flat-square)
+![Module Stability](https://img.shields.io/badge/Module%20Stability-54.8%2F100-yellow?style=flat-square)
+![Maintainability](https://img.shields.io/badge/Maintainability-88.1%2F100-green?style=flat-square)
 ![Security Score](https://img.shields.io/badge/Security--Bandit-100.0%2F100-brightgreen?style=flat-square)
-![Type Coverage](https://img.shields.io/badge/Type%20Hints-98.0%25-brightgreen?style=flat-square)
-![Docstring Coverage](https://img.shields.io/badge/Docstrings-92.3%25-brightgreen?style=flat-square)
-![Tests](https://img.shields.io/badge/Tests-87%2F87%20passing-brightgreen?style=flat-square&logo=pytest)
+![Type Coverage](https://img.shields.io/badge/Type%20Hints-99.1%25-brightgreen?style=flat-square)
+![Docstring Coverage](https://img.shields.io/badge/Docstrings-92.6%25-brightgreen?style=flat-square)
+![Tests](https://img.shields.io/badge/Tests-126%2F126%20passing-brightgreen?style=flat-square&logo=pytest)
 
 The **QGIS Plugin Analyzer** is a static analysis tool designed specifically for QGIS (PyQGIS) plugin developers. Its goal is to elevate plugin quality by ensuring they follow community best practices and are optimized for AI-assisted development.
 
@@ -39,24 +39,28 @@ The **QGIS Plugin Analyzer** is a static analysis tool designed specifically for
 - **Real-time Progress**: CLI feedback with a progress bar and ETA tracking.
 - **Enhanced Configuration Profiles**: Rule-level severity control (`error`, `warning`, `info`, `ignore`) via `pyproject.toml`.
 - **Integrated Ruff Analysis**: Combines custom QGIS rules with the fastest linter in the Python ecosystem.
+- **AST-based i18n Audit**: Portable AST rule recognizing `self.tr()` and `QCoreApplication.translate()`, excluding docstrings/technical strings and honoring `# no-i18n` / `# noqa`.
+- **Cyclomatic Complexity Gate**: `--max-cc N` fails CI when any function exceeds the threshold, with `cc_gate`/`cc_violations` in `--json`.
+- **Qt6 Migration Rules**: 11 AST-based `QT6_*` rules (drop-in parity with `flake8-qgis` `QGS4xx`) detecting APIs removed in Qt6.
+- **CI Output Contract**: `--json`, `--include-content`, and a versioned/schema'd `project_context.json` for machine-readable integration.
 - **Qt Resource Validation**: Detect missing or broken resource paths (`:/plugins/...`) in your code.
 - **Extended Safety Audit**: Detection of signal leaks, missing slots, and UI-blocking loops (QgsTask suggestions).
 - **Embedded Web Server**: View reports instantly with the built-in `serve` command.
 - **AI-Ready**: Generates structured summaries and optimized contexts for LLMs.
 - **Zero Runtime Dependencies**: Works using only the Python standard library (Ruff as an external tool).
 
-## 🆕 What's New in v1.13.2
+## 🆕 What's New in v1.14.0
 
-**I18n False Positive Fix** - The analyzer now recognizes `QCoreApplication.translate()` as a valid i18n wrapper alongside `self.tr()`, eliminating ~80% of false positives in projects using standard Qt translation APIs.
+**Analyzer Generalization** - The analyzer now audits *any* QGIS plugin with a portable AST-based i18n rule (recognizing `self.tr()` and `QCoreApplication.translate()`, plus inline `# no-i18n`), a `--max-cc N` complexity gate for CI, and 11 Qt6 migration rules matching `flake8-qgis` `QGS4xx`.
 
-**From v1.13.1:**
-- **Metadata Synchronization** - Consistency fix for distribution artifacts.
-- 🛡️ **Test Coverage Blindage** - Reached 76% global coverage. Core AST visitors and utility modules are now secured with >95% coverage.
-- 🏗️ **Architectural Refactor** - Decoupled `ScoringEngine` and `ResultAggregator` for better modularity.
-- 🤖 **English Standardization** - Entire developer framework translated and adapted for a generic Python package lifecycle.
-- 📈 **Accurate Scoring** - Fixed maintainability calculation bug (~77/100).
+- 🌐 **AST-based i18n** - Replaced the string heuristic with a precise AST rule; no more false positives on translated strings.
+- 🚦 **`--max-cc` gate** - Fail CI on excessive cyclomatic complexity.
+- 🆙 **Qt6 migration rules** - Drop-in parity with `flake8-qgis` `QGS4xx`.
+- 🐍 **Python 3.11** - Raised the floor and dropped the hand-rolled TOML parser for stdlib `tomllib`.
+- 📦 **CI output contract** - `--json`, `--include-content`, versioned `project_context.json`.
+- 🕒 **Stale-cache detection** - `summary` warns when results are outdated.
 
-[**📖 Full Release Notes**](docs/releases/notes/v1.13.2.md) | [**🗺️ CLI Commands Roadmap**](docs/research/CLI_COMMANDS_ROADMAP.md)
+[**📖 Full Release Notes**](docs/releases/notes/v1.14.0.md) | [**🗺️ CLI Commands Roadmap**](docs/research/CLI_COMMANDS_ROADMAP.md)
 
 ## ⚖️ Why use this Analyzer? (Comparison)
 
@@ -186,9 +190,14 @@ strict = true
 fail_on_error = true
 
 [tool.qgis-analyzer.profiles.default.rules]
-QGS101 = "error"    # Ban specific module imports
-QGS105 = "warning"  # Warn on iface usage
-QGS303 = "ignore"   # Ignore resource path checks
+GDAL_DIRECT_IMPORT = "error"    # Ban direct 'import gdal'
+IFACE_AS_ARGUMENT = "warning"   # Warn on iface passed as an argument
+MANUAL_RESOURCE_PATH = "ignore" # Ignore resource path checks
+
+# i18n rule configuration (AST-based):
+[tool.qgis-analyzer.profiles.default.rules.MISSING_I18N]
+extra_ignore_calls = ["customSetLabel"]
+extra_exact_ignores = ["My App Name"]
 ```
 
 ## ⚠️ Technical Limitations
@@ -224,6 +233,9 @@ Audits an existing QGIS plugin repository with optional specialized scopes.
 | `-o`, `--output` | Directory where HTML/Markdown reports will be saved. | `./analysis_results` |
 | `-r`, `--report` | Explicitly generate detailed HTML/Markdown reports. | `False` |
 | `-p`, `--profile`| Configuration profile from `pyproject.toml` (`default`, `release`). | `default` |
+| `--json` | Emit machine-readable JSON (`project_context.json`) to stdout. | `False` |
+| `--include-content` | Embed module source content in the JSON output. | `False` |
+| `--max-cc N` | Fail analysis if any function exceeds this cyclomatic complexity. | off |
 
 **Examples:**
 ```bash
@@ -324,7 +336,7 @@ The development of this analyzer is based on official QGIS community guidelines,
 - **[QGIS Security Scanning Documentation](https://plugins.qgis.org/docs/security-scanning)**: Official guide on automated security analysis (Bandit, detect-secrets) for plugins.
 
 ### Industry & Community Standards
-- **[flake8-qgis Rules](https://github.com/qgis/flake8-qgis)**: Community-driven linting rules for PyQGIS (QGS101-106).
+- **[flake8-qgis Rules](https://github.com/osgeosuomi/flake8-qgis)**: Community-driven linting rules for PyQGIS (QGS101-412).
 - **[PEP 8 Style Guide](https://peps.python.org/pep-0008/)**: The fundamental style guide for Python code.
 - **[PEP 257 Docstring Conventions](https://peps.python.org/pep-0257/)**: Standards for docstring structure and content.
 - **[Maintainability Index (SEI)](https://learn.microsoft.com/en-us/visualstudio/code-quality/code-metrics-maintainability-index-range-and-meaning)**: Methodology for measuring software maintainability.
@@ -346,7 +358,7 @@ The development of this analyzer is based on official QGIS community guidelines,
 
 Contributions are welcome! Please refer to our **[Contributing Guide](CONTRIBUTING.md)** to learn how to report bugs, propose rules, and submit code changes.
 
-Audit rules are located in `src/analyzer/scanner.py`. Feel free to add new rules following the existing pattern!
+Audit rules are located in `src/analyzer/rules/` (regex catalog) and `src/analyzer/visitors/` (AST visitors). Feel free to add new rules following the existing pattern!
 
 ---
 ## ⚖️ License

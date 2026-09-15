@@ -6,7 +6,7 @@ This document details the automatic audit rules implemented in the analyzer to e
 
 | Rule ID | Severity | Description | Recommendation |
 | :--- | :--- | :--- | :--- |
-| `MISSING_I18N` | 🔴 High | Detects text strings in the interface (setText, setToolTip, etc.) that are not wrapped in translation functions. | Wrap strings in `self.tr("Text")` or `QCoreApplication.translate()`. |
+| `MISSING_I18N` | 🔴 High | Detects user-facing string literals not wrapped in `self.tr()` or `QCoreApplication.translate()` (AST-based; excludes docstrings, technical strings and `# no-i18n` / `# noqa`). | Wrap strings in `self.tr("Text")` or `QCoreApplication.translate()`, or add `# no-i18n`. |
 
 ## 2. Obsolete API and Precision
 
@@ -50,6 +50,22 @@ This document details the automatic audit rules implemented in the analyzer to e
 | `GDAL_DIRECT_IMPORT` | 🟡 Medium | Direct `import gdal` instead of `from osgeo import gdal`. | Use `from osgeo import gdal` for consistency. |
 | `QGIS_LEGACY_IMPORT` | 🔴 High | Direct import of `PyQt4` or `PyQt5`. | Use `qgis.PyQt` shim for maximum compatibility. |
 | `MANDATORY_CLEANUP` | 🔴 High | `initGui()` implemented but `unload()` is missing. | Always implement `unload()` to prevent memory leaks and UI artifacts. |
+
+## 7.1 Qt6 Migration (QGS4xx parity)
+
+| Rule ID | Severity | Description | Recommendation |
+| :--- | :--- | :--- | :--- |
+| `QT6_QAPP_USAGE` | 🟡 Medium | Use of `qApp`. | Use `QApplication.instance()`. |
+| `QT6_QREGEXP_USAGE` | 🟡 Medium | Use of `QRegExp` (removed in Qt6). | Use `QRegularExpression`. |
+| `QT6_QDESKTOPWIDGET` | 🟡 Medium | Use of `QDesktopWidget` (removed in Qt6). | Remove or use an alternative. |
+| `QT6_REMOVED_ENUM` | 🟡 Medium | Use of a removed/renamed Qt6 enum (e.g. `Qt.MidButton`). | Use the new Qt6 enum. |
+| `QT6_QFONTMETRICS_WIDTH` | 🟡 Medium | `QFontMetrics.width()` (removed in Qt6). | Use `QFontMetrics.horizontalAdvance()`. |
+| `QT6_QCOMBOBOX_ACTIVATED` | 🟡 Medium | `QComboBox.activated[str]` (removed in Qt6). | Use `QComboBox.textActivated`. |
+| `QT6_COMPILED_RESOURCES` | 🟡 Medium | Compiled resource imports (`*_rc`, removed in PyQt6). | Load resources by file path. |
+| `QT6_ADDACTION_MULTIARG` | 🟡 Medium | `addAction(...)` with multiple arguments (removed in Qt6). | Create a `QAction` and call `addAction(action)`. |
+| `QT6_QVARIANT_NULL` | 🟡 Medium | `QVariant()` / `QVariant(QVariant.Null)`. | Use `NULL`. |
+| `QT6_QDATETIME_ARGS` | 🟡 Medium | Legacy `QDateTime(yyyy, mm, dd, hh, MM, ss, ms, ts)`. | Use `QDateTime(QDate(...), QTime(...))`. |
+| `QT6_QDATETIME_QDATE` | 🟡 Medium | Legacy `QDateTime(QDate(...))`. | Use `QDateTime(QDate(...), QTime(0, 0, 0))`. |
 
 ## 8. General Python Best Practices
 | Rule ID | Severity | Description | Recommendation |
