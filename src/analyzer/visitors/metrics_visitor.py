@@ -172,7 +172,17 @@ class MetricsVisitor(BaseVisitor):
             return
 
         self.type_hint_stats["total_functions"] += 1
-        params = [a for a in node.args.args if a.arg != "self" and a.arg != "cls"]
+
+        # Count all parameter kinds: positional-only, positional-or-keyword
+        # (excluding self/cls), keyword-only, *args and **kwargs.
+        params = list(node.args.posonlyargs)
+        params += [a for a in node.args.args if a.arg not in ("self", "cls")]
+        params += list(node.args.kwonlyargs)
+        if node.args.vararg is not None:
+            params.append(node.args.vararg)
+        if node.args.kwarg is not None:
+            params.append(node.args.kwarg)
+
         self.type_hint_stats["total_parameters"] += len(params)
 
         has_returns = node.returns is not None

@@ -52,6 +52,20 @@ async def complex_async_func(a: int, b: int) -> bool:
         self.assertEqual(visitor.type_hint_stats["annotated_parameters"], 2)
         self.assertEqual(visitor.type_hint_stats["has_return_hint"], 1)
 
+    def test_type_hint_counts_all_parameter_kinds(self):
+        code = """
+def full_sig(a: int, /, b: str, *args: float, c: bool = True, **kwargs: dict) -> None:
+    pass
+"""
+        tree = ast.parse(code)
+        visitor = MetricsVisitor("test.py")
+        visitor.visit(tree)
+
+        # posonly (a) + pos-or-kw (b) + *args + kwonly (c) + **kwargs = 5 params
+        self.assertEqual(visitor.type_hint_stats["total_parameters"], 5)
+        self.assertEqual(visitor.type_hint_stats["annotated_parameters"], 5)
+        self.assertEqual(visitor.type_hint_stats["has_return_hint"], 1)
+
     def test_numpy_docstring_style(self):
         code = """
 def numpy_func(x):
