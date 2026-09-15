@@ -7,6 +7,7 @@ from .i18n_visitor import I18nVisitor, collect_docstring_lines
 from .imports_visitor import ImportsVisitor
 from .metrics_visitor import MetricsVisitor
 from .qgis_rules_visitor import QGISRulesVisitor
+from .qt_transition_visitor import QtTransitionVisitor
 from .safety_visitor import SafetyVisitor
 from .standards_visitor import StandardsVisitor
 
@@ -51,6 +52,7 @@ class CompositeVisitor(ast.NodeVisitor):
         self._standards_visitor = StandardsVisitor(rel_path, rules_config, scope)
         self._i18n_visitor = I18nVisitor(rel_path, rules_config, scope, lines)
         self._qgis_rules_visitor = QGISRulesVisitor(rel_path, rules_config, scope)
+        self._qt_transition_visitor = QtTransitionVisitor(rel_path, rules_config, scope)
         self._safety_visitor = SafetyVisitor(rel_path, rules_config, scope)
 
         # Filter visitors based on scope
@@ -62,6 +64,7 @@ class CompositeVisitor(ast.NodeVisitor):
                 self._standards_visitor,
                 self._i18n_visitor,
                 self._qgis_rules_visitor,
+                self._qt_transition_visitor,
                 self._safety_visitor,
             ]
         elif self.scope == "i18n":
@@ -69,7 +72,11 @@ class CompositeVisitor(ast.NodeVisitor):
         elif self.scope == "performance":
             self._active_visitors = [self._standards_visitor, self._safety_visitor]
         elif self.scope == "architecture":
-            self._active_visitors = [self._imports_visitor, self._metrics_visitor]
+            self._active_visitors = [
+                self._imports_visitor,
+                self._metrics_visitor,
+                self._qt_transition_visitor,
+            ]
         elif self.scope == "security":
             # StandardsVisitor also has some security rules (subprocess)
             self._active_visitors = [self._standards_visitor]
@@ -81,6 +88,7 @@ class CompositeVisitor(ast.NodeVisitor):
             self._standards_visitor,
             self._i18n_visitor,
             self._qgis_rules_visitor,
+            self._qt_transition_visitor,
             self._safety_visitor,
         ]:
             visitor._is_single_pass = True

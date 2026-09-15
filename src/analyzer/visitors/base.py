@@ -105,6 +105,17 @@ class BaseVisitor(ast.NodeVisitor):
                 "HEAVY_LOGIC_UI",
                 "PYQT5_IMPORT",
                 "LEGACY_GDAL_IMPORT",
+                "QT6_QAPP_USAGE",
+                "QT6_QREGEXP_USAGE",
+                "QT6_QDESKTOPWIDGET",
+                "QT6_REMOVED_ENUM",
+                "QT6_QFONTMETRICS_WIDTH",
+                "QT6_QCOMBOBOX_ACTIVATED",
+                "QT6_COMPILED_RESOURCES",
+                "QT6_ADDACTION_MULTIARG",
+                "QT6_QVARIANT_NULL",
+                "QT6_QDATETIME_ARGS",
+                "QT6_QDATETIME_QDATE",
             }
             return rule_id in architecture_rules
         elif self.scope == "metadata":
