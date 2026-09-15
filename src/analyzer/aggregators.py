@@ -18,6 +18,7 @@
 #  *                                                                         *
 #  ***************************************************************************/
 
+import datetime
 import pathlib
 from typing import Any, TypedDict, cast
 
@@ -40,7 +41,9 @@ class FullAnalysisResult(TypedDict, total=False):
 
     schema_version: int
     analyzer_version: str
+    analyzed_at: str
     project_name: str
+    project_path: str
     project_type: str
     metrics: dict[str, Any]
     ruff_findings: list[dict[str, Any]]
@@ -168,7 +171,9 @@ def build_analysis_results(
     analyses: FullAnalysisResult = {
         "schema_version": 1,
         "analyzer_version": __version__,
+        "analyzed_at": datetime.datetime.now(datetime.UTC).isoformat(),
         "project_name": project_path.name,
+        "project_path": str(project_path),
         "project_type": project_type,
         "metrics": get_metrics_summary(files, modules_data, scores),
         "ruff_findings": ruff_findings,
