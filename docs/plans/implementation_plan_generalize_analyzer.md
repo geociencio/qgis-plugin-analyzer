@@ -173,6 +173,41 @@ def _enforce_max_cc(modules_data, max_cc):
 - **Gate CC**: fixture con función CC 15 → exit 1; CC ≤ 10 → exit 0.
 - **Back-compat**: `--json` y `summary` mantienen el mismo shape de `project_context.json`.
 
+### 4.1 Estado
+
+- [x] Sintéticos — `tests/test_i18n_ast_rule.py` (patrones técnicos, docstrings
+      multilínea, `# no-i18n`/`# noqa`, config `extra_*`).
+- [x] Gate CC — `tests/test_max_cc_gate.py` (unit `_enforce_max_cc` + exit
+      code/salida JSON vía `handle_analyze`).
+- [x] Back-compat — shape de `project_context.json` validado en
+      `test_max_cc_gate.py::TestMaxCcGateCli::test_json_shape_and_cc_gate`.
+
+### 4.2 Procedimiento Golden (SecInterp) — pendiente de corpus externo
+
+El corpus SecInterp no está versionado en este repo. Cuando esté disponible:
+
+```bash
+qgis-analyzer analyze <ruta-a-secinterp> --json > secinterp_result.json
+python - <<'PY'
+import json
+data = json.load(open("secinterp_result.json"))
+fp = [
+    (m["path"], i["line"], i["message"])
+    for m in data["modules"]
+    for i in m.get("ast_issues", [])
+    if i["type"] == "MISSING_I18N"
+]
+print(f"MISSING_I18N totales: {len(fp)}")
+for p, l, msg in fp:
+    print(f"  {p}:{l} -> {msg}")
+PY
+```
+
+Criterio de aceptación: los strings señalados deben ser genuinamente
+user-facing (0 falsos positivos). Los patrones específicos de SecInterp
+pueden recuperarse vía `extra_exact_ignores`/`extra_ignore_calls` si la
+generalización pierde precisión.
+
 ---
 
 ## Fase 5 — Docs / limpieza
