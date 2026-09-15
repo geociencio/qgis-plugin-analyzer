@@ -3,7 +3,7 @@
 import argparse
 import pathlib
 from abc import ABC, abstractmethod
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from ..engine import ProjectAnalyzer
@@ -88,7 +88,7 @@ class BaseCommand(ABC):
                 help="Enable strict mode with gold-standard rules",
             )
 
-    def setup_output_dir(self, args: argparse.Namespace) -> Optional[pathlib.Path]:
+    def setup_output_dir(self, args: argparse.Namespace) -> pathlib.Path | None:
         """Setup and return the output directory if present in args.
 
         Args:

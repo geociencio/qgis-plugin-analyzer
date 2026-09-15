@@ -5,8 +5,9 @@ registry for security checks and a context helper for AST analysis.
 """
 
 import ast
+from collections.abc import Callable
 from dataclasses import dataclass
-from typing import Any, Callable, Dict, List, Optional, Type
+from typing import Any
 
 
 @dataclass
@@ -18,8 +19,8 @@ class SecurityFinding:
     confidence: str  # LOW, MEDIUM, HIGH
     message: str
     line: int
-    code_snippet: Optional[str] = None
-    cwe: Optional[int] = None
+    code_snippet: str | None = None
+    cwe: int | None = None
 
 
 class SecurityContext:
@@ -30,7 +31,7 @@ class SecurityContext:
         self.filename = filename
 
     @property
-    def call_function_name(self) -> Optional[str]:
+    def call_function_name(self) -> str | None:
         """Returns the name of the function being called if the node is a Call."""
         if isinstance(self.node, ast.Call):
             if isinstance(self.node.func, ast.Name):
@@ -59,13 +60,13 @@ class SecurityContext:
 class SecurityRegistry:
     """Registry for security checks managed by decorators."""
 
-    _checks: Dict[Type[ast.AST], List[Callable[[SecurityContext], Optional[SecurityFinding]]]] = {}
+    _checks: dict[type[ast.AST], list[Callable[[SecurityContext], SecurityFinding | None]]] = {}
 
     @classmethod
-    def register(cls, node_type: Type[ast.AST]) -> Callable:
+    def register(cls, node_type: type[ast.AST]) -> Callable:
         """Decorator to register a function as a security check for a specific node type."""
 
-        def decorator(func: Callable[[SecurityContext], Optional[SecurityFinding]]):
+        def decorator(func: Callable[[SecurityContext], SecurityFinding | None]):
             if node_type not in cls._checks:
                 cls._checks[node_type] = []
             cls._checks[node_type].append(func)
@@ -75,8 +76,8 @@ class SecurityRegistry:
 
     @classmethod
     def get_checks_for_node(
-        cls, node_type: Type[ast.AST]
-    ) -> List[Callable[[SecurityContext], Optional[SecurityFinding]]]:
+        cls, node_type: type[ast.AST]
+    ) -> list[Callable[[SecurityContext], SecurityFinding | None]]:
         """Returns all registered checks for a given AST node type."""
         return cls._checks.get(node_type, [])
 

@@ -1,4 +1,3 @@
-import io
 import pathlib
 import shutil
 import sys
@@ -9,7 +8,7 @@ import unittest
 sys.path.append(str(pathlib.Path(__file__).parent.parent / "src"))
 
 from analyzer.reporters import generate_html_report
-from analyzer.utils import _minimal_toml_load
+from analyzer.utils import load_profile_config
 
 
 class TestAnalyzer(unittest.TestCase):
@@ -23,29 +22,28 @@ class TestAnalyzer(unittest.TestCase):
         """Cleans up temporary resources after each test."""
         shutil.rmtree(self.test_dir)
 
-    def test_minimal_toml(self):
-        toml_content = b"""
+    def test_load_profile_config(self):
+        pyproject = self.test_dir / "pyproject.toml"
+        pyproject.write_text(
+            """
 [tool.qgis-analyzer.profiles.default]
 strict = false
 generate_html = true
 fail_on_error = false
 
-[tool.qgis-analyzer.profiles.release]
-strict = true
-generate_html = true
-fail_on_error = true
-version = "0.3.1"
-count = 42
-"""
-        f = io.BytesIO(toml_content)
-        data = _minimal_toml_load(f)
+[tool.qgis-analyzer.profiles.default.rules.MISSING_I18N]
+extra_ignore_calls = ["custom_call"]
+extra_exact_ignores = ["Custom Ignored"]
+""",
+            encoding="utf-8",
+        )
+        config = load_profile_config(self.test_dir)
 
-        profiles = data["tool"]["qgis-analyzer"]["profiles"]
-        self.assertFalse(profiles["default"]["strict"])
-        self.assertTrue(profiles["default"]["generate_html"])
-        self.assertTrue(profiles["release"]["strict"])
-        self.assertEqual(profiles["release"]["version"], "0.3.1")
-        self.assertEqual(profiles["release"]["count"], 42)
+        self.assertFalse(config["strict"])
+        self.assertTrue(config["generate_html"])
+        rules = config["rules"]
+        self.assertEqual(rules["MISSING_I18N"]["extra_ignore_calls"], ["custom_call"])
+        self.assertEqual(rules["MISSING_I18N"]["extra_exact_ignores"], ["Custom Ignored"])
 
     def test_html_report(self):
         analyses = {

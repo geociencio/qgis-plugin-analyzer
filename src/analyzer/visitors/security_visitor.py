@@ -1,7 +1,7 @@
 """AST visitor for security vulnerability detection."""
 
 import ast
-from typing import Any, Dict, List
+from typing import Any
 
 from ..security_checker import SecurityContext, SecurityRegistry
 
@@ -21,7 +21,7 @@ class SecurityVisitor(ast.NodeVisitor):
             rel_path: Relative path to the file being analyzed.
         """
         self.rel_path = rel_path
-        self.findings: List[Dict[str, Any]] = []
+        self.findings: list[dict[str, Any]] = []
 
     def visit(self, node: ast.AST):
         """Dispatches security checks for the current node.

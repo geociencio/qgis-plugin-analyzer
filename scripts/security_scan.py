@@ -17,7 +17,6 @@ import json
 import subprocess
 import sys
 from pathlib import Path
-from typing import Dict, List, Tuple
 
 
 class SecurityScanner:
@@ -26,9 +25,9 @@ class SecurityScanner:
     def __init__(self, plugin_dir: Path, verbose: bool = False):
         self.plugin_dir = plugin_dir
         self.verbose = verbose
-        self.results: Dict[str, Tuple[int, str, Dict]] = {}
+        self.results: dict[str, tuple[int, str, dict]] = {}
 
-    def _run_command(self, cmd: List[str], tool_name: str) -> Tuple[int, str, Dict]:
+    def _run_command(self, cmd: list[str], tool_name: str) -> tuple[int, str, dict]:
         """Run a command and capture output."""
         try:
             result = subprocess.run(  # nosec B603
@@ -48,7 +47,7 @@ class SecurityScanner:
             print(f"❌ Error running {tool_name}: {e}")
             return 1, str(e), {}
 
-    def run_bandit(self) -> Tuple[int, str, Dict]:
+    def run_bandit(self) -> tuple[int, str, dict]:
         """Run Bandit security analysis (CRITICAL)."""
         print("🔒 Running Bandit (Security Vulnerabilities)...")
 
@@ -70,7 +69,7 @@ class SecurityScanner:
 
         return code, output, report
 
-    def run_detect_secrets(self) -> Tuple[int, str, Dict]:
+    def run_detect_secrets(self) -> tuple[int, str, dict]:
         """Run detect-secrets scanner (CRITICAL)."""
         print("🔐 Running detect-secrets (Hardcoded Secrets)...")
 
@@ -91,7 +90,7 @@ class SecurityScanner:
 
         return code, output, report
 
-    def run_flake8(self) -> Tuple[int, str, Dict]:
+    def run_flake8(self) -> tuple[int, str, dict]:
         """Run Flake8 code quality checks (INFO) - QGIS Portal Compatible."""
         print("📊 Running Flake8 (Code Quality - Portal Compatible)...")
 
@@ -110,7 +109,7 @@ class SecurityScanner:
 
         return code, output, report
 
-    def _save_report(self, tool_name: str, report: Dict):
+    def _save_report(self, tool_name: str, report: dict):
         """Save detailed report to file."""
         report_file = self.plugin_dir / f"{tool_name}_report.json"
         with open(report_file, "w") as f:

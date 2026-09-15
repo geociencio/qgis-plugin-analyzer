@@ -1,7 +1,7 @@
 """Core data models for project and module analysis."""
 
 from dataclasses import dataclass, field
-from typing import Any, Dict, List
+from typing import Any
 
 
 @dataclass
@@ -24,15 +24,15 @@ class ModuleAnalysis:
 
     path: str
     lines: int
-    functions: List[Dict[str, Any]]
-    classes: List[str]
-    imports: List[str]
+    functions: list[dict[str, Any]]
+    classes: list[str]
+    imports: list[str]
     complexity: int
-    docstrings: Dict[str, Any]
+    docstrings: dict[str, Any]
     has_main: bool
     file_size_kb: float
     syntax_error: bool = False
-    metadata: Dict[str, Any] = field(default_factory=dict)
+    metadata: dict[str, Any] = field(default_factory=dict)
 
 
 @dataclass
@@ -52,11 +52,11 @@ class ProjectContext:
     """
 
     project_name: str
-    structure: Dict[str, Any] = field(default_factory=dict)
-    entry_points: List[str] = field(default_factory=list)
-    tech_stack: Dict[str, List[str]] = field(default_factory=dict)
-    patterns: Dict[str, Any] = field(default_factory=dict)
-    technical_debt: List[Dict[str, Any]] = field(default_factory=list)
-    optimization_opportunities: List[Dict[str, Any]] = field(default_factory=list)
-    security_issues: List[Dict[str, Any]] = field(default_factory=list)
-    metrics: Dict[str, Any] = field(default_factory=dict)
+    structure: dict[str, Any] = field(default_factory=dict)
+    entry_points: list[str] = field(default_factory=list)
+    tech_stack: dict[str, list[str]] = field(default_factory=dict)
+    patterns: dict[str, Any] = field(default_factory=dict)
+    technical_debt: list[dict[str, Any]] = field(default_factory=list)
+    optimization_opportunities: list[dict[str, Any]] = field(default_factory=list)
+    security_issues: list[dict[str, Any]] = field(default_factory=list)
+    metrics: dict[str, Any] = field(default_factory=dict)

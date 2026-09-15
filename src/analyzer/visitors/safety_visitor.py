@@ -1,7 +1,7 @@
 """Visitor for QGIS safety and runtime hazard detection."""
 
 import ast
-from typing import Any, Dict, List, Optional, Set
+from typing import Any
 
 from .base import BaseVisitor
 
@@ -17,7 +17,7 @@ class SafetyVisitor(BaseVisitor):
     def __init__(
         self,
         rel_path: str,
-        rules_config: Optional[Dict[str, Any]] = None,
+        rules_config: dict[str, Any] | None = None,
         scope: str = "all",
     ) -> None:
         """Initializes the safety visitor.
@@ -28,8 +28,8 @@ class SafetyVisitor(BaseVisitor):
             scope: Analysis scope.
         """
         super().__init__(rel_path, rules_config, scope)
-        self.connections: Set[str] = set()
-        self.disconnections: Set[str] = set()
+        self.connections: set[str] = set()
+        self.disconnections: set[str] = set()
         self.in_ui_handler = False
         self.has_qgs_task = False
 
@@ -130,6 +130,6 @@ class SafetyVisitor(BaseVisitor):
         return ""
 
     @property
-    def signal_leaks(self) -> List[str]:
+    def signal_leaks(self) -> list[str]:
         """Returns signals that are connected but never disconnected."""
         return sorted(list(self.connections - self.disconnections))

@@ -1,7 +1,7 @@
 """Composite visitor that orchestrates all specialized visitors."""
 
 import ast
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 from .i18n_visitor import I18nVisitor, collect_docstring_lines
 from .imports_visitor import ImportsVisitor
@@ -28,9 +28,9 @@ class CompositeVisitor(ast.NodeVisitor):
     def __init__(
         self,
         rel_path: str,
-        rules_config: Optional[Dict[str, Any]] = None,
+        rules_config: dict[str, Any] | None = None,
         scope: str = "all",
-        lines: Optional[List[str]] = None,
+        lines: list[str] | None = None,
     ) -> None:
         """Initializes the composite visitor.
 
@@ -86,26 +86,26 @@ class CompositeVisitor(ast.NodeVisitor):
             visitor._is_single_pass = True
 
         # Aggregated results
-        self.issues: List[Dict[str, Any]] = []
-        self._node_stack: List[ast.AST] = []
+        self.issues: list[dict[str, Any]] = []
+        self._node_stack: list[ast.AST] = []
 
     @property
-    def docstring_styles(self) -> List[str]:
+    def docstring_styles(self) -> list[str]:
         """Returns docstring styles from metrics visitor."""
         return self._metrics_visitor.docstring_styles
 
     @property
-    def type_hint_stats(self) -> Dict[str, int]:
+    def type_hint_stats(self) -> dict[str, int]:
         """Returns type hint statistics from metrics visitor."""
         return self._metrics_visitor.type_hint_stats
 
     @property
-    def docstring_stats(self) -> Dict[str, int]:
+    def docstring_stats(self) -> dict[str, int]:
         """Returns docstring statistics from metrics visitor."""
         return self._metrics_visitor.docstring_stats
 
     @property
-    def qgis_context(self) -> Dict[str, Any]:
+    def qgis_context(self) -> dict[str, Any]:
         """Returns QGIS-specific context and metrics."""
         return {
             "processing_framework": self._qgis_rules_visitor.processing_framework,

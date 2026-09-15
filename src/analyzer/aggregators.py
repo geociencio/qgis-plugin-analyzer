@@ -19,7 +19,7 @@
 #  ***************************************************************************/
 
 import pathlib
-from typing import Any, Dict, List, Optional, Set, TypedDict, cast
+from typing import Any, TypedDict, cast
 
 from . import __version__
 from .reporters import (
@@ -42,22 +42,22 @@ class FullAnalysisResult(TypedDict, total=False):
     analyzer_version: str
     project_name: str
     project_type: str
-    metrics: Dict[str, Any]
-    ruff_findings: List[Dict[str, Any]]
-    security: Dict[str, Any]
-    semantic: Dict[str, Any]
-    modules: List[ModuleAnalysisResult]
-    research_summary: Dict[str, Any]
-    qgis_compliance: Dict[str, Any]
-    repository_compliance: Dict[str, Any]
-    ruff_metadata: Dict[str, Any]
+    metrics: dict[str, Any]
+    ruff_findings: list[dict[str, Any]]
+    security: dict[str, Any]
+    semantic: dict[str, Any]
+    modules: list[ModuleAnalysisResult]
+    research_summary: dict[str, Any]
+    qgis_compliance: dict[str, Any]
+    repository_compliance: dict[str, Any]
+    ruff_metadata: dict[str, Any]
 
 
 def get_metrics_summary(
-    files: List[pathlib.Path],
-    modules_data: List[ModuleAnalysisResult],
+    files: list[pathlib.Path],
+    modules_data: list[ModuleAnalysisResult],
     scores: ProjectScores,
-) -> Dict[str, Any]:
+) -> dict[str, Any]:
     """Generates the metrics summary portion of the results."""
     return {
         "total_files": len(files),
@@ -69,8 +69,8 @@ def get_metrics_summary(
 
 
 def get_security_summary(
-    modules_data: List[ModuleAnalysisResult], scores: ProjectScores
-) -> Dict[str, Any]:
+    modules_data: list[ModuleAnalysisResult], scores: ProjectScores
+) -> dict[str, Any]:
     """Generates the security summary portion of the results."""
     all_security_issues = []
     for m in modules_data:
@@ -83,7 +83,7 @@ def get_security_summary(
     }
 
 
-def get_research_summary(modules_data: List[ModuleAnalysisResult]) -> Dict[str, Any]:
+def get_research_summary(modules_data: list[ModuleAnalysisResult]) -> dict[str, Any]:
     """Aggregates research metrics for summary."""
     total_functions = 0
     total_params = 0
@@ -94,11 +94,11 @@ def get_research_summary(modules_data: List[ModuleAnalysisResult]) -> Dict[str, 
     detected_styles = set()
 
     # QGIS context aggregation
-    gdal_styles: Dict[str, int] = {}
-    pyqt_versions: Dict[str, int] = {"PyQt5": 0, "PyQt6": 0}
+    gdal_styles: dict[str, int] = {}
+    pyqt_versions: dict[str, int] = {"PyQt5": 0, "PyQt6": 0}
     processing_usage = False
     total_legacy_signals = 0
-    all_signal_leaks: Set[str] = set()
+    all_signal_leaks: set[str] = set()
 
     for m in modules_data:
         r_metrics = m.get("research_metrics", {})
@@ -157,11 +157,11 @@ def get_research_summary(modules_data: List[ModuleAnalysisResult]) -> Dict[str, 
 def build_analysis_results(
     project_path: pathlib.Path,
     project_type: str,
-    files: List[pathlib.Path],
-    modules_data: List[ModuleAnalysisResult],
-    ruff_findings: List[Dict[str, Any]],
+    files: list[pathlib.Path],
+    modules_data: list[ModuleAnalysisResult],
+    ruff_findings: list[dict[str, Any]],
     scores: ProjectScores,
-    qgis_checks: Optional[QGISChecksResult],
+    qgis_checks: QGISChecksResult | None,
     semantic: SemanticAnalysisResult,
 ) -> FullAnalysisResult:
     """Consolidates analysis results into a single dictionary."""
@@ -220,7 +220,7 @@ def save_reports(
         output_dir: Directory where reports will be saved.
         generate_html: Whether to generate the HTML report.
     """
-    data = cast(Dict[str, Any], analyses)
+    data = cast(dict[str, Any], analyses)
     generate_markdown_summary(data, output_dir / "PROJECT_SUMMARY.md")
     if generate_html:
         generate_html_report(data, output_dir / "PROJECT_SUMMARY.html")

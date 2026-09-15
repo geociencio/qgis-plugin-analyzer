@@ -1,7 +1,7 @@
 """Modular visitor for QGIS-specific rules and transition patterns."""
 
 import ast
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 from .base import BaseVisitor
 
@@ -19,7 +19,7 @@ class QGISRulesVisitor(BaseVisitor):
     def __init__(
         self,
         rel_path: str,
-        rules_config: Optional[Dict[str, Any]] = None,
+        rules_config: dict[str, Any] | None = None,
         scope: str = "all",
     ) -> None:
         """Initializes the QGIS rules visitor.
@@ -32,7 +32,7 @@ class QGISRulesVisitor(BaseVisitor):
         super().__init__(rel_path, rules_config, scope)
         self.processing_framework = False
         self.gdal_style = "Modern"
-        self.qt_imports: Dict[str, List[str]] = {"PyQt5": [], "PyQt6": []}
+        self.qt_imports: dict[str, list[str]] = {"PyQt5": [], "PyQt6": []}
         self.legacy_signals = 0
 
     def visit_Import(self, node: ast.Import) -> None:

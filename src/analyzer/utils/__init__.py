@@ -9,7 +9,7 @@ from .ast_utils import (
     extract_imports_from_ast,
     extract_runtime_imports_from_ast,
 )
-from .config_utils import _minimal_toml_load, load_profile_config
+from .config_utils import load_profile_config
 from .logging_utils import logger, setup_logger
 from .path_utils import (
     DEFAULT_EXCLUDE,
@@ -36,7 +36,6 @@ __all__ = [
     "load_ignore_patterns",
     "DEFAULT_EXCLUDE",
     "load_profile_config",
-    "_minimal_toml_load",
     "LRUCache",
     "ProgressTracker",
     "set_progress_quiet",

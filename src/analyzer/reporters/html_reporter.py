@@ -6,10 +6,10 @@ of the analysis findings, with a clean and responsive design.
 
 import datetime
 import pathlib
-from typing import Any, Dict, List
+from typing import Any
 
 
-def _get_html_styles() -> List[str]:
+def _get_html_styles() -> list[str]:
     """Returns the CSS styles for the HTML report.
 
     Returns:
@@ -98,7 +98,7 @@ def _build_html_header(
     return "".join(html)
 
 
-def _build_html_qgis_findings(analyses: Dict[str, Any]) -> str:
+def _build_html_qgis_findings(analyses: dict[str, Any]) -> str:
     """Builds the QGIS standard findings section for HTML.
 
     Args:
@@ -128,7 +128,7 @@ def _build_html_qgis_findings(analyses: Dict[str, Any]) -> str:
     return "".join(html)
 
 
-def _build_html_semantic_section(semantic: Dict[str, Any]) -> str:
+def _build_html_semantic_section(semantic: dict[str, Any]) -> str:
     """Builds the semantic analysis HTML section (cycles, coupling).
 
     Args:
@@ -177,7 +177,7 @@ def _build_html_semantic_section(semantic: Dict[str, Any]) -> str:
     return "".join(html)
 
 
-def _build_html_repo_compliance(repo_comp: Dict[str, Any]) -> str:
+def _build_html_repo_compliance(repo_comp: dict[str, Any]) -> str:
     """Builds the repository compliance HTML section.
 
     Args:
@@ -234,7 +234,7 @@ def _build_html_repo_compliance(repo_comp: Dict[str, Any]) -> str:
     return "".join(html)
 
 
-def _build_html_ruff_findings(ruff_findings: List[Dict[str, Any]]) -> str:
+def _build_html_ruff_findings(ruff_findings: list[dict[str, Any]]) -> str:
     """Builds the Ruff findings HTML section.
 
     Args:
@@ -257,7 +257,7 @@ def _build_html_ruff_findings(ruff_findings: List[Dict[str, Any]]) -> str:
     return "".join(html)
 
 
-def _build_html_research_section(research_summary: Dict[str, Any]) -> str:
+def _build_html_research_section(research_summary: dict[str, Any]) -> str:
     """Builds the research-based metrics HTML section.
 
     Args:
@@ -300,7 +300,7 @@ def _build_html_research_section(research_summary: Dict[str, Any]) -> str:
     """
 
 
-def _build_html_general_metrics(metrics: Dict[str, Any]) -> str:
+def _build_html_general_metrics(metrics: dict[str, Any]) -> str:
     """Builds the general metrics HTML section.
 
     Args:
@@ -317,7 +317,7 @@ def _build_html_general_metrics(metrics: Dict[str, Any]) -> str:
     return "".join(html)
 
 
-def generate_html_report(analyses: Dict[str, Any], output_path: pathlib.Path) -> None:
+def generate_html_report(analyses: dict[str, Any], output_path: pathlib.Path) -> None:
     """Generates a professional HTML report.
 
     Args:

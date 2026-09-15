@@ -2,7 +2,7 @@
 
 import ast
 import re
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 from ..utils.ast_utils import calculate_complexity
 from .base import BaseVisitor
@@ -20,7 +20,7 @@ class MetricsVisitor(BaseVisitor):
     def __init__(
         self,
         rel_path: str,
-        rules_config: Optional[Dict[str, Any]] = None,
+        rules_config: dict[str, Any] | None = None,
         scope: str = "all",
     ) -> None:
         """Initializes the metrics visitor.
@@ -31,7 +31,7 @@ class MetricsVisitor(BaseVisitor):
             scope: Analysis scope.
         """
         super().__init__(rel_path, rules_config, scope)
-        self.docstring_styles: List[str] = []
+        self.docstring_styles: list[str] = []
         self.type_hint_stats = {
             "total_parameters": 0,
             "annotated_parameters": 0,
@@ -123,7 +123,7 @@ class MetricsVisitor(BaseVisitor):
 
         pass
 
-    def _check_docstring_style(self, doc: Optional[str]) -> None:
+    def _check_docstring_style(self, doc: str | None) -> None:
         """Identifies Google or NumPy docstring styles within a string.
 
         Args:

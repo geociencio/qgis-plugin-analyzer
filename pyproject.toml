@@ -3,7 +3,7 @@ name = "qgis-plugin-analyzer"
 version = "1.13.2"
 description = "A professional static analysis tool for QGIS (PyQGIS) plugins"
 readme = "README.md"
-requires-python = ">=3.9"
+requires-python = ">=3.11"
 authors = [
   {name = "geociencio", email = "juanbernales@gmail.com"}
 ]
@@ -22,8 +22,6 @@ classifiers = [
     "Topic :: Utilities",
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3 :: Only",
-    "Programming Language :: Python :: 3.9",
-    "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
     "Programming Language :: Python :: 3.13",
@@ -60,7 +58,7 @@ dev = [
 ]
 
 [tool.mypy]
-python_version = "3.10"
+python_version = "3.11"
 warn_return_any = true
 warn_unused_configs = true
 ignore_missing_imports = true
@@ -69,7 +67,7 @@ disallow_untyped_defs = false # Gradual adoption
 
 [tool.ruff]
 line-length = 100
-target-version = "py38"
+target-version = "py311"
 exclude = ["src/analyzer/templates", ".ai-context"]
 
 [tool.ruff.lint]

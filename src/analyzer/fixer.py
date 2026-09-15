@@ -7,7 +7,7 @@
 import difflib
 import pathlib
 import subprocess
-from typing import Any, Dict, List, Optional, TypedDict
+from typing import Any, TypedDict
 
 from .transformers import (
     GDALImportTransformer,
@@ -25,7 +25,7 @@ class FixContext(TypedDict):
 
     project_path: pathlib.Path
     file_path: pathlib.Path
-    issue: Dict[str, Any]
+    issue: dict[str, Any]
     content: str  # Original file content
     dry_run: bool
 
@@ -35,9 +35,9 @@ class FixHandlerResult(TypedDict):
 
     applied: bool
     message: str
-    new_content: Optional[str]  # Transformed code if applied
-    diff: Optional[str]
-    error: Optional[str]
+    new_content: str | None  # Transformed code if applied
+    diff: str | None
+    error: str | None
 
 
 def check_git_status(project_path: pathlib.Path) -> bool:
@@ -103,7 +103,7 @@ class FixRegistry:
     """Registry for managing and discovering fix handlers."""
 
     def __init__(self) -> None:
-        self._handlers: Dict[str, Any] = {}
+        self._handlers: dict[str, Any] = {}
 
     def register(self, issue_type: str):
         """Decorator to register a fix handler for a specific issue type."""
@@ -114,11 +114,11 @@ class FixRegistry:
 
         return decorator
 
-    def get_handler(self, issue_type: str) -> Optional[Any]:
+    def get_handler(self, issue_type: str) -> Any | None:
         """Retrieves a handler for a given issue type."""
         return self._handlers.get(issue_type)
 
-    def get_all_handlers(self) -> List[Any]:
+    def get_all_handlers(self) -> list[Any]:
         """Returns all registered handlers."""
         return list(self._handlers.values())
 
@@ -235,7 +235,7 @@ class AutoFixer:
         self.dry_run = dry_run
         self.registry = registry
 
-    def get_fixable_issues(self, issues: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
+    def get_fixable_issues(self, issues: list[dict[str, Any]]) -> list[dict[str, Any]]:
         """Filters a list of issues to identify those that can be auto-fixed.
 
         Args:
@@ -259,7 +259,7 @@ class AutoFixer:
         return fixable
 
     def _create_context(
-        self, file_path: pathlib.Path, issue: Dict[str, Any], content: str
+        self, file_path: pathlib.Path, issue: dict[str, Any], content: str
     ) -> FixContext:
         """Creates a standardized FixContext."""
         return {
@@ -288,10 +288,10 @@ class AutoFixer:
         return True
 
     def _group_issues_by_file(
-        self, issues: List[Dict[str, Any]]
-    ) -> Dict[str, List[Dict[str, Any]]]:
+        self, issues: list[dict[str, Any]]
+    ) -> dict[str, list[dict[str, Any]]]:
         """Groups issues by file path."""
-        by_file: Dict[str, List[Dict[str, Any]]] = {}
+        by_file: dict[str, list[dict[str, Any]]] = {}
         for issue in issues:
             file_path = issue.get("file", "")
             if file_path not in by_file:
@@ -299,7 +299,7 @@ class AutoFixer:
             by_file[file_path].append(issue)
         return by_file
 
-    def apply_fixes(self, issues: List[Dict[str, Any]], interactive: bool = True) -> Dict[str, int]:
+    def apply_fixes(self, issues: list[dict[str, Any]], interactive: bool = True) -> dict[str, int]:
         """Applies fixes to identified issues, grouping by file.
 
         Args:

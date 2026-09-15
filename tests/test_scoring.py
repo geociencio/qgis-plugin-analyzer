@@ -1,5 +1,5 @@
 import unittest
-from typing import Any, Dict, List
+from typing import Any
 from unittest.mock import MagicMock, patch
 
 from analyzer.engine import ProjectAnalyzer, ScoringEngine
@@ -33,7 +33,7 @@ class TestScoring(unittest.TestCase):
         # Case: Score + Bonus >= 100 but there are findings
         modules_data = [{"lines": 100, "functions": [{"complexity": 1}]}]
         ruff_findings = [{"code": "W123"}]  # One warning
-        semantic: Dict[str, Any] = {
+        semantic: dict[str, Any] = {
             "cycles": [],
             "metrics": {},
             "missing_resources": [],
@@ -49,8 +49,8 @@ class TestScoring(unittest.TestCase):
 
     def test_perfect_score_no_findings(self):
         modules_data = [{"lines": 100, "functions": [{"complexity": 1}]}]
-        ruff_findings: List[Dict[str, Any]] = []
-        semantic: Dict[str, Any] = {
+        ruff_findings: list[dict[str, Any]] = []
+        semantic: dict[str, Any] = {
             "cycles": [],
             "metrics": {},
             "missing_resources": [],

@@ -5,7 +5,7 @@ metrics from Python Abstract Syntax Trees (AST).
 """
 
 import ast
-from typing import Any, Dict, List
+from typing import Any
 
 
 def calculate_complexity(node: ast.AST) -> int:
@@ -50,7 +50,7 @@ def calculate_complexity(node: ast.AST) -> int:
     return complexity
 
 
-def extract_functions_from_ast(tree: ast.AST) -> List[Dict[str, Any]]:
+def extract_functions_from_ast(tree: ast.AST) -> list[dict[str, Any]]:
     """Extracts function information from AST.
 
     Args:
@@ -76,7 +76,7 @@ def extract_functions_from_ast(tree: ast.AST) -> List[Dict[str, Any]]:
     return functions
 
 
-def extract_classes_from_ast(tree: ast.AST) -> List[str]:
+def extract_classes_from_ast(tree: ast.AST) -> list[str]:
     """Extracts class information from AST.
 
     Args:
@@ -93,7 +93,7 @@ def extract_classes_from_ast(tree: ast.AST) -> List[str]:
     return classes
 
 
-def extract_imports_from_ast(tree: ast.AST) -> List[str]:
+def extract_imports_from_ast(tree: ast.AST) -> list[str]:
     """Extracts import information from AST.
 
     Args:
@@ -162,7 +162,7 @@ def _collect_import_name(node: ast.stmt) -> str:
     return ""
 
 
-def extract_runtime_imports_from_ast(tree: ast.AST) -> List[str]:
+def extract_runtime_imports_from_ast(tree: ast.AST) -> list[str]:
     """Extracts only runtime imports, excluding TYPE_CHECKING-guarded ones.
 
     Imports inside ``if TYPE_CHECKING:`` blocks are used exclusively for
@@ -176,7 +176,7 @@ def extract_runtime_imports_from_ast(tree: ast.AST) -> List[str]:
     Returns:
         A sorted list of runtime-only imported module names.
     """
-    imports: List[str] = []
+    imports: list[str] = []
 
     # Only iterate over top-level statements to detect TYPE_CHECKING guards
     top_level = tree.body if isinstance(tree, ast.Module) else []

@@ -6,7 +6,6 @@
 
 import ast
 import pathlib
-from typing import Optional
 
 
 class GDALImportTransformer(ast.NodeTransformer):
@@ -19,7 +18,7 @@ class GDALImportTransformer(ast.NodeTransformer):
         """Initializes the transformer state."""
         self.changes_made = False
 
-    def visit_Import(self, node: ast.Import) -> Optional[ast.AST]:
+    def visit_Import(self, node: ast.Import) -> ast.AST | None:
         for alias in node.names:
             if alias.name == "gdal":
                 self.changes_made = True
@@ -154,9 +153,7 @@ class I18nTransformer(ast.NodeTransformer):
         return node
 
 
-def apply_transformation_to_content(
-    content: str, transformer: ast.NodeTransformer
-) -> Optional[str]:
+def apply_transformation_to_content(content: str, transformer: ast.NodeTransformer) -> str | None:
     """Applies an AST transformation to code content string.
 
     Args:

@@ -7,7 +7,7 @@ import threading
 import time
 from collections import OrderedDict
 from contextlib import contextmanager
-from typing import Any, Dict
+from typing import Any
 
 _PROGRESS_QUIET = False
 
@@ -67,7 +67,7 @@ class LRUCache:
             if len(self.cache) > self.maxsize:
                 self.cache.popitem(last=False)
 
-    def stats(self) -> Dict[str, Any]:
+    def stats(self) -> dict[str, Any]:
         """Returns cache performance statistics.
 
         Returns:
@@ -131,7 +131,7 @@ class ProgressTracker:
         )
         sys.stdout.flush()
 
-    def complete(self) -> Dict[str, Any]:
+    def complete(self) -> dict[str, Any]:
         """Finalizes the progress tracking and returns final metrics.
 
         Returns:

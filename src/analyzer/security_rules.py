@@ -5,13 +5,13 @@ security audit.
 """
 
 import ast
-from typing import Optional, cast
+from typing import cast
 
 from .security_checker import SecurityContext, SecurityFinding, security_check
 
 
 @security_check(node_type=ast.Call)
-def check_exec_eval(context: SecurityContext) -> Optional[SecurityFinding]:
+def check_exec_eval(context: SecurityContext) -> SecurityFinding | None:
     """B102/B307: Detect use of exec or eval."""
     func_name = context.call_function_name
     if func_name in ("exec", "eval"):
@@ -31,7 +31,7 @@ def check_exec_eval(context: SecurityContext) -> Optional[SecurityFinding]:
 @security_check(node_type=ast.Call)
 def check_insecure_deserialization(
     context: SecurityContext,
-) -> Optional[SecurityFinding]:
+) -> SecurityFinding | None:
     """B301: Detect unsafe pickle.load()."""
     if context.call_function_name == "load":
         # Check if it's from 'pickle'
@@ -51,7 +51,7 @@ def check_insecure_deserialization(
 
 
 @security_check(node_type=ast.Call)
-def check_subprocess_shell(context: SecurityContext) -> Optional[SecurityFinding]:
+def check_subprocess_shell(context: SecurityContext) -> SecurityFinding | None:
     """B602: Subprocess call with shell=True."""
     func_name = context.call_function_name
     subprocess_funcs = {"run", "call", "Popen", "check_call", "check_output"}
@@ -73,7 +73,7 @@ def check_subprocess_shell(context: SecurityContext) -> Optional[SecurityFinding
 
 
 @security_check(node_type=ast.Call)
-def check_sql_injection(context: SecurityContext) -> Optional[SecurityFinding]:
+def check_sql_injection(context: SecurityContext) -> SecurityFinding | None:
     """B608: Basic detection of SQL injection via string formatting."""
     if context.call_function_name == "execute":
         if context.call_args_count > 0:
@@ -103,7 +103,7 @@ def check_sql_injection(context: SecurityContext) -> Optional[SecurityFinding]:
 
 
 @security_check(node_type=ast.Assign)
-def check_hardcoded_secrets(context: SecurityContext) -> Optional[SecurityFinding]:
+def check_hardcoded_secrets(context: SecurityContext) -> SecurityFinding | None:
     """Detect assignments of sensitive names to constants."""
     node = context.node
     if not isinstance(node, ast.Assign):

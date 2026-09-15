@@ -6,7 +6,7 @@
 
 import pathlib
 import xml.etree.ElementTree as ET
-from typing import Any, Dict, List, Set
+from typing import Any
 
 
 class DependencyGraph:
@@ -20,11 +20,11 @@ class DependencyGraph:
     def __init__(self) -> None:
         """Initializes an empty dependency graph."""
         # Maps module path -> set of imported module paths
-        self.adjacency_list: Dict[str, Set[str]] = {}
+        self.adjacency_list: dict[str, set[str]] = {}
         # Maps module path -> metadata (imports, functions, etc.)
-        self.nodes: Dict[str, Dict[str, Any]] = {}
+        self.nodes: dict[str, dict[str, Any]] = {}
 
-    def add_node(self, module_path: str, data: Dict[str, Any]) -> None:
+    def add_node(self, module_path: str, data: dict[str, Any]) -> None:
         """Adds a module node to the graph.
 
         Args:
@@ -116,7 +116,7 @@ class DependencyGraph:
 
         return ""
 
-    def detect_cycles(self) -> List[List[str]]:
+    def detect_cycles(self) -> list[list[str]]:
         """Detects circular import cycles using Depth First Search (DFS).
 
         Each cycle is deduplicated using canonical form (rotation starting at the
@@ -127,12 +127,12 @@ class DependencyGraph:
             A list of unique dependency cycles, where each cycle is a list of
             module paths. The last element repeats the first to close the cycle.
         """
-        visited: Set[str] = set()
-        recursion_stack: Set[str] = set()
-        seen_cycles: Set[tuple] = set()
-        cycles: List[List[str]] = []
+        visited: set[str] = set()
+        recursion_stack: set[str] = set()
+        seen_cycles: set[tuple] = set()
+        cycles: list[list[str]] = []
 
-        def dfs(node: str, path: List[str]) -> None:
+        def dfs(node: str, path: list[str]) -> None:
             visited.add(node)
             recursion_stack.add(node)
             path.append(node)
@@ -163,7 +163,7 @@ class DependencyGraph:
 
         return cycles
 
-    def get_coupling_metrics(self) -> Dict[str, Dict[str, int]]:
+    def get_coupling_metrics(self) -> dict[str, dict[str, int]]:
         """Calculates Fan-In and Fan-Out metrics for each module in the graph.
 
         Returns:
@@ -195,7 +195,7 @@ class ResourceValidator:
             project_path: Root path of the project.
         """
         self.project_path = project_path
-        self.available_resources: Set[str] = set()
+        self.available_resources: set[str] = set()
 
     def scan_project_resources(self, ignore_matcher: Any = None) -> None:
         """Scans the project for .qrc files and extracts available resource paths.
@@ -235,7 +235,7 @@ class ResourceValidator:
             except Exception:
                 pass
 
-    def validate_usage(self, resource_matches: List[str]) -> List[str]:
+    def validate_usage(self, resource_matches: list[str]) -> list[str]:
         """Identifies resource paths used in code that are missing from definition files.
 
         Args:

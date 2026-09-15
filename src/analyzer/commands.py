@@ -10,7 +10,7 @@ import json
 import logging
 import pathlib
 import sys
-from typing import Any, Dict, List
+from typing import Any
 
 from .engine import ProjectAnalyzer
 from .fixer import AutoFixer
@@ -141,7 +141,7 @@ def handle_analyze(args: argparse.Namespace) -> None:
         sys.exit(1)
 
 
-def _enforce_max_cc(modules_data: List[Dict[str, Any]], max_cc: int) -> Dict[str, Any]:
+def _enforce_max_cc(modules_data: list[dict[str, Any]], max_cc: int) -> dict[str, Any]:
     """Collects functions exceeding the maximum cyclomatic complexity.
 
     Args:
@@ -151,7 +151,7 @@ def _enforce_max_cc(modules_data: List[Dict[str, Any]], max_cc: int) -> Dict[str
     Returns:
         Dict with ``gate`` ("PASS" or "FAIL") and ``violations`` list.
     """
-    violations: List[Dict[str, Any]] = []
+    violations: list[dict[str, Any]] = []
     for mod in modules_data:
         path = mod.get("path", "")
         for func in mod.get("functions", []):

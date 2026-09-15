@@ -3,7 +3,7 @@
 import fnmatch
 import os
 import pathlib
-from typing import Any, Dict, List
+from typing import Any
 
 # Default patterns to ignore if not specified
 DEFAULT_EXCLUDE = {
@@ -55,7 +55,7 @@ def safe_path_resolve(base_path: pathlib.Path, target_path_str: str) -> pathlib.
 class IgnoreMatcher:
     """Handles .analyzerignore patterns using fnmatch-style globbing."""
 
-    def __init__(self, root_path: pathlib.Path, patterns: List[str]):
+    def __init__(self, root_path: pathlib.Path, patterns: list[str]):
         """Initializes the matcher with root path and patterns.
 
         Args:
@@ -67,7 +67,7 @@ class IgnoreMatcher:
         all_patterns = set(p.strip() for p in patterns if p.strip() and not p.startswith("#"))
         all_patterns.update(DEFAULT_EXCLUDE)
         self.patterns = list(all_patterns)
-        self._cache: Dict[str, bool] = {}
+        self._cache: dict[str, bool] = {}
 
     def is_ignored(self, path: pathlib.Path) -> bool:
         """Checks if a path matches any ignore pattern.
@@ -123,7 +123,7 @@ class IgnoreMatcher:
         return False
 
 
-def load_ignore_patterns(ignore_file: pathlib.Path) -> List[str]:
+def load_ignore_patterns(ignore_file: pathlib.Path) -> list[str]:
     """Loads ignore patterns from a file.
 
     Args:
@@ -138,7 +138,7 @@ def load_ignore_patterns(ignore_file: pathlib.Path) -> List[str]:
         return f.readlines()
 
 
-def discover_project_files(project_path: pathlib.Path, matcher: IgnoreMatcher) -> Dict[str, Any]:
+def discover_project_files(project_path: pathlib.Path, matcher: IgnoreMatcher) -> dict[str, Any]:
     """Scans the project directory once to discover all relevant files and metrics.
     This replaces multiple redundant rglob calls, optimizing I/O performance.
 

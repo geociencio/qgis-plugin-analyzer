@@ -3,7 +3,6 @@
 import argparse
 import pathlib
 import sys
-from typing import Dict, List, Optional
 
 from ..utils import logger, setup_logger
 from .base import BaseCommand
@@ -28,15 +27,15 @@ class CLIApp:
 
     def __init__(self):
         """Initialize the CLI application with all available commands."""
-        self.commands: Dict[str, BaseCommand] = self._discover_commands()
+        self.commands: dict[str, BaseCommand] = self._discover_commands()
 
-    def _discover_commands(self) -> Dict[str, BaseCommand]:
+    def _discover_commands(self) -> dict[str, BaseCommand]:
         """Auto-discover and instantiate all command classes.
 
         Returns:
             Dictionary mapping command names to command instances.
         """
-        command_classes: List[type[BaseCommand]] = [
+        command_classes: list[type[BaseCommand]] = [
             AnalyzeCommand,
             SecurityCommand,
             FixCommand,
@@ -71,7 +70,7 @@ class CLIApp:
         return parser
 
     def _parse_args(
-        self, parser: argparse.ArgumentParser, argv: Optional[List[str]] = None
+        self, parser: argparse.ArgumentParser, argv: list[str] | None = None
     ) -> argparse.Namespace:
         """Parse command-line arguments with legacy support.
 
@@ -116,7 +115,7 @@ class CLIApp:
         command = self.commands[args.command]
         return command.execute(args)
 
-    def run(self, argv: Optional[List[str]] = None) -> int:
+    def run(self, argv: list[str] | None = None) -> int:
         """Run the CLI application.
 
         Args:

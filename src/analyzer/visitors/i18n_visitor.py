@@ -29,7 +29,7 @@ exclusion.
 
 import ast
 import re
-from typing import Any, Dict, List, Optional, Set
+from typing import Any
 
 from ..rules.qgis_rules import I18N_METHODS
 from .base import BaseVisitor
@@ -37,7 +37,7 @@ from .base import BaseVisitor
 # --- Constants ---
 
 # Calls whose string arguments are safe to ignore (translations, logging, etc.).
-DEFAULT_SAFE_CALL_SUFFIXES: Set[str] = {
+DEFAULT_SAFE_CALL_SUFFIXES: set[str] = {
     # Translation wrappers — already translated
     "tr",
     "translate",
@@ -93,7 +93,7 @@ DEFAULT_SAFE_CALL_SUFFIXES: Set[str] = {
 }
 
 # Regex patterns for strings that are always technical (not user-facing).
-DEFAULT_TECHNICAL_PATTERNS: List[re.Pattern[str]] = [
+DEFAULT_TECHNICAL_PATTERNS: list[re.Pattern[str]] = [
     # Python format specifiers
     re.compile(r"^[{.+<>^-]?\d*[dfsfeExXgGoO%nbDBcdnrsa]$"),  # e.g. '.2f', '+.2f'
     # File extensions
@@ -137,7 +137,7 @@ DEFAULT_TECHNICAL_PATTERNS: List[re.Pattern[str]] = [
 ]
 
 # Exact strings that are always safe to ignore.
-DEFAULT_SAFE_EXACT_STRINGS: Set[str] = {
+DEFAULT_SAFE_EXACT_STRINGS: set[str] = {
     "utf-8",
     "r",
     "w",
@@ -149,7 +149,7 @@ DEFAULT_SAFE_EXACT_STRINGS: Set[str] = {
 }
 
 
-def collect_docstring_lines(tree: ast.AST) -> Set[int]:
+def collect_docstring_lines(tree: ast.AST) -> set[int]:
     """Collect line numbers of all docstrings (module, class, function) via AST.
 
     Docstrings are the first string expression in a module, class body, or
@@ -161,9 +161,9 @@ def collect_docstring_lines(tree: ast.AST) -> Set[int]:
     Returns:
         Set of line numbers that belong to docstrings.
     """
-    docstring_lines: Set[int] = set()
+    docstring_lines: set[int] = set()
 
-    def _find_first_str_expr(body: List[ast.stmt]) -> Optional[ast.Constant]:
+    def _find_first_str_expr(body: list[ast.stmt]) -> ast.Constant | None:
         """Return the first string Constant Expr, skipping leading imports."""
         for stmt in body:
             if isinstance(stmt, (ast.Import, ast.ImportFrom)):
@@ -178,7 +178,7 @@ def collect_docstring_lines(tree: ast.AST) -> Set[int]:
         return None
 
     for node in ast.walk(tree):
-        docstring_node: Optional[ast.Constant] = None
+        docstring_node: ast.Constant | None = None
 
         if isinstance(node, ast.Module):
             docstring_node = _find_first_str_expr(node.body)
@@ -195,7 +195,7 @@ def collect_docstring_lines(tree: ast.AST) -> Set[int]:
     return docstring_lines
 
 
-def is_technical_string(val: str, patterns: List[re.Pattern[str]]) -> bool:
+def is_technical_string(val: str, patterns: list[re.Pattern[str]]) -> bool:
     """Return True if the string value is clearly technical/non-translatable.
 
     Args:
@@ -225,9 +225,9 @@ class I18nVisitor(BaseVisitor):
     def __init__(
         self,
         rel_path: str,
-        rules_config: Optional[Dict[str, Any]] = None,
+        rules_config: dict[str, Any] | None = None,
         scope: str = "all",
-        lines: Optional[List[str]] = None,
+        lines: list[str] | None = None,
     ) -> None:
         """Initializes the i18n visitor.
 
@@ -240,21 +240,21 @@ class I18nVisitor(BaseVisitor):
         """
         super().__init__(rel_path, rules_config, scope)
         self.i18n_methods = I18N_METHODS
-        self.lines: List[str] = lines or []
-        self.docstring_lines: Set[int] = set()
-        self._current_call_stack: List[str] = []
+        self.lines: list[str] = lines or []
+        self.docstring_lines: set[int] = set()
+        self._current_call_stack: list[str] = []
 
         # Config-driven overrides for the MISSING_I18N rule.
         rule_cfg = self.rules_config.get("MISSING_I18N", {})
         if not isinstance(rule_cfg, dict):
             rule_cfg = {}
-        self.safe_call_suffixes: Set[str] = set(DEFAULT_SAFE_CALL_SUFFIXES) | set(
+        self.safe_call_suffixes: set[str] = set(DEFAULT_SAFE_CALL_SUFFIXES) | set(
             rule_cfg.get("extra_ignore_calls", [])
         )
-        self.safe_exact_strings: Set[str] = set(DEFAULT_SAFE_EXACT_STRINGS) | set(
+        self.safe_exact_strings: set[str] = set(DEFAULT_SAFE_EXACT_STRINGS) | set(
             rule_cfg.get("extra_exact_ignores", [])
         )
-        self.technical_patterns: List[re.Pattern[str]] = DEFAULT_TECHNICAL_PATTERNS
+        self.technical_patterns: list[re.Pattern[str]] = DEFAULT_TECHNICAL_PATTERNS
 
     def visit_Call(self, node: ast.Call) -> None:
         """Tracks the current call stack to detect safe translation wrappers."""
@@ -265,7 +265,7 @@ class I18nVisitor(BaseVisitor):
         if self._current_call_stack:
             self._current_call_stack.pop()
 
-    def visit_Constant(self, node: ast.Constant, parent: Optional[ast.AST] = None) -> None:
+    def visit_Constant(self, node: ast.Constant, parent: ast.AST | None = None) -> None:
         """Inspects string constants for i18n hygiene violations."""
         if not isinstance(node.value, str):
             return

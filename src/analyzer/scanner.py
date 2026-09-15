@@ -26,7 +26,7 @@ check for security vulnerabilities, and audit against QGIS coding standards.
 
 import ast
 import pathlib
-from typing import Any, Dict, List, Optional, TypedDict
+from typing import Any, TypedDict
 
 from .rules.qgis_rules import get_qgis_audit_rules
 from .secrets import SecretScanner
@@ -46,10 +46,10 @@ from .visitors import QGISASTVisitor, QGISSecurityVisitor
 class ResearchMetrics(TypedDict):
     """Structured research metrics for a module."""
 
-    docstring_styles: List[str]
-    type_hint_stats: Dict[str, Any]
-    docstring_stats: Dict[str, Any]
-    qgis_context: Dict[str, Any]
+    docstring_styles: list[str]
+    type_hint_stats: dict[str, Any]
+    docstring_stats: dict[str, Any]
+    qgis_context: dict[str, Any]
     security_findings_count: int
 
 
@@ -58,20 +58,20 @@ class ModuleAnalysisResult(TypedDict, total=False):
 
     path: str
     lines: int
-    functions: List[Dict[str, Any]]
-    classes: List[str]
-    imports: List[str]
-    runtime_imports: List[str]
+    functions: list[dict[str, Any]]
+    classes: list[str]
+    imports: list[str]
+    runtime_imports: list[str]
     complexity: int
     has_main: bool
-    docstrings: Dict[str, bool]
+    docstrings: dict[str, bool]
     file_size_kb: float
     syntax_error: bool
-    ast_issues: List[Dict[str, Any]]
-    security_issues: List[Dict[str, Any]]
-    resource_usages: List[str]
+    ast_issues: list[dict[str, Any]]
+    security_issues: list[dict[str, Any]]
+    resource_usages: list[str]
     research_metrics: ResearchMetrics
-    content: Optional[str]
+    content: str | None
 
 
 # --- Constants ---
@@ -85,10 +85,10 @@ SEVERITY_MAP = {
 
 # --- Shared Worker Context ---
 
-_worker_context: Optional[Dict[str, Any]] = None
+_worker_context: dict[str, Any] | None = None
 
 
-def init_worker(context: Dict[str, Any]) -> None:
+def init_worker(context: dict[str, Any]) -> None:
     """Initializes the worker process with shared context.
 
     Args:
@@ -100,11 +100,11 @@ def init_worker(context: Dict[str, Any]) -> None:
 
 def analyze_module_worker(
     py_file: pathlib.Path,
-    project_path: Optional[pathlib.Path] = None,
-    cached_data: Optional[Dict[str, Any]] = None,
-    rules_config: Optional[Dict[str, Any]] = None,
+    project_path: pathlib.Path | None = None,
+    cached_data: dict[str, Any] | None = None,
+    rules_config: dict[str, Any] | None = None,
     scope: str = "all",
-) -> Optional[ModuleAnalysisResult]:
+) -> ModuleAnalysisResult | None:
     """Worker function for module analysis, intended for parallel execution.
 
     Args:
@@ -199,7 +199,7 @@ def _get_relative_path(py_file: pathlib.Path, project_path: pathlib.Path) -> str
     return str(py_file.relative_to(project_path))
 
 
-def _read_file_content(py_file: pathlib.Path) -> Optional[str]:
+def _read_file_content(py_file: pathlib.Path) -> str | None:
     """Reads file content handling common encoding issues."""
     try:
         with open(py_file, encoding="utf-8-sig", errors="replace") as f:
@@ -252,7 +252,7 @@ def _create_empty_analysis_result(
     }
 
 
-def _collect_security_issues(tree: ast.AST, content: str, rel_path: str) -> List[Dict[str, Any]]:
+def _collect_security_issues(tree: ast.AST, content: str, rel_path: str) -> list[dict[str, Any]]:
     """Consolidates issues from AST security visitor and secret scanner."""
     security_visitor = QGISSecurityVisitor(rel_path)
     security_visitor.visit(tree)
@@ -274,13 +274,13 @@ def _collect_security_issues(tree: ast.AST, content: str, rel_path: str) -> List
 
 
 def audit_qgis_standards(
-    modules_data: List[ModuleAnalysisResult],
+    modules_data: list[ModuleAnalysisResult],
     project_path: pathlib.Path,
-    rules_config: Optional[Dict[str, Any]] = None,
-) -> Dict[str, Any]:
+    rules_config: dict[str, Any] | None = None,
+) -> dict[str, Any]:
     """Executes a comprehensive QGIS standards audit using regex and AST results."""
     rules = get_qgis_audit_rules()
-    results: Dict[str, Any] = {"issues": [], "issues_count": 0}
+    results: dict[str, Any] = {"issues": [], "issues_count": 0}
 
     for module in modules_data:
         # Add AST issues
@@ -300,9 +300,9 @@ def audit_qgis_standards(
 def _run_regex_audit_on_module(
     content: str,
     path: str,
-    rules: List[Dict[str, Any]],
-    rules_config: Optional[Dict[str, Any]],
-    issues_out: List[Dict[str, Any]],
+    rules: list[dict[str, Any]],
+    rules_config: dict[str, Any] | None,
+    issues_out: list[dict[str, Any]],
 ) -> None:
     """Runs all regex rules on a module's content."""
     for rule in rules:
@@ -324,7 +324,7 @@ def _run_regex_audit_on_module(
             )
 
 
-def _try_read_module_file(path: Optional[str], project_path: pathlib.Path) -> Optional[str]:
+def _try_read_module_file(path: str | None, project_path: pathlib.Path) -> str | None:
     """Attempts to read a module file from path if content is missing."""
     if not path:
         return None
@@ -334,7 +334,7 @@ def _try_read_module_file(path: Optional[str], project_path: pathlib.Path) -> Op
     return None
 
 
-def _get_rule_severity(rule: Dict[str, Any], config: Optional[Dict[str, Any]]) -> str:
+def _get_rule_severity(rule: dict[str, Any], config: dict[str, Any] | None) -> str:
     """Calculates rule severity based on configuration."""
     rule_id = rule["id"]
     severity_val = config.get(rule_id, "warning") if config else "warning"

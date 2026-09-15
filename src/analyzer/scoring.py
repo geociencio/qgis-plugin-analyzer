@@ -19,7 +19,7 @@
 #  ***************************************************************************/
 
 import math
-from typing import Any, Dict, List, Optional, TypedDict
+from typing import Any, TypedDict
 
 from .scanner import ModuleAnalysisResult
 
@@ -27,22 +27,22 @@ from .scanner import ModuleAnalysisResult
 class QGISChecksResult(TypedDict):
     """Result of QGIS-specific validation checks."""
 
-    compliance: Dict[str, Any]
-    structure: Dict[str, Any]
-    metadata: Dict[str, Any]
-    binaries: List[str]
+    compliance: dict[str, Any]
+    structure: dict[str, Any]
+    metadata: dict[str, Any]
+    binaries: list[str]
     package_size: float
-    package_constraints: Dict[str, Any]
-    url_status: Dict[str, str]
+    package_constraints: dict[str, Any]
+    url_status: dict[str, str]
 
 
 class SemanticAnalysisResult(TypedDict):
     """Result of semantic analysis."""
 
-    cycles: List[List[str]]
-    graph: Dict[str, List[str]]
-    metrics: Dict[str, Any]
-    missing_resources: List[str]
+    cycles: list[list[str]]
+    graph: dict[str, list[str]]
+    metrics: dict[str, Any]
+    missing_resources: list[str]
 
 
 class ProjectScores(TypedDict):
@@ -62,9 +62,9 @@ class ScoringEngine:
 
     def calculate_project_scores(
         self,
-        modules_data: List[ModuleAnalysisResult],
-        ruff_findings: List[Dict[str, Any]],
-        qgis_checks: Optional[QGISChecksResult],
+        modules_data: list[ModuleAnalysisResult],
+        ruff_findings: list[dict[str, Any]],
+        qgis_checks: QGISChecksResult | None,
         semantic: SemanticAnalysisResult,
     ) -> ProjectScores:
         """Calculates project quality scores based on industry-standard formulas."""
@@ -123,7 +123,7 @@ class ScoringEngine:
             "security_score": round(security_score, 1),
         }
 
-    def _get_mi_score(self, modules_data: List[ModuleAnalysisResult]) -> float:
+    def _get_mi_score(self, modules_data: list[ModuleAnalysisResult]) -> float:
         """Calculates module stability based on Maintainability Index (MI)."""
         mi_scores = []
         for m in modules_data:
@@ -135,8 +135,8 @@ class ScoringEngine:
 
     def _get_maint_score(
         self,
-        modules_data: List[ModuleAnalysisResult],
-        ruff_findings: List[Dict[str, Any]],
+        modules_data: list[ModuleAnalysisResult],
+        ruff_findings: list[dict[str, Any]],
     ) -> float:
         """Calculates maintainability based on function complexity and linting penalties."""
         all_func_comp = []
@@ -189,7 +189,7 @@ class ScoringEngine:
 
         return float((func_score * 0.7) + (lint_score * 0.3))
 
-    def _get_modernization_bonus(self, modules_data: List[ModuleAnalysisResult]) -> float:
+    def _get_modernization_bonus(self, modules_data: list[ModuleAnalysisResult]) -> float:
         """Calculates modernization bonuses based on type hints and documentation styles."""
         total_functions = 0
         total_params = 0
@@ -219,11 +219,11 @@ class ScoringEngine:
 
     def _get_qgis_score(
         self,
-        compliance: Dict[str, Any],
-        structure: Dict[str, Any],
-        metadata: Dict[str, Any],
-        missing_resources: List[str],
-        binaries: List[str],
+        compliance: dict[str, Any],
+        structure: dict[str, Any],
+        metadata: dict[str, Any],
+        missing_resources: list[str],
+        binaries: list[str],
         package_size: float,
         security_penalty: float = 0.0,
     ) -> float:
@@ -242,7 +242,7 @@ class ScoringEngine:
         score -= security_penalty
         return float(max(0, score))
 
-    def _get_security_penalty(self, modules_data: List[ModuleAnalysisResult]) -> float:
+    def _get_security_penalty(self, modules_data: list[ModuleAnalysisResult]) -> float:
         """Calculates total penalty for security vulnerabilities."""
         penalty = 0.0
         for m in modules_data:

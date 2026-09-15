@@ -7,12 +7,12 @@ of the analysis findings, including scores, metrics, and technical debt.
 import datetime
 import json
 import pathlib
-from typing import Any, Dict, List
+from typing import Any
 
 
 def _build_markdown_header(
-    analyses: Dict[str, Any], module_score: float, maint_score: float, project_type: str
-) -> List[str]:
+    analyses: dict[str, Any], module_score: float, maint_score: float, project_type: str
+) -> list[str]:
     """Builds the markdown header section including quality indicators.
 
     Args:
@@ -51,7 +51,7 @@ def _build_markdown_header(
     return lines
 
 
-def _build_markdown_qgis_findings(analyses: Dict[str, Any]) -> List[str]:
+def _build_markdown_qgis_findings(analyses: dict[str, Any]) -> list[str]:
     """Builds the QGIS findings section with icons and severities.
 
     Args:
@@ -80,7 +80,7 @@ def _build_markdown_qgis_findings(analyses: Dict[str, Any]) -> List[str]:
     return lines
 
 
-def _build_markdown_semantic_section(semantic: Dict[str, Any]) -> List[str]:
+def _build_markdown_semantic_section(semantic: dict[str, Any]) -> list[str]:
     """Builds the semantic analysis section (circular imports, resources).
 
     Args:
@@ -114,7 +114,7 @@ def _build_markdown_semantic_section(semantic: Dict[str, Any]) -> List[str]:
     return lines
 
 
-def _build_markdown_repo_standards(analyses: Dict[str, Any]) -> List[str]:
+def _build_markdown_repo_standards(analyses: dict[str, Any]) -> list[str]:
     """Builds the official repository standards compliance section.
 
     Args:
@@ -146,7 +146,7 @@ def _build_markdown_repo_standards(analyses: Dict[str, Any]) -> List[str]:
     return lines
 
 
-def _build_markdown_research_metrics(research: Dict[str, Any]) -> List[str]:
+def _build_markdown_research_metrics(research: dict[str, Any]) -> list[str]:
     """Builds the research-based metrics section.
 
     Args:
@@ -169,7 +169,7 @@ def _build_markdown_research_metrics(research: Dict[str, Any]) -> List[str]:
     return lines
 
 
-def _build_markdown_general_metrics(metrics: Dict[str, Any]) -> List[str]:
+def _build_markdown_general_metrics(metrics: dict[str, Any]) -> list[str]:
     """Builds the general metrics section.
 
     Args:
@@ -185,7 +185,7 @@ def _build_markdown_general_metrics(metrics: Dict[str, Any]) -> List[str]:
     return lines
 
 
-def _build_markdown_security_section(security: Dict[str, Any]) -> List[str]:
+def _build_markdown_security_section(security: dict[str, Any]) -> list[str]:
     """Builds the security analysis section with findings.
 
     Args:
@@ -216,7 +216,7 @@ def _build_markdown_security_section(security: Dict[str, Any]) -> List[str]:
     return lines
 
 
-def generate_markdown_summary(analyses: Dict[str, Any], output_path: pathlib.Path) -> None:
+def generate_markdown_summary(analyses: dict[str, Any], output_path: pathlib.Path) -> None:
     """Generates a professional PROJECT_SUMMARY.md report.
 
     Args:
@@ -275,7 +275,7 @@ def generate_markdown_summary(analyses: Dict[str, Any], output_path: pathlib.Pat
             f.write("\n".join(repo_standards_lines))
 
 
-def save_json_context(analyses: Dict[str, Any], output_path: pathlib.Path) -> None:
+def save_json_context(analyses: dict[str, Any], output_path: pathlib.Path) -> None:
     """Saves the full context in JSON format.
 
     Args:

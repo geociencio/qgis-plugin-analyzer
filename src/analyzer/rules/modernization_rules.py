@@ -4,10 +4,10 @@ This module defines rules for detecting modernization opportunities and
 adherence to industry-standard Python practices (Google, Microsoft, PSF).
 """
 
-from typing import Any, Dict, List
+from typing import Any
 
 
-def get_modernization_rules() -> List[Dict[str, Any]]:
+def get_modernization_rules() -> list[dict[str, Any]]:
     """Returns the modernization and research-based rule catalog.
 
     Returns:

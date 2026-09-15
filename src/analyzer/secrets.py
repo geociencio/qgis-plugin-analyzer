@@ -6,7 +6,6 @@ Handles regex-based matching of API keys and high-entropy string detection.
 import math
 import re
 from dataclasses import dataclass
-from typing import List
 
 
 @dataclass
@@ -33,7 +32,7 @@ class SecretScanner:
     def __init__(self):
         self.compiled_patterns = {k: re.compile(v) for k, v in self.PATTERNS.items()}
 
-    def scan_text(self, text: str) -> List[SecretFinding]:
+    def scan_text(self, text: str) -> list[SecretFinding]:
         """Scans a file's content for secrets line by line."""
         findings = []
         lines = text.splitlines()

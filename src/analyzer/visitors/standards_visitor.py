@@ -21,7 +21,7 @@
 """AST visitor for QGIS-specific standards and best practices."""
 
 import ast
-from typing import Any, Dict, List, Optional, Set
+from typing import Any
 
 from .base import BaseVisitor
 
@@ -41,7 +41,7 @@ class StandardsVisitor(BaseVisitor):
     def __init__(
         self,
         rel_path: str,
-        rules_config: Optional[Dict[str, Any]] = None,
+        rules_config: dict[str, Any] | None = None,
         scope: str = "all",
     ) -> None:
         """Initializes the standards visitor.
@@ -52,7 +52,7 @@ class StandardsVisitor(BaseVisitor):
             scope: Analysis scope.
         """
         super().__init__(rel_path, rules_config, scope)
-        self.class_methods_stack: List[Set[str]] = []
+        self.class_methods_stack: list[set[str]] = []
 
     def visit_ClassDef(self, node: ast.ClassDef) -> None:
         """Analyzes class definitions.

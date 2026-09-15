@@ -7,7 +7,7 @@ for quality indicators.
 
 import json
 import pathlib
-from typing import Any, Dict, List
+from typing import Any
 
 # Helper functions for formatting
 
@@ -104,7 +104,7 @@ def report_summary(input_path: pathlib.Path, by: str = "total") -> bool:
 # Specialized methods for _report_total
 
 
-def _print_quality_indicators(metrics: Dict[str, Any]) -> None:
+def _print_quality_indicators(metrics: dict[str, Any]) -> None:
     """Print quality scores section.
 
     Args:
@@ -116,7 +116,7 @@ def _print_quality_indicators(metrics: Dict[str, Any]) -> None:
     print_colored_score("- Security Score (Bandit)", metrics.get("security_score", "N/A"))
 
 
-def _print_research_metrics(research: Dict[str, Any]) -> None:
+def _print_research_metrics(research: dict[str, Any]) -> None:
     """Print research-based metrics section.
 
     Args:
@@ -159,7 +159,7 @@ def _print_research_metrics(research: Dict[str, Any]) -> None:
                 print(f"  - {signal}")
 
 
-def _collect_all_issues(data: Dict[str, Any]) -> List[Dict[str, Any]]:
+def _collect_all_issues(data: dict[str, Any]) -> list[dict[str, Any]]:
     """Collect and merge AST issues and security findings.
 
     Args:
@@ -168,7 +168,7 @@ def _collect_all_issues(data: Dict[str, Any]) -> List[Dict[str, Any]]:
     Returns:
         List of all issues with file paths added.
     """
-    issues: List[Dict[str, Any]] = []
+    issues: list[dict[str, Any]] = []
 
     # Collect AST issues
     for module in data.get("modules", []):
@@ -186,14 +186,14 @@ def _collect_all_issues(data: Dict[str, Any]) -> List[Dict[str, Any]]:
     return issues
 
 
-def _print_issue_statistics(issues: List[Dict[str, Any]]) -> None:
+def _print_issue_statistics(issues: list[dict[str, Any]]) -> None:
     """Print issue counts grouped by type.
 
     Args:
         issues: List of all issues.
     """
     print(f"\n\033[1m⚠️  Issue Statistics ({len(issues)} total)\033[0m")
-    counts: Dict[str, int] = {}
+    counts: dict[str, int] = {}
     for issue in issues:
         issue_type = issue.get("type", "unknown")
         counts[issue_type] = counts.get(issue_type, 0) + 1
@@ -202,7 +202,7 @@ def _print_issue_statistics(issues: List[Dict[str, Any]]) -> None:
         print(f"- {issue_type}: {count}")
 
 
-def _print_sample_issues(issues: List[Dict[str, Any]], limit: int = 5) -> None:
+def _print_sample_issues(issues: list[dict[str, Any]], limit: int = 5) -> None:
     """Print sample issues with formatting.
 
     Args:
@@ -221,7 +221,7 @@ def _print_sample_issues(issues: List[Dict[str, Any]], limit: int = 5) -> None:
         print(f"... and {len(issues) - limit} more issues.")
 
 
-def _report_total(data: Dict[str, Any]) -> bool:
+def _report_total(data: dict[str, Any]) -> bool:
     """Prints the executive total summary."""
     print_header("📋 QGIS Plugin Analyzer: Project Summary")
     print_separator()
@@ -241,7 +241,7 @@ def _report_total(data: Dict[str, Any]) -> bool:
     return True
 
 
-def _report_by_modules(data: Dict[str, Any]) -> bool:
+def _report_by_modules(data: dict[str, Any]) -> bool:
     """Prints summary grouped by modules."""
     print("\n\033[1m📁 Summary by Modules (Top 10 by Issues)\033[0m")
     print("=" * 60)
@@ -275,7 +275,7 @@ def _report_by_modules(data: Dict[str, Any]) -> bool:
     return True
 
 
-def _report_by_functions(data: Dict[str, Any]) -> bool:
+def _report_by_functions(data: dict[str, Any]) -> bool:
     """Prints summary grouped by functions (Top 10 by Complexity)."""
     print("\n\033[1m⚡ Summary by Functions (Top 10 by Complexity)\033[0m")
     print("=" * 70)
@@ -306,7 +306,7 @@ def _report_by_functions(data: Dict[str, Any]) -> bool:
     return True
 
 
-def _report_by_classes(data: Dict[str, Any]) -> bool:
+def _report_by_classes(data: dict[str, Any]) -> bool:
     """Prints summary grouped by classes."""
     print("\n\033[1m🏛️ Summary by Classes\033[0m")
     print("=" * 60)
@@ -335,8 +335,8 @@ def _report_by_classes(data: Dict[str, Any]) -> bool:
 
 
 def _group_findings_by_severity(
-    findings: List[Dict[str, Any]],
-) -> Dict[str, List[Dict[str, Any]]]:
+    findings: list[dict[str, Any]],
+) -> dict[str, list[dict[str, Any]]]:
     """Group security findings by severity level.
 
     Args:
@@ -345,7 +345,7 @@ def _group_findings_by_severity(
     Returns:
         Dictionary mapping severity levels to lists of findings.
     """
-    by_severity: Dict[str, List[Dict[str, Any]]] = {"high": [], "medium": [], "low": []}
+    by_severity: dict[str, list[dict[str, Any]]] = {"high": [], "medium": [], "low": []}
     for finding in findings:
         sev = finding.get("severity", "medium").lower()
         if sev in by_severity:
@@ -355,7 +355,7 @@ def _group_findings_by_severity(
     return by_severity
 
 
-def _print_security_finding(finding: Dict[str, Any], severity: str) -> None:
+def _print_security_finding(finding: dict[str, Any], severity: str) -> None:
     """Print a single security finding with formatting.
 
     Args:
@@ -376,7 +376,7 @@ def _print_security_finding(finding: Dict[str, Any], severity: str) -> None:
 
 
 def _print_security_findings_by_severity(
-    by_severity: Dict[str, List[Dict[str, Any]]],
+    by_severity: dict[str, list[dict[str, Any]]],
 ) -> None:
     """Print all findings grouped by severity.
 
@@ -395,7 +395,7 @@ def _print_security_findings_by_severity(
             _print_security_finding(finding, severity)
 
 
-def _report_security(data: Dict[str, Any]) -> bool:
+def _report_security(data: dict[str, Any]) -> bool:
     """Prints a focused security analysis report.
 
     Args:

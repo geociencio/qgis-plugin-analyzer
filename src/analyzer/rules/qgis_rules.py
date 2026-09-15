@@ -5,10 +5,10 @@ in PyQGIS plugins.
 """
 
 import re
-from typing import Any, Dict, List
+from typing import Any
 
 
-def get_qgis_audit_rules() -> List[Dict[str, Any]]:
+def get_qgis_audit_rules() -> list[dict[str, Any]]:
     """Returns the QGIS audit rule catalog.
 
     Returns:

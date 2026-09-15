@@ -24,7 +24,7 @@ import pathlib
 import subprocess
 from concurrent.futures import ProcessPoolExecutor, as_completed
 from dataclasses import dataclass, field
-from typing import Any, Dict, List, Optional, cast
+from typing import Any, cast
 
 from .aggregators import (
     build_analysis_results,
@@ -68,7 +68,7 @@ class ProjectConfig:
     generate_html: bool = True
     fail_on_error: bool = False
     project_type: str = "auto"
-    rules: Dict[str, Any] = field(default_factory=dict)
+    rules: dict[str, Any] = field(default_factory=dict)
     fail_on_critical: bool = False
     include_content: bool = False
 
@@ -77,7 +77,7 @@ class ProjectAnalyzer:
     def __init__(
         self,
         project_path: str,
-        output_dir: Optional[str] = None,
+        output_dir: str | None = None,
         profile: str = "default",
     ) -> None:
         """Initializes the Project Analyzer.
@@ -125,7 +125,7 @@ class ProjectAnalyzer:
         patterns = load_ignore_patterns(ignore_file)
         self.matcher = IgnoreMatcher(self.project_path, patterns)
 
-    def run_ruff_audit(self) -> Dict[str, Any]:
+    def run_ruff_audit(self) -> dict[str, Any]:
         """Executes Ruff linting via subprocess.
 
         Returns:
@@ -176,10 +176,10 @@ class ProjectAnalyzer:
 
     def _run_parallel_analysis(
         self,
-        files: List[pathlib.Path],
-        rules_config: Dict[str, Any],
+        files: list[pathlib.Path],
+        rules_config: dict[str, Any],
         scope: str = "all",
-    ) -> List[ModuleAnalysisResult]:
+    ) -> list[ModuleAnalysisResult]:
         """Runs parallel analysis on all Python files.
 
         Args:
@@ -192,7 +192,7 @@ class ProjectAnalyzer:
         from .scanner import init_worker
 
         tracker = ProgressTracker(len(files))
-        modules_data: List[ModuleAnalysisResult] = []
+        modules_data: list[ModuleAnalysisResult] = []
 
         # Shared context to avoid serializing large rules multiple times
         shared_context = {
@@ -220,9 +220,9 @@ class ProjectAnalyzer:
 
     def _run_qgis_specific_checks(
         self,
-        modules_data: List[ModuleAnalysisResult],
-        rules_config: Dict[str, Any],
-        discovery: Dict[str, Any],
+        modules_data: list[ModuleAnalysisResult],
+        rules_config: dict[str, Any],
+        discovery: dict[str, Any],
     ) -> QGISChecksResult:
         """Runs QGIS-specific validation checks.
 
@@ -255,7 +255,7 @@ class ProjectAnalyzer:
         }
 
     def _run_semantic_analysis(
-        self, modules_data: List[ModuleAnalysisResult]
+        self, modules_data: list[ModuleAnalysisResult]
     ) -> SemanticAnalysisResult:
         """Runs semantic analysis including dependencies and resources.
 
@@ -274,7 +274,7 @@ class ProjectAnalyzer:
             res_validator.scan_project_resources(self.matcher)
 
         for m in modules_data:
-            dep_graph.add_node(m["path"], cast(Dict[str, Any], m))
+            dep_graph.add_node(m["path"], cast(dict[str, Any], m))
             if self.project_type == "qgis" and "resource_usages" in m:
                 # Type safe usage of resource_usages from TypedDict
                 resource_usages = m.get("resource_usages", [])
@@ -332,7 +332,7 @@ class ProjectAnalyzer:
             ruff_findings = ruff_result["findings"]
 
         # 3. QGIS-specific checks (Metadata, structure, constraints)
-        qgis_checks: Optional[QGISChecksResult] = None
+        qgis_checks: QGISChecksResult | None = None
         if self.project_type == "qgis" and scope in ["all", "metadata", "performance"]:
             qgis_checks = self._run_qgis_specific_checks(modules_data, rules_config, discovery)
 
@@ -393,8 +393,8 @@ class ProjectAnalyzer:
         return True
 
     def _filter_issues_by_scope(
-        self, modules_data: List[ModuleAnalysisResult], scope: str
-    ) -> List[ModuleAnalysisResult]:
+        self, modules_data: list[ModuleAnalysisResult], scope: str
+    ) -> list[ModuleAnalysisResult]:
         """Filters issues in modules based on the analysis scope.
 
         Args:

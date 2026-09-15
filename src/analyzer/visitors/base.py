@@ -1,7 +1,7 @@
 """Base visitor class with shared functionality for all AST visitors."""
 
 import ast
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 
 class BaseVisitor(ast.NodeVisitor):
@@ -13,7 +13,7 @@ class BaseVisitor(ast.NodeVisitor):
     def __init__(
         self,
         rel_path: str,
-        rules_config: Optional[Dict[str, Any]] = None,
+        rules_config: dict[str, Any] | None = None,
         scope: str = "all",
     ) -> None:
         """Initializes the base visitor.
@@ -24,7 +24,7 @@ class BaseVisitor(ast.NodeVisitor):
             scope: Analysis scope ('all', 'i18n', etc.).
         """
         self.rel_path = rel_path
-        self.issues: List[Dict[str, Any]] = []
+        self.issues: list[dict[str, Any]] = []
         self.rules_config = rules_config or {}
         self.scope = scope
         self._is_single_pass = False
@@ -37,7 +37,7 @@ class BaseVisitor(ast.NodeVisitor):
         if not self._is_single_pass:
             super().generic_visit(node)
 
-    def enter_node(self, node: ast.AST, parent: Optional[ast.AST] = None) -> None:
+    def enter_node(self, node: ast.AST, parent: ast.AST | None = None) -> None:
         """Dispatches to visit_XXX method when entering a node."""
         method_name = f"visit_{node.__class__.__name__}"
         visitor = getattr(self, method_name, None)
@@ -51,7 +51,7 @@ class BaseVisitor(ast.NodeVisitor):
             else:
                 visitor(node)
 
-    def exit_node(self, node: ast.AST, parent: Optional[ast.AST] = None) -> None:
+    def exit_node(self, node: ast.AST, parent: ast.AST | None = None) -> None:
         """Dispatches to leave_XXX method when exiting a node."""
         method_name = f"leave_{node.__class__.__name__}"
         visitor = getattr(self, method_name, None)

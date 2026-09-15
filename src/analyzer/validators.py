@@ -11,7 +11,7 @@ import socket
 import urllib.error
 import urllib.parse
 import urllib.request
-from typing import Any, Dict, List
+from typing import Any
 
 
 def is_ssrf_safe(url: str) -> bool:
@@ -64,7 +64,7 @@ def is_ssrf_safe(url: str) -> bool:
         return False
 
 
-def validate_metadata_urls(metadata: Dict[str, str]) -> Dict[str, str]:
+def validate_metadata_urls(metadata: dict[str, str]) -> dict[str, str]:
     """Validates the accessibility of URLs defined in the plugin metadata.
 
     Args:
@@ -114,7 +114,7 @@ def validate_metadata_urls(metadata: Dict[str, str]) -> Dict[str, str]:
     return results
 
 
-def validate_package_constraints(total_size_mb: float, binaries: List[str]) -> Dict[str, Any]:
+def validate_package_constraints(total_size_mb: float, binaries: list[str]) -> dict[str, Any]:
     """Validates package size and binary constraints against Official Repository rules.
 
     Args:
@@ -147,7 +147,7 @@ def validate_package_constraints(total_size_mb: float, binaries: List[str]) -> D
     }
 
 
-def validate_plugin_structure(project_path: pathlib.Path) -> Dict[str, Any]:
+def validate_plugin_structure(project_path: pathlib.Path) -> dict[str, Any]:
     """Validates that the plugin following the required QGIS file structure.
 
     Args:
@@ -199,7 +199,7 @@ def validate_plugin_structure(project_path: pathlib.Path) -> Dict[str, Any]:
     }
 
 
-def validate_metadata(metadata_path: pathlib.Path) -> Dict[str, Any]:
+def validate_metadata(metadata_path: pathlib.Path) -> dict[str, Any]:
     """Validates the content of the metadata.txt file against QGIS requirements.
 
     Args:
@@ -277,7 +277,7 @@ def calculate_package_size(directory: pathlib.Path) -> float:
     return total_size / (1024 * 1024)
 
 
-def scan_for_binaries(directory: pathlib.Path) -> List[str]:
+def scan_for_binaries(directory: pathlib.Path) -> list[str]:
     """Scans for binary files in the directory.
 
     Args:
