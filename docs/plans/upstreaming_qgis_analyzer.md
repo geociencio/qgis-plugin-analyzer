@@ -1,5 +1,10 @@
 # Upstreaming Plan: SecInterp scripts → qgis-plugin-analyzer
 
+> **Estado**: implementado. Las Fases 0–4 de
+> [`implementation_plan_generalize_analyzer.md`](implementation_plan_generalize_analyzer.md)
+> ya están en `main`: contrato de salida CI, regla i18n AST, gate `--max-cc`,
+> floor Python 3.11 y pruebas. Este documento conserva el análisis original.
+
 ## 1. Premisa
 
 SecInterp y qgis-plugin-analyzer comparten autor. El analizador es la
@@ -58,7 +63,12 @@ Bloqueantes para consumir el JSON de forma fiable:
 4. Warning de directorio de salida obsoleto (detectar `json/project_context.json`
    legacy).
 
-## 5. Integración A — Regla i18n AST (`UNTRANSLATED_STRING`)
+## 5. Integración A — Regla i18n AST (`MISSING_I18N`)
+
+> **Decisión resuelta**: se mantiene el id `MISSING_I18N` (no se introduce
+> `UNTRANSLATED_STRING`) y la heurística se **reemplaza** por la lógica AST,
+> sin conservar el heurístico como fallback. Ver el plan de implementación
+> (Fase 1) para el detalle.
 
 1. Portar `I18nAstVisitor` + `collect_docstring_lines` + `is_technical_string`
    de `scripts/upstream/i18n_ast_rule.py` a `visitors/i18n_visitor.py`.
@@ -67,14 +77,15 @@ Bloqueantes para consumir el JSON de forma fiable:
      `.analyzerignore`).
    - `SAFE_CALL_SUFFIXES` / `SAFE_EXACT_STRINGS` → configurables vía
      `pyproject.toml` bajo
-     `[tool.qgis-analyzer.profiles.<p>.rules.UNTRANSLATED_STRING]`
+     `[tool.qgis-analyzer.profiles.<p>.rules.MISSING_I18N]`
      (`extra_ignore_calls`, `extra_exact_ignores`), con defaults genéricos.
    - Sin entradas SecInterp-específicas (`SecInterpError`, `ValidationError`,
      `PerformanceTimer`, `track`, strings de preview).
 3. Mantener `# no-i18n` como marca de exclusión inline.
-4. Nueva regla con id `UNTRANSLATED_STRING` (o `MISSING_I18N` con flag
-   `--ast-precise`); severidad `medium`; alcance `i18n`/`all`.
-5. Back-compat: mantener el `MISSING_I18N` heurístico como fallback opcional.
+4. Regla con id `MISSING_I18N` (conservado por back-compat); severidad
+   `medium`; alcance `i18n`/`all`.
+5. El id `MISSING_I18N` se conserva para no tocar el mapa de scope en
+   `engine.py`/`base.py`, los reportes ni los tests existentes.
 
 ## 6. Integración B — Gate de complejidad
 
@@ -107,12 +118,16 @@ otras ubicaciones legacy) con warning de migración — refuerza la lección de
 
 ## 8. Migración de SecInterp (documentada, no ejecutada)
 
+> El lado del analizador ya está implementado (Fases 0–4). La migración
+> siguiente aplica una vez se publique una release del analizador con este
+> soporte.
+
 Al publicar una versión del analizador con soporte:
 
 1. `scripts/check_cc.py` → retirar (sustituido por
    `qgis-analyzer analyze --max-cc 10`).
 2. `scripts/verify_i18n_hygiene.py` → retirar (sustituido por la regla
-   `UNTRANSLATED_STRING`).
+   `MISSING_I18N`).
 3. Actualizar `scripts/sync_metrics.py` (reemplazar llamadas a `check_cc.py`/
    `verify_i18n_hygiene.py` por la flag/JSON del analizador), `Makefile`,
    `.pre-commit-config.yaml`, `.agent/workflows/*` y el pre-push hook.

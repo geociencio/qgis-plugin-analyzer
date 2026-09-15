@@ -1,5 +1,13 @@
 # qgis-analyzer i18n Audit: False Positives with QCoreApplication.translate()
 
+> **Status: SUPERSEDED** — The fix proposed here is now implemented via the
+> analyzer generalization plan (see
+> [`docs/plans/implementation_plan_generalize_analyzer.md`](plans/implementation_plan_generalize_analyzer.md)).
+> The portable AST-based rule in `visitors/i18n_visitor.py` recognizes both
+> `self.tr()` and `QCoreApplication.translate()` wrappers, excludes technical
+> strings (CSS/HTML, format specifiers, docstrings) and honors inline
+> `# no-i18n` / `# noqa` exclusions. This document is kept as historical context.
+
 > **Target audience**: qgis-analyzer maintainers / AI agents working on qgis-analyzer
 > **Project**: SecInterp v3.6.0 — QGIS geological interpretation plugin
 > **Date**: 2026-05-24
