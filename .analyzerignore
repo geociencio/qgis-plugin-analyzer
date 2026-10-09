@@ -6,8 +6,10 @@ dist/
 *.egg-info/
 .analyzerignore
 analysis_results/
-.ai-context/
 .agent/
+.agent-state/
+forge.toml
+.gitmodules
 opencode.json
 AGENTS.md
 .gemini/

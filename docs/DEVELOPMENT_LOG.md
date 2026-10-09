@@ -1,5 +1,14 @@
 # Development Log
 
+## [2026-10-08] Agentic Forge Adoption (F1–F5)
+- Adopted the `agentic-forge` framework (Codeberg, `v1.2.0`) as a git submodule at `.agent/`.
+- Moved project-owned state to `.agent-state/` (memory, history, `task.md`, `next_steps.md`) and overlay skills (`domain-logic`, `project-context`).
+- Added `forge.toml` (`max_cc = 15`, `module_size_limit = 400`) and switched tooling to `python .agent/tools/forge.py`.
+- Removed the legacy `.ai-context/` system, `scaffold/`, inherited SecInterp scripts, and the `ai-context-core` dev dependency.
+- Genericized `qa-standards` → `testing-standards` (promoted upstream) and folded the `I18nVisitor` notes into `domain-logic`.
+- CI: added `submodules: recursive`; `opencode.json` now discovers the overlay skills.
+- Maintenance: [session_2026-10-08_agentic_forge_adoption.md](maintenance/session_2026-10-08_agentic_forge_adoption.md).
+
 ## [2026-09-14] v1.14.0: Analyzer Generalization & Qt6 Readiness
 - Completed the 5-phase analyzer generalization plan (i18n AST rule, `--max-cc` gate, Python 3.11, CI output contract, tests).
 - Added 11 Qt6 migration rules (`QT6_*`, `QGS4xx` parity) via a dedicated `QtTransitionVisitor`.

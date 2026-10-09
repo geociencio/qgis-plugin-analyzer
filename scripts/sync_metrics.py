@@ -2,7 +2,7 @@
 """Unified metric extraction for qgis-plugin-analyzer.
 
 Runs the analyzer on itself, extracts quality scores from the analysis
-output, and writes a structured snapshot to .agent/memory/agent_metrics.json.
+output, and writes a structured snapshot to .agent-state/memory/agent_metrics.json.
 
 Usage:
     uv run python scripts/sync_metrics.py
@@ -15,7 +15,7 @@ from pathlib import Path
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 ANALYSIS_RESULTS = PROJECT_ROOT / "analysis_results" / "project_context.json"
-METRICS_FILE = PROJECT_ROOT / ".agent" / "memory" / "agent_metrics.json"
+METRICS_FILE = PROJECT_ROOT / ".agent-state" / "memory" / "agent_metrics.json"
 
 
 def run_command(cmd: list[str], cwd: Path | None = None) -> subprocess.CompletedProcess:

@@ -53,7 +53,6 @@ dev = [
     "PyYAML>=6.0",
     "types-pyyaml>=6.0.12.20241230",
     "build>=1.2.2.post1",
-    "ai-context-core>=3.2.1",
 ]
 
 [tool.mypy]
@@ -67,7 +66,7 @@ disallow_untyped_defs = false # Gradual adoption
 [tool.ruff]
 line-length = 100
 target-version = "py311"
-exclude = ["src/analyzer/templates", ".ai-context"]
+exclude = ["src/analyzer/templates", ".agent", ".agent-state"]
 
 [tool.ruff.lint]
 select = ["E", "F", "W", "I", "N", "UP", "B"]
