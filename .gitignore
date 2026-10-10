@@ -14,8 +14,21 @@ venv.bak/
 dist/
 build/
 analysis_results/
+analysis_results_release/
+debug_summary/
 test_flake8_results/
 english_test_results/
 test_sec_interp_results/
 .antigravity/
 self_analysis_results*
+migration/
+
+# Generated analyzer artifacts / state (untracked on purpose)
+.ai_context_cache.json
+.analyzer_state.json
+.coverage
+analysis.log
+analysis_errors.json
+AI_CONTEXT.md
+PROJECT_SUMMARY.md
+project_context.json

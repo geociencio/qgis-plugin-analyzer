@@ -62,20 +62,22 @@ Artefactos generados/efímeros versionados (git ignora solo lo no trackeado; hay
    supuesta causalidad con el error histórico `'str' object has no attribute 'stat'`
    **no está corroborada** en la documentación; el borrado se justifica por ser un
    directorio vacío, no por esa causa.
-4. Decidir destino de `bugreport.md`/`reproduce_bug.py`: mover a `docs/development/`
-   o eliminar (son artefactos de depuración de un único bug).
+4. [DECIDIDO 2026-10-10] `bugreport.md`/`reproduce_bug.py` **archivados** en
+   `docs/development/` (`git mv`), conservando el caso de estudio. No se ignoran
+   (siguen trackeados), por eso quedan **fuera** del criterio de vaciado.
 
-**Criterio de aceptación**: la lista **explícita** de artefactos debe quedar vacía
-en `git ls-files` (el regex original solo cubría 4 patrones y dejaba fuera
-`.analyzer_state.json`, `.coverage`, `analysis.log`, `AI_CONTEXT.md`, `bugreport.md`,
-`reproduce_bug.py` y los equivalentes `src/`). Verificar con:
+**Criterio de aceptación**: la lista **explícita** de artefactos retirados debe
+quedar vacía en `git ls-files` (el regex original solo cubría 4 patrones y dejaba
+fuera `.analyzer_state.json`, `.coverage`, `analysis.log`, `AI_CONTEXT.md` y los
+equivalentes `src/`). Verificar con:
 
 ```bash
-git ls-files | grep -E '(^|/)(\.ai_context_cache\.json|\.analyzer_state\.json|\.coverage|analysis\.log|analysis_errors\.json|AI_CONTEXT\.md|PROJECT_SUMMARY\.md|project_context\.json|bugreport\.md|reproduce_bug\.py)$|^(src/)?(test_sec_interp_results|analysis_results_release)/'
+git ls-files | grep -E '(^|/)(\.ai_context_cache\.json|\.analyzer_state\.json|\.coverage|analysis\.log|analysis_errors\.json|AI_CONTEXT\.md|PROJECT_SUMMARY\.md|project_context\.json)$|^(src/)?(test_sec_interp_results|analysis_results_release)/'
 # → debe quedar vacío
 ```
 
-(el anclaje `(^|/)` evita falsos positivos como `docs/development/SUGERENCIAS_AI_CONTEXT.md`).
+(el anclaje `(^|/)` evita falsos positivos como `docs/development/SUGERENCIAS_AI_CONTEXT.md`;
+`bugreport.md`/`reproduce_bug.py` se omiten porque se **archivan**, no se eliminan).
 
 ---
 
