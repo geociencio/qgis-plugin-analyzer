@@ -261,15 +261,16 @@ def validate_metadata(metadata_path: pathlib.Path) -> dict[str, Any]:
     }
 
 
-def calculate_package_size(directory: pathlib.Path) -> float:
+def calculate_package_size(directory: pathlib.Path | str) -> float:
     """Calculates the total size of a directory in megabytes.
 
     Args:
-        directory: The directory path.
+        directory: The directory path (``str`` or ``pathlib.Path``).
 
     Returns:
         The total size in MB.
     """
+    directory = pathlib.Path(directory)
     total_size = 0
     for file in directory.rglob("*"):
         if file.is_file():
@@ -277,15 +278,16 @@ def calculate_package_size(directory: pathlib.Path) -> float:
     return total_size / (1024 * 1024)
 
 
-def scan_for_binaries(directory: pathlib.Path) -> list[str]:
+def scan_for_binaries(directory: pathlib.Path | str) -> list[str]:
     """Scans for binary files in the directory.
 
     Args:
-        directory: The directory path.
+        directory: The directory path (``str`` or ``pathlib.Path``).
 
     Returns:
         A list of relative paths to detected binary files.
     """
+    directory = pathlib.Path(directory)
     binary_extensions = {".dll", ".so", ".exe", ".dylib", ".pyd", ".o", ".a"}
     binaries = []
     for file in directory.rglob("*"):

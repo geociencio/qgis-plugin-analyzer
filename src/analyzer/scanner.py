@@ -99,8 +99,8 @@ def init_worker(context: dict[str, Any]) -> None:
 
 
 def analyze_module_worker(
-    py_file: pathlib.Path,
-    project_path: pathlib.Path | None = None,
+    py_file: pathlib.Path | str,
+    project_path: pathlib.Path | str | None = None,
     cached_data: dict[str, Any] | None = None,
     rules_config: dict[str, Any] | None = None,
     scope: str = "all",
@@ -108,7 +108,7 @@ def analyze_module_worker(
     """Worker function for module analysis, intended for parallel execution.
 
     Args:
-        py_file: Path to the Python file to analyze.
+        py_file: Path to the Python file to analyze (``str`` or ``pathlib.Path``).
         project_path: Root path of the project. If missing, uses shared context.
         cached_data: Optional previously cached analysis results.
         rules_config: Optional rule configuration overrides. If missing, uses shared context.
@@ -128,6 +128,10 @@ def analyze_module_worker(
 
         if not p_path:
             return None
+
+        # Normalize boundary inputs so callers may pass either str or Path.
+        p_path = pathlib.Path(p_path)
+        py_file = pathlib.Path(py_file)
 
         rel_path = _get_relative_path(py_file, p_path)
         content = _read_file_content(py_file)
@@ -275,10 +279,11 @@ def _collect_security_issues(tree: ast.AST, content: str, rel_path: str) -> list
 
 def audit_qgis_standards(
     modules_data: list[ModuleAnalysisResult],
-    project_path: pathlib.Path,
+    project_path: pathlib.Path | str,
     rules_config: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     """Executes a comprehensive QGIS standards audit using regex and AST results."""
+    project_path = pathlib.Path(project_path)
     rules = get_qgis_audit_rules()
     results: dict[str, Any] = {"issues": [], "issues_count": 0}
 
