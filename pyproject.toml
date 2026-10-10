@@ -63,6 +63,10 @@ ignore_missing_imports = true
 check_untyped_defs = true
 disallow_untyped_defs = false # Gradual adoption
 
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
+
 [tool.ruff]
 line-length = 100
 target-version = "py311"

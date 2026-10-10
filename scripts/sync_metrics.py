@@ -48,9 +48,7 @@ def extract_scores() -> dict:
 
 def count_tests() -> dict:
     """Count passing tests via pytest."""
-    result = run_command([
-        "python", "-m", "pytest", "tests/", "-q", "--tb=no"
-    ])
+    result = run_command(["python", "-m", "pytest", "tests/", "-q", "--tb=no"])
     # Parse pytest summary line: "87 passed in 0.54s"
     output = result.stdout + result.stderr
     passed = 0
@@ -126,9 +124,7 @@ def main() -> None:
     }
 
     # Replace today's entry if it exists, otherwise append
-    metrics["sessions"] = [
-        s for s in metrics["sessions"] if s["date"] != date.today().isoformat()
-    ]
+    metrics["sessions"] = [s for s in metrics["sessions"] if s["date"] != date.today().isoformat()]
     metrics["sessions"].append(session_entry)
     metrics["sessions"].sort(key=lambda s: s["date"])
 

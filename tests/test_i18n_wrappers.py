@@ -124,7 +124,8 @@ label = QCoreApplication.translate("Ctx", format_value("Hello World"))
 """
         issues = _get_i18n_issues(code)
         self.assertEqual(
-            issues, [],
+            issues,
+            [],
             "Strings inside translate() helpers are still in the translation pipeline",
         )
 
@@ -152,10 +153,10 @@ y = "Forgotten translation"
 """
         issues = _get_i18n_issues(code)
         strings = _get_i18n_strings(issues)
-        self.assertIn("Forgotten translation", strings,
-                       "String after translate() should still be flagged")
-        self.assertNotIn("Hello World", strings,
-                          "String inside translate() should NOT be flagged")
+        self.assertIn(
+            "Forgotten translation", strings, "String after translate() should still be flagged"
+        )
+        self.assertNotIn("Hello World", strings, "String inside translate() should NOT be flagged")
 
 
 if __name__ == "__main__":
