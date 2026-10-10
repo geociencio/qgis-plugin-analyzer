@@ -85,7 +85,9 @@ git ls-files | grep -E '(^|/)(\.ai_context_cache\.json|\.analyzer_state\.json|\.
 
 ### 1.1 Opt-out `# noqa: <CODE>` transversal
 Hoy solo `i18n_visitor.py:309` honra `# no-i18n`/`# noqa`. El resto de reglas
-(`SIGNAL_LEAK`, `MISSING_DOCSTRING`, `MISSING_TYPE_HINTS`, …) no tienen supresión.
+(`MISSING_DOCSTRING`, `MISSING_TYPE_HINTS`, `SPATIAL_INDEX`, …) no tienen supresión.
+(Nota: `SIGNAL_LEAK` citado en la versión previa **no** es un rule id real; los
+demostrativos válidos son `MISSING_DOCSTRING`/`MISSING_TYPE_HINTS`.)
 - Extraer un detector de líneas `# noqa[: CODE]` (tokenize) reutilizable. El módulo
   hermano a imitar es `../../ai-context-core/src/ai_context_core/analyzer/visitors/noqa.py`
   (proyecto externo, ruta relativa a este repo), pero **es específico de F401**;
@@ -96,10 +98,13 @@ Hoy solo `i18n_visitor.py:309` honra `# no-i18n`/`# noqa`. El resto de reglas
   regla": `BaseVisitor` (`base.py:13-30`) no expone `lines` y propagarlo a todos los
   visitors añade acoplamiento. Las líneas ya están pre-cargadas en el scanner
   (`scanner.py:150`), por lo que no hay I/O nuevo (respeta "sin I/O en visitors").
-- Cubrir `# noqa` (todas) y `# noqa: CODE` (código concreto), preservando el
-  comportamiento actual de `# no-i18n` en `i18n_visitor.py:309`.
-- Añadir test dedicado (p. ej. `tests/test_noqa_suppression.py`): `# noqa: SIGNAL_LEAK`
-  suprime solo esa regla y no otras.
+- [DECIDIDO 2026-10-10] `# noqa` desnudo **suprime todas** las reglas de esa línea
+  (compatible con ruff y con el comportamiento i18n actual); `# noqa: CODE` suprime
+  solo las reglas nombradas. Se preserva `# no-i18n` en `i18n_visitor.py:309`.
+- Detector reutilizable en `src/analyzer/visitors/noqa.py`
+  (`collect_noqa_directives`, basado en `tokenize`, ignora `# noqa` dentro de strings).
+- Test dedicado `tests/test_noqa_suppression.py`: `# noqa: MISSING_TYPE_HINTS`
+  suprime solo esa regla (no `MISSING_DOCSTRING`); `# noqa` desnudo suprime toda la línea.
 
 ### 1.2 Audit de ruff fiable
 `engine.py:128` (`run_ruff_audit`) ejecuta `ruff` desde el PATH y, ante fallo,

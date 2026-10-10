@@ -6,6 +6,7 @@ from typing import Any
 from .i18n_visitor import I18nVisitor, collect_docstring_lines
 from .imports_visitor import ImportsVisitor
 from .metrics_visitor import MetricsVisitor
+from .noqa import collect_noqa_directives
 from .qgis_rules_visitor import QGISRulesVisitor
 from .qt_transition_visitor import QtTransitionVisitor
 from .safety_visitor import SafetyVisitor
@@ -45,6 +46,8 @@ class CompositeVisitor(ast.NodeVisitor):
         self.rel_path = rel_path
         self.rules_config = rules_config or {}
         self.scope = scope
+        self.lines = lines or []
+        self._noqa_directives = collect_noqa_directives(self.lines) if self.lines else {}
 
         # Initialize specialized visitors
         self._imports_visitor = ImportsVisitor(rel_path, rules_config, scope)
@@ -153,3 +156,23 @@ class CompositeVisitor(ast.NodeVisitor):
             self.issues = []
             for visitor in self._active_visitors:
                 self.issues.extend(visitor.issues)
+            if self._noqa_directives:
+                self.issues = [issue for issue in self.issues if not self._is_suppressed(issue)]
+
+    def _is_suppressed(self, issue: dict[str, Any]) -> bool:
+        """Checks whether an issue is suppressed by an inline ``# noqa`` comment.
+
+        Args:
+            issue: An aggregated issue dictionary (uses ``line`` and ``type``).
+
+        Returns:
+            True if a ``# noqa`` directive on the issue's line covers it.
+        """
+        line = issue.get("line")
+        if not isinstance(line, int) or line not in self._noqa_directives:
+            return False
+
+        codes = self._noqa_directives[line]
+        if codes is None:
+            return True
+        return str(issue.get("type", "")) in codes
