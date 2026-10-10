@@ -100,16 +100,16 @@ Motor de análisis estático y auto-fix para plugins de QGIS (PyQGIS). Combina r
 - **Classes**: 0
 - **Average Complexity**: 0.0
 - **Avg Maintenance Index**: 0.0
-- **Most Complex Modules**: src/analyzer/visitors/standards_visitor.py, src/analyzer/commands.py, src/analyzer/utils/ast_utils.py
+- **Most Complex Modules**: src/analyzer/commands.py, src/analyzer/visitors/standards_visitor.py, src/analyzer/utils/ast_utils.py
 
 ## 🏗️ DETECTED PATTERNS
 ### Decorator
-- **register** in `src/analyzer/security_checker.py` (50%)
-  - _Evidence: Function contains and returns inner 'decorator'_
 - **register** in `src/analyzer/fixer.py` (50%)
   - _Evidence: Function contains and returns inner 'decorator'_
 - **create_ast_handler** in `src/analyzer/fixer.py` (50%)
   - _Evidence: Function contains and returns inner 'handler'_
+- **register** in `src/analyzer/security_checker.py` (50%)
+  - _Evidence: Function contains and returns inner 'decorator'_
 
 ## 🔗 PRIMARY DEPENDENCIES
 ### Third Party (most frequent):
@@ -134,7 +134,7 @@ Motor de análisis estático y auto-fix para plugins de QGIS (PyQGIS). Combina r
 - **src/analyzer/models/__init__.py**: analysis_models.ModuleAnalysis, analysis_models.ProjectContext
 - **src/analyzer/reporters/__init__.py**: html_reporter.generate_html_report, markdown_reporter.generate_markdown_summary, markdown_reporter.save_json_context
 - **src/analyzer/rules/__init__.py**: modernization_rules.get_modernization_rules, qgis_rules.I18N_METHODS, qgis_rules.get_qgis_audit_rules
-- **src/analyzer/visitors/__init__.py**: i18n_visitor.I18nVisitor, qgis_rules_visitor.QGISRulesVisitor, safety_visitor.SafetyVisitor
+- **src/analyzer/utils/__init__.py**: ast_utils.calculate_complexity, ast_utils.calculate_module_complexity, ast_utils.check_main_guard, ast_utils.extract_classes_from_ast, ast_utils.extract_functions_from_ast
 
 ## 🕸️  DEPENDENCY STRUCTURE
 - **Nodes**: 54
@@ -145,58 +145,59 @@ Motor de análisis estático y auto-fix para plugins de QGIS (PyQGIS). Combina r
 ```mermaid
 graph TD
     classDef module fill:#f9f,stroke:#333,stroke-width:2px;
-    init
-    class init module;
-    logging_utils
-    class logging_utils module;
-    init
-    class init module;
-    init
-    class init module;
-    imports_visitor
-    class imports_visitor module;
-    init
-    class init module;
-    summary
-    class summary module;
-    init
-    class init module;
-    main
-    class main module;
-    serve
-    class serve module;
-    init
-    class init module;
-    init
-    class init module;
-    security
-    class security module;
-    init
-    class init module;
+    base
+    class base module;
     list_rules
     class list_rules module;
-    graph
-    class graph module;
-    qgis_rules_visitor
-    class qgis_rules_visitor module;
+    serve
+    class serve module;
+    app
+    class app module;
+    aggregators
+    class aggregators module;
+    security
+    class security module;
+    main
+    class main module;
+    summary
+    class summary module;
+    engine
+    class engine module;
     init
     class init module;
-    fix
-    class fix module;
+    analyze
+    class analyze module;
+    commands
+    class commands module;
+    init
+    class init module;
     version
     class version module;
+    fix
+    class fix module;
+    init
+    class init module;
+    init
+    class init module;
+    graph
+    class graph module;
+    init
+    class init module;
+    fixer
+    class fixer module;
 ```
 
 ## 💡 OPTIMIZATION RECOMMENDATIONS
-### src/analyzer/visitors/qt_transition_visitor.py
+### src/analyzer/commands.py
 - **complexity_refactoring**: Consider breaking down large logic
-### src/analyzer/visitors/safety_visitor.py
+### src/analyzer/engine.py
 - **complexity_refactoring**: Consider breaking down large logic
-### src/analyzer/visitors/standards_visitor.py
+- **module_too_large**: Large module (472 lines)
+### src/analyzer/fixer.py
 - **complexity_refactoring**: Consider breaking down large logic
-### src/analyzer/utils/ast_utils.py
+### src/analyzer/reporters/html_reporter.py
 - **complexity_refactoring**: Consider breaking down large logic
-### src/analyzer/utils/path_utils.py
+### src/analyzer/reporters/markdown_reporter.py
 - **complexity_refactoring**: Consider breaking down large logic
 
 ## 🔄 GIT AND EVOLUTION
@@ -207,7 +208,7 @@ graph TD
 - `src/analyzer/validators.py` (15 commits)
 - `src/analyzer/utils.py` (14 commits)
 ### Recent Churn (30 days):
-- Total lines changed: 5104
+- Total lines changed: 13338
 
 ## 🔑 PROJECT KEYWORDS
 - **Technologies**: .json, .md, .py, .sample, .log, .tag, .yml, .toml

@@ -1,5 +1,13 @@
 # Development Log
 
+## [2026-10-10] Agentic Forge Overlay Alignment
+- Aligned the project overlay with `ai-context-core` (`v5.1.0`), keeping the framework pin at `v1.2.0` (`2de22cf`).
+- Added 4 overlay skills under `.agent-state/skills/`: `tech-stack`, `debug-specialist`, `skill-authoring`, `release-qgis-plugin-analyzer`.
+- `release-qgis-plugin-analyzer` keeps `mypy` and uses **2** version sites (`pyproject.toml` + `uv.lock`; runtime version is dynamic).
+- `AGENTS.md`: overlay skills table updated (6 skills here) and documented `forge.toml [project].analyzer_command` as the self-analysis hook.
+- `docs/AGENTIC_FORGE_ADOPTION.md` §6/§7 updated (ai-context-core = migrated; qgis-plugin-manager pending).
+- Validation: `forge.py validate` → 15 skills (9 framework + 6 overlay), 14 workflows.
+
 ## [2026-10-08] Agentic Forge Adoption (F1–F5)
 - Adopted the `agentic-forge` framework (Codeberg, `v1.2.0`) as a git submodule at `.agent/`.
 - Moved project-owned state to `.agent-state/` (memory, history, `task.md`, `next_steps.md`) and overlay skills (`domain-logic`, `project-context`).

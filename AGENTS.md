@@ -193,6 +193,10 @@ Skills live in `.agent/skills/*/SKILL.md` (framework) and `.agent-state/skills/*
 | :--- | :--- |
 | [domain-logic](.agent-state/skills/domain-logic/SKILL.md) | Analysis rules, 3-level validation, and the I18nVisitor heuristic. |
 | [project-context](.agent-state/skills/project-context/SKILL.md) | Purpose, architecture, and structure of qgis-plugin-analyzer. |
+| [tech-stack](.agent-state/skills/tech-stack/SKILL.md) | Toolchain, dependency management with uv, and quality tools. |
+| [debug-specialist](.agent-state/skills/debug-specialist/SKILL.md) | Systematic bug resolution via the scientific method. |
+| [skill-authoring](.agent-state/skills/skill-authoring/SKILL.md) | Designing new agent skills. |
+| [release-qgis-plugin-analyzer](.agent-state/skills/release-qgis-plugin-analyzer/SKILL.md) | Project-specific release overlays (2 version sites, keeps mypy). |
 
 ---
 
@@ -229,6 +233,7 @@ Policy: `.agent-state/memory/memory_policy.md`. Lessons older than 90 days that 
 ## 🧩 Paths & Configuration
 
 - `forge.toml` declares `[forge].framework = ".agent"` and `[forge].state = ".agent-state"`.
+- `forge.toml [project].analyzer_command` (`uv run qgis-analyzer analyze . --max-cc 15`) is the intended self-analysis hook for the framework workflows (`/start-session` quick scan, `/audit-package`).
 - Framework content (skills, workflows, tooling) lives in the `.agent/` git submodule (`agentic-forge`).
 - Project-owned state and overlay skills live in `.agent-state/`, never in the submodule.
 

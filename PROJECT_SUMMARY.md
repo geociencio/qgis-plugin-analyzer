@@ -1,5 +1,5 @@
 # PROJECT SUMMARY - qgis_plugin_analyzer
-Analysis Date: 2026-09-14 22:10:33
+Analysis Date: 2026-09-19 17:49:11
 Analyzer Version: 3.1.1 (Ai-Context-Core)
 
 ## 📊 KEY METRICS
@@ -217,22 +217,23 @@ Analyzer Version: 3.1.1 (Ai-Context-Core)
 ## 🚨 CRITICAL ISSUES
 ### 🔒 Security Issues:
 - **src/analyzer/__init__.py**: 1 issues (Max: HIGH)
+- **src/analyzer/cli/app.py**: 1 issues (Max: HIGH)
 - **src/analyzer/cli/commands/serve.py**: 1 issues (Max: HIGH)
-- **src/analyzer/utils/config_utils.py**: 1 issues (Max: HIGH)
 
 ## 💡 MAIN RECOMMENDATIONS
-### src/analyzer/visitors/qt_transition_visitor.py
+### src/analyzer/commands.py
 - Consider breaking down large logic
-### src/analyzer/visitors/safety_visitor.py
+### src/analyzer/engine.py
 - Consider breaking down large logic
-### src/analyzer/visitors/standards_visitor.py
+- Large module (472 lines)
+### src/analyzer/fixer.py
 - Consider breaking down large logic
 
 ## 🏗️ DESIGN PATTERNS
 ### Decorator
-- **register** in `src/analyzer/security_checker.py` (50%)
 - **register** in `src/analyzer/fixer.py` (50%)
 - **create_ast_handler** in `src/analyzer/fixer.py` (50%)
+- **register** in `src/analyzer/security_checker.py` (50%)
 
 ## 📝 ARCHITECTURE NOTES
 # Cerebro del Proyecto: qgis-plugin-analyzer
@@ -274,10 +275,10 @@ Motor de análisis estático y auto-fix para plugins de QGIS (PyQGIS). Combina r
 
 ## 🔄 GIT ANALYSIS
 ### Code Churn (last 30 days)
-- **Files Changed**: 116
-- **Additions**: +3704
-- **Deletions**: -1400
-- **Total Churn**: 5104
+- **Files Changed**: 127
+- **Additions**: +8095
+- **Deletions**: -5243
+- **Total Churn**: 13338
 
 ### 🔥 Hotspots
 - `src/analyzer/engine.py`: 36 commits

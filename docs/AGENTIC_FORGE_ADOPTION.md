@@ -126,17 +126,21 @@ Committed as `4b10b11`.
 ## 6. Current state
 
 - `agentic-forge`: `v1.2.0` (generic core + `scaffold/qgis`).
-- `qgis-plugin-analyzer`: migrated (pilot validated).
+- `qgis-plugin-analyzer`: migrated (pilot validated); **overlay aligned with
+  `ai-context-core`** (2026-10-10): 6 overlay skills = `domain-logic`,
+  `project-context`, `tech-stack`, `debug-specialist`, `skill-authoring`,
+  `release-qgis-plugin-analyzer` (15 skills = 9 framework + 6 overlay).
+- `ai-context-core`: **migrated** (`v5.1.0`, 2026-10-10).
 - `qgis-plugin-manager`: **pending** (Gen 5 → Gen 8).
-- `ai-context-core`: **pending** (Gen 8, no forge).
 
 ---
 
 ## 7. Next steps (Part C/D)
 
-1. Replicate the template on `ai-context-core` (Gen 8 → forge submodule + overlay).
+1. ~~Replicate the template on `ai-context-core`~~ ✅ done (`v5.1.0`).
 2. Replicate on `qgis-plugin-manager` (Gen 5 → forge, the largest lift).
-3. Add a cross-repo gate confirming all three pin the same framework version.
+3. Add a cross-repo gate confirming all three pin the same framework version
+   (`2de22cf` = `v1.2.0`).
 
 ---
 
