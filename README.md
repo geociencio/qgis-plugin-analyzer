@@ -14,18 +14,18 @@
 
 **Quality Metrics:**
 
-![Module Stability](https://img.shields.io/badge/Module%20Stability-54.8%2F100-yellow?style=flat-square)
-![Maintainability](https://img.shields.io/badge/Maintainability-88.1%2F100-green?style=flat-square)
+![Module Stability](https://img.shields.io/badge/Module%20Stability-54.5%2F100-yellow?style=flat-square)
+![Maintainability](https://img.shields.io/badge/Maintainability-86.6%2F100-green?style=flat-square)
 ![Security Score](https://img.shields.io/badge/Security--Bandit-100.0%2F100-brightgreen?style=flat-square)
-![Type Coverage](https://img.shields.io/badge/Type%20Hints-99.1%25-brightgreen?style=flat-square)
-![Docstring Coverage](https://img.shields.io/badge/Docstrings-92.6%25-brightgreen?style=flat-square)
-![Tests](https://img.shields.io/badge/Tests-126%2F126%20passing-brightgreen?style=flat-square&logo=pytest)
+![Type Coverage](https://img.shields.io/badge/Type%20Hints-99.2%25-brightgreen?style=flat-square)
+![Docstring Coverage](https://img.shields.io/badge/Docstrings-93.0%25-brightgreen?style=flat-square)
+![Tests](https://img.shields.io/badge/Tests-161%2F161%20passing-brightgreen?style=flat-square&logo=pytest)
 
 The **QGIS Plugin Analyzer** is a static analysis tool designed specifically for QGIS (PyQGIS) plugin developers. Its goal is to elevate plugin quality by ensuring they follow community best practices and are optimized for AI-assisted development.
 
 ## ✨ Main Features
 
-- **Quality Blindage**: Comprehensive test suite with 76% global coverage and >95% on core AST visitors.
+- **Quality Blindage**: Comprehensive test suite with 75% global coverage and >95% on core AST visitors.
 - **Gen 6 Architecture**: Modernized agentic system with observability, memory lifecycle, and CodeWhale runtime bridge.
 - **Scaffold System**: Integrated blueprints for standardizing QGIS and mining plugin generation.
 - **Security Core (Bandit-inspired)**: Professional vulnerability scanning detecting `eval`, `exec`, shell injections, and SQL injection risks.
@@ -49,18 +49,19 @@ The **QGIS Plugin Analyzer** is a static analysis tool designed specifically for
 - **AI-Ready**: Generates structured summaries and optimized contexts for LLMs.
 - **Zero Runtime Dependencies**: Works using only the Python standard library (Ruff as an external tool).
 
-## 🆕 What's New in v1.14.0
+## 🆕 What's New in v1.15.0
 
-**Analyzer Generalization** - The analyzer now audits *any* QGIS plugin with a portable AST-based i18n rule (recognizing `self.tr()` and `QCoreApplication.translate()`, plus inline `# no-i18n`), a `--max-cc N` complexity gate for CI, and 11 Qt6 migration rules matching `flake8-qgis` `QGS4xx`.
+**Repo Hygiene & Hardening** - A cleaner repository, a hardened CLI, a real CI pipeline and new analysis coverage for design patterns, anti-patterns, Halstead metrics and generic optimizations.
 
-- 🌐 **AST-based i18n** - Replaced the string heuristic with a precise AST rule; no more false positives on translated strings.
-- 🚦 **`--max-cc` gate** - Fail CI on excessive cyclomatic complexity.
-- 🆙 **Qt6 migration rules** - Drop-in parity with `flake8-qgis` `QGS4xx`.
-- 🐍 **Python 3.11** - Raised the floor and dropped the hand-rolled TOML parser for stdlib `tomllib`.
-- 📦 **CI output contract** - `--json`, `--include-content`, versioned `project_context.json`.
-- 🕒 **Stale-cache detection** - `summary` warns when results are outdated.
+- 🧹 **Repo hygiene** - Generated artifacts are no longer tracked; `.gitignore` extended.
+- 🚫 **Transversal `# noqa`** - Suppress any rule inline with `# noqa` or `# noqa: RULE_ID`.
+- 🧩 **Patterns & anti-patterns** - Detect `singleton`/`factory`/`observer`/`strategy`/`decorator` plus `GOD_OBJECT`, `SPAGHETTI_CODE`, `MAGIC_NUMBER`, `DEAD_CODE`.
+- 📐 **Halstead + optimizations** - Per-module Halstead metrics and `module_too_large` / `complexity_refactoring` suggestions.
+- 🔧 **Configurable workers** - `--workers N` (and profile `workers`) with file batching.
+- 🤖 **Reliable ruff audit** - Runs via `sys.executable -m ruff` and flags `tool_unavailable`.
+- ✅ **CI quality gate** - `ruff`, `mypy`, `pytest` (coverage floor 70%) and the `--max-cc 15` self-gate on Python 3.11–3.13.
 
-[**📖 Full Release Notes**](docs/releases/notes/v1.14.0.md) | [**🗺️ CLI Commands Roadmap**](docs/research/CLI_COMMANDS_ROADMAP.md)
+[**📖 Full Release Notes**](docs/releases/notes/v1.15.0.md) | [**🗺️ CLI Commands Roadmap**](docs/research/CLI_COMMANDS_ROADMAP.md)
 
 ## ⚖️ Why use this Analyzer? (Comparison)
 
