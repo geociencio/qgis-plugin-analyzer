@@ -5,6 +5,20 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.16.0] - 2026-10-11
+
+### Added
+- **Incremental analysis cache** (`--no-cache` to disable): per-file and content-hash keyed, invalidated by the analyzer version + source fingerprint, the resolved project path and the effective config. Repeated runs reuse unchanged modules; results are returned sorted by path for deterministic output. New `src/analyzer/module_cache.py`.
+- **Unified rule registry + generated `RULES.md`**: one catalog (`src/analyzer/rules/`) is the source of truth for all **51** rules (regex + AST/visitor + security + secrets + patterns). `list-rules` lists them all grouped by category and gains `--format text|markdown`; `scripts/generate_rules_md.py` renders `RULES.md`, guarded against drift by tests.
+- Security/secret rule ids are now enumerable (`security_check(rule_ids=…)` + `SecurityRegistry.rule_ids()`, `SecretScanner.rule_ids()`).
+
+### Changed
+- **Emitted severity now comes from the rule catalog** (per-rule high/medium/low) instead of defaulting every AST issue to `medium`; a profile `rules` entry still overrides per rule.
+- **`MISSING_I18N` is no longer emitted for `generic` (non-Qt) projects** under the default `all` scope (an explicit `analyze i18n` still runs it).
+- **`list-rules` now covers all 51 rules** (previously the 7 regex QGIS rules only).
+- `security` now applies config overrides (`--strict`, `--no-cache`); the `complexity_refactoring` optimization is `medium` priority (was `high`).
+- Modules over 400 lines split (`engine`/`fixer`/`summary_reporter`/`commands`); self-analysis noise removed (all missing docstrings/type hints fixed, magic numbers extracted, `NON_PYTHONIC_LOOP` narrowed to index management).
+
 ## [1.15.2] - 2026-10-11
 
 ### Fixed
