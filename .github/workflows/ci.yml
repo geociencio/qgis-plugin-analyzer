@@ -42,7 +42,7 @@ jobs:
       - name: Tests (pytest + coverage)
         run: >
           uv run pytest -q
-          --cov=analyzer --cov-report=term-missing --cov-fail-under=70
+          --cov=analyzer --cov-report=term-missing --cov-fail-under=80
 
       - name: Self-analysis complexity gate (--max-cc 15)
         run: uv run qgis-analyzer analyze . --max-cc 15
