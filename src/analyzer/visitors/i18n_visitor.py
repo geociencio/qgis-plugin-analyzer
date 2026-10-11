@@ -271,43 +271,14 @@ class I18nVisitor(BaseVisitor):
             return
 
         val = node.value.strip()
-
-        # 1. Empty, very short, or numeric-only strings.
-        if len(val) <= 1 or val.replace(".", "").replace("-", "").isdigit():
+        if not self._looks_translatable(val):
             return
-
-        # 2. This line belongs to a docstring.
         if node.lineno in self.docstring_lines:
             return
-
-        # 3. Exact safe strings.
-        if val in self.safe_exact_strings:
+        if val in self.safe_exact_strings or is_technical_string(val, self.technical_patterns):
             return
-
-        # 4. Technical/non-translatable pattern match.
-        if is_technical_string(val, self.technical_patterns):
+        if self._in_safe_call_wrapper() or self._has_inline_exclusion(node.lineno):
             return
-
-        # 5. String must look user-facing: contain a letter and either a space
-        #    or trailing label punctuation (e.g. 'Name:', 'Save', 'Open...').
-        has_spaces = " " in val
-        has_alpha = any(c.isalpha() for c in val)
-        if not has_alpha:
-            return
-        if not (has_spaces or val.endswith((":", ".", "!", "?"))):
-            return
-
-        # 6. Check if the string is inside a safe call wrapper.
-        for active_call in reversed(self._current_call_stack):
-            if any(active_call.endswith(suffix) for suffix in self.safe_call_suffixes):
-                return
-
-        # 7. Check for inline exclusion comments on the source line.
-        line_num = node.lineno
-        if 1 <= line_num <= len(self.lines):
-            line_content = self.lines[line_num - 1]
-            if "# no-i18n" in line_content or "# noqa" in line_content:
-                return
 
         self._report_issue(
             "MISSING_I18N",
@@ -315,6 +286,45 @@ class I18nVisitor(BaseVisitor):
             f"Untranslated user-facing string: '{val}'. "
             "Use self.tr() or QCoreApplication.translate().",
         )
+
+    @staticmethod
+    def _looks_translatable(val: str) -> bool:
+        """Returns True when a string looks like user-facing text.
+
+        Args:
+            val: The stripped string constant value.
+
+        Returns:
+            True if the string has a letter and either a space or trailing
+            label punctuation (e.g. ``Name:``, ``Save``, ``Open...``).
+        """
+        if len(val) <= 1 or val.replace(".", "").replace("-", "").isdigit():
+            return False
+        if not any(char.isalpha() for char in val):
+            return False
+        return " " in val or val.endswith((":", ".", "!", "?"))
+
+    def _in_safe_call_wrapper(self) -> bool:
+        """Returns True when inside a recognized translation wrapper call."""
+        return any(
+            active_call.endswith(suffix)
+            for active_call in reversed(self._current_call_stack)
+            for suffix in self.safe_call_suffixes
+        )
+
+    def _has_inline_exclusion(self, lineno: int) -> bool:
+        """Returns True when the source line carries an inline exclusion.
+
+        Args:
+            lineno: 1-indexed source line number.
+
+        Returns:
+            True if the line has ``# no-i18n`` or ``# noqa``.
+        """
+        if 1 <= lineno <= len(self.lines):
+            line_content = self.lines[lineno - 1]
+            return "# no-i18n" in line_content or "# noqa" in line_content
+        return False
 
     @staticmethod
     def _get_call_name(func: ast.expr) -> str:

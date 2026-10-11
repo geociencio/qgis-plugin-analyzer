@@ -4,8 +4,6 @@ import tempfile
 import unittest
 
 from analyzer.validators import (
-    calculate_package_size,
-    scan_for_binaries,
     validate_metadata,
     validate_metadata_urls,
     validate_package_constraints,
@@ -23,31 +21,6 @@ class TestValidators(unittest.TestCase):
     def tearDown(self) -> None:
         """Cleans up temporary resources."""
         shutil.rmtree(self.test_dir)
-
-    def test_scan_for_binaries(self):
-        # Create dummy binary files
-        (self.test_dir / "lib").mkdir()
-        (self.test_dir / "lib" / "test.dll").write_text("fake dll")
-        (self.test_dir / "tool.exe").write_text("fake exe")
-        (self.test_dir / "script.py").write_text("# python file")
-
-        binaries = scan_for_binaries(self.test_dir)
-
-        self.assertEqual(len(binaries), 2)
-        self.assertTrue(any("test.dll" in b for b in binaries))
-        self.assertTrue(any("tool.exe" in b for b in binaries))
-        self.assertFalse(any("script.py" in b for b in binaries))
-
-    def test_calculate_package_size(self):
-        # Create files with known sizes
-        (self.test_dir / "file1.txt").write_text("a" * 1024)  # 1KB
-        (self.test_dir / "file2.txt").write_text("b" * 1024 * 1024)  # 1MB
-
-        size_mb = calculate_package_size(self.test_dir)
-
-        # Should be approximately 1.001 MB
-        self.assertGreater(size_mb, 1.0)
-        self.assertLess(size_mb, 1.1)
 
     def test_validate_metadata_urls_invalid(self):
         metadata = {

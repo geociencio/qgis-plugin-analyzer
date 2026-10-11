@@ -369,62 +369,21 @@ class ProjectAnalyzer:
         files = discovery["python_files"]
         rules_config = self.config.rules
 
-        # Refine Project Type based on discovered metadata
-        if self.config.project_type == "auto":
-            new_type = "qgis" if discovery["has_metadata"] else "generic"
-            if new_type != self.project_type:
-                logger.info(f"📁 Project type updated to: {new_type.upper()}")
-                self.project_type = new_type
+        self._refine_project_type(discovery)
 
-        # 1. Parallel analysis (AST/Visitors)
-        # We pass the scope to filter which visitors run inside the workers
-        modules_data = []
-        if scope in ["all", "i18n", "security", "performance", "architecture"]:
-            modules_data = self._run_parallel_analysis(files, rules_config, scope)
+        # 1. Parallel analysis (AST/Visitors) and 2. Ruff audit
+        modules_data = self._maybe_parallel_analysis(files, rules_config, scope)
+        ruff_findings, ruff_metadata = self._collect_ruff(scope)
 
-        # 2. Ruff audit (Generic linting)
-        ruff_findings = []
-        ruff_metadata: dict[str, Any] = {
-            "exit_code": None,
-            "tool_unavailable": False,
-            "command": "",
-        }
-        if scope in ["all", "security", "performance"]:
-            ruff_result = self.run_ruff_audit()
-            ruff_findings = ruff_result["findings"]
-            ruff_metadata = {
-                "exit_code": ruff_result.get("exit_code"),
-                "tool_unavailable": bool(ruff_result.get("tool_unavailable", False)),
-                "command": ruff_result.get("command", ""),
-            }
+        # 3. QGIS-specific checks and 4. Semantic analysis
+        qgis_checks = self._collect_qgis_checks(scope, modules_data, rules_config, discovery)
+        semantic = self._collect_semantic(scope, modules_data)
 
-        # 3. QGIS-specific checks (Metadata, structure, constraints)
-        qgis_checks: QGISChecksResult | None = None
-        if self.project_type == "qgis" and scope in ["all", "metadata", "performance"]:
-            qgis_checks = self._run_qgis_specific_checks(modules_data, rules_config, discovery)
-
-        # 4. Semantic Analysis (Dependencies, coupling, cycles)
-        semantic: SemanticAnalysisResult = {
-            "cycles": [],
-            "graph": {},
-            "metrics": {},
-            "missing_resources": [],
-        }
-        if scope in ["all", "architecture"]:
-            semantic = self._run_semantic_analysis(modules_data)
-
-        # Calculate scores via ScoringEngine
         scores = self.scoring.calculate_project_scores(
-            modules_data,
-            ruff_findings,
-            qgis_checks,
-            semantic,
+            modules_data, ruff_findings, qgis_checks, semantic
         )
-
-        # Filter issues by scope before building final results
         modules_data = self._filter_issues_by_scope(modules_data, scope)
 
-        # Build results
         analyses = build_analysis_results(
             self.project_path,
             self.project_type,
@@ -435,31 +394,134 @@ class ProjectAnalyzer:
             qgis_checks,
             semantic,
         )
-
         analyses["ruff_metadata"] = ruff_metadata
 
-        # Save reports
         save_reports(analyses, self.output_dir, self.config.generate_html)
-
         logger.info(f"✅ Analysis completed. Reports in: {self.output_dir}")
 
-        # Fail on error if strict mode is on
-        if self.config.fail_on_error and self.project_type == "qgis" and qgis_checks:
-            compliance = qgis_checks["compliance"]
-            structure = qgis_checks["structure"]
-            metadata = qgis_checks["metadata"]
-            if (
-                int(compliance.get("issues_count", 0)) > 0
-                or not structure.get("is_valid", True)
-                or not metadata.get("is_valid", True)
-                or not qgis_checks["package_constraints"].get("is_valid", True)
-            ):
-                logger.error(
-                    "❌ Strict Mode: Critical QGIS compliance issues detected. Failing analysis."
-                )
-                return False
+        return not self._strict_gate_failed(qgis_checks)
 
-        return True
+    def _refine_project_type(self, discovery: dict[str, Any]) -> None:
+        """Refines the auto-detected project type from discovery metadata.
+
+        Args:
+            discovery: Results from :func:`discover_project_files`.
+        """
+        if self.config.project_type != "auto":
+            return
+        new_type = "qgis" if discovery["has_metadata"] else "generic"
+        if new_type != self.project_type:
+            logger.info(f"📁 Project type updated to: {new_type.upper()}")
+            self.project_type = new_type
+
+    def _maybe_parallel_analysis(
+        self, files: list[pathlib.Path], rules_config: dict[str, Any], scope: str
+    ) -> list[ModuleAnalysisResult]:
+        """Runs the parallel AST analysis when the scope requires it.
+
+        Args:
+            files: Python files to analyze.
+            rules_config: Rule-specific configuration overrides.
+            scope: The analysis scope.
+
+        Returns:
+            The list of module analysis results (empty if out of scope).
+        """
+        if scope not in ("all", "i18n", "security", "performance", "architecture"):
+            return []
+        return self._run_parallel_analysis(files, rules_config, scope)
+
+    def _collect_ruff(self, scope: str) -> tuple[list[dict[str, Any]], dict[str, Any]]:
+        """Runs the Ruff audit when the scope requires it.
+
+        Args:
+            scope: The analysis scope.
+
+        Returns:
+            A tuple of (findings, metadata).
+        """
+        metadata: dict[str, Any] = {
+            "exit_code": None,
+            "tool_unavailable": False,
+            "command": "",
+        }
+        if scope not in ("all", "security", "performance"):
+            return [], metadata
+
+        result = self.run_ruff_audit()
+        return (
+            result["findings"],
+            {
+                "exit_code": result.get("exit_code"),
+                "tool_unavailable": bool(result.get("tool_unavailable", False)),
+                "command": result.get("command", ""),
+            },
+        )
+
+    def _collect_qgis_checks(
+        self,
+        scope: str,
+        modules_data: list[ModuleAnalysisResult],
+        rules_config: dict[str, Any],
+        discovery: dict[str, Any],
+    ) -> QGISChecksResult | None:
+        """Runs QGIS-specific checks when the scope and project type require it.
+
+        Args:
+            scope: The analysis scope.
+            modules_data: Analyzed module results.
+            rules_config: Rule-specific configuration overrides.
+            discovery: Results from :func:`discover_project_files`.
+
+        Returns:
+            The QGIS checks result, or None when out of scope.
+        """
+        if self.project_type == "qgis" and scope in ("all", "metadata", "performance"):
+            return self._run_qgis_specific_checks(modules_data, rules_config, discovery)
+        return None
+
+    def _collect_semantic(
+        self, scope: str, modules_data: list[ModuleAnalysisResult]
+    ) -> SemanticAnalysisResult:
+        """Runs semantic analysis when the scope requires it.
+
+        Args:
+            scope: The analysis scope.
+            modules_data: Analyzed module results.
+
+        Returns:
+            The semantic analysis result (empty when out of scope).
+        """
+        if scope in ("all", "architecture"):
+            return self._run_semantic_analysis(modules_data)
+        return {"cycles": [], "graph": {}, "metrics": {}, "missing_resources": []}
+
+    def _strict_gate_failed(self, qgis_checks: QGISChecksResult | None) -> bool:
+        """Evaluates the strict-mode gate for QGIS compliance.
+
+        Args:
+            qgis_checks: The QGIS checks result, if computed.
+
+        Returns:
+            True if strict mode is enabled and critical issues were found.
+        """
+        if not (self.config.fail_on_error and self.project_type == "qgis" and qgis_checks):
+            return False
+
+        compliance = qgis_checks["compliance"]
+        structure = qgis_checks["structure"]
+        metadata = qgis_checks["metadata"]
+        failed = (
+            int(compliance.get("issues_count", 0)) > 0
+            or not structure.get("is_valid", True)
+            or not metadata.get("is_valid", True)
+            or not qgis_checks["package_constraints"].get("is_valid", True)
+        )
+        if failed:
+            logger.error(
+                "❌ Strict Mode: Critical QGIS compliance issues detected. Failing analysis."
+            )
+        return failed
 
     def _filter_issues_by_scope(
         self, modules_data: list[ModuleAnalysisResult], scope: str

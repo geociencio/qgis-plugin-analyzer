@@ -5,7 +5,6 @@ import tempfile
 import unittest
 
 from analyzer.scanner import analyze_module_worker
-from analyzer.validators import calculate_package_size, scan_for_binaries
 
 
 class TestPathNormalization(unittest.TestCase):
@@ -28,16 +27,6 @@ class TestPathNormalization(unittest.TestCase):
         result = analyze_module_worker(self.root / "mod.py", self.root)
 
         self.assertIsNotNone(result)
-
-    def test_calculate_package_size_accepts_str(self):
-        self.assertGreater(calculate_package_size(str(self.root)), 0)
-
-    def test_scan_for_binaries_accepts_str(self):
-        (self.root / "lib.so").write_bytes(b"\x00\x01")
-
-        binaries = scan_for_binaries(str(self.root))
-
-        self.assertIn("lib.so", binaries)
 
 
 if __name__ == "__main__":

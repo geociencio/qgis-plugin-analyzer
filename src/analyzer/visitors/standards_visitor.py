@@ -21,7 +21,7 @@
 """AST visitor for QGIS-specific standards and best practices."""
 
 import ast
-from typing import Any
+from typing import Any, TypeGuard, cast
 
 from .base import BaseVisitor
 
@@ -120,48 +120,46 @@ class StandardsVisitor(BaseVisitor):
         Args:
             node: The for-loop AST node.
         """
-        # SPATIAL_INDEX check
-        if (
-            isinstance(node.iter, ast.Call)
-            and isinstance(node.iter.func, ast.Attribute)
-            and node.iter.func.attr == "getFeatures"
-        ):
-            warn = False
-            if not node.iter.args:
-                warn = True
-            elif len(node.iter.args) == 1:
-                arg = node.iter.args[0]
-                if (
-                    isinstance(arg, ast.Call)
-                    and isinstance(arg.func, ast.Name)
-                    and arg.func.id == "QgsFeatureRequest"
-                ):
-                    if not arg.args and not arg.keywords:
-                        warn = True
-
-            if warn:
-                self._report_issue(
-                    "SPATIAL_INDEX",
-                    node.lineno,
-                    "Iteration over features with getFeatures() and no filter.",
-                    ast.unparse(node.iter),
-                )
-
-        # NON_PYTHONIC_LOOP
-        for body_node in ast.walk(node):
-            if isinstance(body_node, ast.AugAssign) and isinstance(body_node.op, ast.Add):
-                if (
-                    isinstance(body_node.target, ast.Name)
-                    and isinstance(body_node.value, ast.Constant)
-                    and body_node.value.value == 1
-                ):
-                    self._report_issue(
-                        "NON_PYTHONIC_LOOP",
-                        body_node.lineno,
-                        f"Manual counter '{body_node.target.id} += 1' detected inside loop.",
-                        ast.unparse(body_node),
-                    )
+        self._check_spatial_index(node)
+        self._check_non_pythonic_loop(node)
         self.generic_visit(node)
+
+    def _check_spatial_index(self, node: ast.For) -> None:
+        """Flags unfiltered ``getFeatures()`` iteration (SPATIAL_INDEX).
+
+        Args:
+            node: The for-loop AST node.
+        """
+        iter_node = node.iter
+        if not (
+            isinstance(iter_node, ast.Call)
+            and isinstance(iter_node.func, ast.Attribute)
+            and iter_node.func.attr == "getFeatures"
+        ):
+            return
+        if _is_unfiltered_feature_request(iter_node):
+            self._report_issue(
+                "SPATIAL_INDEX",
+                node.lineno,
+                "Iteration over features with getFeatures() and no filter.",
+                ast.unparse(iter_node),
+            )
+
+    def _check_non_pythonic_loop(self, node: ast.For) -> None:
+        """Flags manual ``counter += 1`` accumulation inside loops.
+
+        Args:
+            node: The for-loop AST node.
+        """
+        for body_node in ast.walk(node):
+            if _is_manual_counter_increment(body_node):
+                target = cast(ast.Name, body_node.target)
+                self._report_issue(
+                    "NON_PYTHONIC_LOOP",
+                    body_node.lineno,
+                    f"Manual counter '{target.id} += 1' detected inside loop.",
+                    ast.unparse(body_node),
+                )
 
     def _check_obsolete_api(self, node: ast.Call) -> None:
         """Checks for obsolete API usage.
@@ -283,3 +281,44 @@ class StandardsVisitor(BaseVisitor):
                     "Synchronous network call detected in UI file.",
                     ast.unparse(node),
                 )
+
+
+def _is_unfiltered_feature_request(call: ast.Call) -> bool:
+    """Returns True for a ``getFeatures()`` call without a bounding filter.
+
+    Args:
+        call: The ``getFeatures(...)`` call node.
+
+    Returns:
+        True if no spatial/attribute filter is supplied.
+    """
+    if not call.args:
+        return True
+    if len(call.args) != 1:
+        return False
+    arg = call.args[0]
+    return (
+        isinstance(arg, ast.Call)
+        and isinstance(arg.func, ast.Name)
+        and arg.func.id == "QgsFeatureRequest"
+        and not arg.args
+        and not arg.keywords
+    )
+
+
+def _is_manual_counter_increment(node: ast.AST) -> TypeGuard[ast.AugAssign]:
+    """Returns True for ``name += 1`` counter increments.
+
+    Args:
+        node: A candidate AST node.
+
+    Returns:
+        True if the node is a manual ``+= 1`` on a plain name.
+    """
+    return (
+        isinstance(node, ast.AugAssign)
+        and isinstance(node.op, ast.Add)
+        and isinstance(node.target, ast.Name)
+        and isinstance(node.value, ast.Constant)
+        and node.value.value == 1
+    )
