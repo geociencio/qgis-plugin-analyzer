@@ -15,6 +15,19 @@ See `.agent/memory/memory_policy.md` for the full policy.
 lessons:
 
   # --- ACTIVE LESSONS (< 90 days or not yet in a SKILL.md) ---
+  - date: '2026-10-11'
+    category: AGENTIC_SYSTEM
+    topic: metrics validate scans framework scaffold against project truth
+    lesson: 'forge.py metrics validate walks the whole .agent/ submodule (including
+      scaffold/qgis domain packs and generic skills), so template values (the SecInterp
+      workflow references CC 10 and 763 tests) are compared against this project
+      ground truth (CC 15, 194 tests) and surface as violations. They are framework
+      and domain-pack values, not stale analyzer metrics. Same pattern was documented
+      in the sibling ai-context-core project.'
+    action: 'Treat the 4 scaffold/generic-skill flags as known non-blocking false
+      positives (see next_steps -> Known Issues). The real upstream fix is to exclude
+      scaffold/ from ground-truth checks in agentic-forge, which has no newer release
+      than v1.2.0 (the pinned tag). Do NOT patch the submodule or lower max_cc.'
   - date: '2026-10-10'
     category: ARCHITECTURE
     topic: Decorator-Registered Rules Silently Disabled by a Missing Import

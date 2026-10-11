@@ -19,14 +19,27 @@ on `QDialog.exec()`/attribute calls) plus release-process/agentic docs.
 
 ## How to Resume
 1. Run `/start-session`.
-2. If continuing the release: upload the latest version to PyPI (manual): `uv publish --token <TOKEN>`.
+2. ~~If continuing the release: upload the latest version to PyPI (manual).~~ **DONE** — `1.15.2` (wheel + sdist) is live on PyPI (uploaded 2026-10-11T01:27Z by CI `publish-pypi`).
 
 ## Remaining / Next
-- [ ] **PyPI upload** of the latest release (maintainer, manual).
+- [x] ~~**PyPI upload** of the latest release~~ — complete (verified on PyPI).
 - [ ] Module splits (`engine`/`fixer`/`summary_reporter` > 400 lines) — deferred, medium risk.
 - [ ] **Fase 6** unified rule registry to auto-generate `RULES.md` (`list-rules` only covers regex rules).
 - [ ] Fase 2.2 incremental cache (content hash) + `--no-cache`.
 - [ ] Tune anti-pattern noise (`MAGIC_NUMBER`×35, `SPAGHETTI_CODE`×10 on self-run).
+
+## 🐛 Known Issues
+
+**None blocking** — 194 tests passing; `ruff check` + `mypy src/` clean; self-analysis `--max-cc 15` green (max func CC 13).
+
+- **Metrics validator false positives**: `forge.py metrics validate` flags **4**
+  entries in the `.agent/` framework submodule — `scaffold/qgis/workflows/release-plugin.md`
+  (CC ≤ 10, 763 tests → the SecInterp domain template) and `skills/coding-standards/SKILL.md`
+  ("complexity below 10" → generic guideline). These are template/domain values, not
+  stale analyzer metrics (CC ≤ 15, 194 tests). The validator scans `scaffold/` against
+  this project's ground truth; treat as non-blocking until the framework excludes
+  domain packs from ground-truth checks. Disposition mirrors `ai-context-core`
+  (see `AGENT_LESSONS.md` 2026-10-11). Do **not** patch the submodule or lower `max_cc`.
 
 ## Technical Debt
 - [ ] Self-reported `MISSING_I18N` in the analyzer's own codebase.
