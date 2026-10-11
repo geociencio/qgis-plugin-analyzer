@@ -93,10 +93,17 @@ class CLIApp:
     def _setup_logging(self, args: argparse.Namespace) -> None:
         """Setup logging based on command arguments.
 
+        Only commands that produce reports define ``--output``; commands such as
+        ``version``/``list-rules`` must not create an ``analysis_results``
+        directory as a side effect.
+
         Args:
             args: Parsed command-line arguments.
         """
-        output_dir = pathlib.Path(getattr(args, "output", "./analysis_results")).resolve()
+        output = getattr(args, "output", None)
+        if not output:
+            return
+        output_dir = pathlib.Path(output).resolve()
         output_dir.mkdir(parents=True, exist_ok=True)
         setup_logger(output_dir)
 

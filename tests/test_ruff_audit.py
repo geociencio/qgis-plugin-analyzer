@@ -1,4 +1,5 @@
 import sys
+import tempfile
 import unittest
 from unittest.mock import MagicMock, patch
 
@@ -7,7 +8,7 @@ from analyzer.engine import ProjectAnalyzer
 
 class TestRuffAudit(unittest.TestCase):
     def _analyzer(self) -> ProjectAnalyzer:
-        analyzer = ProjectAnalyzer("/tmp")
+        analyzer = ProjectAnalyzer("/tmp", output_dir=tempfile.mkdtemp())
         analyzer.config = MagicMock(strict=False)
         return analyzer
 

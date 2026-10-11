@@ -9,6 +9,9 @@ plugins follow official QGIS standards and development best practices.
 All rules support inline suppression via `# noqa` (suppress everything on the
 line) or `# noqa: RULE_ID` (suppress a single rule).
 
+The listed severity is the analyzer's default emitted severity; a profile
+`[tool.qgis-analyzer.profiles.<p>.rules]` entry may override it per rule.
+
 ## 1. Internationalization (i18n)
 
 | Rule ID | Severity | Description | Recommendation |

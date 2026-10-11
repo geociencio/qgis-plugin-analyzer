@@ -3,12 +3,15 @@
 import ast
 from typing import Any
 
-from ..rules.registry import KNOWN_RULE_IDS
+from ..rules.registry import KNOWN_RULE_IDS, get_rule
 from ..rules.scopes import SCOPE_RULES
 from ..utils.logging_utils import logger
 
 # Rule ids already warned about (avoids log spam from a single unknown rule).
 _WARNED_RULE_IDS: set[str] = set()
+
+# Profile ``rules`` overrides map to the emitted severity vocabulary.
+_SEVERITY_MAP = {"error": "high", "warning": "medium", "info": "low"}
 
 
 class BaseVisitor(ast.NodeVisitor):
@@ -89,21 +92,26 @@ class BaseVisitor(ast.NodeVisitor):
         return bool(severity != "ignore")
 
     def _get_severity(self, rule_id: str) -> str:
-        """Get configured severity for rule (maps to 'high', 'medium', 'low').
+        """Get the emitted severity for a rule.
+
+        Precedence: an explicit ``error``/``warning``/``info`` override in the
+        profile ``rules`` config wins; otherwise the rule's catalog severity is
+        used; unknown rules default to ``medium``.
 
         Args:
             rule_id: The rule identifier.
 
         Returns:
-            The severity level as a string.
+            The severity level (``high``, ``medium`` or ``low``).
         """
-        config_severity = self.rules_config.get(rule_id, "warning")
-        severity_map = {
-            "error": "high",
-            "warning": "medium",
-            "info": "low",
-        }
-        return severity_map.get(config_severity, "medium")
+        configured = self.rules_config.get(rule_id)
+        if isinstance(configured, str) and configured in _SEVERITY_MAP:
+            return _SEVERITY_MAP[configured]
+
+        rule = get_rule(rule_id)
+        if rule is not None:
+            return rule.severity
+        return "medium"
 
     def _report_issue(self, rule_id: str, line: int, message: str, code: str = "") -> None:
         """Helper to report an issue if enabled.

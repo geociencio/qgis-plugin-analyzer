@@ -228,6 +228,11 @@ class ProjectAnalyzer:
 
         self._refine_project_type(discovery)
 
+        # Qt-specific ``MISSING_I18N`` is noise under "all" for generic projects;
+        # an explicit ``analyze i18n`` and any profile override still win.
+        if self.project_type == "generic":
+            rules_config = {"MISSING_I18N": "ignore", **rules_config}
+
         # 1. Parallel analysis (AST/Visitors) and 2. Ruff audit
         modules_data = self._maybe_parallel_analysis(files, rules_config, scope)
         ruff_findings, ruff_metadata = self._collect_ruff(scope)

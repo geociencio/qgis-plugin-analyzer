@@ -1,3 +1,4 @@
+import tempfile
 import unittest
 from typing import Any
 from unittest.mock import MagicMock, patch
@@ -64,7 +65,7 @@ class TestScoring(unittest.TestCase):
         # Setup mock
         mock_run.return_value = MagicMock(stdout="[]", stderr="", returncode=0)
 
-        analyzer = ProjectAnalyzer("/tmp")
+        analyzer = ProjectAnalyzer("/tmp", output_dir=tempfile.mkdtemp())
         analyzer.config = MagicMock(strict=True)
 
         analyzer.run_ruff_audit()
