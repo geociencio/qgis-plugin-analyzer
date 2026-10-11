@@ -1,37 +1,38 @@
-# Next Steps — Handover (2026-10-10, v1.15.0 prepared)
+# Next Steps — Handover (2026-10-11, v1.15.2 released)
 
-## Session Summary (2026-10-10)
+## Session Summary (topic `deep_analysis_security_v1.15.1`)
 
-Executed the **Repo Hygiene & Hardening** plan (phases 0–6), reviewed with
-`/ia-critic`. Repository is clean, CLI hardened, CI added, and the analyzer now
-ports design-pattern / anti-pattern / Halstead / optimization coverage.
+Executed the full deep-analysis backlog
+(`docs/reports/DEEP_ANALYSIS_v1.15.0_DEAD_CODE_DUPLICATION.md`) and shipped
+**v1.15.1** (patch): restored the disconnected security registry, removed dead
+code, cut complexity, raised coverage 75%→86%, deep-updated the README.
+The maintainer then released **v1.15.2** (fixes `B102`/`B307` false positives
+on `QDialog.exec()`/attribute calls) plus release-process/agentic docs.
 
-### Completed This Session
-- [x] Repo hygiene: untracked generated artifacts, extended `.gitignore`, removed `migration/`, archived debug artifacts.
-- [x] CI `.github/workflows/ci.yml` (ruff + mypy + pytest + coverage ≥70 + `--max-cc 15` self-gate), Python 3.11–3.13.
-- [x] Transversal `# noqa` / `# noqa: RULE_ID` opt-out.
-- [x] Ruff audit via `sys.executable -m ruff` + `ruff_metadata.tool_unavailable`.
-- [x] `str`/`Path` normalization before `.stat()`.
-- [x] Configurable workers (`--workers`, profile `workers`) + batching.
-- [x] Refactored 3 functions below CC 15 (self-gate green).
-- [x] Ported patterns/anti-patterns/Halstead/optimizations.
-- [x] Docs: `RULES.md` §9, output contract + CI flow in `docs/DEVELOPMENT_LOG.md`.
-- [x] **v1.15.0 prepared** (pyproject + uv.lock + CHANGELOG + `docs/releases/notes/v1.15.0.md`); **not** published, no tag yet.
+### Completed
+- [x] **P0** Security registry restored (`security_rules` imported for its registration side effect) + regression test.
+- [x] **P1** `rules/scopes.py` single source of truth; reuse `I18N_METHODS`; removed `models/`, `modernization_rules`, unused helpers.
+- [x] **P2** CC cut: `run` 16→1, `visit_For` 18→1, `visit_Constant` 17→8.
+- [x] **P3** Coverage 75%→86%; CI coverage floor 80; 194 tests.
+- [x] README deep update; comparison moved to `docs/research/COMPARISON_VS_ALTERNATIVES.md`.
+- [x] **v1.15.1** and **v1.15.2** released on GitHub (artifacts; `twine check` PASSED).
 
 ## How to Resume
 1. Run `/start-session`.
-2. To finish the release: `git tag -a v1.15.0 -m "Release v1.15.0"`, then
-   `gh release create v1.15.0 --notes-file docs/releases/notes/v1.15.0.md`
-   (PyPI upload is manual: `uv run python -m build && uv run twine upload dist/*`).
+2. If continuing the release: upload the latest version to PyPI (manual): `uv publish --token <TOKEN>`.
 
 ## Remaining / Next
-- [ ] **Fase 2.2** — incremental cache (content hash) + `--no-cache`.
-- [ ] **Fase 4** — module decomposition (`commands.py` 54, `standards_visitor.py` 50,
-      `ast_utils.py`, `summary_reporter.py`, `fixer.py`, `validators.py`, `semantic.py`)
-      + CLI layering + reporters common base.
-- [ ] **Fase 6** — unified rule registry to auto-generate `RULES.md`.
-- [ ] Tune anti-pattern noise if desired (`MAGIC_NUMBER` ×35, `SPAGHETTI_CODE` ×10 on self-run).
+- [ ] **PyPI upload** of the latest release (maintainer, manual).
+- [ ] Module splits (`engine`/`fixer`/`summary_reporter` > 400 lines) — deferred, medium risk.
+- [ ] **Fase 6** unified rule registry to auto-generate `RULES.md` (`list-rules` only covers regex rules).
+- [ ] Fase 2.2 incremental cache (content hash) + `--no-cache`.
+- [ ] Tune anti-pattern noise (`MAGIC_NUMBER`×35, `SPAGHETTI_CODE`×10 on self-run).
 
 ## Technical Debt
-- [ ] Reduce self-reported `MISSING_I18N` in the analyzer's own codebase.
-- [ ] Coverage is 75% (floor 70%) — raise incrementally.
+- [ ] Self-reported `MISSING_I18N` in the analyzer's own codebase.
+- [ ] Coverage at 86% (floor 80%) — keep incremental gains.
+
+## Watch-outs
+- Keep the `project_context.json` schema keys stable (consumed by `ai-context-core`; bump `schema_version` on change).
+- Keep CLI subcommands/flags stable (consumed by `qgis-plugin-manager`).
+- Security rules: verify a registry populated by import side effects stays non-empty (see AGENT_LESSONS 2026-10-10).

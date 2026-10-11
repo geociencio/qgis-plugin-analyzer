@@ -15,6 +15,29 @@ See `.agent/memory/memory_policy.md` for the full policy.
 lessons:
 
   # --- ACTIVE LESSONS (< 90 days or not yet in a SKILL.md) ---
+  - date: '2026-10-10'
+    category: ARCHITECTURE
+    topic: Decorator-Registered Rules Silently Disabled by a Missing Import
+    lesson: 'security_rules.py registered every Bandit check via a @security_check
+      decorator, but nothing imported the module, so SecurityRegistry stayed empty
+      and no AST security check ran. The analyzer reported a clean security score
+      (100) while detecting nothing — a silent false negative inherited by
+      qgis-plugin-manager. A registry populated purely by import side effects is
+      fragile: it needs an explicit import trigger plus a "registry is non-empty"
+      test.'
+    action: 'Imported security_rules for its registration side effect at the end of
+      security_checker.py; added tests/test_security_registry.py. Rule: any module
+      whose sole purpose is decorator-based registration must have an eager import
+      and a registration assertion test.'
+  - date: '2026-10-10'
+    category: TECHNICAL
+    topic: Confirm "dead code" claims against tests before deleting
+    lesson: 'A deep-analysis report flagged transformers.apply_transformation as dead
+      (only apply_transformation_to_content used in production), but tests/test_fixer.py
+      exercises it. Trusting the report would have broken a test and removed a
+      supported wrapper.'
+    action: 'Verify every deletion candidate with grep across src/ AND tests/ before
+      removing it; keep symbols that tests depend on.'
   - date: '2026-09-14'
     category: TECHNICAL
     topic: PyQt5 Signal Subscript is a Name, not a String Constant
