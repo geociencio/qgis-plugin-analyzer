@@ -64,17 +64,14 @@ The **QGIS Plugin Analyzer** is a static analysis tool designed specifically for
 - **Real-time Progress**: CLI progress bar with ETA tracking.
 - **Zero Runtime Dependencies**: Standard library only (Ruff is the only external tool).
 
-## 🆕 What's New in v1.15.1
+## 🆕 What's New in v1.15.2
 
-**Security scanning restored** — a patch release fixing a silent regression where the Bandit-inspired checks never ran, plus the post-1.15.0 hardening.
+**B102/B307 false-positive fix** — the restored security scanner no longer flags ordinary Qt method calls.
 
-- 🔐 **Security registry restored** - `eval`/`exec`, unsafe `pickle`, `shell=True`, SQL injection and hardcoded secrets are now detected again (the checks register on import).
-- 🧹 **Dead code removed** - `models/`, `modernization_rules` and unused helpers dropped.
-- 📉 **Complexity reduced** - `ProjectAnalyzer.run`, `visit_For` and `visit_Constant` split into focused helpers.
-- 🧪 **Coverage 75% → 86%** - CI coverage floor raised to 80%.
-- 📖 **Docs** - README deep update; alternatives comparison moved to an internal doc.
+- 🎯 **`exec`/`eval` rule fixed** - `QDialog.exec()`, `self.dlg.exec()` and other attribute/method calls are no longer reported as builtin arbitrary code execution; only bare `exec(...)`/`eval(...)` are flagged.
+- 🧪 **Regression tests** - attribute `.exec()`/`.eval()` are asserted to be ignored.
 
-[**📖 Full Release Notes**](docs/releases/notes/v1.15.1.md) | [**🗺️ CLI Commands Roadmap**](docs/research/CLI_COMMANDS_ROADMAP.md)
+[**📖 Full Release Notes**](docs/releases/notes/v1.15.2.md) | [**🗺️ CLI Commands Roadmap**](docs/research/CLI_COMMANDS_ROADMAP.md)
 
 ## 🚀 Installation and Usage
 

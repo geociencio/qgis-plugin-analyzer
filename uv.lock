@@ -405,7 +405,7 @@ wheels = [
 
 [[package]]
 name = "qgis-plugin-analyzer"
-version = "1.15.1"
+version = "1.15.2"
 source = { editable = "." }
 
 [package.dev-dependencies]

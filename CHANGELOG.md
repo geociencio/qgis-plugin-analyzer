@@ -5,6 +5,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.15.2] - 2026-10-11
+
+### Fixed
+- **`B102`/`B307` false positives on attribute calls**: the restored `exec`/`eval` check matched any call whose callee *name* was `exec`/`eval`, so method calls such as `QDialog.exec()` (`dialog.exec()`, `self.dlg.exec()`) and `table.eval()` were reported as builtin arbitrary-code-execution. `check_exec_eval` now flags only bare-name calls (`exec(...)` / `eval(...)`) and ignores attribute/method calls; two regression tests added.
+
 ## [1.15.1] - 2026-10-10
 
 ### Fixed

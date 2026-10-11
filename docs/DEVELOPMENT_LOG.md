@@ -1,5 +1,10 @@
 # Development Log
 
+## [2026-10-11] B102/B307 False-Positive Fix (v1.15.2)
+- **Fixed**: `check_exec_eval` matched attribute calls (callee *name*), so `QDialog.exec()` / `self.dlg.exec()` / `table.eval()` were reported as builtin arbitrary code execution. It now flags only bare-name `exec(...)`/`eval(...)`; attribute/method calls are ignored. Two regression tests added.
+- **Notes**: no rule-id, CLI or output-contract changes; drop-in patch.
+- **Quality**: ruff + mypy clean · 194 tests (coverage 86%) · self-analysis `--max-cc 15` green.
+
 ## [2026-10-10] Security Restored & Deep-Analysis Hardening (v1.15.1)
 - **Fixed**: Bandit-inspired security checks never ran (`security_rules` was not imported → empty registry). Now self-register on import; regression test added; `security` scope uses the real ids (`B102/B301/B307/B602/B608/HARDCODED_SECRET`).
 - **Refactor**: `rules/scopes.py` is the single source of truth for scope→rule ids; removed dead code (`models/`, `modernization_rules`, unused helpers); CC cut (`run` 16→1, `visit_For` 18→1, `visit_Constant` 17→8).
