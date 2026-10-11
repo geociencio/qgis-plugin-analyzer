@@ -32,14 +32,16 @@ on `QDialog.exec()`/attribute calls) plus release-process/agentic docs.
 
 **None blocking** — 232 tests passing; `ruff check` + `mypy src/` clean; self-analysis `--max-cc 15` green (max func CC 13).
 
-- **Metrics validator false positives**: `forge.py metrics validate` flags **4**
+- **Metrics validator false positives**: `forge.py metrics validate` flags **5**
   entries in the `.agent/` framework submodule — `scaffold/qgis/workflows/release-plugin.md`
-  (CC ≤ 10, 763 tests → the SecInterp domain template) and `skills/coding-standards/SKILL.md`
+  (CC ≤ 10 ×3, 763 tests → the SecInterp domain template) and `skills/coding-standards/SKILL.md`
   ("complexity below 10" → generic guideline). These are template/domain values, not
   stale analyzer metrics (CC ≤ 15, 232 tests). The validator scans `scaffold/` against
   this project's ground truth; treat as non-blocking until the framework excludes
   domain packs from ground-truth checks. Disposition mirrors `ai-context-core`
   (see `AGENT_LESSONS.md` 2026-10-11). Do **not** patch the submodule or lower `max_cc`.
+  (The count rose 4→5 once `agent_metrics.json` gained a ground-truth `summary`, so the
+  scaffold's "763 tests" is now also compared.)
 
 ## Technical Debt
 - [ ] Self-reported `MISSING_I18N` in the analyzer's own codebase.

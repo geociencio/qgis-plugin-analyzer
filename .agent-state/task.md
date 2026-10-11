@@ -23,5 +23,5 @@ Reference: `docs/reports/DEEP_ANALYSIS_v1.15.0_DEAD_CODE_DUPLICATION.md`
 
 ## Operational Status
 - **Active Phase**: None — all goals complete; v1.15.2 released on **GitHub + PyPI**.
-- **Current Metrics**: 232/232 tests; `ruff` + `mypy` clean; self-analysis `--max-cc 15` green (max func CC 13); Module Stability 54.8 · Maintainability 83.9 · Security 100.0.
+- **Current Metrics**: 232/232 tests; `ruff` + `mypy` clean; self-analysis `--max-cc 15` green (max func CC 13); Module Stability 54.8 · Maintainability 99.9 · Security 100.0 (MISSING_I18N now gated for generic projects; severities reconciled with the catalog).
 - **Known**: 4 `forge.py metrics validate` false positives in `.agent/` framework scaffold/generic skills (see `next_steps.md` → Known Issues). Non-blocking; mirrors `ai-context-core`.

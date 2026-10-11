@@ -74,6 +74,31 @@ def count_tests() -> dict:
     return {"pass": passed, "total": total or passed}
 
 
+def extract_issue_stats() -> tuple[dict[str, int], dict[str, int]]:
+    """Return issue counts from the analysis results.
+
+    Returns:
+        A tuple ``(by_type, by_severity)`` where ``by_type`` maps rule id to
+        count and ``by_severity`` maps severity to count.
+    """
+    if not ANALYSIS_RESULTS.exists():
+        return {}, {"critical": 0, "high": 0, "medium": 0, "low": 0}
+
+    with open(ANALYSIS_RESULTS) as f:
+        data = json.load(f)
+
+    by_type: dict[str, int] = {}
+    by_severity = {"critical": 0, "high": 0, "medium": 0, "low": 0}
+    for module in data.get("modules", []):
+        for issue in module.get("ast_issues", []):
+            issue_type = issue.get("type", "unknown")
+            by_type[issue_type] = by_type.get(issue_type, 0) + 1
+            severity = str(issue.get("severity", "medium")).lower()
+            by_severity[severity] = by_severity.get(severity, 0) + 1
+
+    return by_type, by_severity
+
+
 def load_existing_metrics() -> dict:
     """Load existing metrics file or return empty structure."""
     if METRICS_FILE.exists():
@@ -105,30 +130,44 @@ def main() -> None:
         print("   ⚠ Could not extract scores. Using last known values.")
         scores = {"stability": 55.1, "maintainability": 77.0, "security": 100.0}
 
-    # 3. Count tests
+    # 3. Collect issue statistics (before running the test suite, which may
+    # regenerate analysis artifacts as a side effect).
+    issue_breakdown, severity_totals = extract_issue_stats()
+    total_issues = sum(issue_breakdown.values())
+    print(f"   Issues: {total_issues} total")
+
+    # 4. Count tests
     tests = count_tests()
     print(f"   Tests: {tests['pass']}/{tests['total']} passing")
     print()
 
-    # 4. Update metrics file
+    # 5. Update metrics file
     metrics = load_existing_metrics()
     session_entry = {
         "date": date.today().isoformat(),
         "session": "sync_metrics_auto",
         "scores": scores,
         "tests": tests,
-        "issues": {
-            "critical": 0,
-            "high": 0,
-            "medium": 0,
-            "low": 0,
-        },
+        "issues": severity_totals,
     }
 
     # Replace today's entry if it exists, otherwise append
     metrics["sessions"] = [s for s in metrics["sessions"] if s["date"] != date.today().isoformat()]
     metrics["sessions"].append(session_entry)
     metrics["sessions"].sort(key=lambda s: s["date"])
+
+    # Ground-truth summary consumed by the Agentic Forge tooling
+    # (``forge.py metrics validate`` / ``report``).
+    metrics["summary"] = {
+        "test_count": tests["pass"],
+        "tests_ok": tests["pass"],
+        "quality_score_latest": scores["stability"],
+        "maintainability_score": scores["maintainability"],
+        "security_score": scores["security"],
+        "total_issues": total_issues,
+        "issue_breakdown": issue_breakdown,
+        "i18n_issues_qgis_analyzer": issue_breakdown.get("MISSING_I18N", 0),
+    }
 
     with open(METRICS_FILE, "w") as f:
         json.dump(metrics, f, indent=2)
