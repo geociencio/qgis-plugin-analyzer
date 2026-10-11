@@ -2,6 +2,14 @@
 
 This document details the automatic audit rules implemented in the analyzer to ensure that plugins follow official QGIS standards and development best practices.
 
+> **Source of truth**: regex-based QGIS rules are also listed by
+> `qgis-plugin-analyzer list-rules`. AST/visitor rules (`MISSING_I18N`, Qt6
+> migration, design/anti-pattern rules, …) are documented here; a unified rule
+> registry that renders this file from code is tracked as a follow-up (Fase 6).
+
+All rules support inline suppression via `# noqa` (suppress everything on the
+line) or `# noqa: RULE_ID` (suppress a single rule).
+
 ## 1. Internationalization (i18n)
 
 | Rule ID | Severity | Description | Recommendation |
@@ -20,7 +28,7 @@ This document details the automatic audit rules implemented in the analyzer to e
 | Rule ID | Severity | Description | Recommendation |
 | :--- | :--- | :--- | :--- |
 | `UNSAFE_THREAD` | 🔴 High | Use of standard Python `threading.Thread`. | Use `QgsTask` or `QThread` to safely interact with the QGIS main thread. |
-| `SIGNAL_LEAK` | 🔴 High | Signals connected in `initGui()` are not disconnected in `unload()`. | Ensure every `.connect()` in `initGui` has a corresponding `.disconnect()` in `unload` to prevent crashes. |
+| ~~`SIGNAL_LEAK`~~ | — | Signals connected in `initGui()` but not disconnected in `unload()`. Surfaced via `qgis_context.signal_leaks` (informational; **not** emitted as an issue). | Ensure every `.connect()` in `initGui` has a matching `.disconnect()` in `unload`. |
 | `UI_BLOCKING_LOOP` | 🔴 High | Intensive loops (getFeatures, sleep) in UI handlers without QgsTask. | Move heavy operations to a `QgsTask` to avoid freezing the interface. |
 | `POTENTIAL_MISSING_SLOT` | 🟡 Medium | Signal connected to a method that doesn't exist in the class. | Verify the slot name exists and is correctly spelled in the target class. |
 
@@ -71,3 +79,23 @@ This document details the automatic audit rules implemented in the analyzer to e
 | Rule ID | Severity | Description | Recommendation |
 | :--- | :--- | :--- | :--- |
 | `PRINT_STATEMENT` | 🟢 Low | Use of `print()` statements in production code. | Use `QgsMessageLog` for user-facing logs or standard `logging` for debug. |
+
+## 9. Design Patterns & Anti-patterns
+
+Detected by `PatternsVisitor` (`src/analyzer/visitors/patterns_visitor.py`). All
+are **informational** (`info`/Low) and suppressible with `# noqa`.
+
+| Rule ID | Severity | Description | Recommendation |
+| :--- | :--- | :--- | :--- |
+| `GOD_OBJECT` | 🟢 Low | Class with more than 20 methods or more than 15 instance attributes. | Split responsibilities into smaller, cohesive classes. |
+| `SPAGHETTI_CODE` | 🟢 Low | Function with cyclomatic complexity > 20 or nesting depth > 4. | Extract sub-logic into smaller, testable functions. |
+| `MAGIC_NUMBER` | 🟢 Low | Numeric literal (other than 0/1/-1/2) used in a comparison. | Extract into a named constant. |
+| `DEAD_CODE` | 🟢 Low | Block/loop guarded by an always-false condition (`if False:` / `while 0:`). | Remove the unreachable code. |
+
+### Informational (not issues)
+
+| Name | Description |
+| :--- | :--- |
+| `patterns` (output field) | Design patterns detected per module: `singleton`, `factory`, `observer`, `strategy`, `decorator`. |
+| `optimizations` (output field) | Generic suggestions: `module_too_large` (> 400 lines), `complexity_refactoring` (high-complexity module with many functions). |
+| `halstead` (per-module metric) | Halstead `vocabulary`, `length`, `volume`, `difficulty`, `effort`. |

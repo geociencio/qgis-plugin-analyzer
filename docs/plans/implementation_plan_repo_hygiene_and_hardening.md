@@ -215,12 +215,16 @@ Implementado:
 
 ## Fase 6 — Docs / DX
 
-- Generar el catálogo de `RULES.md` desde el código (`list-rules`) para evitar deriva.
-- `analysis_results/project_context.json` **ya** emite `analyzer_version`/`schema_version`;
-  reformular esta tarea como "garantizar que los reporters no los pierdan" (los
-  `project_context.json` de root/`src/` que sí carecían de ellos se retiran en Fase 0).
-- Documentar el contrato de salida y el flujo de CI en un fichero **existente**
-  (`docs/DEVELOPMENT_LOG.md` o `docs/development/DEVELOPMENT_LOG.md`); `docs/DEVELOPMENT.md` **no existe**.
+- [HECHO 2026-10-10] `RULES.md`: añadida la sección 9 (patrones/anti-patrones/Halstead/
+  optimizaciones), corregido `SIGNAL_LEAK` (informativo, no emitido) y nota de
+  "source of truth" apuntando a `list-rules` para reglas regex.
+- [PENDIENTE] Generación **automática** de `RULES.md` desde el código. `list-rules`
+  solo cubre las reglas regex de QGIS (7), no las de AST/visitor; requiere un
+  registro unificado de reglas (follow-up).
+- [HECHO 2026-10-10] Contrato de salida y flujo de CI documentados en
+  `docs/DEVELOPMENT_LOG.md` (incluye `ruff_metadata`, `patterns`, `optimizations`,
+  `cc_gate`, supresión `# noqa` y el job de CI). `project_context.json` ya emite
+  `analyzer_version`/`schema_version`.
 
 ---
 
@@ -236,7 +240,7 @@ Implementado:
    descomposición de módulos/reporters y unificación CLI **pendiente**.
 8. [ ] Fase 3b — self-gate `--max-cc 15` + cobertura (`pytest-cov`) [este commit].
 9. [x] Fase 5 — PORTAR patrones/anti-patrones/Halstead/optimizaciones [hecho].
-10. [ ] Fase 6 — docs/DX.
+10. [x] Fase 6 — docs/DX (RULES.md + contrato de salida/CI); auto-generación de catálogo diferida.
 11. [ ] Cierre: `/close-session` + release `v1.15.0` (`/release-package`).
 
 ## Riesgos

@@ -1,5 +1,23 @@
 # Development Log
 
+## [2026-10-10] Repo Hygiene, CLI Hardening & CI (v1.15.0)
+- **Repo hygiene**: untracked generated artifacts (`AI_CONTEXT.md`, `PROJECT_SUMMARY.md`, `project_context.json`, `.analyzer_state.json`, `.coverage`, `analysis.log`, …) and extended `.gitignore`; archived debug artifacts into `docs/development/`.
+- **CLI robustness**: transversal `# noqa` / `# noqa: RULE_ID` opt-out; ruff audit runs via `sys.executable -m ruff` and reports `ruff_metadata.tool_unavailable`; `str`/`Path` boundary normalization.
+- **Performance**: configurable workers (profile `workers` / `--workers`, default `min(4, max(1, cpu-1))`) + file batching.
+- **Coverage**: ported design-pattern detection, anti-patterns (`GOD_OBJECT`, `SPAGHETTI_CODE`, `MAGIC_NUMBER`, `DEAD_CODE`), Halstead metrics and generic optimizations.
+- **CI**: `.github/workflows/ci.yml` (3.11–3.13) runs `ruff check`, `ruff format --check`, `mypy src/`, `pytest --cov=analyzer --cov-fail-under=70` and the self-gate `qgis-analyzer analyze . --max-cc 15`.
+
+### Output contract (`analysis_results/project_context.json`)
+- Top-level `schema_version` + `analyzer_version`.
+- `metrics.{total_files,total_lines,quality_score,maintainability_score,security_score}`.
+- `ruff_findings` + `ruff_metadata` (`exit_code`, `tool_unavailable`, `command`).
+- `patterns` (design patterns) and `optimizations` (`module_too_large`, `complexity_refactoring`).
+- Per-module `research_metrics.{patterns,halstead}`.
+- `cc_gate`/`cc_violations` embedded when `--max-cc` is used with `--json`.
+
+### Inline suppression
+- `# noqa` suppresses all rules on the line; `# noqa: RULE_ID` suppresses one rule.
+
 ## [2026-10-10] Agentic Forge Overlay Alignment
 - Aligned the project overlay with `ai-context-core` (`v5.1.0`), keeping the framework pin at `v1.2.0` (`2de22cf`).
 - Added 4 overlay skills under `.agent-state/skills/`: `tech-stack`, `debug-specialist`, `skill-authoring`, `release-qgis-plugin-analyzer`.
