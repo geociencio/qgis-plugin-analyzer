@@ -5,6 +5,24 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.15.0] - 2026-10-10
+
+### Added
+- **Transversal `# noqa` opt-out**: any rule can now be suppressed inline with `# noqa` (whole line) or `# noqa: RULE_ID` (single rule), via a reusable `tokenize`-based detector (`analyzer.visitors.noqa`). The legacy `# no-i18n` behavior is preserved.
+- **Design patterns & anti-patterns**: new `PatternsVisitor` detects design patterns (`singleton`, `factory`, `observer`, `strategy`, `decorator`, reported in the `patterns` output field) and reports low-severity anti-patterns `GOD_OBJECT`, `SPAGHETTI_CODE`, `MAGIC_NUMBER` and `DEAD_CODE`.
+- **Halstead metrics & optimizations**: per-module Halstead metrics (`research_metrics.halstead`) and generic optimization suggestions (`optimizations`: `module_too_large`, `complexity_refactoring`).
+- **Configurable workers**: `--workers N` (and the `workers` profile key) control the process pool; files are now batched to reduce IPC overhead. Default `min(4, max(1, cpu-1))`, clamped to `1..4`.
+- **CI workflow**: `.github/workflows/ci.yml` runs `ruff check`, `ruff format --check`, `mypy src/`, `pytest` with a coverage floor and the `--max-cc 15` self-analysis gate across Python 3.11–3.13.
+
+### Changed
+- **Ruff audit robustness**: Ruff is invoked through the current interpreter (`sys.executable -m ruff`) instead of relying on `PATH`; results now expose `ruff_metadata.tool_unavailable` when the tool cannot run, instead of silently reporting zero findings.
+- **Path handling**: `analyze_module_worker`, `audit_qgis_standards`, `calculate_package_size` and `scan_for_binaries` normalize `str`/`pathlib.Path` inputs before calling `.stat()`.
+- **Watchdog**: `analysis_results/project_context.json` now always includes `ruff_metadata`; generated artifacts are no longer tracked.
+
+### Fixed
+- Refactored `extract_runtime_imports_from_ast`, `apply_fixes` and `handle_analyze` below the CC 15 threshold, so the complexity self-gate is green (0 violations).
+- `pytest` now resolves the `src/` layout via `[tool.pytest.ini_options] pythonpath` for both `pytest` and `python -m pytest`.
+
 ## [1.14.0] - 2026-09-14
 
 ### Added

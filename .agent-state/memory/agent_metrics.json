@@ -3,6 +3,25 @@
   "project": "qgis-plugin-analyzer",
   "sessions": [
     {
+      "date": "2026-05-25",
+      "session": "gen5_to_gen6_upgrade",
+      "scores": {
+        "stability": 55.1,
+        "maintainability": 77.0,
+        "security": 100.0
+      },
+      "tests": {
+        "pass": 87,
+        "total": 87
+      },
+      "issues": {
+        "critical": 0,
+        "high": 0,
+        "medium": 0,
+        "low": 0
+      }
+    },
+    {
       "date": "2026-09-14",
       "session": "generalize_analyzer_v1.14.0",
       "scores": {
@@ -41,16 +60,16 @@
       }
     },
     {
-      "date": "2026-05-25",
-      "session": "gen5_to_gen6_upgrade",
+      "date": "2026-10-10",
+      "session": "sync_metrics_auto",
       "scores": {
-        "stability": 55.1,
-        "maintainability": 77.0,
+        "stability": 54.5,
+        "maintainability": 86.6,
         "security": 100.0
       },
       "tests": {
-        "pass": 87,
-        "total": 87
+        "pass": 161,
+        "total": 161
       },
       "issues": {
         "critical": 0,

@@ -38,11 +38,13 @@ def extract_scores() -> dict:
     with open(ANALYSIS_RESULTS) as f:
         data = json.load(f)
 
-    scores = data.get("scores", data.get("quality_scores", {}))
+    # Scores live under "metrics" in the current output contract
+    # (quality_score / maintainability_score / security_score).
+    scores = data.get("scores", data.get("quality_scores", data.get("metrics", {})))
     return {
-        "stability": scores.get("stability", scores.get("module_stability", 0)),
-        "maintainability": scores.get("maintainability", 0),
-        "security": scores.get("security", 0),
+        "stability": scores.get("stability", scores.get("quality_score", 0)),
+        "maintainability": scores.get("maintainability", scores.get("maintainability_score", 0)),
+        "security": scores.get("security", scores.get("security_score", 0)),
     }
 
 
