@@ -6,7 +6,10 @@
 
 import pathlib
 import xml.etree.ElementTree as ET
-from typing import Any
+from typing import Any, cast
+
+from .scanner import ModuleAnalysisResult
+from .scoring import SemanticAnalysisResult
 
 
 class DependencyGraph:
@@ -251,3 +254,51 @@ class ResourceValidator:
             if res not in self.available_resources:
                 missing.append(res)
         return sorted(list(set(missing)))
+
+
+def run_semantic_analysis(
+    modules_data: list[ModuleAnalysisResult],
+    project_path: pathlib.Path,
+    project_type: str,
+    ignore_matcher: Any = None,
+) -> SemanticAnalysisResult:
+    """Runs semantic analysis including dependencies and resources.
+
+    Args:
+        modules_data: List of analyzed module entries.
+        project_path: Root path of the project.
+        project_type: Detected project type ('qgis' or 'generic').
+        ignore_matcher: Optional ignore matcher used when scanning resources.
+
+    Returns:
+        A dictionary containing cycles, metrics, and missing resources.
+    """
+    dep_graph = DependencyGraph()
+    all_resource_usages = []
+    res_validator = None
+
+    if project_type == "qgis":
+        res_validator = ResourceValidator(project_path)
+        res_validator.scan_project_resources(ignore_matcher)
+
+    for m in modules_data:
+        dep_graph.add_node(m["path"], cast(dict[str, Any], m))
+        if project_type == "qgis" and "resource_usages" in m:
+            # Type safe usage of resource_usages from TypedDict
+            resource_usages = m.get("resource_usages", [])
+            all_resource_usages.extend(resource_usages)
+
+    dep_graph.build_edges(project_path)
+    cycles = dep_graph.detect_cycles()
+    metrics = dep_graph.get_coupling_metrics()
+
+    missing_resources = []
+    if project_type == "qgis" and res_validator:
+        missing_resources = res_validator.validate_usage(all_resource_usages)
+
+    return {
+        "cycles": cycles,
+        "graph": {u: list(v) for u, v in dep_graph.adjacency_list.items()},
+        "metrics": metrics,
+        "missing_resources": missing_resources,
+    }

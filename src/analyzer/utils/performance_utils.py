@@ -1,5 +1,6 @@
 """Performance and progress tracking utilities."""
 
+import os
 import pathlib
 import signal
 import sys
@@ -10,6 +11,22 @@ from contextlib import contextmanager
 from typing import Any
 
 _PROGRESS_QUIET = False
+
+
+def resolve_max_workers(workers: int | None) -> int:
+    """Resolve the parallel worker count with a hard ceiling of 4.
+
+    Args:
+        workers: Explicit worker count (config or CLI), or None for the default.
+
+    Returns:
+        The number of worker processes to use (``min(4, max(1, cpu-1))`` by
+        default; explicit values are clamped to the ``1..4`` range).
+    """
+    cpu = os.cpu_count() or 4
+    if workers is None:
+        return min(4, max(1, cpu - 1))
+    return min(4, max(1, int(workers)))
 
 
 def set_progress_quiet(quiet: bool = True) -> None:

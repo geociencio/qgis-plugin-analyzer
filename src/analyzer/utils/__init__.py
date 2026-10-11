@@ -18,7 +18,13 @@ from .path_utils import (
     load_ignore_patterns,
     safe_path_resolve,
 )
-from .performance_utils import LRUCache, ProgressTracker, set_progress_quiet, timeout_manager
+from .performance_utils import (
+    LRUCache,
+    ProgressTracker,
+    resolve_max_workers,
+    set_progress_quiet,
+    timeout_manager,
+)
 
 __all__ = [
     "calculate_complexity",
@@ -38,6 +44,7 @@ __all__ = [
     "load_profile_config",
     "LRUCache",
     "ProgressTracker",
+    "resolve_max_workers",
     "set_progress_quiet",
     "timeout_manager",
 ]

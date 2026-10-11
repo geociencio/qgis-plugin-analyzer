@@ -2,66 +2,29 @@
 
 This module provides functions to display a professional summary of the
 analysis findings directly in the terminal, with ANSI color support
-for quality indicators.
+for quality indicators. Console primitives and the focused security report
+live in sibling modules (:mod:`console`, :mod:`security_summary`) and are
+re-exported here for backward compatibility.
 """
 
 import json
 import pathlib
 from typing import Any
 
-# Helper functions for formatting
+from .console import (
+    print_colored_score,
+    print_header,
+    print_separator,
+    print_success,
+)
+from .security_summary import group_findings_by_severity as _group_findings_by_severity
+from .security_summary import report_security as _report_security
 
-
-def print_header(title: str) -> None:
-    """Print a formatted section header.
-
-    Args:
-        title: The header title to display.
-    """
-    print(f"\n\033[1m{title}\033[0m")
-
-
-def print_separator(char: str = "=", length: int = 45) -> None:
-    """Print a separator line.
-
-    Args:
-        char: The character to use for the separator.
-        length: The length of the separator line.
-    """
-    print(char * length)
-
-
-def print_success(message: str) -> None:
-    """Print a success message in green.
-
-    Args:
-        message: The success message to display.
-    """
-    print(f"\n\033[92m{message}\033[0m")
-
-
-def print_colored_score(label: str, score: Any) -> None:
-    """Prints a score with ANSI colors based on its value.
-
-    Args:
-        label: The label for the score.
-        score: The numeric score value (or "N/A").
-    """
-    if score == "N/A":
-        print(f"{label}: \033[90mN/A\033[0m")
-        return
-
-    try:
-        val = float(score)
-        if val >= 80:
-            color = "\033[92m"  # Green
-        elif val >= 50:
-            color = "\033[93m"  # Yellow
-        else:
-            color = "\033[91m"  # Red
-        print(f"{label}: {color}{val:.1f}/100\033[0m")
-    except (ValueError, TypeError):
-        print(f"{label}: {score}")
+__all__ = [
+    "report_summary",
+    "_group_findings_by_severity",
+    "_report_security",
+]
 
 
 def report_summary(input_path: pathlib.Path, by: str = "total") -> bool:
@@ -328,97 +291,4 @@ def _report_by_classes(data: dict[str, Any]) -> bool:
 
     print(f"\nTotal: {len(all_classes)} classes found.")
     print("=" * 60)
-    return True
-
-
-# Specialized methods for _report_security
-
-
-def _group_findings_by_severity(
-    findings: list[dict[str, Any]],
-) -> dict[str, list[dict[str, Any]]]:
-    """Group security findings by severity level.
-
-    Args:
-        findings: List of security findings.
-
-    Returns:
-        Dictionary mapping severity levels to lists of findings.
-    """
-    by_severity: dict[str, list[dict[str, Any]]] = {"high": [], "medium": [], "low": []}
-    for finding in findings:
-        sev = finding.get("severity", "medium").lower()
-        if sev in by_severity:
-            by_severity[sev].append(finding)
-        else:
-            by_severity.setdefault("other", []).append(finding)
-    return by_severity
-
-
-def _print_security_finding(finding: dict[str, Any], severity: str) -> None:
-    """Print a single security finding with formatting.
-
-    Args:
-        finding: The security finding dictionary.
-        severity: The severity level (high, medium, low).
-    """
-    sev_color = (
-        "\033[91m" if severity == "high" else ("\033[93m" if severity == "medium" else "\033[94m")
-    )
-    print(
-        f"{sev_color}[{severity.upper()}]\033[0m {finding.get('file')}:{finding.get('line')} - {finding.get('type')}"
-    )
-    print(f"  \033[2mMessage: {finding.get('message')}\033[0m")
-    code_snippet = finding.get("code")
-    if isinstance(code_snippet, str) and code_snippet.strip():
-        print(f"  \033[2mCode   : {code_snippet.strip()}\033[0m")
-    print()
-
-
-def _print_security_findings_by_severity(
-    by_severity: dict[str, list[dict[str, Any]]],
-) -> None:
-    """Print all findings grouped by severity.
-
-    Args:
-        by_severity: Dictionary mapping severity levels to findings.
-    """
-    print_header("🛑 Detailed Findings")
-    print_separator("-", 60)
-
-    for severity in ["high", "medium", "low"]:
-        group = by_severity.get(severity, [])
-        if not group:
-            continue
-
-        for finding in group:
-            _print_security_finding(finding, severity)
-
-
-def _report_security(data: dict[str, Any]) -> bool:
-    """Prints a focused security analysis report.
-
-    Args:
-        data: The full analysis results dictionary.
-
-    Returns:
-        True if the report was successfully generated.
-    """
-    print_header("🛡️  QGIS Plugin Analyzer: Security Scan")
-    print_separator("=", 60)
-
-    security = data.get("security", {})
-    findings = security.get("findings", [])
-    sec_score = security.get("score", 0.0)
-
-    print_colored_score("Security Health Score", sec_score)
-    print(f"Total vulnerabilities detected: {len(findings)}")
-
-    if not findings:
-        print_success("✅ No security vulnerabilities found!")
-    else:
-        by_severity = _group_findings_by_severity(findings)
-        _print_security_findings_by_severity(by_severity)
-
-    print_separator("=", 60)
     return True

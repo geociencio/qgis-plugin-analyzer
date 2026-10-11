@@ -8,10 +8,10 @@ import tempfile
 import time
 import unittest
 
-from analyzer.commands import (
-    _detect_stale_cache,
+from analyzer.utils.stale_cache import (
     _humanize_age,
     _parse_analyzed_at,
+    detect_stale_cache,
 )
 
 
@@ -48,12 +48,12 @@ class TestCacheHandling(unittest.TestCase):
     def test_future_analyzed_at_not_stale(self):
         future = datetime.datetime.now(datetime.UTC) + datetime.timedelta(days=1)
         path = self._write_json(analyzed_at=future.isoformat(), project_path=str(self.tmp))
-        self.assertIsNone(_detect_stale_cache(path))
+        self.assertIsNone(detect_stale_cache(path))
 
     def test_stale_detected_when_source_newer(self):
         past = datetime.datetime.now(datetime.UTC) - datetime.timedelta(days=1)
         path = self._write_json(analyzed_at=past.isoformat(), project_path=str(self.tmp))
-        warning = _detect_stale_cache(path)
+        warning = detect_stale_cache(path)
         self.assertIsNotNone(warning)
         self.assertIn("stale", warning)
         self.assertIn("mod.py", warning)
@@ -63,10 +63,10 @@ class TestCacheHandling(unittest.TestCase):
         past = datetime.datetime.now() - datetime.timedelta(days=1)
         os.utime(path, (past.timestamp(), past.timestamp()))
         os.utime(self.source, (time.time(), time.time()))
-        self.assertIsNotNone(_detect_stale_cache(path))
+        self.assertIsNotNone(detect_stale_cache(path))
 
     def test_missing_json_returns_none(self):
-        self.assertIsNone(_detect_stale_cache(self.tmp / "nope.json"))
+        self.assertIsNone(detect_stale_cache(self.tmp / "nope.json"))
 
 
 if __name__ == "__main__":

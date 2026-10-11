@@ -145,7 +145,7 @@ comentario "to prevent OOM".
 No existe hoy caché de workers: `analyze_module_worker(cached_data=...)` es un
 parámetro huérfano sin cablear; la "caché" real es el
 `analysis_results/project_context.json` que lee `summary` (staleness por `mtime`
-en `commands.py:_detect_stale_cache`). Implementar caché incremental por hash de
+en `utils/stale_cache.py:detect_stale_cache`). Implementar caché incremental por hash de
 contenido + `--no-cache` es una feature aparte (mayor superficie y riesgo de
 invalidez); se pospone a un plan propio.
 

@@ -18,45 +18,33 @@
 #  *                                                                         *
 #  ***************************************************************************/
 
-import json
-import os
 import pathlib
-import subprocess
-import sys
-from concurrent.futures import ProcessPoolExecutor, as_completed
 from dataclasses import dataclass, field
-from typing import Any, cast
+from typing import Any
 
 from .aggregators import (
     build_analysis_results,
     save_reports,
 )
-from .rules.scopes import SCOPE_RULES
-from .scanner import (
-    ModuleAnalysisResult,
-    analyze_chunk_worker,
-    audit_qgis_standards,
-)
+from .parallel_analysis import chunk_files, run_parallel_analysis
+from .qgis_checks import run_qgis_checks
+from .ruff_audit import run_ruff_audit as _run_ruff_audit
+from .scanner import ModuleAnalysisResult
+from .scope_filter import filter_issues_by_scope
 from .scoring import (
     QGISChecksResult,
     ScoringEngine,
     SemanticAnalysisResult,
 )
-from .semantic import DependencyGraph, ResourceValidator
+from .semantic import run_semantic_analysis
 from .utils import (
     IgnoreMatcher,
-    ProgressTracker,
     discover_project_files,
     load_ignore_patterns,
     load_profile_config,
     logger,
+    resolve_max_workers,
     setup_logger,
-)
-from .validators import (
-    validate_metadata,
-    validate_metadata_urls,
-    validate_package_constraints,
-    validate_plugin_structure,
 )
 
 # --- Types ---
@@ -145,75 +133,16 @@ class ProjectAnalyzer:
             The number of worker processes to use (``min(4, max(1, cpu-1))`` by
             default; explicit values are clamped to the ``1..4`` range).
         """
-        cpu = os.cpu_count() or 4
-        if workers is None:
-            return min(4, max(1, cpu - 1))
-        return min(4, max(1, int(workers)))
+        return resolve_max_workers(workers)
 
     def run_ruff_audit(self) -> dict[str, Any]:
         """Executes Ruff linting via subprocess.
-
-        Ruff is invoked through the current interpreter (``sys.executable -m
-        ruff``) so the audit does not depend on ``ruff`` being on ``PATH``. When
-        Ruff cannot be executed, the result is flagged with
-        ``tool_unavailable=True`` instead of silently reporting zero findings.
 
         Returns:
             A dictionary containing findings and metadata, including
             ``tool_unavailable``.
         """
-        cmd = [
-            sys.executable,
-            "-m",
-            "ruff",
-            "check",
-            str(self.project_path),
-            "--output-format",
-            "json",
-            "--quiet",
-        ]
-
-        # In strict mode, we force extra rules if not already configured
-        if self.config.strict:
-            cmd.extend(
-                [
-                    "--select",
-                    "E,F,W,C90,I,N,D,UP,YTT,ASYNC,S,BLE,B,A,COM,T10,EM,EXE,FA,ISC,ICN,G,INP,PIE,T20,PYI,PT,Q,RET,SLF,SIM,TID,TCH,INT,ARG,PTH,TD,ERA,PD,PGH,PL,TRY,FLY,PERF,FURB,LOG,RUFF",
-                ]
-            )
-
-        try:
-            result = subprocess.run(cmd, capture_output=True, text=True, check=False)
-        except Exception as e:
-            logger.error(f"Error running Ruff: {e}")
-            return {
-                "findings": [],
-                "stderr": str(e),
-                "exit_code": -1,
-                "command": " ".join(cmd),
-                "tool_unavailable": True,
-            }
-
-        findings: list[dict[str, Any]] = []
-        tool_unavailable = False
-        stderr = result.stderr or ""
-
-        if "No module named" in stderr and not result.stdout:
-            tool_unavailable = True
-            logger.warning("⚠️  Ruff is not available; skipping the lint audit.")
-        elif result.stdout:
-            try:
-                findings = json.loads(result.stdout)
-            except json.JSONDecodeError:
-                logger.error("Failed to parse Ruff JSON output")
-
-        return {
-            "findings": findings,
-            "stderr": stderr,
-            "exit_code": result.returncode,
-            "command": " ".join(cmd),
-            "tool_unavailable": tool_unavailable,
-        }
+        return _run_ruff_audit(self.project_path, strict=self.config.strict)
 
     def _run_parallel_analysis(
         self,
@@ -230,36 +159,14 @@ class ProjectAnalyzer:
         Returns:
             A list of module analysis results.
         """
-        from .scanner import init_worker
-
-        tracker = ProgressTracker(len(files))
-        modules_data: list[ModuleAnalysisResult] = []
-
-        # Shared context to avoid serializing large rules multiple times
-        shared_context = {
-            "project_path": self.project_path,
-            "rules_config": rules_config,
-            "scope": scope,
-            "include_content": self.config.include_content,
-        }
-
-        # Batch files to amortize per-task IPC overhead on large projects.
-        chunks = self._chunk_files(files)
-
-        with ProcessPoolExecutor(
+        return run_parallel_analysis(
+            files,
+            rules_config,
+            scope,
+            project_path=self.project_path,
             max_workers=self.max_workers,
-            initializer=init_worker,
-            initargs=(shared_context,),
-        ) as executor:
-            # We no longer need to pass project_path or rules_config to every call
-            futures = {executor.submit(analyze_chunk_worker, chunk): chunk for chunk in chunks}
-            for future in as_completed(futures):
-                modules_data.extend(future.result())
-                for py_file in futures[future]:
-                    tracker.update(py_file, 0)
-
-        tracker.complete()
-        return modules_data
+            include_content=self.config.include_content,
+        )
 
     def _chunk_files(self, files: list[pathlib.Path]) -> list[list[pathlib.Path]]:
         """Splits the file list into batches sized for the worker pool.
@@ -270,10 +177,7 @@ class ProjectAnalyzer:
         Returns:
             A list of file batches (at least one, even for an empty input).
         """
-        if not files:
-            return []
-        chunk_size = max(1, len(files) // (self.max_workers * 4))
-        return [files[i : i + chunk_size] for i in range(0, len(files), chunk_size)]
+        return chunk_files(files, self.max_workers)
 
     def _run_qgis_specific_checks(
         self,
@@ -291,25 +195,7 @@ class ProjectAnalyzer:
         Returns:
             A QGISChecksResult containing findings from all checks.
         """
-        metadata_file = self.project_path / "metadata.txt"
-        compliance = audit_qgis_standards(modules_data, self.project_path, rules_config)
-        structure = validate_plugin_structure(self.project_path)
-        metadata = validate_metadata(metadata_file)
-
-        # New Repository Constraints
-        constraints = validate_package_constraints(
-            discovery["total_size_mb"], discovery["binaries"]
-        )
-
-        return {
-            "compliance": compliance,
-            "structure": structure,
-            "metadata": metadata,
-            "binaries": discovery["binaries"],
-            "package_size": discovery["total_size_mb"],
-            "package_constraints": constraints,
-            "url_status": validate_metadata_urls(metadata.get("metadata", {})),
-        }
+        return run_qgis_checks(modules_data, self.project_path, rules_config, discovery)
 
     def _run_semantic_analysis(
         self, modules_data: list[ModuleAnalysisResult]
@@ -322,35 +208,9 @@ class ProjectAnalyzer:
         Returns:
             A dictionary containing cycles, metrics, and missing resources.
         """
-        dep_graph = DependencyGraph()
-        all_resource_usages = []
-        res_validator = None
-
-        if self.project_type == "qgis":
-            res_validator = ResourceValidator(self.project_path)
-            res_validator.scan_project_resources(self.matcher)
-
-        for m in modules_data:
-            dep_graph.add_node(m["path"], cast(dict[str, Any], m))
-            if self.project_type == "qgis" and "resource_usages" in m:
-                # Type safe usage of resource_usages from TypedDict
-                resource_usages = m.get("resource_usages", [])
-                all_resource_usages.extend(resource_usages)
-
-        dep_graph.build_edges(self.project_path)
-        cycles = dep_graph.detect_cycles()
-        metrics = dep_graph.get_coupling_metrics()
-
-        missing_resources = []
-        if self.project_type == "qgis" and res_validator:
-            missing_resources = res_validator.validate_usage(all_resource_usages)
-
-        return {
-            "cycles": cycles,
-            "graph": {u: list(v) for u, v in dep_graph.adjacency_list.items()},
-            "metrics": metrics,
-            "missing_resources": missing_resources,
-        }
+        return run_semantic_analysis(
+            modules_data, self.project_path, self.project_type, self.matcher
+        )
 
     def run(self, scope: str = "all") -> bool:
         """Executes the analysis pipeline based on the specified scope.
@@ -535,27 +395,4 @@ class ProjectAnalyzer:
         Returns:
             Filtered list of module analysis results.
         """
-        if scope == "all":
-            return modules_data
-
-        allowed_rules = SCOPE_RULES.get(scope, set())
-        if not allowed_rules:
-            return modules_data
-
-        # Filter issues in each module
-        filtered_modules = []
-        for module in modules_data:
-            filtered_module = module.copy()
-            filtered_module["ast_issues"] = [
-                issue
-                for issue in module.get("ast_issues", [])
-                if issue.get("type") in allowed_rules
-            ]
-            filtered_module["security_issues"] = [
-                issue
-                for issue in module.get("security_issues", [])
-                if issue.get("type") in allowed_rules
-            ]
-            filtered_modules.append(filtered_module)
-
-        return filtered_modules
+        return filter_issues_by_scope(modules_data, scope)
