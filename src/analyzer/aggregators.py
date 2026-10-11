@@ -193,7 +193,7 @@ def get_optimizations(modules_data: list[ModuleAnalysisResult]) -> list[dict[str
                 {
                     "module": module["path"],
                     "type": "complexity_refactoring",
-                    "priority": "high",
+                    "priority": "medium",
                     "message": "Consider breaking down large logic",
                 }
             )

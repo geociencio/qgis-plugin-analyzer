@@ -30,13 +30,13 @@ on `QDialog.exec()`/attribute calls) plus release-process/agentic docs.
 
 ## 🐛 Known Issues
 
-**None blocking** — 194 tests passing; `ruff check` + `mypy src/` clean; self-analysis `--max-cc 15` green (max func CC 13).
+**None blocking** — 232 tests passing; `ruff check` + `mypy src/` clean; self-analysis `--max-cc 15` green (max func CC 13).
 
 - **Metrics validator false positives**: `forge.py metrics validate` flags **4**
   entries in the `.agent/` framework submodule — `scaffold/qgis/workflows/release-plugin.md`
   (CC ≤ 10, 763 tests → the SecInterp domain template) and `skills/coding-standards/SKILL.md`
   ("complexity below 10" → generic guideline). These are template/domain values, not
-  stale analyzer metrics (CC ≤ 15, 194 tests). The validator scans `scaffold/` against
+  stale analyzer metrics (CC ≤ 15, 232 tests). The validator scans `scaffold/` against
   this project's ground truth; treat as non-blocking until the framework excludes
   domain packs from ground-truth checks. Disposition mirrors `ai-context-core`
   (see `AGENT_LESSONS.md` 2026-10-11). Do **not** patch the submodule or lower `max_cc`.
