@@ -190,23 +190,26 @@ pipeline queda **verde** al mergear (ver corrección de orden en el checklist).
 
 ---
 
-## Fase 5 — Cobertura funcional (decidir dueño)
+## Fase 5 — Cobertura funcional — [DECIDIDO: PORTAR] [HECHO 2026-10-10]
 
-Tras ADR-0008 (del proyecto hermano `ai-context-core`), estos dominios quedaron sin
-dueño y **no** están implementados **en este repo**:
-- Patrones de diseño (singleton/observer/strategy/factory/decorator).
-- Anti-patrones (god object, spaghetti, magic numbers, dead code).
-- Optimizaciones genéricas (hoy solo `SPATIAL_INDEX`) y métricas Halstead.
+Decisión del USER: **portar** los dominios huérfanos a `qgis-plugin-analyzer`.
+Nota: las fuentes `.py` de patrones/anti-patrones **ya no existen** en
+`ai-context-core` (solo quedan `.pyc` obsoletos), por lo que el port se hizo
+**desde cero**; sí se reutilizó el cálculo de Halstead y la idea de
+`optimization_checker`.
 
-**Verificar antes de actuar**: `ai-context-core` aún incluye visitors
-`halstead.py`/`optimization_checker.py`/`optimizations.py` pese a que ADR-0008 F2
-figure como `[x]`; confirmar el estado real de esa eliminación antes de declarar
-los dominios huérfanos.
-
-**Decisión requerida** (marcar como *out of scope* en `RULES.md`/ADR o portar aquí):
-- Recomendado: **portar** patrones/anti-patrones/optimizaciones/Halstead a
-  `qgis-plugin-analyzer` (encaja con su identidad de "higiene de plugin"), o
-  declararlos explícitamente fuera de alcance para cerrar el hueco del ecosistema.
+Implementado:
+- `src/analyzer/utils/halstead.py`: métricas Halstead (vocabulary/length/volume/
+  difficulty/effort), expuestas por módulo en `research_metrics.halstead`.
+- `src/analyzer/visitors/patterns_visitor.py`: patrones de diseño (singleton/
+  factory/observer/strategy/decorator) en `patterns` (informativos) y anti-patrones
+  `GOD_OBJECT`, `SPAGHETTI_CODE`, `MAGIC_NUMBER`, `DEAD_CODE` como issues de
+  severidad **info (Low)**, suprimibles con `# noqa`.
+- Agregación en `aggregators`: `patterns` (mapa `patrón → module:name`) y
+  `optimizations` (módulo grande / hotspot de complejidad) en el JSON.
+- Regla registrada en el scope `all`/`architecture` de `CompositeVisitor`.
+- Tests en `tests/test_patterns_visitor.py` (12). Self-run: `GOD_OBJECT` 1,
+  `SPAGHETTI_CODE` 10, `MAGIC_NUMBER` 35; `quality_score` sin cambios (54.5).
 
 ---
 
@@ -232,7 +235,7 @@ los dominios huérfanos.
 7. [x] Fase 4 — CC de las 3 funciones > 15 bajado a 0 violaciones (`88e927c`);
    descomposición de módulos/reporters y unificación CLI **pendiente**.
 8. [ ] Fase 3b — self-gate `--max-cc 15` + cobertura (`pytest-cov`) [este commit].
-9. [ ] Fase 5 — decisión de dueño (portar o declarar out of scope).
+9. [x] Fase 5 — PORTAR patrones/anti-patrones/Halstead/optimizaciones [hecho].
 10. [ ] Fase 6 — docs/DX.
 11. [ ] Cierre: `/close-session` + release `v1.15.0` (`/release-package`).
 

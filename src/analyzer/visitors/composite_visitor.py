@@ -7,6 +7,7 @@ from .i18n_visitor import I18nVisitor, collect_docstring_lines
 from .imports_visitor import ImportsVisitor
 from .metrics_visitor import MetricsVisitor
 from .noqa import collect_noqa_directives
+from .patterns_visitor import PatternsVisitor
 from .qgis_rules_visitor import QGISRulesVisitor
 from .qt_transition_visitor import QtTransitionVisitor
 from .safety_visitor import SafetyVisitor
@@ -57,6 +58,7 @@ class CompositeVisitor(ast.NodeVisitor):
         self._qgis_rules_visitor = QGISRulesVisitor(rel_path, rules_config, scope)
         self._qt_transition_visitor = QtTransitionVisitor(rel_path, rules_config, scope)
         self._safety_visitor = SafetyVisitor(rel_path, rules_config, scope)
+        self._patterns_visitor = PatternsVisitor(rel_path, rules_config, scope)
 
         # Filter visitors based on scope
         self._active_visitors = []
@@ -69,6 +71,7 @@ class CompositeVisitor(ast.NodeVisitor):
                 self._qgis_rules_visitor,
                 self._qt_transition_visitor,
                 self._safety_visitor,
+                self._patterns_visitor,
             ]
         elif self.scope == "i18n":
             self._active_visitors = [self._i18n_visitor]
@@ -79,6 +82,7 @@ class CompositeVisitor(ast.NodeVisitor):
                 self._imports_visitor,
                 self._metrics_visitor,
                 self._qt_transition_visitor,
+                self._patterns_visitor,
             ]
         elif self.scope == "security":
             # StandardsVisitor also has some security rules (subprocess)
@@ -93,6 +97,7 @@ class CompositeVisitor(ast.NodeVisitor):
             self._qgis_rules_visitor,
             self._qt_transition_visitor,
             self._safety_visitor,
+            self._patterns_visitor,
         ]:
             visitor._is_single_pass = True
 
@@ -114,6 +119,11 @@ class CompositeVisitor(ast.NodeVisitor):
     def docstring_stats(self) -> dict[str, int]:
         """Returns docstring statistics from metrics visitor."""
         return self._metrics_visitor.docstring_stats
+
+    @property
+    def patterns(self) -> dict[str, list[str]]:
+        """Returns design patterns detected by the patterns visitor."""
+        return self._patterns_visitor.patterns
 
     @property
     def qgis_context(self) -> dict[str, Any]:

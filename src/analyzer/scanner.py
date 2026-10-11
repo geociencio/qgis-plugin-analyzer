@@ -38,6 +38,7 @@ from .utils.ast_utils import (
     extract_imports_from_ast,
     extract_runtime_imports_from_ast,
 )
+from .utils.halstead import calculate_halstead_metrics
 from .visitors import QGISASTVisitor, QGISSecurityVisitor
 
 # --- Types ---
@@ -51,6 +52,8 @@ class ResearchMetrics(TypedDict):
     docstring_stats: dict[str, Any]
     qgis_context: dict[str, Any]
     security_findings_count: int
+    patterns: dict[str, list[str]]
+    halstead: dict[str, float]
 
 
 class ModuleAnalysisResult(TypedDict, total=False):
@@ -187,6 +190,8 @@ def analyze_module_worker(
                     "docstring_stats": visitor.docstring_stats,
                     "qgis_context": visitor.qgis_context,
                     "security_findings_count": len(security_issues),
+                    "patterns": visitor.patterns,
+                    "halstead": calculate_halstead_metrics(tree),
                 },
             }
         )
@@ -272,6 +277,14 @@ def _create_empty_analysis_result(
                 "legacy_signals_count": 0,
             },
             "security_findings_count": 0,
+            "patterns": {},
+            "halstead": {
+                "vocabulary": 0,
+                "length": 0,
+                "volume": 0.0,
+                "difficulty": 0.0,
+                "effort": 0.0,
+            },
         },
     }
 

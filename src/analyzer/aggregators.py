@@ -54,6 +54,8 @@ class FullAnalysisResult(TypedDict, total=False):
     qgis_compliance: dict[str, Any]
     repository_compliance: dict[str, Any]
     ruff_metadata: dict[str, Any]
+    patterns: dict[str, list[str]]
+    optimizations: list[dict[str, Any]]
 
 
 def get_metrics_summary(
@@ -157,6 +159,56 @@ def get_research_summary(modules_data: list[ModuleAnalysisResult]) -> dict[str, 
     }
 
 
+def get_patterns_summary(modules_data: list[ModuleAnalysisResult]) -> dict[str, list[str]]:
+    """Aggregates detected design patterns across all modules.
+
+    Args:
+        modules_data: Analyzed module results.
+
+    Returns:
+        Mapping of pattern name to sorted ``module:name`` occurrences.
+    """
+    summary: dict[str, list[str]] = {}
+    for module in modules_data:
+        research = module.get("research_metrics")
+        patterns = research.get("patterns") if research else {}
+        for pattern, names in patterns.items():
+            summary.setdefault(pattern, []).extend(f"{module['path']}:{name}" for name in names)
+    return {key: sorted(set(value)) for key, value in sorted(summary.items())}
+
+
+def get_optimizations(modules_data: list[ModuleAnalysisResult]) -> list[dict[str, Any]]:
+    """Suggests generic optimizations for large or high-complexity modules.
+
+    Args:
+        modules_data: Analyzed module results.
+
+    Returns:
+        Up to 30 optimization suggestions, one entry per affected module.
+    """
+    suggestions: list[dict[str, Any]] = []
+    for module in modules_data:
+        if module.get("complexity", 0) > 15 and len(module.get("functions", [])) > 5:
+            suggestions.append(
+                {
+                    "module": module["path"],
+                    "type": "complexity_refactoring",
+                    "priority": "high",
+                    "message": "Consider breaking down large logic",
+                }
+            )
+        if module.get("lines", 0) > 400:
+            suggestions.append(
+                {
+                    "module": module["path"],
+                    "type": "module_too_large",
+                    "priority": "medium",
+                    "message": f"Large module ({module.get('lines')} lines)",
+                }
+            )
+    return suggestions[:30]
+
+
 def build_analysis_results(
     project_path: pathlib.Path,
     project_type: str,
@@ -184,6 +236,8 @@ def build_analysis_results(
         },
         "modules": modules_data,
         "research_summary": get_research_summary(modules_data),
+        "patterns": get_patterns_summary(modules_data),
+        "optimizations": get_optimizations(modules_data),
     }
 
     if project_type == "qgis" and qgis_checks:
