@@ -29,7 +29,8 @@ class FixRegistry:
     def register(self, issue_type: str):
         """Decorator to register a fix handler for a specific issue type."""
 
-        def decorator(func):
+        def decorator(func: Any) -> Any:
+            """Registers ``func`` as the handler for ``issue_type``."""
             self._handlers[issue_type] = func
             return func
 
@@ -56,6 +57,7 @@ def create_ast_handler(issue_type: str, transformer_cls: Any, description_msg: s
     """
 
     def handler(ctx: FixContext) -> FixHandlerResult:
+        """Applies the transformer when the issue type matches (no-op otherwise)."""
         if ctx["issue"].get("type") != issue_type:
             return {
                 "applied": False,

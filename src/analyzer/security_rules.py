@@ -9,6 +9,9 @@ from typing import cast
 
 from .security_checker import SecurityContext, SecurityFinding, security_check
 
+# Minimum length for an assigned constant to be flagged as a possible secret.
+_MIN_SECRET_LENGTH = 8
+
 
 @security_check(node_type=ast.Call, rule_ids=("B102", "B307"))
 def check_exec_eval(context: SecurityContext) -> SecurityFinding | None:
@@ -125,7 +128,7 @@ def check_hardcoded_secrets(context: SecurityContext) -> SecurityFinding | None:
             if isinstance(node.value, ast.Constant) and isinstance(node.value.value, str):
                 # Only flag if it's not empty and looks like a secret
                 val = node.value.value
-                if len(val) > 8:
+                if len(val) > _MIN_SECRET_LENGTH:
                     cast_node = cast(ast.Assign, node)
                     return SecurityFinding(
                         id="HARDCODED_SECRET",

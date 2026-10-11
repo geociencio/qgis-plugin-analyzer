@@ -4,6 +4,8 @@
 #  Auto-fix engine for applying code corrections.
 #  ***************************************************************************/
 
+"""Auto-fix engine for applying safe AST-based code corrections."""
+
 import difflib
 import pathlib
 import subprocess

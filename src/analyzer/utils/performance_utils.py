@@ -171,7 +171,8 @@ def timeout_manager(seconds: int):
         seconds: Timeout duration in seconds.
     """
 
-    def signal_handler(_signum, _frame):
+    def signal_handler(_signum: int, _frame: Any) -> None:
+        """Raises :class:`TimeoutError` when the alarm fires."""
         raise TimeoutError(f"Operation exceeded {seconds}s")
 
     signal.signal(signal.SIGALRM, signal_handler)

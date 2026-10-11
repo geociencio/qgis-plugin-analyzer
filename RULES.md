@@ -65,7 +65,7 @@ The listed severity is the analyzer's default emitted severity; a profile
 | :--- | :--- | :--- | :--- |
 | `SPATIAL_INDEX` | 🔴 High | Iteration over features using `getFeatures()` without a spatial index/filter. | Use `QgsSpatialIndex` and `QgsFeatureRequest.setFilterRect()` to optimize spatial queries. |
 | `HIGH_COMPLEXITY` | 🟡 Medium | Cyclomatic complexity > 15 (includes a logic-density penalty). | Refactor complex functions by extracting sub-logic into smaller, testable methods. |
-| `NON_PYTHONIC_LOOP` | 🟢 Low | Manual counter (`i += 1`) inside a loop (non-pythonic). | Use `enumerate()` or iterate the collection directly. |
+| `NON_PYTHONIC_LOOP` | 🟢 Low | Manual index counter (`i += 1` used as a subscript) inside a loop. | Use `enumerate()` or iterate the collection directly. |
 
 ## 7. Architecture & Standards
 

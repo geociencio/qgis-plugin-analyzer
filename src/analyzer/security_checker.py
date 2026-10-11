@@ -76,6 +76,7 @@ class SecurityRegistry:
         """
 
         def decorator(func: Callable[[SecurityContext], SecurityFinding | None]):
+            """Registers ``func`` as a security check for ``node_type``."""
             if node_type not in cls._checks:
                 cls._checks[node_type] = []
             cls._checks[node_type].append(func)

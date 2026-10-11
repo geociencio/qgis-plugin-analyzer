@@ -24,7 +24,7 @@ for f in layer.getFeatures(QgsFeatureRequest()):
 i = 0
 for x in data:
     i += 1
-    process(x)
+    results[i] = process(x)
 """
         tree = ast.parse(code)
         visitor = StandardsVisitor("test.py")
@@ -32,7 +32,21 @@ for x in data:
 
         issues = [i for i in visitor.issues if i["type"] == "NON_PYTHONIC_LOOP"]
         self.assertEqual(len(issues), 1)
-        self.assertIn("Manual counter", issues[0]["message"])
+        self.assertIn("Manual index counter", issues[0]["message"])
+
+    def test_accumulator_is_not_non_pythonic_loop(self):
+        # Accumulators (``errors += 1``) are not manual index management.
+        code = """
+errors = 0
+for x in data:
+    errors += 1
+"""
+        tree = ast.parse(code)
+        visitor = StandardsVisitor("test.py")
+        visitor.visit(tree)
+
+        issues = [i for i in visitor.issues if i["type"] == "NON_PYTHONIC_LOOP"]
+        self.assertEqual(len(issues), 0)
 
     def test_missing_slot_detection(self):
         code = """

@@ -4,6 +4,8 @@
 #  Semantic analysis module for cross-file dependency and resource validation.
 #  ***************************************************************************/
 
+"""Semantic analysis: cross-file dependency graph and resource validation."""
+
 import pathlib
 import xml.etree.ElementTree as ET
 from typing import Any, cast
@@ -136,6 +138,7 @@ class DependencyGraph:
         cycles: list[list[str]] = []
 
         def dfs(node: str, path: list[str]) -> None:
+            """Depth-first walk that records a cycle on a recursion-stack hit."""
             visited.add(node)
             recursion_stack.add(node)
             path.append(node)

@@ -7,6 +7,9 @@ metrics from Python Abstract Syntax Trees (AST).
 import ast
 from typing import Any
 
+# Threshold above which a function's logic density is flagged.
+_LOGIC_DENSITY_THRESHOLD = 0.5
+
 
 def calculate_complexity(node: ast.AST) -> int:
     """Calculates Cyclomatic Complexity for a node with density-based penalty.
@@ -44,7 +47,7 @@ def calculate_complexity(node: ast.AST) -> int:
         line_range = max(decision_lines) - min(decision_lines) + 1
         density = len(decision_lines) / line_range
         # Threshold: 0.5 (1 decision every 2 lines)
-        if density > 0.5:
+        if density > _LOGIC_DENSITY_THRESHOLD:
             complexity = int(complexity * 1.5)
 
     return complexity

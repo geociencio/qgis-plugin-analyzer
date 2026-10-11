@@ -7,6 +7,10 @@ any reporter without creating cycles.
 
 from typing import Any
 
+# Score thresholds for the colored output (below fair is red).
+_SCORE_GOOD = 80
+_SCORE_FAIR = 50
+
 
 def print_header(title: str) -> None:
     """Print a formatted section header.
@@ -49,9 +53,9 @@ def print_colored_score(label: str, score: Any) -> None:
 
     try:
         val = float(score)
-        if val >= 80:
+        if val >= _SCORE_GOOD:
             color = "\033[92m"  # Green
-        elif val >= 50:
+        elif val >= _SCORE_FAIR:
             color = "\033[93m"  # Yellow
         else:
             color = "\033[91m"  # Red

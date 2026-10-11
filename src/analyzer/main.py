@@ -19,6 +19,8 @@
 #  ***************************************************************************/
 
 
+"""Command-line entry point for the QGIS Plugin Analyzer."""
+
 import sys
 
 from .cli import CLIApp

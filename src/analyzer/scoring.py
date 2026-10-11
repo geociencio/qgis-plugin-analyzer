@@ -18,10 +18,17 @@
 #  *                                                                         *
 #  ***************************************************************************/
 
+"""Scoring engine computing the quality, maintainability and security scores."""
+
 import math
 from typing import Any, TypedDict
 
 from .scanner import ModuleAnalysisResult
+
+# Score/coverage thresholds.
+_PERFECT_SCORE = 100.0
+_TYPE_HINT_TARGET = 0.8
+_MAX_PACKAGE_SIZE_MB = 20
 
 
 class QGISChecksResult(TypedDict):
@@ -83,7 +90,7 @@ class ScoringEngine:
         # Cap modernization bonus: if there are ANY issues, limit to 99.9
         # to ensure it's not a misleading perfect score.
         any_issues = any(m.get("ast_issues") for m in modules_data) or bool(ruff_findings)
-        if any_issues and (maintainability_score + modernization_bonus) >= 100.0:
+        if any_issues and (maintainability_score + modernization_bonus) >= _PERFECT_SCORE:
             maintainability_score = 99.9
         else:
             maintainability_score = min(100.0, maintainability_score + modernization_bonus)
@@ -210,7 +217,7 @@ class ScoringEngine:
         if total_params > 0 or total_functions > 0:
             param_cov = annotated_params / max(1, total_params)
             ret_cov = has_return_hint / max(1, total_functions)
-            if param_cov >= 0.8 and ret_cov >= 0.8:
+            if param_cov >= _TYPE_HINT_TARGET and ret_cov >= _TYPE_HINT_TARGET:
                 bonus += 5.0
 
         if detected_styles:
@@ -236,7 +243,7 @@ class ScoringEngine:
             score -= 10
         score -= len(missing_resources) * 5
         score -= len(binaries) * 50
-        if package_size > 20:
+        if package_size > _MAX_PACKAGE_SIZE_MB:
             score -= 10
 
         score -= security_penalty

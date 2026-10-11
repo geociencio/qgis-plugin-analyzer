@@ -17,3 +17,5 @@
 #  *   (at your option) any later version.                                   *
 #  *                                                                         *
 #  ***************************************************************************/
+
+"""QGIS Plugin Analyzer package root."""

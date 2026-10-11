@@ -4,6 +4,8 @@
 #  Repository compliance validators for QGIS.org policies.
 #  ***************************************************************************/
 
+"""Repository compliance validators for QGIS.org policies."""
+
 import ipaddress
 import pathlib
 import re  # Added for folder name validation
@@ -12,6 +14,11 @@ import urllib.error
 import urllib.parse
 import urllib.request
 from typing import Any
+
+# Repository policy thresholds.
+_HTTP_OK = 200
+_MAX_PACKAGE_SIZE_MB = 20
+_MAX_LISTED_SUFFIX = 3
 
 
 def is_ssrf_safe(url: str) -> bool:
@@ -97,7 +104,7 @@ def validate_metadata_urls(metadata: dict[str, str]) -> dict[str, str]:
             req.add_header("User-Agent", "QGIS-Plugin-Analyzer/1.0")
 
             with urllib.request.urlopen(req, timeout=5) as response:
-                if response.status == 200:
+                if response.status == _HTTP_OK:
                     results[url] = "ok"
                 else:
                     results[url] = f"error_{response.status}"
@@ -127,14 +134,14 @@ def validate_package_constraints(total_size_mb: float, binaries: list[str]) -> d
     errors = []
 
     # Rule: Max 20MB
-    if total_size_mb > 20:
+    if total_size_mb > _MAX_PACKAGE_SIZE_MB:
         errors.append(f"Package size ({total_size_mb:.2f}MB) exceeds the 20MB limit.")
 
     # Rule: No Binaries
     if binaries:
         count = len(binaries)
         shown = ", ".join(binaries[:3])
-        suffix = "..." if count > 3 else ""
+        suffix = "..." if count > _MAX_LISTED_SUFFIX else ""
         errors.append(
             f"Detected {count} binary file(s): {shown}{suffix}. Binaries are not allowed."
         )

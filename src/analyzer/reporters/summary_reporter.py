@@ -26,6 +26,10 @@ __all__ = [
     "_report_security",
 ]
 
+# Complexity thresholds for the colorized function listing.
+_CC_HIGH = 15
+_CC_MEDIUM = 8
+
 
 def report_summary(input_path: pathlib.Path, by: str = "total") -> bool:
     """Reads analysis JSON and prints a professional terminal summary.
@@ -261,7 +265,7 @@ def _report_by_functions(data: dict[str, Any]) -> bool:
     print("-" * 70)
     for f in all_funcs[:10]:
         cc = f.get("complexity", 1)
-        color = "\033[91m" if cc > 15 else ("\033[93m" if cc > 8 else "")
+        color = "\033[91m" if cc > _CC_HIGH else ("\033[93m" if cc > _CC_MEDIUM else "")
         reset = "\033[0m" if color else ""
         print(f"{f.get('name'):<30} | {color}{cc:<10}{reset} | {f.get('module')}")
 

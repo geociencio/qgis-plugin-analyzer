@@ -146,18 +146,24 @@ class StandardsVisitor(BaseVisitor):
             )
 
     def _check_non_pythonic_loop(self, node: ast.For) -> None:
-        """Flags manual ``counter += 1`` accumulation inside loops.
+        """Flags manual index management (``i += 1`` used to subscript) in loops.
+
+        Pure accumulators (e.g. ``errors += 1``) are not flagged: only counters
+        that are later used as a subscript (``arr[i]``) indicate manual index
+        bookkeeping that Python iterators make unnecessary.
 
         Args:
             node: The for-loop AST node.
         """
         for body_node in ast.walk(node):
-            if _is_manual_counter_increment(body_node):
-                target = cast(ast.Name, body_node.target)
+            if not _is_manual_counter_increment(body_node):
+                continue
+            counter = cast(ast.Name, body_node.target).id
+            if _is_used_as_subscript(node, counter):
                 self._report_issue(
                     "NON_PYTHONIC_LOOP",
                     body_node.lineno,
-                    f"Manual counter '{target.id} += 1' detected inside loop.",
+                    f"Manual index counter '{counter} += 1' detected inside loop.",
                     ast.unparse(body_node),
                 )
 
@@ -322,3 +328,20 @@ def _is_manual_counter_increment(node: ast.AST) -> TypeGuard[ast.AugAssign]:
         and isinstance(node.value, ast.Constant)
         and node.value.value == 1
     )
+
+
+def _is_used_as_subscript(loop: ast.AST, name: str) -> bool:
+    """Returns True when ``name`` is used as a subscript index within ``loop``.
+
+    Args:
+        loop: The loop AST node to search.
+        name: The candidate counter variable name.
+
+    Returns:
+        True if ``name`` appears as ``something[name]`` inside ``loop``.
+    """
+    for node in ast.walk(loop):
+        if isinstance(node, ast.Subscript) and isinstance(node.slice, ast.Name):
+            if node.slice.id == name:
+                return True
+    return False

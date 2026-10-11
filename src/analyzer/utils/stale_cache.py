@@ -11,6 +11,13 @@ import pathlib
 import time
 from typing import Any
 
+# Stale-cache display thresholds.
+_PREVIEW_COUNT = 3
+_MAX_NEWER_FILES = 10
+_SECONDS_PER_MINUTE = 60
+_MINUTES_PER_HOUR = 60
+_HOURS_PER_DAY = 24
+
 
 def detect_stale_cache(input_path: pathlib.Path) -> str | None:
     """Detects whether cached analysis results are stale.
@@ -40,7 +47,7 @@ def detect_stale_cache(input_path: pathlib.Path) -> str | None:
 
     age = _humanize_age(cutoff)
     preview = ", ".join(str(f.relative_to(source_dir)) for f in newer_files[:3])
-    if len(newer_files) > 3:
+    if len(newer_files) > _PREVIEW_COUNT:
         preview += ", …"
 
     return (
@@ -84,7 +91,7 @@ def _find_newer_source_files(source_dir: pathlib.Path, cutoff: float) -> list[pa
             continue
         if f.is_file() and f.stat().st_mtime > cutoff:
             newer.append(f)
-            if len(newer) >= 10:
+            if len(newer) >= _MAX_NEWER_FILES:
                 break
     return newer
 
@@ -99,12 +106,12 @@ def _humanize_age(timestamp: float) -> str:
         A string like ``5m ago`` or ``2d ago``.
     """
     seconds = max(0, int(time.time() - timestamp))
-    if seconds < 60:
+    if seconds < _SECONDS_PER_MINUTE:
         return f"{seconds}s ago"
     minutes = seconds // 60
-    if minutes < 60:
+    if minutes < _MINUTES_PER_HOUR:
         return f"{minutes}m ago"
     hours = minutes // 60
-    if hours < 24:
+    if hours < _HOURS_PER_DAY:
         return f"{hours}h ago"
     return f"{hours // 24}d ago"

@@ -34,6 +34,9 @@ QT6_REMOVED_ENUMS: dict[str, str] = {
 # Import suffixes that indicate compiled resources (removed in PyQt6).
 _RESOURCE_SUFFIX = "_rc"
 
+# Legacy QDateTime(yyyy, mm, dd, hh, MM, ss, ms, ts) positional-argument count.
+_QDATETIME_LEGACY_ARG_COUNT = 8
+
 
 class QtTransitionVisitor(BaseVisitor):
     """Visitor for Qt6 migration / transition patterns.
@@ -190,7 +193,7 @@ class QtTransitionVisitor(BaseVisitor):
         if not (isinstance(node.func, ast.Name) and node.func.id == "QDateTime"):
             return
 
-        if len(node.args) == 8:
+        if len(node.args) == _QDATETIME_LEGACY_ARG_COUNT:
             self._report_issue(
                 "QT6_QDATETIME_ARGS",
                 node.lineno,

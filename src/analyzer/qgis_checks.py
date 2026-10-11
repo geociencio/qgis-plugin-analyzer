@@ -10,6 +10,7 @@ from typing import Any
 
 from .scanner import ModuleAnalysisResult, audit_qgis_standards
 from .scoring import QGISChecksResult
+from .utils import logger
 from .validators import (
     validate_metadata,
     validate_metadata_urls,
@@ -52,3 +53,36 @@ def run_qgis_checks(
         "package_constraints": constraints,
         "url_status": validate_metadata_urls(metadata.get("metadata", {})),
     }
+
+
+def strict_gate_failed(
+    *,
+    fail_on_error: bool,
+    project_type: str,
+    qgis_checks: QGISChecksResult | None,
+) -> bool:
+    """Evaluates the strict-mode gate for QGIS compliance.
+
+    Args:
+        fail_on_error: Whether strict mode is enabled.
+        project_type: Detected project type.
+        qgis_checks: The QGIS checks result, if computed.
+
+    Returns:
+        True if strict mode is enabled and critical issues were found.
+    """
+    if not (fail_on_error and project_type == "qgis" and qgis_checks):
+        return False
+
+    compliance = qgis_checks["compliance"]
+    structure = qgis_checks["structure"]
+    metadata = qgis_checks["metadata"]
+    failed = (
+        int(compliance.get("issues_count", 0)) > 0
+        or not structure.get("is_valid", True)
+        or not metadata.get("is_valid", True)
+        or not qgis_checks["package_constraints"].get("is_valid", True)
+    )
+    if failed:
+        logger.error("❌ Strict Mode: Critical QGIS compliance issues detected. Failing analysis.")
+    return failed

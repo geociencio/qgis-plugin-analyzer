@@ -8,6 +8,12 @@ import datetime
 import pathlib
 from typing import Any
 
+# Report display thresholds.
+_MAX_LISTED_ITEMS = 10
+_MAX_PACKAGE_SIZE_MB = 20
+_SCORE_GOOD = 80
+_SCORE_FAIR = 50
+
 
 def _get_html_styles() -> list[str]:
     """Returns the CSS styles for the HTML report.
@@ -157,7 +163,7 @@ def _build_html_semantic_section(semantic: dict[str, Any]) -> str:
         html.append("<ul>")
         for res in missing_res[:10]:
             html.append(f"<li>{res}</li>")
-        if len(missing_res) > 10:
+        if len(missing_res) > _MAX_LISTED_ITEMS:
             html.append(f"<li>... ({len(missing_res) - 10} more)</li>")
         html.append("</ul></div>")
 
@@ -198,14 +204,14 @@ def _build_html_repo_compliance(repo_comp: dict[str, Any]) -> str:
         html.append("<ul>")
         for binary in binaries[:10]:
             html.append(f"<li><code>{binary}</code></li>")
-        if len(binaries) > 10:
+        if len(binaries) > _MAX_LISTED_ITEMS:
             html.append(f"<li>... ({len(binaries) - 10} more)</li>")
         html.append("</ul>")
     else:
         html.append("<div class='info'>✅ No prohibited binaries found</div>")
 
     package_size = repo_comp.get("package_size_mb", 0)
-    if package_size > 20:
+    if package_size > _MAX_PACKAGE_SIZE_MB:
         html.append(
             f"<div class='issue medium'><b>Package Size:</b> {package_size:.2f} MB (exceeds 20MB limit)</div>"
         )
@@ -332,17 +338,17 @@ def generate_html_report(analyses: dict[str, Any], output_path: pathlib.Path) ->
     now = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
     q_score = metrics.get("quality_score", 0)
-    cls_q = "high" if q_score >= 80 else "medium" if q_score >= 50 else "low"
+    cls_q = "high" if q_score >= _SCORE_GOOD else "medium" if q_score >= _SCORE_FAIR else "low"
 
     m_score = metrics.get("maintainability_score", 0)
-    cls_m = "high" if m_score >= 80 else "medium" if m_score >= 50 else "low"
+    cls_m = "high" if m_score >= _SCORE_GOOD else "medium" if m_score >= _SCORE_FAIR else "low"
 
     c_score = 0
     cls_c = "low"
     if project_type == "qgis":
         compliance = analyses.get("qgis_compliance", {})
         c_score = compliance.get("compliance_score", 0)
-        cls_c = "high" if c_score >= 80 else "medium" if c_score >= 50 else "low"
+        cls_c = "high" if c_score >= _SCORE_GOOD else "medium" if c_score >= _SCORE_FAIR else "low"
 
     # Build header and scores
     html_body = _build_html_header(

@@ -18,6 +18,8 @@
 #  *                                                                         *
 #  ***************************************************************************/
 
+"""Analysis engine orchestrating the scanner → visitors → aggregators pipeline."""
+
 import pathlib
 from typing import Any
 
@@ -29,7 +31,7 @@ from .aggregators import (
 from .engine_config import ProjectConfig
 from .module_cache import build_cache
 from .parallel_analysis import chunk_files, run_parallel_analysis
-from .qgis_checks import run_qgis_checks
+from .qgis_checks import run_qgis_checks, strict_gate_failed
 from .ruff_audit import run_ruff_audit as _run_ruff_audit
 from .scanner import ModuleAnalysisResult
 from .scope_filter import filter_issues_by_scope
@@ -51,6 +53,8 @@ from .utils import (
 
 
 class ProjectAnalyzer:
+    """Orchestrates the scanner → visitors → aggregators analysis pipeline."""
+
     def __init__(
         self,
         project_path: str,
@@ -367,23 +371,11 @@ class ProjectAnalyzer:
         Returns:
             True if strict mode is enabled and critical issues were found.
         """
-        if not (self.config.fail_on_error and self.project_type == "qgis" and qgis_checks):
-            return False
-
-        compliance = qgis_checks["compliance"]
-        structure = qgis_checks["structure"]
-        metadata = qgis_checks["metadata"]
-        failed = (
-            int(compliance.get("issues_count", 0)) > 0
-            or not structure.get("is_valid", True)
-            or not metadata.get("is_valid", True)
-            or not qgis_checks["package_constraints"].get("is_valid", True)
+        return strict_gate_failed(
+            fail_on_error=self.config.fail_on_error,
+            project_type=self.project_type,
+            qgis_checks=qgis_checks,
         )
-        if failed:
-            logger.error(
-                "❌ Strict Mode: Critical QGIS compliance issues detected. Failing analysis."
-            )
-        return failed
 
     def _filter_issues_by_scope(
         self, modules_data: list[ModuleAnalysisResult], scope: str

@@ -7,6 +7,9 @@ import math
 import re
 from dataclasses import dataclass
 
+# Shannon-entropy threshold above which a string is treated as a possible secret.
+_ENTROPY_THRESHOLD = 4.5
+
 
 @dataclass
 class SecretFinding:
@@ -67,7 +70,7 @@ class SecretScanner:
                 candidate = m.group(1)
                 entropy = self.calculate_entropy(candidate)
                 # Shanon entropy: random strings usually > 3.5 - 4.0
-                if entropy > 4.5:
+                if entropy > _ENTROPY_THRESHOLD:
                     findings.append(
                         SecretFinding(
                             type="HIGH_ENTROPY",

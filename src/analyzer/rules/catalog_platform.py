@@ -35,7 +35,7 @@ RULES_PLATFORM: list[RuleTuple] = [
         "NON_PYTHONIC_LOOP",
         "low",
         "performance_metrics",
-        "Manual counter (`i += 1`) inside a loop (non-pythonic).",
+        "Manual index counter (`i += 1` used as a subscript) inside a loop.",
         "Use `enumerate()` or iterate the collection directly.",
         ("performance",),
     ),

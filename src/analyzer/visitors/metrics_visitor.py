@@ -7,6 +7,9 @@ from typing import Any
 from ..utils.ast_utils import calculate_complexity
 from .base import BaseVisitor
 
+# Cyclomatic complexity above which a function is reported as too complex.
+_HIGH_COMPLEXITY_THRESHOLD = 15
+
 
 class MetricsVisitor(BaseVisitor):
     """Visitor focused on collecting research-based metrics.
@@ -68,7 +71,7 @@ class MetricsVisitor(BaseVisitor):
         """
         # HIGH_COMPLEXITY
         complexity = calculate_complexity(node)
-        if complexity > 15:
+        if complexity > _HIGH_COMPLEXITY_THRESHOLD:
             self._report_issue(
                 "HIGH_COMPLEXITY",
                 node.lineno,
@@ -87,7 +90,7 @@ class MetricsVisitor(BaseVisitor):
             node: The async function definition AST node.
         """
         complexity = calculate_complexity(node)
-        if complexity > 15:
+        if complexity > _HIGH_COMPLEXITY_THRESHOLD:
             self._report_issue(
                 "HIGH_COMPLEXITY",
                 node.lineno,

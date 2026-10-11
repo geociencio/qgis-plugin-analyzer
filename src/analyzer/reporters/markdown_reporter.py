@@ -9,6 +9,8 @@ import json
 import pathlib
 from typing import Any
 
+_MAX_LISTED_ITEMS = 10
+
 
 def _build_markdown_header(
     analyses: dict[str, Any], module_score: float, maint_score: float, project_type: str
@@ -106,7 +108,7 @@ def _build_markdown_semantic_section(semantic: dict[str, Any]) -> list[str]:
         )
         for res in missing_res[:10]:
             lines.append(f"  - `{res}`")
-        if len(missing_res) > 10:
+        if len(missing_res) > _MAX_LISTED_ITEMS:
             lines.append(f"  - ... ({len(missing_res) - 10} more)")
     else:
         lines.append("- All resource paths validated.")

@@ -18,6 +18,8 @@
 #  *                                                                         *
 #  ***************************************************************************/
 
+"""Aggregation of analysis results into the persisted output contract."""
+
 import datetime
 import pathlib
 from typing import Any, TypedDict, cast
@@ -34,6 +36,11 @@ from .scoring import (
     QGISChecksResult,
     SemanticAnalysisResult,
 )
+
+# Heuristic thresholds for optimization suggestions.
+_COMPLEXITY_HOTSPOT_CC = 15
+_COMPLEXITY_HOTSPOT_MIN_FUNCTIONS = 5
+_LARGE_MODULE_LINES = 400
 
 
 class FullAnalysisResult(TypedDict, total=False):
@@ -188,7 +195,10 @@ def get_optimizations(modules_data: list[ModuleAnalysisResult]) -> list[dict[str
     """
     suggestions: list[dict[str, Any]] = []
     for module in modules_data:
-        if module.get("complexity", 0) > 15 and len(module.get("functions", [])) > 5:
+        if (
+            module.get("complexity", 0) > _COMPLEXITY_HOTSPOT_CC
+            and len(module.get("functions", [])) > _COMPLEXITY_HOTSPOT_MIN_FUNCTIONS
+        ):
             suggestions.append(
                 {
                     "module": module["path"],
@@ -197,7 +207,7 @@ def get_optimizations(modules_data: list[ModuleAnalysisResult]) -> list[dict[str
                     "message": "Consider breaking down large logic",
                 }
             )
-        if module.get("lines", 0) > 400:
+        if module.get("lines", 0) > _LARGE_MODULE_LINES:
             suggestions.append(
                 {
                     "module": module["path"],

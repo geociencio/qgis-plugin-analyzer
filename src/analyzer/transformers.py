@@ -4,6 +4,8 @@
 #  AST-based code transformers for auto-fixing common issues.
 #  ***************************************************************************/
 
+"""AST-based code transformers used by the auto-fixer."""
+
 import ast
 import pathlib
 
@@ -21,6 +23,7 @@ class GDALImportTransformer(ast.NodeTransformer):
         self.changes_made = False
 
     def visit_Import(self, node: ast.Import) -> ast.AST | None:
+        """Rewrites ``import gdal`` into ``from osgeo import gdal``."""
         for alias in node.names:
             if alias.name == "gdal":
                 self.changes_made = True
@@ -45,6 +48,7 @@ class LegacyImportTransformer(ast.NodeTransformer):
         self.changes_made = False
 
     def visit_Import(self, node: ast.Import) -> ast.Import:
+        """Rewrites PyQt4/PyQt5 imports to the ``qgis.PyQt`` shim."""
         for alias in node.names:
             if alias.name.startswith(("PyQt4", "PyQt5")):
                 self.changes_made = True
@@ -54,6 +58,7 @@ class LegacyImportTransformer(ast.NodeTransformer):
         return node
 
     def visit_ImportFrom(self, node: ast.ImportFrom) -> ast.ImportFrom:
+        """Rewrites PyQt4/PyQt5 from-imports to the ``qgis.PyQt`` shim."""
         if node.module and node.module.startswith(("PyQt4", "PyQt5")):
             self.changes_made = True
             node.module = node.module.replace("PyQt5", "qgis.PyQt").replace("PyQt4", "qgis.PyQt")
@@ -74,6 +79,7 @@ class PrintToLogTransformer(ast.NodeTransformer):
         self.needs_import = False
 
     def visit_Expr(self, node: ast.Expr) -> ast.Expr:
+        """Rewrites a ``print(...)`` statement into ``QgsMessageLog.logMessage(...)``."""
         # Check if it's a print() call
         if isinstance(node.value, ast.Call):
             if isinstance(node.value.func, ast.Name) and node.value.func.id == "print":
@@ -124,6 +130,7 @@ class I18nTransformer(ast.NodeTransformer):
         self.i18n_methods = set(I18N_METHODS)
 
     def visit_Call(self, node: ast.Call) -> ast.Call:
+        """Wraps UI string arguments of known Qt setter methods in ``self.tr()``."""
         # Check if it's a UI method call with a string literal
         if isinstance(node.func, ast.Attribute):
             if node.func.attr in self.i18n_methods:
