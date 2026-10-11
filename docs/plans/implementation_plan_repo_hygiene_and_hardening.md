@@ -153,20 +153,17 @@ invalidez); se pospone a un plan propio.
 
 ## Fase 3 — CI / QA
 
-- Nuevo `.github/workflows/ci.yml` (matrix 3.11–3.13):
-  - `uv run ruff check . && uv run ruff format --check .`
-  - `uv run mypy src/` (unificar con `AGENTS.md`; el plan decía `src/analyzer`).
-  - `uv run pytest -q`
-  - self-gate de complejidad `--max-cc 15`: activarlo **solo tras Fase 4** (ver
-    orden). `forge.toml [project].analyzer_command` **no lo lee GitHub Actions**;
-    el workflow debe fijar el comando explícitamente.
-  - **Prerrequisito (N1)**: `ruff format --check .` ya falla hoy en
-    `scripts/sync_metrics.py` y `tests/test_i18n_wrappers.py`. Ejecutar
-    `uv run ruff format .` (o formatear esos 2 ficheros) **antes** de activar el
-    gate, para que Fase 3a nazca verde.
-- Cobertura: `--cov` **requiere** añadir `pytest-cov` al grupo dev (`pyproject.toml`)
-  y una sección `[tool.coverage]`; sin ello `pytest --cov` falla con
-  "unrecognized arguments".
+- [HECHO Fase 3a 2026-10-10] `.github/workflows/ci.yml` (matrix 3.11–3.13):
+  `ruff check`, `ruff format --check`, `mypy src/` y `pytest`. N1 resuelto
+  (`ruff format .` aplicado). `[tool.pytest.ini_options]` (testpaths, pythonpath)
+  añadido para que `uv run pytest` resuelva el layout `src/`.
+- [HECHO Fase 3b 2026-10-10] `pytest-cov` añadido al grupo dev; la CI corre
+  `pytest --cov=analyzer --cov-report=term-missing --cov-fail-under=70`
+  (cobertura real 74%). El self-gate `uv run qgis-analyzer analyze . --max-cc 15`
+  está activado (Fase 4 dejó 0 funciones con CC > 15). `forge.toml [project].analyzer_command`
+  **no lo lee GitHub Actions**; el workflow fija el comando explícitamente.
+- `tests/conftest.py` sigue ausente; con `[tool.pytest.ini_options] pythonpath`
+  ya no es necesario. Adoptarlo solo si se requiere fixture compartida.
 - Añadir `tests/conftest.py` (hoy ausente) si se adopta pytest a gran escala.
 
 **Criterio de aceptación**: PR verde/rojo reproducible; CI corre en cada push y el
@@ -180,14 +177,16 @@ pipeline queda **verde** al mergear (ver corrección de orden en el checklist).
   `visitors/standards_visitor.py` (50), `utils/ast_utils.py` (44),
   `reporters/summary_reporter.py` (44), `fixer.py` (37), `validators.py` (36),
   `semantic.py` (36).
-- **Funciones sobre el gate**: refactorizar `extract_runtime_imports_from_ast` (CC 22),
-  `apply_fixes` (18) y `handle_analyze` (16) para bajar de 15.
-- **Desbloquea** la activación del self-gate `--max-cc 15` de Fase 3: mientras estas
-  3 funciones sigan con CC > 15, un CI con el gate falla (`sys.exit(1)` en
-  `commands.py:135-140`).
-- **CLI en capas** (`main.py` → `cli/app.py` → `cli/commands/*` → `commands.py`):
+- [HECHO 2026-10-10] **Funciones sobre el gate**: `extract_runtime_imports_from_ast`,
+  `apply_fixes` y `handle_analyze` refactorizadas (helpers extraídos); self-run con
+  **0 funciones CC > 15**, desbloqueando el self-gate de Fase 3.
+- [PENDIENTE] **Descomponer** los módulos de mayor complejidad agregada (`commands.py`,
+  `standards_visitor.py`, `ast_utils.py`, `summary_reporter.py`, `fixer.py`,
+  `validators.py`, `semantic.py`). Fuera del camino crítico del gate; se aborda en
+  un refactor posterior.
+- [PENDIENTE] **CLI en capas** (`main.py` → `cli/app.py` → `cli/commands/*` → `commands.py`):
   evaluar si los wrappers `cli/commands/*` aportan valor o fusionar con `commands.py`.
-- **Reporters** (`html/markdown/summary`) comparten agregación → base común.
+- [PENDIENTE] **Reporters** (`html/markdown/summary`) comparten agregación → base común.
 
 ---
 
@@ -224,17 +223,15 @@ los dominios huérfanos.
 
 ## Orden de ejecución (checklist)
 
-1. [ ] Fase 0 — `git rm --cached` + `.gitignore` + borrar `migration/`.
-2. [ ] Fase 3a — `uv run ruff format .` (arregla N1 en `scripts/sync_metrics.py` y
-   `tests/test_i18n_wrappers.py`) y luego `ci.yml` con **ruff + mypy + pytest**
-   únicamente. **NO** activar aún el self-gate `--max-cc 15`: hoy hay 3 funciones con
-   CC > 15 y `commands.py:135-140` hace `sys.exit(1)`, dejaría el CI rojo desde el día 1.
-3. [ ] Fase 1.2 — ruff audit robusto.
-4. [ ] Fase 1.1 — `# noqa` transversal.
-5. [ ] Fase 1.3 — normalización de paths.
-6. [ ] Fase 2 — workers configurables + caché.
-7. [ ] Fase 4 — descomposición de módulos/funciones (baja las 3 funciones de CC > 15).
-8. [ ] Fase 3b — activar el self-gate `--max-cc 15` (ya verde) + cobertura (`pytest-cov`).
+1. [x] Fase 0 — `git rm --cached` + `.gitignore` + borrar `migration/` (`e1fe47c`).
+2. [x] Fase 3a — `ruff format .` (N1) + `ci.yml` ruff/mypy/pytest + `pythonpath` (`6a93bf5`).
+3. [x] Fase 1.2 — ruff audit robusto (`0b0d4ec`).
+4. [x] Fase 1.1 — `# noqa` transversal (`f26608c`).
+5. [x] Fase 1.3 — normalización de paths (`f925bfd`).
+6. [x] Fase 2.1 — workers configurables + batching (`662d3bb`); 2.2 caché **diferido**.
+7. [x] Fase 4 — CC de las 3 funciones > 15 bajado a 0 violaciones (`88e927c`);
+   descomposición de módulos/reporters y unificación CLI **pendiente**.
+8. [ ] Fase 3b — self-gate `--max-cc 15` + cobertura (`pytest-cov`) [este commit].
 9. [ ] Fase 5 — decisión de dueño (portar o declarar out of scope).
 10. [ ] Fase 6 — docs/DX.
 11. [ ] Cierre: `/close-session` + release `v1.15.0` (`/release-package`).
