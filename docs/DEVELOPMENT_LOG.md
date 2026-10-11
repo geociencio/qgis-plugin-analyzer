@@ -1,5 +1,11 @@
 # Development Log
 
+## [2026-10-10] Security Restored & Deep-Analysis Hardening (v1.15.1)
+- **Fixed**: Bandit-inspired security checks never ran (`security_rules` was not imported → empty registry). Now self-register on import; regression test added; `security` scope uses the real ids (`B102/B301/B307/B602/B608/HARDCODED_SECRET`).
+- **Refactor**: `rules/scopes.py` is the single source of truth for scope→rule ids; removed dead code (`models/`, `modernization_rules`, unused helpers); CC cut (`run` 16→1, `visit_For` 18→1, `visit_Constant` 17→8).
+- **Quality**: coverage 75%→86%, CI coverage floor 80%.
+- **Docs**: README deep update; comparison moved to `docs/research/COMPARISON_VS_ALTERNATIVES.md`.
+
 ## [2026-10-10] Repo Hygiene, CLI Hardening & CI (v1.15.0)
 - **Repo hygiene**: untracked generated artifacts (`AI_CONTEXT.md`, `PROJECT_SUMMARY.md`, `project_context.json`, `.analyzer_state.json`, `.coverage`, `analysis.log`, …) and extended `.gitignore`; archived debug artifacts into `docs/development/`.
 - **CLI robustness**: transversal `# noqa` / `# noqa: RULE_ID` opt-out; ruff audit runs via `sys.executable -m ruff` and reports `ruff_metadata.tool_unavailable`; `str`/`Path` boundary normalization.

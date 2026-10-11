@@ -5,6 +5,20 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.15.1] - 2026-10-10
+
+### Fixed
+- **Security scanning restored**: the Bandit-inspired checks (`eval`/`exec`, unsafe `pickle`, `shell=True`, SQL injection, hardcoded secrets) were never registered because `security_rules` was not imported, so the security registry stayed empty and **no** AST security check ran (silent false negatives, also inherited by `qgis-plugin-manager`). The checks now register on import; added a regression test and the `security` scope lists the real rule ids.
+
+### Changed
+- **Single source of truth for scopes**: the scope → rule-id mapping is extracted to `rules/scopes.py` and shared by the engine's filtering and the visitors' reporting gate (removes drift).
+- **Dead code removed**: `models/` package, `rules/modernization_rules`, `FixRegistry.get_all_handlers`, `BaseCommand.setup_output_dir` and the unused `validators.calculate_package_size`/`scan_for_binaries`.
+- **Complexity reduced**: `ProjectAnalyzer.run` (CC 16→1), `StandardsVisitor.visit_For` (18→1) and `I18nVisitor.visit_Constant` (17→8) split into focused helpers.
+- **Test coverage** raised from 75% to 86%; the CI coverage floor is now 80%.
+
+### Docs
+- README deep update (accurate features, CI badge, CLI/report contract) and the alternative-comparison section moved to an internal document (`docs/research/COMPARISON_VS_ALTERNATIVES.md`).
+
 ## [1.15.0] - 2026-10-10
 
 ### Added

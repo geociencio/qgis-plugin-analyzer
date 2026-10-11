@@ -64,20 +64,17 @@ The **QGIS Plugin Analyzer** is a static analysis tool designed specifically for
 - **Real-time Progress**: CLI progress bar with ETA tracking.
 - **Zero Runtime Dependencies**: Standard library only (Ruff is the only external tool).
 
-## 🆕 What's New in v1.15.0
+## 🆕 What's New in v1.15.1
 
-**Repo Hygiene & Hardening** - A cleaner repository, a hardened CLI, a real CI pipeline and new analysis coverage for design patterns, anti-patterns, Halstead metrics and generic optimizations.
+**Security scanning restored** — a patch release fixing a silent regression where the Bandit-inspired checks never ran, plus the post-1.15.0 hardening.
 
-- 🧹 **Repo hygiene** - Generated artifacts are no longer tracked; `.gitignore` extended.
-- 🚫 **Transversal `# noqa`** - Suppress any rule inline with `# noqa` or `# noqa: RULE_ID`.
-- 🧩 **Patterns & anti-patterns** - Detect `singleton`/`factory`/`observer`/`strategy`/`decorator` plus `GOD_OBJECT`, `SPAGHETTI_CODE`, `MAGIC_NUMBER`, `DEAD_CODE`.
-- 📐 **Halstead + optimizations** - Per-module Halstead metrics and `module_too_large` / `complexity_refactoring` suggestions.
-- 🔧 **Configurable workers** - `--workers N` (and profile `workers`) with file batching.
-- 🤖 **Reliable ruff audit** - Runs via `sys.executable -m ruff` and flags `tool_unavailable`.
-- ✅ **CI quality gate** - `ruff`, `mypy`, `pytest` (coverage floor 80%) and the `--max-cc 15` self-gate on Python 3.11–3.13.
-- 🔐 **Security registry restored** - the Bandit-inspired checks now register on import and actually run (eval/exec, pickle, shell, SQL, secrets).
+- 🔐 **Security registry restored** - `eval`/`exec`, unsafe `pickle`, `shell=True`, SQL injection and hardcoded secrets are now detected again (the checks register on import).
+- 🧹 **Dead code removed** - `models/`, `modernization_rules` and unused helpers dropped.
+- 📉 **Complexity reduced** - `ProjectAnalyzer.run`, `visit_For` and `visit_Constant` split into focused helpers.
+- 🧪 **Coverage 75% → 86%** - CI coverage floor raised to 80%.
+- 📖 **Docs** - README deep update; alternatives comparison moved to an internal doc.
 
-[**📖 Full Release Notes**](docs/releases/notes/v1.15.0.md) | [**🗺️ CLI Commands Roadmap**](docs/research/CLI_COMMANDS_ROADMAP.md)
+[**📖 Full Release Notes**](docs/releases/notes/v1.15.1.md) | [**🗺️ CLI Commands Roadmap**](docs/research/CLI_COMMANDS_ROADMAP.md)
 
 ## 🚀 Installation and Usage
 
