@@ -26,6 +26,7 @@ migration/
 # Generated analyzer artifacts / state (untracked on purpose)
 .ai_context_cache.json
 .analyzer_state.json
+.analyzer_cache.json
 .coverage
 analysis.log
 analysis_errors.json

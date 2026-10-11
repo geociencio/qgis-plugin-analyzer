@@ -18,6 +18,7 @@ DEFAULT_EXCLUDE = {
     ".ruff_cache/",
     ".mypy_cache/",
     ".analyzerignore",
+    ".analyzer_cache.json",
     "analysis_results/",
 }
 

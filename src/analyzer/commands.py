@@ -132,6 +132,8 @@ def _apply_config_overrides(analyzer: ProjectAnalyzer, args: argparse.Namespace)
         analyzer.config = dataclasses.replace(analyzer.config, generate_html=True)
     if getattr(args, "include_content", False):
         analyzer.config = dataclasses.replace(analyzer.config, include_content=True)
+    if getattr(args, "no_cache", False):
+        analyzer.config = dataclasses.replace(analyzer.config, cache=False)
 
 
 def _load_context(context_path: pathlib.Path) -> dict[str, Any]:
@@ -294,6 +296,7 @@ def handle_security(args: argparse.Namespace) -> None:
     output_dir = getattr(args, "output", "./analysis_results")
     profile = getattr(args, "profile", "default")
     analyzer = ProjectAnalyzer(str(project_path), output_dir, profile)
+    _apply_config_overrides(analyzer, args)
 
     if hasattr(args, "deep") and args.deep:
         print("🔍 Deep scan enabled (Entropy analysis and full secret detection)")

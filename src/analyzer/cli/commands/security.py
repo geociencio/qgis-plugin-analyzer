@@ -33,6 +33,11 @@ class SecurityCommand(BaseAnalyzerCommand):
             action="store_true",
             help="Enable entropy and full secrets detection",
         )
+        parser.add_argument(
+            "--no-cache",
+            action="store_true",
+            help="Disable the incremental per-file analysis cache",
+        )
 
     def execute(self, args: argparse.Namespace) -> int:
         """Execute the security command.

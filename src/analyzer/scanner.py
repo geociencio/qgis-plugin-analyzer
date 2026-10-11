@@ -104,7 +104,6 @@ def init_worker(context: dict[str, Any]) -> None:
 def analyze_module_worker(
     py_file: pathlib.Path | str,
     project_path: pathlib.Path | str | None = None,
-    cached_data: dict[str, Any] | None = None,
     rules_config: dict[str, Any] | None = None,
     scope: str = "all",
 ) -> ModuleAnalysisResult | None:
@@ -113,7 +112,6 @@ def analyze_module_worker(
     Args:
         py_file: Path to the Python file to analyze (``str`` or ``pathlib.Path``).
         project_path: Root path of the project. If missing, uses shared context.
-        cached_data: Optional previously cached analysis results.
         rules_config: Optional rule configuration overrides. If missing, uses shared context.
         scope: Analysis scope ('all', 'i18n', etc.). If missing, uses shared context.
 

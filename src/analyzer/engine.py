@@ -22,10 +22,12 @@ import pathlib
 from dataclasses import dataclass, field
 from typing import Any
 
+from . import __version__
 from .aggregators import (
     build_analysis_results,
     save_reports,
 )
+from .module_cache import CACHE_FILENAME, ModuleCache, cache_signature
 from .parallel_analysis import chunk_files, run_parallel_analysis
 from .qgis_checks import run_qgis_checks
 from .ruff_audit import run_ruff_audit as _run_ruff_audit
@@ -62,6 +64,7 @@ class ProjectConfig:
     fail_on_critical: bool = False
     include_content: bool = False
     workers: int | None = None
+    cache: bool = True
 
 
 class ProjectAnalyzer:
@@ -101,6 +104,7 @@ class ProjectAnalyzer:
             rules=raw_config.get("rules", {}),
             include_content=raw_config.get("include_content", False),
             workers=effective_workers,
+            cache=raw_config.get("cache", True),
         )
 
         # Resolve the worker count, keeping the anti-OOM ceiling of 4.
@@ -166,7 +170,31 @@ class ProjectAnalyzer:
             project_path=self.project_path,
             max_workers=self.max_workers,
             include_content=self.config.include_content,
+            cache=self._build_cache(scope),
         )
+
+    def _build_cache(self, scope: str) -> ModuleCache | None:
+        """Builds the per-file cache for the given scope, or None when disabled.
+
+        Args:
+            scope: The analysis scope (part of the cache signature).
+
+        Returns:
+            A loaded :class:`ModuleCache`, or None when caching is disabled.
+        """
+        if not self.config.cache:
+            return None
+        signature = cache_signature(
+            __version__,
+            project_path=self.project_path,
+            rules_config=self.config.rules,
+            scope=scope,
+            include_content=self.config.include_content,
+            project_type=self.project_type,
+        )
+        cache = ModuleCache(self.output_dir / CACHE_FILENAME, signature, __version__)
+        cache.load()
+        return cache
 
     def _chunk_files(self, files: list[pathlib.Path]) -> list[list[pathlib.Path]]:
         """Splits the file list into batches sized for the worker pool.
