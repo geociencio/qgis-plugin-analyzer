@@ -30,7 +30,7 @@ on `QDialog.exec()`/attribute calls) plus release-process/agentic docs.
 
 ## 🐛 Known Issues
 
-**None blocking** — 232 tests passing; `ruff check` + `mypy src/` clean; self-analysis `--max-cc 15` green (max func CC 13).
+**None blocking** — 233 tests passing; `ruff check` + `mypy src/` clean; self-analysis `--max-cc 15` green (max func CC 13). Self-run issues down to 10 LOW (SPAGHETTI_CODE/GOD_OBJECT).
 
 - **Metrics validator false positives**: `forge.py metrics validate` flags **5**
   entries in the `.agent/` framework submodule — `scaffold/qgis/workflows/release-plugin.md`

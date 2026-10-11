@@ -82,19 +82,19 @@
       "date": "2026-10-11",
       "session": "sync_metrics_auto",
       "scores": {
-        "stability": 54.8,
+        "stability": 54.6,
         "maintainability": 99.9,
         "security": 100.0
       },
       "tests": {
-        "pass": 232,
-        "total": 232
+        "pass": 233,
+        "total": 233
       },
       "issues": {
         "critical": 0,
         "high": 0,
-        "medium": 23,
-        "low": 57
+        "medium": 0,
+        "low": 10
       }
     }
   ],
@@ -111,19 +111,15 @@
   },
   "history": [],
   "summary": {
-    "test_count": 232,
-    "tests_ok": 232,
-    "quality_score_latest": 54.8,
+    "test_count": 233,
+    "tests_ok": 233,
+    "quality_score_latest": 54.6,
     "maintainability_score": 99.9,
     "security_score": 100.0,
-    "total_issues": 80,
+    "total_issues": 10,
     "issue_breakdown": {
-      "MISSING_DOCSTRING": 21,
       "SPAGHETTI_CODE": 8,
-      "MAGIC_NUMBER": 35,
-      "GOD_OBJECT": 2,
-      "MISSING_TYPE_HINTS": 2,
-      "NON_PYTHONIC_LOOP": 12
+      "GOD_OBJECT": 2
     },
     "i18n_issues_qgis_analyzer": 0
   }
