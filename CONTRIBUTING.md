@@ -95,4 +95,9 @@ uv run ruff check .
 ## 🛡️ Security
 For reporting vulnerabilities, use GitHub Security Advisories or contact the maintainers confidentially. Avoid publishing exploits in public issues.
 
+## 📦 Releases
+Maintainers publish versions to GitHub and PyPI following the
+**[Release Process](docs/releases/RELEASE_PROCESS.md)** (versioning, changelog, tagging,
+and the automated `release.yml` pipeline).
+
 Thank you for helping improve the tools for the QGIS community!

@@ -353,6 +353,7 @@ The development of this analyzer is based on official QGIS community guidelines,
 - **[Detailed Rules Catalog](RULES.md)**: Full documentation of all audit rules implemented in this analyzer.
 - **[Standardized Scoring Metrics](docs/development/SCORING_STANDARDS.md)**: Mathematical logic and thresholds for project evaluation.
 - **[Project Roadmap](docs/development/ROADMAP.md)**: Current status and future plans for the analyzer.
+- **[Release Process](docs/releases/RELEASE_PROCESS.md)**: How to cut a release — versioning, GitHub Release and PyPI publication.
 - **[Comparison vs Alternatives](docs/research/COMPARISON_VS_ALTERNATIVES.md)**: Internal positioning notes (kept out of this README).
 - **[Documentation Folder](docs/)**: Historical release notes, competitive analysis, and modernization guides.
 
