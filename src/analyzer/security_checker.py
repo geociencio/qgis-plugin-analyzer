@@ -61,15 +61,25 @@ class SecurityRegistry:
     """Registry for security checks managed by decorators."""
 
     _checks: dict[type[ast.AST], list[Callable[[SecurityContext], SecurityFinding | None]]] = {}
+    _rule_ids: set[str] = set()
 
     @classmethod
-    def register(cls, node_type: type[ast.AST]) -> Callable:
-        """Decorator to register a function as a security check for a specific node type."""
+    def register(cls, node_type: type[ast.AST], rule_ids: tuple[str, ...] = ()) -> Callable:
+        """Decorator to register a function as a security check for a specific node type.
+
+        Args:
+            node_type: The AST node type the check applies to.
+            rule_ids: The rule ids the check may emit (for catalog enumeration).
+
+        Returns:
+            The decorator that registers ``func``.
+        """
 
         def decorator(func: Callable[[SecurityContext], SecurityFinding | None]):
             if node_type not in cls._checks:
                 cls._checks[node_type] = []
             cls._checks[node_type].append(func)
+            cls._rule_ids.update(rule_ids)
             return func
 
         return decorator
@@ -80,6 +90,11 @@ class SecurityRegistry:
     ) -> list[Callable[[SecurityContext], SecurityFinding | None]]:
         """Returns all registered checks for a given AST node type."""
         return cls._checks.get(node_type, [])
+
+    @classmethod
+    def rule_ids(cls) -> set[str]:
+        """Returns the declared rule ids of all registered checks."""
+        return set(cls._rule_ids)
 
 
 # Decorator alias

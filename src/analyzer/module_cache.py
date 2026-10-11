@@ -179,3 +179,44 @@ class ModuleCache:
             self.path.write_text(json.dumps(payload), encoding="utf-8")
         except OSError as exc:
             logger.warning(f"⚠️  Could not write module cache: {exc}")
+
+
+def build_cache(
+    *,
+    enabled: bool,
+    project_path: pathlib.Path,
+    output_dir: pathlib.Path,
+    analyzer_version: str,
+    rules_config: dict[str, Any],
+    scope: str,
+    include_content: bool,
+    project_type: str,
+) -> ModuleCache | None:
+    """Build and load the per-file cache, or return None when disabled.
+
+    Args:
+        enabled: Whether caching is enabled (profile/CLI).
+        project_path: Root path of the analyzed project.
+        output_dir: Directory where the cache file lives.
+        analyzer_version: Installed analyzer version.
+        rules_config: Effective rule configuration.
+        scope: Analysis scope.
+        include_content: Whether source content is embedded in results.
+        project_type: Detected project type ('qgis' or 'generic').
+
+    Returns:
+        A loaded :class:`ModuleCache`, or None when ``enabled`` is False.
+    """
+    if not enabled:
+        return None
+    signature = cache_signature(
+        analyzer_version,
+        project_path=project_path,
+        rules_config=rules_config,
+        scope=scope,
+        include_content=include_content,
+        project_type=project_type,
+    )
+    cache = ModuleCache(output_dir / CACHE_FILENAME, signature, analyzer_version)
+    cache.load()
+    return cache

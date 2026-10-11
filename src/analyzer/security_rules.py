@@ -10,7 +10,7 @@ from typing import cast
 from .security_checker import SecurityContext, SecurityFinding, security_check
 
 
-@security_check(node_type=ast.Call)
+@security_check(node_type=ast.Call, rule_ids=("B102", "B307"))
 def check_exec_eval(context: SecurityContext) -> SecurityFinding | None:
     """B102/B307: Detect use of the builtin exec() or eval().
 
@@ -37,7 +37,7 @@ def check_exec_eval(context: SecurityContext) -> SecurityFinding | None:
     )
 
 
-@security_check(node_type=ast.Call)
+@security_check(node_type=ast.Call, rule_ids=("B301",))
 def check_insecure_deserialization(
     context: SecurityContext,
 ) -> SecurityFinding | None:
@@ -59,7 +59,7 @@ def check_insecure_deserialization(
     return None
 
 
-@security_check(node_type=ast.Call)
+@security_check(node_type=ast.Call, rule_ids=("B602",))
 def check_subprocess_shell(context: SecurityContext) -> SecurityFinding | None:
     """B602: Subprocess call with shell=True."""
     func_name = context.call_function_name
@@ -81,7 +81,7 @@ def check_subprocess_shell(context: SecurityContext) -> SecurityFinding | None:
     return None
 
 
-@security_check(node_type=ast.Call)
+@security_check(node_type=ast.Call, rule_ids=("B608",))
 def check_sql_injection(context: SecurityContext) -> SecurityFinding | None:
     """B608: Basic detection of SQL injection via string formatting."""
     if context.call_function_name == "execute":
@@ -111,7 +111,7 @@ def check_sql_injection(context: SecurityContext) -> SecurityFinding | None:
     return None
 
 
-@security_check(node_type=ast.Assign)
+@security_check(node_type=ast.Assign, rule_ids=("HARDCODED_SECRET",))
 def check_hardcoded_secrets(context: SecurityContext) -> SecurityFinding | None:
     """Detect assignments of sensitive names to constants."""
     node = context.node

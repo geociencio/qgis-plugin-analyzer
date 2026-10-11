@@ -47,8 +47,10 @@ uv sync
    - `fix/<short-description>`
    - `rule/<ID>-<short-description>`
 2. Implement logic in `src/analyzer/` (usually in `scanner.py`).
-3. Add or update the rule definition in `src/analyzer/rules/qgis_rules.py`.
-4. Update `RULES.md` with the rule documentation.
+3. Declare the rule in `src/analyzer/rules/catalog.py` (the unified rule registry:
+   id, severity, category, description, recommendation, scopes, sources).
+4. Regenerate the docs: `uv run python scripts/generate_rules_md.py`
+   (updates `RULES.md`; `list-rules` reads the same catalog automatically).
 
 ### 3. Quality & Formatting
 - Follow **PEP 8** and **PEP 257** (Google-style docstrings).
@@ -84,7 +86,7 @@ uv run ruff check .
 
 ## 📜 PR Checklist
 - [ ] Tests added/updated and passing successfully.
-- [ ] Documentation (`RULES.md`, `README`, `CHANGELOG`) updated.
+- [ ] Documentation (`RULES.md` regenerated, `README`, `CHANGELOG`) updated.
 - [ ] Commit messages follow **Conventional Commits**.
 - [ ] No secrets, credentials, or temporary files were added.
 

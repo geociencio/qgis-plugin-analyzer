@@ -25,8 +25,12 @@ class ListRulesCommand(BaseCommand):
         Args:
             parser: The argument parser for this command.
         """
-        # No additional arguments needed
-        pass
+        parser.add_argument(
+            "--format",
+            choices=["text", "markdown"],
+            default="text",
+            help="Output format: human-readable text or generated RULES.md markdown",
+        )
 
     def execute(self, args: argparse.Namespace) -> int:
         """Execute the list-rules command.
@@ -37,5 +41,5 @@ class ListRulesCommand(BaseCommand):
         Returns:
             Exit code (0 for success).
         """
-        handle_list_rules()
+        handle_list_rules(args)
         return 0

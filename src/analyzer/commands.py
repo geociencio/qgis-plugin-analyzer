@@ -15,7 +15,7 @@ from typing import Any, cast
 from .engine import ProjectAnalyzer
 from .fixer import AutoFixer
 from .reporters.summary_reporter import report_summary
-from .rules import get_qgis_audit_rules
+from .rules import render_list_rules_text, render_rules_md
 from .utils import DEFAULT_EXCLUDE
 from .utils.performance_utils import set_progress_quiet
 from .utils.stale_cache import detect_stale_cache
@@ -241,14 +241,18 @@ def _warn_legacy_output_dir(project_path: pathlib.Path) -> None:
         )
 
 
-def handle_list_rules() -> None:
-    """Handles the 'list-rules' command by displaying available audit rules."""
-    rules = get_qgis_audit_rules()
-    print("\n📋 QGIS Audit Rules Catalog:")
-    print("=" * 30)
-    for r in rules:
-        print(f"- [{r['severity'].upper()}] {r['id']}: {r['message']}")
-    print(f"\nTotal: {len(rules)} rules.\n")
+def handle_list_rules(args: argparse.Namespace | None = None) -> None:
+    """Handles the 'list-rules' command by displaying the full rule catalog.
+
+    Args:
+        args: Optional parsed arguments. ``args.format`` selects ``text``
+            (default) or ``markdown`` (the generated ``RULES.md`` content).
+    """
+    fmt = getattr(args, "format", "text") if args is not None else "text"
+    if fmt == "markdown":
+        print(render_rules_md(), end="")
+    else:
+        print(render_list_rules_text(), end="")
 
 
 def handle_init() -> None:

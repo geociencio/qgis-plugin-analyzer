@@ -3,7 +3,12 @@
 import ast
 from typing import Any
 
+from ..rules.registry import KNOWN_RULE_IDS
 from ..rules.scopes import SCOPE_RULES
+from ..utils.logging_utils import logger
+
+# Rule ids already warned about (avoids log spam from a single unknown rule).
+_WARNED_RULE_IDS: set[str] = set()
 
 
 class BaseVisitor(ast.NodeVisitor):
@@ -109,6 +114,10 @@ class BaseVisitor(ast.NodeVisitor):
             message: Description of the issue.
             code: Optional code snippet related to the issue.
         """
+        if rule_id not in KNOWN_RULE_IDS and rule_id not in _WARNED_RULE_IDS:
+            _WARNED_RULE_IDS.add(rule_id)
+            logger.warning(f"Rule '{rule_id}' is not registered in the rule catalog.")
+
         if self._should_report(rule_id):
             self.issues.append(
                 {

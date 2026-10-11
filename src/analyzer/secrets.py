@@ -32,6 +32,15 @@ class SecretScanner:
     def __init__(self):
         self.compiled_patterns = {k: re.compile(v) for k, v in self.PATTERNS.items()}
 
+    @classmethod
+    def rule_ids(cls) -> set[str]:
+        """Returns the ids of all secret-detection rules.
+
+        Returns:
+            The ``PATTERNS`` keys plus the inline ``HIGH_ENTROPY`` rule.
+        """
+        return set(cls.PATTERNS) | {"HIGH_ENTROPY"}
+
     def scan_text(self, text: str) -> list[SecretFinding]:
         """Scans a file's content for secrets line by line."""
         findings = []
