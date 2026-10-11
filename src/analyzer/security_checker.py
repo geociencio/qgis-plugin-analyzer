@@ -84,3 +84,8 @@ class SecurityRegistry:
 
 # Decorator alias
 security_check = SecurityRegistry.register
+
+# Import the built-in checks for their registration side effect. This must run
+# after ``security_check`` is defined; ``security_rules`` imports names from this
+# module, which is already fully initialized at this point.
+from . import security_rules  # noqa: E402,F401
