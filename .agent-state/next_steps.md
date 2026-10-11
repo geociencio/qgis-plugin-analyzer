@@ -1,40 +1,37 @@
-# Next Steps — Handover (2026-09-14, post-v1.14.0)
+# Next Steps — Handover (2026-10-10, v1.15.0 prepared)
 
-## Session Summary (2026-09-14)
+## Session Summary (2026-10-10)
 
-Completed the **5-phase analyzer generalization plan** and shipped **v1.14.0**
-(GitHub + PyPI). The analyzer now audits any QGIS plugin with a portable
-AST-based i18n rule, a `--max-cc` complexity gate, Qt6 migration rules, and a
-Python 3.11 floor.
+Executed the **Repo Hygiene & Hardening** plan (phases 0–6), reviewed with
+`/ia-critic`. Repository is clean, CLI hardened, CI added, and the analyzer now
+ports design-pattern / anti-pattern / Halstead / optimization coverage.
 
 ### Completed This Session
-- [x] Fase 1 — portable i18n AST rule in `I18nVisitor` (tr/translate, docstrings,
-      technical patterns, `# no-i18n`/`# noqa`, `extra_*` config).
-- [x] Fase 2 — `--max-cc N` gate (`cc_gate`/`cc_violations` in `--json`).
-- [x] Fase 3 — `requires-python >=3.11`, dropped `_minimal_toml_load`, PEP 585/604 typing.
-- [x] Fase 4 — synthetic + CC gate + back-compat tests; golden procedure documented.
-- [x] Fase 5 — docs reconciliation (`upstreaming` + `i18n-improvement`).
-- [x] Qt6 migration rules — 11 `QT6_*` rules via `QtTransitionVisitor` (`QGS4xx` parity).
-- [x] Type-hint coverage counts all parameter kinds (posonly/kwonly/*args/**kwargs).
-- [x] `summary` stale-cache detection (`analyzed_at` + `project_path` in JSON).
-- [x] Setuptools license deprecation fixed (SPDX string).
-- [x] Competitive analysis refreshed (2026 ecosystem data).
-- [x] Released **v1.14.0** (GitHub release + PyPI upload done by user).
-
-### Remaining / Next
-- [ ] **Golden SecInterp** (rec. 5): run `qgis-analyzer analyze ./sec_interp --json`
-      and verify 0 false-positive `MISSING_I18N` (procedure in
-      `docs/plans/implementation_plan_generalize_analyzer.md` §4.2).
-- [ ] **`ci-wizard`** (rec. 3): generate a workflow running
-      `qgis-plugin-analyzer` + `qgis-plugin-ci` together.
-- [ ] **OIDC/Trusted Publishers** (rec. 4): deferred — user publishes to PyPI manually.
-
-### Technical Debt
-- [ ] Reduce 297 self-reported MISSING_I18N in the analyzer's own codebase.
-- [ ] Address 3 HIGH_COMPLEXITY issues.
-- [ ] Phase E (agentic): drop `trigger` from SKILL.md frontmatter.
+- [x] Repo hygiene: untracked generated artifacts, extended `.gitignore`, removed `migration/`, archived debug artifacts.
+- [x] CI `.github/workflows/ci.yml` (ruff + mypy + pytest + coverage ≥70 + `--max-cc 15` self-gate), Python 3.11–3.13.
+- [x] Transversal `# noqa` / `# noqa: RULE_ID` opt-out.
+- [x] Ruff audit via `sys.executable -m ruff` + `ruff_metadata.tool_unavailable`.
+- [x] `str`/`Path` normalization before `.stat()`.
+- [x] Configurable workers (`--workers`, profile `workers`) + batching.
+- [x] Refactored 3 functions below CC 15 (self-gate green).
+- [x] Ported patterns/anti-patterns/Halstead/optimizations.
+- [x] Docs: `RULES.md` §9, output contract + CI flow in `docs/DEVELOPMENT_LOG.md`.
+- [x] **v1.15.0 prepared** (pyproject + uv.lock + CHANGELOG + `docs/releases/notes/v1.15.0.md`); **not** published, no tag yet.
 
 ## How to Resume
 1. Run `/start-session`.
-2. If SecInterp is available locally, run the golden validation (rec. 5).
-3. Otherwise pick up `ci-wizard` (rec. 3) or the MISSING_I18N debt.
+2. To finish the release: `git tag -a v1.15.0 -m "Release v1.15.0"`, then
+   `gh release create v1.15.0 --notes-file docs/releases/notes/v1.15.0.md`
+   (PyPI upload is manual: `uv run python -m build && uv run twine upload dist/*`).
+
+## Remaining / Next
+- [ ] **Fase 2.2** — incremental cache (content hash) + `--no-cache`.
+- [ ] **Fase 4** — module decomposition (`commands.py` 54, `standards_visitor.py` 50,
+      `ast_utils.py`, `summary_reporter.py`, `fixer.py`, `validators.py`, `semantic.py`)
+      + CLI layering + reporters common base.
+- [ ] **Fase 6** — unified rule registry to auto-generate `RULES.md`.
+- [ ] Tune anti-pattern noise if desired (`MAGIC_NUMBER` ×35, `SPAGHETTI_CODE` ×10 on self-run).
+
+## Technical Debt
+- [ ] Reduce self-reported `MISSING_I18N` in the analyzer's own codebase.
+- [ ] Coverage is 75% (floor 70%) — raise incrementally.
