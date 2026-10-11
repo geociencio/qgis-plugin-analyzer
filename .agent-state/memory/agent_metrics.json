@@ -63,13 +63,13 @@
       "date": "2026-10-10",
       "session": "sync_metrics_auto",
       "scores": {
-        "stability": 54.5,
-        "maintainability": 86.6,
+        "stability": 54.0,
+        "maintainability": 86.7,
         "security": 100.0
       },
       "tests": {
-        "pass": 161,
-        "total": 161
+        "pass": 192,
+        "total": 192
       },
       "issues": {
         "critical": 0,
