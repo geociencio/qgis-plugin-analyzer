@@ -17,9 +17,9 @@ Reference: `docs/reports/DEEP_ANALYSIS_v1.15.0_DEAD_CODE_DUPLICATION.md`
 - [x] README deep update; comparison → `docs/research/COMPARISON_VS_ALTERNATIVES.md` <!-- id: 3.1 -->
 
 ## Deferred Follow-ups
-- [ ] Module splits (engine/fixer/summary_reporter > 400 lines) <!-- id: 4.1 -->
+- [x] Module splits (engine/fixer/summary_reporter/commands ≤ 400 lines; see `docs/plans/implementation_plan_module_splits.md`) <!-- id: 4.1 -->
 - [ ] Fase 6 — unified rule registry to auto-generate `RULES.md` <!-- id: 4.2 -->
-- [ ] Fase 2.2 — incremental cache + `--no-cache` <!-- id: 4.3 -->
+- [x] Fase 2.2 — incremental cache + `--no-cache` (`docs/plans/implementation_plan_incremental_cache.md`) <!-- id: 4.3 -->
 
 ## Operational Status
 - **Active Phase**: None — all goals complete; v1.15.2 released on **GitHub + PyPI**.
