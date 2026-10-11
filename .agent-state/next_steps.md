@@ -24,7 +24,7 @@ on `QDialog.exec()`/attribute calls) plus release-process/agentic docs.
 ## Remaining / Next
 - [x] ~~**PyPI upload** of the latest release~~ — complete (verified on PyPI).
 - [x] ~~Module splits (`engine`/`fixer`/`summary_reporter` > 400 lines)~~ — done; also `commands.py`. All src modules ≤ 400 lines (`docs/plans/implementation_plan_module_splits.md`).
-- [ ] **Fase 6** unified rule registry to auto-generate `RULES.md` (`list-rules` only covers regex rules).
+- [x] ~~**Fase 6** unified rule registry to auto-generate `RULES.md`~~ — done; `list-rules` + `RULES.md` now cover all 51 rules (`docs/plans/implementation_plan_rule_registry.md`).
 - [x] ~~Fase 2.2 incremental cache (content hash) + `--no-cache`~~ — done (`docs/plans/implementation_plan_incremental_cache.md`).
 - [ ] Tune anti-pattern noise (`MAGIC_NUMBER`×35, `SPAGHETTI_CODE`×10 on self-run).
 
