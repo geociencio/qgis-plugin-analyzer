@@ -12,7 +12,7 @@ import logging
 import pathlib
 import sys
 import time
-from typing import Any
+from typing import Any, cast
 
 from .engine import ProjectAnalyzer
 from .fixer import AutoFixer
@@ -95,52 +95,101 @@ def handle_analyze(args: argparse.Namespace) -> None:
     profile = getattr(args, "profile", "default")
     scope = getattr(args, "scope", "all")
     as_json = getattr(args, "json", False)
+    max_cc = getattr(args, "max_cc", None)
 
     if as_json:
         _route_logs_to_stderr()
 
     _warn_legacy_output_dir(pathlib.Path(project_path))
 
-    workers = getattr(args, "workers", None)
-    analyzer = ProjectAnalyzer(str(project_path), output_dir, profile, workers=workers)
+    analyzer = ProjectAnalyzer(
+        str(project_path), output_dir, profile, workers=getattr(args, "workers", None)
+    )
+    _apply_config_overrides(analyzer, args)
 
-    # Apply overrides (moving towards centralized config in BaseAnalyzerCommand)
-    if hasattr(args, "strict") and args.strict:
+    success = analyzer.run(scope=scope)
+
+    context_path = analyzer.output_dir / "project_context.json"
+    if context_path.exists():
+        if as_json:
+            _emit_json(context_path, max_cc)
+        else:
+            _report_and_gate(context_path, max_cc)
+
+    if not success:
+        sys.exit(1)
+
+
+def _apply_config_overrides(analyzer: ProjectAnalyzer, args: argparse.Namespace) -> None:
+    """Applies CLI overrides onto the analyzer's configuration.
+
+    Args:
+        analyzer: The analyzer whose config is overridden.
+        args: Parsed command-line arguments.
+    """
+    if getattr(args, "strict", False):
         analyzer.config = dataclasses.replace(analyzer.config, strict=True)
-    if hasattr(args, "report") and args.report:
+    if getattr(args, "report", False):
         analyzer.config = dataclasses.replace(analyzer.config, generate_html=True)
     if getattr(args, "include_content", False):
         analyzer.config = dataclasses.replace(analyzer.config, include_content=True)
 
-    success = analyzer.run(scope=scope)
 
-    max_cc = getattr(args, "max_cc", None)
-    context_path = analyzer.output_dir / "project_context.json"
-    if context_path.exists():
-        if as_json:
-            with open(context_path, encoding="utf-8") as f:
-                data = json.load(f)
-            if max_cc is not None:
-                cc_result = _enforce_max_cc(data.get("modules", []), max_cc)
-                data["cc_gate"] = cc_result["gate"]
-                data["cc_violations"] = cc_result["violations"]
-            sys.stdout.write(json.dumps(data))
-        else:
-            report_summary(context_path)
-            if max_cc is not None:
-                with open(context_path, encoding="utf-8") as f:
-                    data = json.load(f)
-                cc_result = _enforce_max_cc(data.get("modules", []), max_cc)
-                for v in cc_result["violations"]:
-                    print(f"  - {v['path']}:{v['line']} -> {v['name']} (CC={v['complexity']})")
-                if cc_result["gate"] == "FAIL":
-                    print(
-                        f"❌ Cyclomatic complexity gate failed: "
-                        f"{len(cc_result['violations'])} function(s) exceed --max-cc {max_cc}."
-                    )
-                    sys.exit(1)
+def _load_context(context_path: pathlib.Path) -> dict[str, Any]:
+    """Loads the persisted analysis context JSON.
 
-    if not success:
+    Args:
+        context_path: Path to ``project_context.json``.
+
+    Returns:
+        The parsed analysis context.
+    """
+    with open(context_path, encoding="utf-8") as f:
+        return cast(dict[str, Any], json.load(f))
+
+
+def _emit_json(context_path: pathlib.Path, max_cc: int | None) -> None:
+    """Writes the analysis context as JSON to stdout.
+
+    Args:
+        context_path: Path to ``project_context.json``.
+        max_cc: Optional cyclomatic complexity gate; when set, the gate result
+            is embedded in the emitted JSON.
+    """
+    data = _load_context(context_path)
+    if max_cc is not None:
+        cc_result = _enforce_max_cc(data.get("modules", []), max_cc)
+        data["cc_gate"] = cc_result["gate"]
+        data["cc_violations"] = cc_result["violations"]
+    sys.stdout.write(json.dumps(data))
+
+
+def _report_and_gate(context_path: pathlib.Path, max_cc: int | None) -> None:
+    """Prints the human-readable summary and enforces the complexity gate.
+
+    Args:
+        context_path: Path to ``project_context.json``.
+        max_cc: Optional cyclomatic complexity gate.
+
+    Raises:
+        SystemExit: When the complexity gate fails (exit code 1).
+    """
+    report_summary(context_path)
+    if max_cc is None:
+        return
+
+    data = _load_context(context_path)
+    cc_result = _enforce_max_cc(data.get("modules", []), max_cc)
+    for violation in cc_result["violations"]:
+        print(
+            f"  - {violation['path']}:{violation['line']} -> "
+            f"{violation['name']} (CC={violation['complexity']})"
+        )
+    if cc_result["gate"] == "FAIL":
+        print(
+            f"❌ Cyclomatic complexity gate failed: "
+            f"{len(cc_result['violations'])} function(s) exceed --max-cc {max_cc}."
+        )
         sys.exit(1)
 
 

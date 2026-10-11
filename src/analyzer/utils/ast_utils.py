@@ -141,25 +141,42 @@ def _is_type_checking_guard(node: ast.If) -> bool:
     return False
 
 
-def _collect_import_name(node: ast.stmt) -> str:
-    """Extracts the module name string from an Import or ImportFrom node.
+def _collect_type_checking_lines(statements: list[ast.stmt]) -> set[int]:
+    """Collects line numbers of nodes nested inside TYPE_CHECKING guards.
 
     Args:
-        node: An AST Import or ImportFrom statement node.
+        statements: Top-level statements of the module.
 
     Returns:
-        The module name string, or an empty string if not applicable.
+        The set of line numbers that belong to TYPE_CHECKING blocks.
+    """
+    lines: set[int] = set()
+    for node in statements:
+        if isinstance(node, ast.If) and _is_type_checking_guard(node):
+            for child in ast.walk(node):
+                lineno = getattr(child, "lineno", None)
+                if lineno is not None:
+                    lines.add(lineno)
+    return lines
+
+
+def _imported_module_names(node: ast.AST) -> list[str]:
+    """Extracts the module name(s) contributed by an import node.
+
+    Args:
+        node: A candidate AST node; only Import/ImportFrom contribute names.
+
+    Returns:
+        The imported module name(s), or an empty list for other node types.
     """
     if isinstance(node, ast.Import):
-        # For bare ``import a, b`` we return the first name only;
-        # callers iterate over all names separately when needed.
-        return ""  # handled by caller
+        return [alias.name for alias in node.names]
     if isinstance(node, ast.ImportFrom):
         module_name = node.module if node.module else ""
         if node.level > 0:
             module_name = ("." * node.level) + module_name
-        return module_name
-    return ""
+        return [module_name] if module_name else []
+    return []
 
 
 def extract_runtime_imports_from_ast(tree: ast.AST) -> list[str]:
@@ -176,32 +193,16 @@ def extract_runtime_imports_from_ast(tree: ast.AST) -> list[str]:
     Returns:
         A sorted list of runtime-only imported module names.
     """
-    imports: list[str] = []
-
-    # Only iterate over top-level statements to detect TYPE_CHECKING guards
+    # Only top-level statements can hold TYPE_CHECKING guards.
     top_level = tree.body if isinstance(tree, ast.Module) else []
+    type_checking_lines = _collect_type_checking_lines(top_level)
 
-    # Collect line numbers of nodes inside TYPE_CHECKING blocks
-    type_checking_lines: set[int] = set()
-    for node in top_level:
-        if isinstance(node, ast.If) and _is_type_checking_guard(node):
-            for child in ast.walk(node):
-                if hasattr(child, "lineno"):
-                    type_checking_lines.add(child.lineno)
-
-    # Walk the full tree but skip nodes on TYPE_CHECKING lines
+    imports: list[str] = []
     for child_node in ast.walk(tree):
         lineno = getattr(child_node, "lineno", None)
         if lineno is not None and lineno in type_checking_lines:
             continue
-        if isinstance(child_node, ast.Import):
-            imports.extend(n.name for n in child_node.names)
-        elif isinstance(child_node, ast.ImportFrom):
-            module_name = child_node.module if child_node.module else ""
-            if child_node.level > 0:
-                module_name = ("." * child_node.level) + module_name
-            if module_name:
-                imports.append(module_name)
+        imports.extend(_imported_module_names(child_node))
 
     return sorted(set(imports))
 

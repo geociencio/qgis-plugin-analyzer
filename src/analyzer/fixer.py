@@ -7,7 +7,7 @@
 import difflib
 import pathlib
 import subprocess
-from typing import Any, TypedDict
+from typing import Any, TypedDict, cast
 
 from .transformers import (
     GDALImportTransformer,
@@ -317,74 +317,154 @@ class AutoFixer:
         by_file = self._group_issues_by_file(issues)
 
         for file_rel, file_issues in by_file.items():
-            file_path = self.project_path / file_rel
-            print(f"\n📄 {file_rel}")
-
-            try:
-                current_content = file_path.read_text(encoding="utf-8")
-            except Exception as e:
-                print(f"  ❌ Error reading file: {e}")
-                stats["failed"] += len(file_issues)
-                continue
-
-            file_modified = False
-            for issue in file_issues:
-                handler = issue.get("handler")
-                if not handler:
-                    continue
-
-                description = issue.get("fix_description", "Automatic fix")
-                print(f"  Line {issue.get('line', '?')}: {description}")
-
-                # Context with current memory buffer
-                ctx = self._create_context(file_path, issue, current_content)
-
-                if interactive and not self.dry_run:
-                    # In-memory transformation for preview
-                    # For interactive mode, we show diff of the single fix
-                    work_ctx = ctx.copy()
-                    work_ctx["dry_run"] = False
-                    result = handler(work_ctx)
-
-                    if result["applied"] and result["new_content"]:
-                        show_diff(file_path, current_content, result["new_content"])
-                    else:
-                        print("    (No changes suggested by handler)")
-
-                    response = input("    Apply fix? [y/n/q]: ").lower()
-                    if response == "q":
-                        print("Aborted by user.")
-                        return stats
-                    if response != "y":
-                        stats["skipped"] += 1
-                        continue
-
-                # Actual application on memory buffer
-                if not self.dry_run:
-                    work_ctx = ctx.copy()
-                    work_ctx["dry_run"] = False
-                    result = handler(work_ctx)
-
-                    if result["applied"] and result["new_content"]:
-                        current_content = result["new_content"]
-                        stats["applied"] += 1
-                        file_modified = True
-                        print(f"    ✅ Applied: {result['message']}")
-                    else:
-                        stats["failed"] += 1
-                        error = result.get("error", "Transformation returned no changes")
-                        print(f"    ❌ Failed: {error}")
-                else:
-                    # Simulation
-                    stats["applied"] += 1
-
-            # Write back the modified content once per file
-            if file_modified and not self.dry_run:
-                try:
-                    file_path.write_text(current_content, encoding="utf-8")
-                except Exception as e:
-                    print(f"  ❌ Error writing back to file: {e}")
-                    # We already counted them as applied, but technically it failed
-                    pass
+            self._apply_file_fixes(file_rel, file_issues, interactive, stats)
 
         return stats
+
+    def _apply_file_fixes(
+        self,
+        file_rel: str,
+        file_issues: list[dict[str, Any]],
+        interactive: bool,
+        stats: dict[str, int],
+    ) -> None:
+        """Applies every fix for a single file, updating ``stats`` in place.
+
+        Args:
+            file_rel: Path of the file relative to the project root.
+            file_issues: Issues to fix within this file.
+            interactive: Whether to prompt for confirmation and show diffs.
+            stats: Mutable processing statistics (applied, skipped, failed).
+        """
+        file_path = self.project_path / file_rel
+        print(f"\n📄 {file_rel}")
+
+        try:
+            current_content = file_path.read_text(encoding="utf-8")
+        except Exception as e:
+            print(f"  ❌ Error reading file: {e}")
+            stats["failed"] += len(file_issues)
+            return
+
+        file_modified = False
+        for issue in file_issues:
+            decision, current_content, modified = self._process_issue(
+                file_path, issue, current_content, interactive, stats
+            )
+            if decision == "quit":
+                return
+            file_modified = file_modified or modified
+
+        if file_modified and not self.dry_run:
+            self._write_back(file_path, current_content)
+
+    def _process_issue(
+        self,
+        file_path: pathlib.Path,
+        issue: dict[str, Any],
+        current_content: str,
+        interactive: bool,
+        stats: dict[str, int],
+    ) -> tuple[str, str, bool]:
+        """Processes a single issue on the in-memory buffer.
+
+        Args:
+            file_path: Path of the file being fixed.
+            issue: The issue to fix.
+            current_content: Current in-memory file content.
+            interactive: Whether to prompt for confirmation and show diffs.
+            stats: Mutable processing statistics.
+
+        Returns:
+            A tuple ``(decision, new_content, modified)`` where ``decision`` is
+            ``"quit"`` or ``"continue"``.
+        """
+        handler = issue.get("handler")
+        if not handler:
+            return ("continue", current_content, False)
+
+        description = issue.get("fix_description", "Automatic fix")
+        print(f"  Line {issue.get('line', '?')}: {description}")
+
+        ctx = self._create_context(file_path, issue, current_content)
+
+        if interactive and not self.dry_run:
+            decision = self._preview_and_confirm(file_path, handler, ctx, current_content)
+            if decision == "quit":
+                print("Aborted by user.")
+                return ("quit", current_content, False)
+            if decision == "skip":
+                stats["skipped"] += 1
+                return ("continue", current_content, False)
+
+        if self.dry_run:
+            stats["applied"] += 1
+            return ("continue", current_content, False)
+
+        result = self._run_handler(handler, ctx)
+        if result["applied"] and result["new_content"]:
+            stats["applied"] += 1
+            print(f"    ✅ Applied: {result['message']}")
+            return ("continue", result["new_content"], True)
+
+        stats["failed"] += 1
+        error = result.get("error", "Transformation returned no changes")
+        print(f"    ❌ Failed: {error}")
+        return ("continue", current_content, False)
+
+    def _preview_and_confirm(
+        self,
+        file_path: pathlib.Path,
+        handler: Any,
+        ctx: FixContext,
+        current_content: str,
+    ) -> str:
+        """Shows the diff for one fix and asks the user to confirm.
+
+        Args:
+            file_path: Path of the file being fixed.
+            handler: The fix handler callable.
+            ctx: Context for the handler.
+            current_content: Current in-memory file content.
+
+        Returns:
+            One of ``"apply"``, ``"skip"`` or ``"quit"``.
+        """
+        result = self._run_handler(handler, ctx)
+        if result["applied"] and result["new_content"]:
+            show_diff(file_path, current_content, result["new_content"])
+        else:
+            print("    (No changes suggested by handler)")
+
+        response = input("    Apply fix? [y/n/q]: ").lower()
+        if response == "q":
+            return "quit"
+        return "apply" if response == "y" else "skip"
+
+    @staticmethod
+    def _run_handler(handler: Any, ctx: FixContext) -> dict[str, Any]:
+        """Runs a fix handler against a non-dry-run copy of the context.
+
+        Args:
+            handler: The fix handler callable.
+            ctx: Context for the handler.
+
+        Returns:
+            The handler result dictionary.
+        """
+        work_ctx = ctx.copy()
+        work_ctx["dry_run"] = False
+        return cast(dict[str, Any], handler(work_ctx))
+
+    @staticmethod
+    def _write_back(file_path: pathlib.Path, content: str) -> None:
+        """Writes the modified content back to disk.
+
+        Args:
+            file_path: Path of the file being fixed.
+            content: Final content to persist.
+        """
+        try:
+            file_path.write_text(content, encoding="utf-8")
+        except Exception as e:
+            print(f"  ❌ Error writing back to file: {e}")
