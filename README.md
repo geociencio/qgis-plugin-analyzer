@@ -11,11 +11,12 @@
 [![GitHub forks](https://img.shields.io/github/forks/geociencio/qgis-plugin-analyzer?style=flat-square&logo=github)](https://github.com/geociencio/qgis-plugin-analyzer/network/members)
 [![Maintenance](https://img.shields.io/badge/Maintained%3F-yes-green.svg?style=flat-square)](https://github.com/geociencio/qgis-plugin-analyzer/graphs/commit-activity)
 [![Conventional Commits](https://img.shields.io/badge/Conventional%20Commits-1.0.0-yellow.svg?logo=git&style=flat-square)](https://conventionalcommits.org)
+[![CI](https://github.com/geociencio/qgis-plugin-analyzer/actions/workflows/ci.yml/badge.svg)](https://github.com/geociencio/qgis-plugin-analyzer/actions/workflows/ci.yml)
 
 **Quality Metrics:**
 
 ![Module Stability](https://img.shields.io/badge/Module%20Stability-54.5%2F100-yellow?style=flat-square)
-![Maintainability](https://img.shields.io/badge/Maintainability-86.6%2F100-green?style=flat-square)
+![Maintainability](https://img.shields.io/badge/Maintainability-86.7%2F100-green?style=flat-square)
 ![Security Score](https://img.shields.io/badge/Security--Bandit-100.0%2F100-brightgreen?style=flat-square)
 ![Type Coverage](https://img.shields.io/badge/Type%20Hints-99.2%25-brightgreen?style=flat-square)
 ![Docstring Coverage](https://img.shields.io/badge/Docstrings-93.0%25-brightgreen?style=flat-square)
@@ -25,29 +26,43 @@ The **QGIS Plugin Analyzer** is a static analysis tool designed specifically for
 
 ## ✨ Main Features
 
-- **Quality Blindage**: Comprehensive test suite with 86% global coverage and >95% on core AST visitors.
-- **Gen 6 Architecture**: Modernized agentic system with observability, memory lifecycle, and CodeWhale runtime bridge.
-- **Scaffold System**: Integrated blueprints for standardizing QGIS and mining plugin generation.
-- **Security Core (Bandit-inspired)**: Professional vulnerability scanning detecting `eval`, `exec`, shell injections, and SQL injection risks.
-- **Deep Entropy Secret Scanner**: Detects hardcoded API keys, passwords, and sensitive tokens using regex and information entropy.
-- **High-Performance Engine**: Parallel analysis powered by `ProcessPoolExecutor` with single-pass AST traversal and shared worker context.
-- **Project Auto-Detection**: Intelligently distinguishes between official QGIS Plugins and Generic Python Projects, tailoring validation logic accordingly.
-- **Advanced Ignore Engine**: Robust `.analyzerignore` support with non-anchored patterns and smart default excludes (`.venv`, `build`, etc.).
-- **Deep Semantic Analysis**: Cross-file dependency graphing (Mermaid), circular import detection, and module coupling metrics.
-- **Interactive Auto-Fix Mode**: Automatically fix common QGIS issues (GDAL imports, PyQt bridge, logging, i18n) with safety checks.
-- **Official Repository Compliance**: Proactive validation of binaries, package size, and metadata URLs.
-- **Real-time Progress**: CLI feedback with a progress bar and ETA tracking.
-- **Enhanced Configuration Profiles**: Rule-level severity control (`error`, `warning`, `info`, `ignore`) via `pyproject.toml`.
-- **Integrated Ruff Analysis**: Combines custom QGIS rules with the fastest linter in the Python ecosystem.
-- **AST-based i18n Audit**: Portable AST rule recognizing `self.tr()` and `QCoreApplication.translate()`, excluding docstrings/technical strings and honoring `# no-i18n` / `# noqa`.
-- **Cyclomatic Complexity Gate**: `--max-cc N` fails CI when any function exceeds the threshold, with `cc_gate`/`cc_violations` in `--json`.
+**Security & correctness**
+
+- **Bandit-inspired Security Core**: Detects `eval`/`exec` (B307/B102), unsafe `pickle` (B301), `shell=True` (B602), SQL injection (B608) and hardcoded secrets; findings carry CWE ids.
+- **Deep Entropy Secret Scanner**: Detects hardcoded API keys, passwords and tokens via regex + information entropy.
+- **Extended Safety Audit**: Signal leaks, missing slots and UI-blocking loops, with `QgsTask` suggestions.
+- **Qt Resource Validation**: Detects missing/broken resource paths (`:/plugins/...`).
+
+**QGIS standards & modernization**
+
+- **Precise AST rules**: i18n (`self.tr()` / `QCoreApplication.translate()`), obsolete API, protected members, mandatory cleanup, `iface`-as-argument, and more.
 - **Qt6 Migration Rules**: 11 AST-based `QT6_*` rules (drop-in parity with `flake8-qgis` `QGS4xx`) detecting APIs removed in Qt6.
-- **CI Output Contract**: `--json`, `--include-content`, and a versioned/schema'd `project_context.json` for machine-readable integration.
-- **Qt Resource Validation**: Detect missing or broken resource paths (`:/plugins/...`) in your code.
-- **Extended Safety Audit**: Detection of signal leaks, missing slots, and UI-blocking loops (QgsTask suggestions).
-- **Embedded Web Server**: View reports instantly with the built-in `serve` command.
-- **AI-Ready**: Generates structured summaries and optimized contexts for LLMs.
-- **Zero Runtime Dependencies**: Works using only the Python standard library (Ruff as an external tool).
+- **Official Repository Compliance**: Validates binaries, package size and metadata URLs before upload.
+
+**Quality & maintainability**
+
+- **Cyclomatic Complexity Gate**: `--max-cc N` fails CI when a function exceeds the threshold (`cc_gate`/`cc_violations` in `--json`).
+- **Design Patterns & Anti-patterns**: Detects `singleton`/`factory`/`observer`/`strategy`/`decorator`, plus `GOD_OBJECT`, `SPAGHETTI_CODE`, `MAGIC_NUMBER`, `DEAD_CODE`.
+- **Halstead Metrics & Optimizations**: Per-module Halstead metrics and `module_too_large` / `complexity_refactoring` suggestions.
+- **Transversal `# noqa`**: Suppress any rule inline with `# noqa` (whole line) or `# noqa: RULE_ID` (single rule).
+- **Enhanced Configuration Profiles**: Rule-level severity control (`error`, `warning`, `info`, `ignore`) via `pyproject.toml`.
+- **Integrated Ruff Analysis**: Runs Ruff through the active interpreter, exposing `ruff_metadata.tool_unavailable` when unavailable.
+
+**Architecture & performance**
+
+- **High-Performance Engine**: `ProcessPoolExecutor` with single-pass AST traversal, shared worker context, a configurable worker count (`--workers`) and file batching.
+- **Deep Semantic Analysis**: Cross-file dependency graph (Mermaid), circular-import detection and coupling metrics.
+- **Project Auto-Detection**: Distinguishes official QGIS plugins from generic Python projects and tailors validation accordingly.
+- **Advanced Ignore Engine**: `.analyzerignore` with non-anchored patterns and smart default excludes (`.venv`, `build`, …).
+
+**DX & integration**
+
+- **Interactive Auto-Fix**: AST-based fixes (GDAL imports, PyQt bridge, logging, i18n) with Git-status verification and diff preview.
+- **CI Output Contract**: `--json`, `--include-content`, and a versioned/schema'd `project_context.json` (`schema_version`, `analyzer_version`, `ruff_metadata`, `patterns`, `optimizations`).
+- **Quality Gates in CI**: `ruff` + `mypy` + `pytest` (coverage floor) and the `--max-cc` self-analysis gate on Python 3.11–3.13.
+- **Embedded Web Server**: Built-in `serve` command to browse HTML reports.
+- **Real-time Progress**: CLI progress bar with ETA tracking.
+- **Zero Runtime Dependencies**: Standard library only (Ruff is the only external tool).
 
 ## 🆕 What's New in v1.15.0
 
@@ -59,31 +74,10 @@ The **QGIS Plugin Analyzer** is a static analysis tool designed specifically for
 - 📐 **Halstead + optimizations** - Per-module Halstead metrics and `module_too_large` / `complexity_refactoring` suggestions.
 - 🔧 **Configurable workers** - `--workers N` (and profile `workers`) with file batching.
 - 🤖 **Reliable ruff audit** - Runs via `sys.executable -m ruff` and flags `tool_unavailable`.
-- ✅ **CI quality gate** - `ruff`, `mypy`, `pytest` (coverage floor 70%) and the `--max-cc 15` self-gate on Python 3.11–3.13.
+- ✅ **CI quality gate** - `ruff`, `mypy`, `pytest` (coverage floor 80%) and the `--max-cc 15` self-gate on Python 3.11–3.13.
+- 🔐 **Security registry restored** - the Bandit-inspired checks now register on import and actually run (eval/exec, pickle, shell, SQL, secrets).
 
 [**📖 Full Release Notes**](docs/releases/notes/v1.15.0.md) | [**🗺️ CLI Commands Roadmap**](docs/research/CLI_COMMANDS_ROADMAP.md)
-
-## ⚖️ Why use this Analyzer? (Comparison)
-
-| Feature | **QGIS Plugin Analyzer** | flake8-qgis | Ruff (Standard) | Official Repo Bot |
-| :--- | :---: | :---: | :---: | :---: |
-| **Run Locally / Offline**| ✅ (Your Machine) | ✅ | ✅ | ❌ (Upload Only) |
-| **Static Linting** | ✅ (Ruff + Custom) | ✅ (flake8) | ✅ (General) | ✅ (Limited) |
-| **QGIS-Specific Rules**| ✅ (Precise AST) | ✅ (Regex/AST) | ❌ | ✅ |
-| **Interactive Auto-Fix**| ✅ | ❌ | ❌ | ❌ |
-| **Semantic Analysis**  | ✅ | ❌ | ❌ | ❌ |
-| **Security Audit**     | ✅ (Bandit-style) | ❌ | ❌ | ✅ (Server-side) |
-| **Secret Scanning**    | ✅ (Entropy) | ❌ | ❌ | ✅ (Server-side) |
-| **HTML/MD Reports**    | ✅ | ❌ | ❌ | ❌ |
-| **AI Context Gen**      | ✅ (Project Brain) | ❌ | ❌ | ❌ |
-
-### Key Differentiators
-
-1.  **Shift Left (Run Locally)**: The biggest advantage is being able to run the **same high-standard checks** as the Official Repository *before* you upload your plugin. No more "reject-fix-upload" loops.
-2.  **High-Performance Hybrid Engine**: Combines multi-core AST processing with deep understanding of cross-file relationships and Qt-specific patterns.
-3.  **Safety-First Auto-Fixing**: AST-based transformations with Git status verification and interactive diff previews.
-4.  **Zero Runtime Stack**: Minimal footprint, ultra-fast execution, and easy CI integration.
-5.  **AI-Centric Design**: Built to help developers and AI agents understand complex QGIS plugins instantly.
 
 ## 🚀 Installation and Usage
 
@@ -101,7 +95,7 @@ uv tool install git+https://github.com/geociencio/qgis-plugin-analyzer.git
 pip install git+https://github.com/geociencio/qgis-plugin-analyzer.git
 ```
 
-**2. Local installation for development:**
+**3. Local installation for development:**
 ```bash
 git clone https://github.com/geociencio/qgis-plugin-analyzer
 cd qgis-plugin-analyzer
@@ -237,6 +231,7 @@ Audits an existing QGIS plugin repository with optional specialized scopes.
 | `--json` | Emit machine-readable JSON (`project_context.json`) to stdout. | `False` |
 | `--include-content` | Embed module source content in the JSON output. | `False` |
 | `--max-cc N` | Fail analysis if any function exceeds this cyclomatic complexity. | off |
+| `--workers N` | Number of parallel worker processes (clamped to `1..4` to bound memory). | `min(4, cpu-1)` |
 
 **Examples:**
 ```bash
@@ -268,7 +263,7 @@ Shows a professional, color-coded summary of findings directly in your terminal.
 
 | Argument | Description | Default |
 | :--- | :--- | :--- |
-| `-b`, `--by` | Granularity of the summary: `total`, `modules`, `functions`, `classes`. | `total` |
+| `-b`, `--by` | Granularity of the summary: `total`, `modules`, `functions`, `classes`, `security`. | `total` |
 | `-i`, `--input` | Path to the `project_context.json` file to summarize. | `analysis_results/project_context.json` |
 
 ### `qgis-analyzer security`
@@ -317,7 +312,18 @@ Initializes a recommended `.analyzerignore` file in the current directory with c
 
 ## 📊 Generated Reports
 
-- `project_context.json`: Full structured data for external integrations.
+Written to the `--output` directory (default `./analysis_results`):
+
+- **`project_context.json`** — machine-readable contract (schema v1):
+  - Top level: `schema_version`, `analyzer_version`, `project_name`, `project_path`, `analyzed_at`, `metrics`.
+  - `ruff_findings` + `ruff_metadata` (`exit_code`, `tool_unavailable`, `command`).
+  - `patterns` (design patterns) and `optimizations` (`module_too_large`, `complexity_refactoring`).
+  - Per module: `path`, `lines`, `complexity`, `imports`, `functions`, `classes`, `ast_issues`, `research_metrics` (type-hint/docstring coverage, `halstead`).
+  - `cc_gate` / `cc_violations` when `--max-cc` is used with `--json`.
+- **`PROJECT_SUMMARY.md`** / **`PROJECT_SUMMARY.html`** — human-readable report.
+- **`analyzer.log`** — run log.
+
+> The JSON is consumed by `ai-context-core`; keep the schema keys stable (bump `schema_version` on change).
 
 ## 📜 Audit Rules
 
@@ -351,8 +357,9 @@ The development of this analyzer is based on official QGIS community guidelines,
 
 ### Internal Resources
 - **[Detailed Rules Catalog](RULES.md)**: Full documentation of all audit rules implemented in this analyzer.
-- **[Standardized Scoring Metrics](docs/SCORING_STANDARDS.md)**: Mathematical logic and thresholds for project evaluation.
-- **[Project Roadmap](docs/ROADMAP.md)**: Current status and future plans for the analyzer.
+- **[Standardized Scoring Metrics](docs/development/SCORING_STANDARDS.md)**: Mathematical logic and thresholds for project evaluation.
+- **[Project Roadmap](docs/development/ROADMAP.md)**: Current status and future plans for the analyzer.
+- **[Comparison vs Alternatives](docs/research/COMPARISON_VS_ALTERNATIVES.md)**: Internal positioning notes (kept out of this README).
 - **[Documentation Folder](docs/)**: Historical release notes, competitive analysis, and modernization guides.
 
 ## 🛠️ Contributing
