@@ -12,20 +12,29 @@ from .security_checker import SecurityContext, SecurityFinding, security_check
 
 @security_check(node_type=ast.Call)
 def check_exec_eval(context: SecurityContext) -> SecurityFinding | None:
-    """B102/B307: Detect use of exec or eval."""
-    func_name = context.call_function_name
-    if func_name in ("exec", "eval"):
-        node = cast(ast.Call, context.node)
-        return SecurityFinding(
-            id="B102" if func_name == "exec" else "B307",
-            severity="HIGH",
-            confidence="HIGH",
-            message=f"Use of '{func_name}' detected. This can lead to arbitrary code execution.",
-            line=node.lineno,
-            code_snippet=ast.unparse(node),
-            cwe=95 if func_name == "eval" else 78,
-        )
-    return None
+    """B102/B307: Detect use of the builtin exec() or eval().
+
+    Only bare-name calls are flagged. Attribute calls such as ``dlg.exec()``
+    (e.g. ``QDialog.exec()``) or ``table.eval()`` invoke a *method*, not the
+    builtin, and must not be reported as arbitrary code execution.
+    """
+    node = cast(ast.Call, context.node)
+    if not isinstance(node.func, ast.Name):
+        return None
+
+    func_name = node.func.id
+    if func_name not in ("exec", "eval"):
+        return None
+
+    return SecurityFinding(
+        id="B102" if func_name == "exec" else "B307",
+        severity="HIGH",
+        confidence="HIGH",
+        message=f"Use of '{func_name}' detected. This can lead to arbitrary code execution.",
+        line=node.lineno,
+        code_snippet=ast.unparse(node),
+        cwe=95 if func_name == "eval" else 78,
+    )
 
 
 @security_check(node_type=ast.Call)

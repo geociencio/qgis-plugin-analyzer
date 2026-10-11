@@ -28,6 +28,14 @@ class TestSecurityRegistry(unittest.TestCase):
     def test_exec_is_detected(self):
         self.assertIn("B102", _findings("exec(user_input)\n"))
 
+    def test_attribute_exec_is_ignored(self):
+        # QDialog.exec() is a method call, not the builtin exec()
+        self.assertNotIn("B102", _findings("dlg.exec()\n"))
+
+    def test_attribute_eval_is_ignored(self):
+        # e.g. table.eval() is a method call, not the builtin eval()
+        self.assertNotIn("B307", _findings("table.eval()\n"))
+
     def test_pickle_load_is_detected(self):
         self.assertIn("B301", _findings("import pickle\npickle.load(handle)\n"))
 
