@@ -33,7 +33,7 @@ from .aggregators import (
 )
 from .scanner import (
     ModuleAnalysisResult,
-    analyze_module_worker,
+    analyze_chunk_worker,
     audit_qgis_standards,
 )
 from .scoring import (
@@ -72,6 +72,7 @@ class ProjectConfig:
     rules: dict[str, Any] = field(default_factory=dict)
     fail_on_critical: bool = False
     include_content: bool = False
+    workers: int | None = None
 
 
 class ProjectAnalyzer:
@@ -80,6 +81,7 @@ class ProjectAnalyzer:
         project_path: str,
         output_dir: str | None = None,
         profile: str = "default",
+        workers: int | None = None,
     ) -> None:
         """Initializes the Project Analyzer.
 
@@ -87,6 +89,8 @@ class ProjectAnalyzer:
             project_path: Root path of the project to analyze.
             output_dir: Directory to save analysis reports. Defaults to "./analysis_results".
             profile: Configuration profile name from pyproject.toml. Defaults to "default".
+            workers: Optional worker-process override. Takes precedence over the
+                ``workers`` value from the profile config.
         """
         self.project_path = pathlib.Path(project_path).resolve()
         self.output_dir = pathlib.Path(output_dir or "./analysis_results").resolve()
@@ -95,12 +99,11 @@ class ProjectAnalyzer:
         # Initialize logging
         setup_logger(self.output_dir)
 
-        # Limit workers to 4 or cpu count, whichever is smaller, to prevent OOM
-        self.max_workers = min(os.cpu_count() or 4, 4)
         self.max_file_size_kb = 500
 
         # Load and wrap config
         raw_config = load_profile_config(self.project_path, profile)
+        effective_workers = workers if workers is not None else raw_config.get("workers")
         self.config = ProjectConfig(
             strict=raw_config.get("strict", False),
             generate_html=raw_config.get("generate_html", True),
@@ -108,7 +111,11 @@ class ProjectAnalyzer:
             project_type=raw_config.get("project_type", "auto"),
             rules=raw_config.get("rules", {}),
             include_content=raw_config.get("include_content", False),
+            workers=effective_workers,
         )
+
+        # Resolve the worker count, keeping the anti-OOM ceiling of 4.
+        self.max_workers = self._resolve_max_workers(effective_workers)
 
         # Detect project type
         self.project_type = self.config.project_type
@@ -125,6 +132,22 @@ class ProjectAnalyzer:
         ignore_file = self.project_path / ".analyzerignore"
         patterns = load_ignore_patterns(ignore_file)
         self.matcher = IgnoreMatcher(self.project_path, patterns)
+
+    @staticmethod
+    def _resolve_max_workers(workers: int | None) -> int:
+        """Resolves the parallel worker count with a hard ceiling of 4.
+
+        Args:
+            workers: Explicit worker count (config or CLI), or None for the default.
+
+        Returns:
+            The number of worker processes to use (``min(4, max(1, cpu-1))`` by
+            default; explicit values are clamped to the ``1..4`` range).
+        """
+        cpu = os.cpu_count() or 4
+        if workers is None:
+            return min(4, max(1, cpu - 1))
+        return min(4, max(1, int(workers)))
 
     def run_ruff_audit(self) -> dict[str, Any]:
         """Executes Ruff linting via subprocess.
@@ -219,21 +242,37 @@ class ProjectAnalyzer:
             "include_content": self.config.include_content,
         }
 
+        # Batch files to amortize per-task IPC overhead on large projects.
+        chunks = self._chunk_files(files)
+
         with ProcessPoolExecutor(
             max_workers=self.max_workers,
             initializer=init_worker,
             initargs=(shared_context,),
         ) as executor:
             # We no longer need to pass project_path or rules_config to every call
-            futures = {executor.submit(analyze_module_worker, f): f for f in files}
+            futures = {executor.submit(analyze_chunk_worker, chunk): chunk for chunk in chunks}
             for future in as_completed(futures):
-                res = future.result()
-                if res:
-                    modules_data.append(res)
-                tracker.update(futures[future], 0)
+                modules_data.extend(future.result())
+                for py_file in futures[future]:
+                    tracker.update(py_file, 0)
 
         tracker.complete()
         return modules_data
+
+    def _chunk_files(self, files: list[pathlib.Path]) -> list[list[pathlib.Path]]:
+        """Splits the file list into batches sized for the worker pool.
+
+        Args:
+            files: Files to analyze.
+
+        Returns:
+            A list of file batches (at least one, even for an empty input).
+        """
+        if not files:
+            return []
+        chunk_size = max(1, len(files) // (self.max_workers * 4))
+        return [files[i : i + chunk_size] for i in range(0, len(files), chunk_size)]
 
     def _run_qgis_specific_checks(
         self,

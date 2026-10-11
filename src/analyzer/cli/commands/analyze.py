@@ -62,6 +62,13 @@ class AnalyzeCommand(BaseAnalyzerCommand):
             metavar="N",
             help="Fail analysis if any function exceeds this cyclomatic complexity",
         )
+        parser.add_argument(
+            "--workers",
+            type=int,
+            default=None,
+            metavar="N",
+            help="Parallel worker processes (clamped to 1..4 to bound memory)",
+        )
 
     def execute(self, args: argparse.Namespace) -> int:
         """Execute the analyze command.

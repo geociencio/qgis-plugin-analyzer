@@ -196,6 +196,26 @@ def analyze_module_worker(
         return None
 
 
+def analyze_chunk_worker(files: list[pathlib.Path]) -> list[ModuleAnalysisResult]:
+    """Analyzes a batch of files in a single worker call.
+
+    Batching amortizes the per-task IPC/serialization overhead of the process
+    pool, which matters on projects with hundreds of files.
+
+    Args:
+        files: Batch of Python files to analyze.
+
+    Returns:
+        The analysis results for the files that could be processed.
+    """
+    results: list[ModuleAnalysisResult] = []
+    for py_file in files:
+        result = analyze_module_worker(py_file)
+        if result:
+            results.append(result)
+    return results
+
+
 def _get_relative_path(py_file: pathlib.Path, project_path: pathlib.Path) -> str:
     """Safely calculates the relative path of a file."""
     if project_path.is_file():

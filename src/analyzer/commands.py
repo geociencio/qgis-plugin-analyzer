@@ -101,7 +101,8 @@ def handle_analyze(args: argparse.Namespace) -> None:
 
     _warn_legacy_output_dir(pathlib.Path(project_path))
 
-    analyzer = ProjectAnalyzer(str(project_path), output_dir, profile)
+    workers = getattr(args, "workers", None)
+    analyzer = ProjectAnalyzer(str(project_path), output_dir, profile, workers=workers)
 
     # Apply overrides (moving towards centralized config in BaseAnalyzerCommand)
     if hasattr(args, "strict") and args.strict:

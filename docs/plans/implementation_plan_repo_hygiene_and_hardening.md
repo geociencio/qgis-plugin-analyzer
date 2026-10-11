@@ -132,19 +132,22 @@ ausente el JSON lo declara; pasar `str` a los workers no rompe.
 ### 2.1 Workers configurables
 `engine.py:98` fija `self.max_workers = min(os.cpu_count() or 4, 4)` con el
 comentario "to prevent OOM".
-- Hacerlo configurable vía `[analysis] workers` y CLI (`--workers`) con default
-  **`min(4, max(1, cpu-1))`** para preservar el techo anti-OOM actual. El default
-  propuesto originalmente (`max(1, cpu-1)`) podía lanzar 7–15 workers en runners de
-  8–16 cores, contradiciendo `engine.py:97`.
-- Batching en `_run_parallel_analysis` (`engine.py:177`): **cuidado**, `chunksize`
-  solo lo respeta `ProcessPoolExecutor.map`; hoy se usa `submit` con
-  `tracker.update` por futuro (`engine.py:211`). Migrar a `map(..., chunksize=)`
-  obliga a rehacer el manejo de progreso/errores: tratarlo como refactor, no como
-  un ajuste trivial.
+- [HECHO 2026-10-10] Configurable vía la clave `workers` del profile
+  (`[tool.qgis-analyzer.profiles.<p>]`) y CLI `--workers`, con default
+  **`min(4, max(1, cpu-1))`** y clamp a `1..4` (preserva el techo anti-OOM).
+  `ProjectAnalyzer._resolve_max_workers` centraliza la resolución; el valor de
+  CLI tiene precedencia sobre el del profile.
+- [HECHO 2026-10-10] Batching mediante `scanner.analyze_chunk_worker` + `_chunk_files`
+  (chunks de `len(files) // (workers*4)`), conservando `submit`/`as_completed` y el
+  progreso por fichero (evita el rework de `map(chunksize=)` señalado por el auditor).
 
-### 2.2 Caché con invalidación real
-Formalizar la invalidación por **hash de contenido** o `mtime` (hoy la staleness se
-detecta a posteriori, ver `commands.py:_detect_stale_cache`) y exponer `--no-cache`.
+### 2.2 Caché con invalidación real — DIFERIDO (2026-10-10)
+No existe hoy caché de workers: `analyze_module_worker(cached_data=...)` es un
+parámetro huérfano sin cablear; la "caché" real es el
+`analysis_results/project_context.json` que lee `summary` (staleness por `mtime`
+en `commands.py:_detect_stale_cache`). Implementar caché incremental por hash de
+contenido + `--no-cache` es una feature aparte (mayor superficie y riesgo de
+invalidez); se pospone a un plan propio.
 
 ---
 
