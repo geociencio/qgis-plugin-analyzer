@@ -118,10 +118,6 @@ class FixRegistry:
         """Retrieves a handler for a given issue type."""
         return self._handlers.get(issue_type)
 
-    def get_all_handlers(self) -> list[Any]:
-        """Returns all registered handlers."""
-        return list(self._handlers.values())
-
 
 registry = FixRegistry()
 

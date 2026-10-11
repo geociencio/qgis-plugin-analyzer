@@ -31,6 +31,7 @@ from .aggregators import (
     build_analysis_results,
     save_reports,
 )
+from .rules.scopes import SCOPE_RULES
 from .scanner import (
     ModuleAnalysisResult,
     analyze_chunk_worker,
@@ -475,49 +476,7 @@ class ProjectAnalyzer:
         if scope == "all":
             return modules_data
 
-        # Define scope-specific rule sets
-        scope_rules = {
-            "i18n": {"MISSING_I18N"},
-            "security": {
-                "UNSAFE_SUBPROCESS",
-                "HARDCODED_PASSWORD",
-                "SQL_INJECTION",
-                "UNSAFE_YAML",
-                "UNSAFE_PICKLE",
-            },
-            "performance": {
-                "SPATIAL_INDEX",
-                "BLOCKING_NETWORK_CALL",
-                "UI_BLOCKING_LOOP",
-                "NON_PYTHONIC_LOOP",
-            },
-            "architecture": {
-                "QGIS_PROTECTED_MEMBER",
-                "GDAL_DIRECT_IMPORT",
-                "QGIS_LEGACY_IMPORT",
-                "HEAVY_LOGIC_UI",
-                "PYQT5_IMPORT",
-                "LEGACY_GDAL_IMPORT",
-                "QT6_QAPP_USAGE",
-                "QT6_QREGEXP_USAGE",
-                "QT6_QDESKTOPWIDGET",
-                "QT6_REMOVED_ENUM",
-                "QT6_QFONTMETRICS_WIDTH",
-                "QT6_QCOMBOBOX_ACTIVATED",
-                "QT6_COMPILED_RESOURCES",
-                "QT6_ADDACTION_MULTIARG",
-                "QT6_QVARIANT_NULL",
-                "QT6_QDATETIME_ARGS",
-                "QT6_QDATETIME_QDATE",
-            },
-            "metadata": {
-                "MANDATORY_CLEANUP",
-                "OBSOLETE_API",
-                "IFACE_AS_ARGUMENT",
-            },
-        }
-
-        allowed_rules = scope_rules.get(scope, set())
+        allowed_rules = SCOPE_RULES.get(scope, set())
         if not allowed_rules:
             return modules_data
 

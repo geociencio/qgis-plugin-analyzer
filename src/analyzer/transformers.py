@@ -7,6 +7,8 @@
 import ast
 import pathlib
 
+from .rules.qgis_rules import I18N_METHODS
+
 
 class GDALImportTransformer(ast.NodeTransformer):
     """AST transformer that replaces direct GDAL imports with the OSGeo version.
@@ -119,14 +121,7 @@ class I18nTransformer(ast.NodeTransformer):
     def __init__(self) -> None:
         """Initializes the transformer state."""
         self.changes_made = False
-        self.i18n_methods = {
-            "setText",
-            "setWindowTitle",
-            "setTitle",
-            "setToolTip",
-            "setPlaceholderText",
-            "setTabText",
-        }
+        self.i18n_methods = set(I18N_METHODS)
 
     def visit_Call(self, node: ast.Call) -> ast.Call:
         # Check if it's a UI method call with a string literal

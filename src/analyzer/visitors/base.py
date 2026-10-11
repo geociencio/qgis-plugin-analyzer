@@ -3,6 +3,8 @@
 import ast
 from typing import Any
 
+from ..rules.scopes import SCOPE_RULES
+
 
 class BaseVisitor(ast.NodeVisitor):
     """Base class for AST visitors with common reporting and configuration logic.
@@ -73,59 +75,9 @@ class BaseVisitor(ast.NodeVisitor):
         Returns:
             True if the rule should be reported, False otherwise.
         """
-        # Global scope filtering
-        if self.scope == "i18n":
-            # Only i18n-related rules
-            return rule_id == "MISSING_I18N"
-        elif self.scope == "security":
-            # Security-related rules
-            security_rules = {
-                "UNSAFE_SUBPROCESS",
-                "HARDCODED_PASSWORD",
-                "SQL_INJECTION",
-                "UNSAFE_YAML",
-                "UNSAFE_PICKLE",
-            }
-            return rule_id in security_rules
-        elif self.scope == "performance":
-            # Performance-related rules
-            performance_rules = {
-                "SPATIAL_INDEX",
-                "BLOCKING_NETWORK_CALL",
-                "UI_BLOCKING_LOOP",
-                "NON_PYTHONIC_LOOP",
-            }
-            return rule_id in performance_rules
-        elif self.scope == "architecture":
-            # Architecture-related rules (imports, dependencies)
-            architecture_rules = {
-                "QGIS_PROTECTED_MEMBER",
-                "GDAL_DIRECT_IMPORT",
-                "QGIS_LEGACY_IMPORT",
-                "HEAVY_LOGIC_UI",
-                "PYQT5_IMPORT",
-                "LEGACY_GDAL_IMPORT",
-                "QT6_QAPP_USAGE",
-                "QT6_QREGEXP_USAGE",
-                "QT6_QDESKTOPWIDGET",
-                "QT6_REMOVED_ENUM",
-                "QT6_QFONTMETRICS_WIDTH",
-                "QT6_QCOMBOBOX_ACTIVATED",
-                "QT6_COMPILED_RESOURCES",
-                "QT6_ADDACTION_MULTIARG",
-                "QT6_QVARIANT_NULL",
-                "QT6_QDATETIME_ARGS",
-                "QT6_QDATETIME_QDATE",
-            }
-            return rule_id in architecture_rules
-        elif self.scope == "metadata":
-            # Metadata validation rules
-            metadata_rules = {
-                "MANDATORY_CLEANUP",
-                "OBSOLETE_API",
-                "IFACE_AS_ARGUMENT",
-            }
-            return rule_id in metadata_rules
+        # Global scope filtering (shared with the engine via SCOPE_RULES)
+        if self.scope in SCOPE_RULES:
+            return rule_id in SCOPE_RULES[self.scope]
 
         # For "all" scope or unrecognized scopes, check config
         severity = self.rules_config.get(rule_id, "warning")

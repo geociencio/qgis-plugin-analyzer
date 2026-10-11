@@ -1,7 +1,6 @@
 """Base command class for CLI commands."""
 
 import argparse
-import pathlib
 from abc import ABC, abstractmethod
 from typing import TYPE_CHECKING
 
@@ -87,21 +86,6 @@ class BaseCommand(ABC):
                 action="store_true",
                 help="Enable strict mode with gold-standard rules",
             )
-
-    def setup_output_dir(self, args: argparse.Namespace) -> pathlib.Path | None:
-        """Setup and return the output directory if present in args.
-
-        Args:
-            args: Parsed command-line arguments.
-
-        Returns:
-            The resolved output directory path, or None if not applicable.
-        """
-        if hasattr(args, "output"):
-            output_dir = pathlib.Path(args.output).resolve()
-            output_dir.mkdir(parents=True, exist_ok=True)
-            return output_dir
-        return None
 
 
 class BaseAnalyzerCommand(BaseCommand):

@@ -97,11 +97,11 @@ class ProgressTracker:
         self.avg_time = 0.0
         self.last_update = 0.0
 
-    def update(self, file_path: pathlib.Path, processing_time: float) -> None:
+    def update(self, _file_path: pathlib.Path, processing_time: float) -> None:
         """Updates the progress status.
 
         Args:
-            file_path: Current file path.
+            _file_path: Current file path (unused; kept for API compatibility).
             processing_time: Time taken to process the file.
         """
         self.processed += 1
@@ -154,7 +154,7 @@ def timeout_manager(seconds: int):
         seconds: Timeout duration in seconds.
     """
 
-    def signal_handler(signum, frame):
+    def signal_handler(_signum, _frame):
         raise TimeoutError(f"Operation exceeded {seconds}s")
 
     signal.signal(signal.SIGALRM, signal_handler)
