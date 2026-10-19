@@ -15,6 +15,37 @@ See `.agent/memory/memory_policy.md` for the full policy.
 lessons:
 
   # --- ACTIVE LESSONS (< 90 days or not yet in a SKILL.md) ---
+  - date: '2026-10-19'
+    category: AGENTIC_SYSTEM
+    topic: Fetch framework tags before declaring a release missing
+    lesson: 'Local submodule and upstream checkouts only know the tags they have
+      fetched. v1.3.0/v1.4.x existed on the remote (and in sibling consumers) while
+      this repository still reported v1.2.0 as the newest tag. The first analysis
+      incorrectly concluded that no v1.3.0 tag existed.'
+    action: 'Before any version analysis, run `git -C .agent fetch origin --tags`
+      (or `git ls-remote --tags`) and compare the sibling submodule status; never
+      infer availability from a stale local tag list.'
+  - date: '2026-10-19'
+    category: TOOLING
+    topic: agentic-forge 1.4 project-command contract
+    lesson: '`forge.py project <test|test-full|lint|format|type|bump>` reads the
+      commands from `[project]` in forge.toml. Without those keys the commands exit
+      2, and `strict_agent_system = true` is required by the framework test suite
+      when mounted in a consumer project.'
+    action: 'Keep `test_command`, `test_command_full`, `lint_command`,
+      `format_command`, `type_command` and `strict_agent_system` in forge.toml in
+      sync with the project runners; verify with `forge.py project test/lint/type`
+      after any framework bump.'
+  - date: '2026-10-19'
+    category: TESTING
+    topic: Framework tests are consumer-coupled
+    lesson: 'The agentic-forge suite assumes a consuming project: it asserts the
+      `project-context` overlay skill and `.agent-state/` metrics files, plus
+      `strict_agent_system = true`. A standalone framework checkout therefore fails
+      2 of 37 tests and its CI stays red even after the v1.4.2 mypy/TOML hotfix.'
+    action: 'Run `pytest .agent/tests -q` in the project context (37 pass) and report
+      the standalone-CI gap upstream; do not patch the submodule or add fake state
+      just to make its own CI green.'
   - date: '2026-10-11'
     category: AGENTIC_SYSTEM
     topic: metrics validate scans framework scaffold against project truth
