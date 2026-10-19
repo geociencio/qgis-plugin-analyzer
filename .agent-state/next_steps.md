@@ -29,14 +29,15 @@ hygiene) and a self-analysis noise cleanup. Released on **GitHub + PyPI** via CI
 
 **None blocking** — 233 tests passing; `ruff check` + `mypy src/` clean; self-analysis `--max-cc 15` green (max func CC 13). Self-run issues down to 10 LOW (SPAGHETTI_CODE/GOD_OBJECT).
 
-- **Metrics validator false positives**: `forge.py metrics validate` flags **5**
-  entries in the `.agent/` framework submodule — `scaffold/qgis/workflows/release-plugin.md`
-  (CC ≤ 10 ×3, 763 tests → the SecInterp domain template) and `skills/coding-standards/SKILL.md`
-  ("complexity below 10" → generic guideline). These are template/domain values, not
-  stale analyzer metrics (CC ≤ 15, 233 tests). The validator scans `scaffold/` against
-  this project's ground truth; treat as non-blocking until the framework excludes
-  domain packs from ground-truth checks. Disposition mirrors `ai-context-core`
-  (see `AGENT_LESSONS.md` 2026-10-11). Do **not** patch the submodule or lower `max_cc`.
+- **Metrics validator false positives — RESOLVED (agentic-forge v1.3.0)**:
+  `forge.py metrics validate` used to flag **5** entries in the `.agent/` framework
+  submodule — `scaffold/qgis/workflows/release-plugin.md` (CC ≤ 10 ×3, 763 tests →
+  the SecInterp domain template) and `skills/coding-standards/SKILL.md`
+  ("complexity below 10" → generic guideline). The v1.3.0 release excludes
+  `scaffold/` from ground-truth checks and derives the CC guidance from
+  `[project].max_cc`; the submodule was bumped from `v1.2.0` to `v1.3.0` and
+  `forge.py metrics validate` now exits 0 (38 files scanned). Do **not** re-apply
+  the old workaround or patch the submodule.
 
 ## Technical Debt
 - [ ] Coverage: keep incremental gains (CI floor 80%).
