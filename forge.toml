@@ -16,3 +16,12 @@ test_dirs = ["tests"]
 analyzer_command = "uv run qgis-analyzer analyze . --max-cc 15"
 max_cc = 15
 module_size_limit = 400
+
+# Consumed by agentic-forge >= 1.4 (`forge.py project <command>`) and by the
+# shared session/test/release workflows.
+strict_agent_system = true
+test_command = "uv run pytest -q"
+test_command_full = "uv run pytest -q --cov=analyzer --cov-report=term-missing --cov-fail-under=80"
+lint_command = "uv run ruff check ."
+format_command = "uv run ruff format ."
+type_command = "uv run mypy src/"

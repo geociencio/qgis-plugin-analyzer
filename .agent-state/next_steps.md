@@ -14,6 +14,11 @@ hygiene) and a self-analysis noise cleanup. Released on **GitHub + PyPI** via CI
 - [x] Unified rule registry (`src/analyzer/rules/`) + generated `RULES.md`; enumerable security/secret ids; anti-drift tests.
 - [x] Standards — catalog severity, i18n gate for generic projects, Forge `summary` baseline, worktree hygiene; docstrings + type hints at 100%; magic numbers extracted; `NON_PYTHONIC_LOOP` narrowed.
 - [x] **v1.16.0** released (GitHub release published; PyPI `1.16.0` wheel + sdist; `twine check` PASSED).
+- [x] **Agentic framework**: `agentic-forge` bumped `v1.2.0 → v1.4.1` (tests/CI,
+  `forge.py --version`, `forge.py project <cmd>`, strict validation); `forge.toml`
+  now declares `test_command`, `test_command_full`, `lint_command`, `format_command`,
+  `type_command` and `strict_agent_system = true`; `qa-docker` references migrated to
+  `testing-standards` (deprecated alias kept upstream for v1.4.x).
 
 ## How to Resume
 1. Run `/start-session`.

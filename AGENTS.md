@@ -48,6 +48,7 @@ When the user types `/name` (e.g. `/start-session`), read the corresponding `.ag
 | `/create-commit` | `.agent/workflows/create-commit.md` | Commit changes cleanly with quality validation (handling hooks). |
 | `/run-tests` | `.agent/workflows/run-tests.md` | Run unit tests reliably with interpretation. |
 | `/fix-linting` | `.agent/workflows/fix-linting.md` | Automatically correct linting and formatting issues. |
+| `/i18n-maintenance` | `.agent/workflows/i18n-maintenance.md` | Translation maintenance and i18n audits. |
 | `/ia-critic` | `.agent/workflows/ia-critic.md` | Critical review of implementation plans by the Agent Auditor. |
 | `/verify-standards` | `.agent/workflows/verify-standards.md` | Audit the agentic system (skills/workflows) for consistency. |
 | `/release-package` | `.agent/workflows/release-package.md` | Unified release workflow for the Python package (PyPI). |
@@ -183,9 +184,11 @@ Skills live in `.agent/skills/*/SKILL.md` (framework) and `.agent-state/skills/*
 | [commit-standards](.agent/skills/commit-standards/SKILL.md) | Clean, conventional commits with quality validation. |
 | [documentation-standards](.agent/skills/documentation-standards/SKILL.md) | Standards for technical logs, session records, and project history. |
 | [i18n-standards](.agent/skills/i18n-standards/SKILL.md) | Internationalization standards. |
-| [qa-docker](.agent/skills/qa-docker/SKILL.md) | Dockerized testing and Mock-first testing. |
 | [release-management](.agent/skills/release-management/SKILL.md) | Python package release process. |
 | [testing-standards](.agent/skills/testing-standards/SKILL.md) | Automated testing, CI/CD, and Mock usage. |
+
+> `qa-docker` is a **deprecated alias** for `testing-standards` in agentic-forge v1.4.x
+> (kept for one release); use `testing-standards` for Docker, mock and CI guidance.
 
 ### Project overlay skills (analyzer-specific)
 
@@ -234,6 +237,9 @@ Policy: `.agent-state/memory/memory_policy.md`. Lessons older than 90 days that 
 
 - `forge.toml` declares `[forge].framework = ".agent"` and `[forge].state = ".agent-state"`.
 - `forge.toml [project].analyzer_command` (`uv run qgis-analyzer analyze . --max-cc 15`) is the intended self-analysis hook for the framework workflows (`/start-session` quick scan, `/audit-package`).
+- `forge.toml [project]` also supplies the commands consumed by `forge.py project <cmd>`
+  (agentic-forge >= 1.4): `test_command`, `test_command_full`, `lint_command`,
+  `format_command`, `type_command`; `strict_agent_system = true` enables strict validation.
 - Framework content (skills, workflows, tooling) lives in the `.agent/` git submodule (`agentic-forge`).
 - Project-owned state and overlay skills live in `.agent-state/`, never in the submodule.
 
