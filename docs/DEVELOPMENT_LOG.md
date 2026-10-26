@@ -7,7 +7,7 @@
     - Moved `CHANGELOG.md` `[Unreleased]` to `[1.18.0] - 2026-10-25`; added `docs/releases/notes/v1.18.0.md` and `docs/GITHUB_RELEASE_v1.18.0.md`.
     - Refreshed README “What's New” and release notes; synced `.agent-state/memory/agent_metrics.json`.
 - **Quality**: 283 tests (89.33% coverage); `ruff check` + `mypy src/` clean; self-analysis `--max-cc 15` green with 10 LOW findings; Module Stability 54.0 · Maintainability 99.9 · Security 100.0.
-- **Release**: `v1.18.0` tag + GitHub release + PyPI pipeline (CI `publish-pypi` on release publication).
+- **Release**: **v1.18.0 published** on GitHub and PyPI (CI `publish-pypi`) on 2026-10-25.
 
 ## [2026-10-25] Ignore Files, Default Excludes & CLI Scopes
 - **Achievement**: Made project discovery honor `.gitignore`, `.qgisignore` and `.analyzerignore` with ordered/negation semantics, added `--exclude` and `--scope`, and excluded `docs/`/`tests/` by default.
