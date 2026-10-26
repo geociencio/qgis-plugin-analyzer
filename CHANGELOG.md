@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.18.0] - 2026-10-25
+
 ### Added
 - **Ignore-file awareness**: the matcher now honors `.gitignore`, `.qgisignore` and `.analyzerignore` in order (defaults → `.gitignore` → `.qgisignore` → `.analyzerignore` → CLI), with gitignore-style `!` negation and last-match-wins.
 - **`--exclude PATTERN`** for `analyze`, `security` and `fix` (repeatable or comma-separated; `!` re-includes), plus an `exclude` key in profiles.

@@ -21,6 +21,7 @@ and strict validation. No analyzer source code changed; all project gates are gr
 - [x] Upstream framework v1.3.0+ fixed the 5 `metrics validate` false positives; the
   former "Known Issue" is resolved.
 - [x] **v1.17.0** — portal gate integration; **released on GitHub + PyPI** (CI `publish-pypi`).
+- [x] **v1.18.0** — ignore-aware analysis (`--exclude`/`--scope`, default `docs/`/`tests/` excludes); release prepared (version/docs/build). GitHub + PyPI pipeline pending.
 - [x] **Analyzer P0 + P1 upstream gate integration** (2026-10-25): Flake8 adapter +
   `analyze --flake8/--linters`; real Bandit/detect-secrets/Flake8 adapters behind
   `security --tools --json --fail-on`; security scope/`--deep` fix; 25 MB source-tree
@@ -31,7 +32,7 @@ and strict validation. No analyzer source code changed; all project gates are gr
 
 ## How to Resume
 1. Run `/start-session`.
-2. Nothing pending on the release — **v1.17.0** is live on PyPI and GitHub.
+2. **v1.18.0** is prepared; push the release commit/tag and publish the GitHub release to trigger PyPI.
 3. The framework is on `v1.4.2`; the five reports under `docs/reports/` are committed as
    part of this close-session (previously untracked).
 

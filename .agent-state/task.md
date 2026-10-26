@@ -1,4 +1,4 @@
-# Active Tasks — Phase: Portal Gate Integration & Release (COMPLETE — v1.17.0)
+# Active Tasks — Phase: Ignore-aware Analysis & Release (PREP — v1.18.0)
 
 Reference: `docs/reports/DEEP_ANALYSIS_v1.15.0_DEAD_CODE_DUPLICATION.md`
 
@@ -13,6 +13,7 @@ Reference: `docs/reports/DEEP_ANALYSIS_v1.15.0_DEAD_CODE_DUPLICATION.md`
 - [x] v1.15.2 — fix `B102`/`B307` attribute-call false positives + release docs/CI <!-- id: 2.2 -->
 - [x] v1.16.0 — module splits, incremental cache (`--no-cache`), unified rule registry + generated `RULES.md`, severity/i18n reconciliation; **GitHub + PyPI** (CI `publish-pypi`) <!-- id: 2.4 -->
 - [x] v1.17.0 — portal gate integration (Flake8, real Bandit/detect-secrets/Flake8, `security --json`, portal profile, `METADATA_*` rules, 25 MB informational); **GitHub + PyPI** (CI `publish-pypi`) <!-- id: 2.5 -->
+- [x] v1.18.0 — ignore files, `--exclude`/`--scope`, default `docs/`/`tests/` excludes; release prep <!-- id: 2.6 -->
 - [x] PyPI uploads verified live (1.15.2, 1.16.0) <!-- id: 2.3 -->
 
 ## Goal 3: Docs
@@ -49,6 +50,6 @@ Reference: `docs/reports/DEEP_ANALYSIS_v1.15.0_DEAD_CODE_DUPLICATION.md`
 - [x] Standards alignment: catalog severity, i18n gate for generic projects, Forge metrics baseline, CLI/test hygiene, docstrings/type hints 100% <!-- id: 4.5 -->
 
 ## Operational Status
-- **Active Phase**: None — **v1.17.0 released on GitHub + PyPI**; **agentic-forge v1.4.2** adopted (`b98186a`).
+- **Active Phase**: **v1.18.0 release prepared (tag/push pending)**; **agentic-forge v1.4.2** adopted (`b98186a`).
 - **Current Metrics**: 283/283 tests; `ruff` + `mypy` clean; self-analysis `--max-cc 15` green (max func CC 13); Module Stability 54.0 · Maintainability 99.9 · Security 100.0; type hints **100%** · docstrings **100%**. Remaining self-run issues: **10 LOW** (`SPAGHETTI_CODE` 8, `GOD_OBJECT` 2 — core-class refactor deferred).
 - **Known**: none blocking. The former 5 `forge.py metrics validate` false positives were fixed upstream (agentic-forge v1.3.0+); v1.4.2 `metrics validate` is green (38 files). Upstream framework follow-ups: standalone CI is still red on 2 consumer-coupled tests and structural-checklist coverage is partial (see `next_steps.md`).
