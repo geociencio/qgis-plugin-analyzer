@@ -1,5 +1,14 @@
 # Development Log
 
+## [2026-10-25] Session Close — Portal Gate & Ignore-aware Analysis
+- **Achievement**: Closed the session after shipping v1.17.0 (portal gate) and v1.18.0 (ignore-aware analysis), with both releases published to GitHub and PyPI.
+- **Changes**:
+    - Session record: `docs/maintenance/session_2026-10-25_ignore_aware_analysis.md`.
+    - Archived `next_steps.md` and the completed task snapshot under `.agent-state/history/`.
+    - Extracted lessons on real-tool verification, the release pipeline and ignore precedence; synced metrics.
+- **Quality**: 283 tests (89.33% coverage); `ruff` + `mypy` clean; self-analysis green with 10 LOW; Module Stability 54.0 · Maintainability 99.9 · Security 100.0.
+- **Next**: P2 schema snapshots / real-tool CI / `flake8_config`; optional core-class decomposition.
+
 ## [2026-10-25] Release v1.18.0 — Ignore-aware Analysis
 - **Achievement**: Released the ignore-aware analysis minor: ordered `.gitignore`/`.qgisignore`/`.analyzerignore` support, `--exclude`/`--scope`, and default `docs/`/`tests/` exclusions.
 - **Changes**:

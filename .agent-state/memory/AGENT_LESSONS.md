@@ -15,6 +15,39 @@ See `.agent/memory/memory_policy.md` for the full policy.
 lessons:
 
   # --- ACTIVE LESSONS (< 90 days or not yet in a SKILL.md) ---
+  - date: '2026-10-25'
+    category: TESTING
+    topic: Mocks hid two real third-party integration bugs
+    lesson: >-
+      Unit tests patched `importlib.util.find_spec` and `subprocess.run`, so they
+      missed that `flake8-json` installs `flake8_json_reporter` (not `flake8_json`)
+      and that `detect-secrets` scans its cwd rather than an absolute path. Both
+      adapters silently returned zero findings until tested with the real `[portal]`
+      extras.
+    action: >-
+      Before releasing optional-tool integrations, install the real extras and run
+      an end-to-end probe (known finding, JSON parse, exit code); assert actual
+      module names and subprocess cwd, not just mocked payloads.
+  - date: '2026-10-25'
+    category: AGENTIC_SYSTEM
+    topic: Follow the repository release workflow, not a stale skill
+    lesson: >-
+      The project release skill described PyPI as manual, but `release.yml` creates
+      a draft on tag push and publishes to PyPI when the GitHub release is published.
+      Following the skill literally would have stopped before the actual pipeline.
+    action: >-
+      Inspect `.github/workflows/release.yml` at release time and follow the
+      tag → draft → published → PyPI flow; verify the published version afterwards.
+  - date: '2026-10-25'
+    category: ARCHITECTURE
+    topic: Ignore defaults need negation and post-filtering
+    lesson: >-
+      Excluding `docs/` and `tests/` by default only works if later `!pattern`
+      entries can re-include them. External lint/security tools scan the tree
+      themselves, so their findings also need filtering through the same matcher.
+    action: >-
+      Keep the ordered last-match-wins matcher, test defaults plus `!` re-inclusion,
+      and route every external finding through the matcher before reporting.
   - date: '2026-10-19'
     category: AGENTIC_SYSTEM
     topic: Fetch framework tags before declaring a release missing

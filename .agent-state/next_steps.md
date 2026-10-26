@@ -1,52 +1,39 @@
-# Next Steps — Handover (2026-10-19, agentic-forge v1.4.2)
+# Next Steps — Handover (2026-10-25, v1.18.0)
 
-## Session Summary (topics: `repository_audit` · `agentic_forge` · `framework_upgrade` · `docs`)
+## Session Summary (topics: `portal_gate` · `ignore_aware_analysis` · `release_v1.18.0`)
 
-Audited this repository and the shared `agentic-forge` framework, produced the
-repository/analysis reports under `docs/reports/`, and upgraded the framework
-`v1.2.0 → v1.3.0 → v1.4.1 → v1.4.2` with the new `forge.py project` command contract
-and strict validation. No analyzer source code changed; all project gates are green.
+Completed the portal-gate integration, fixed the real Bandit/detect-secrets/Flake8
+adapters, shipped the `security --json` contract, and released two minor versions:
+**v1.17.0** (portal gate) and **v1.18.0** (ignore-aware analysis).
 
 ### Completed
-- [x] Repository audit — `docs/reports/DEEP_ANALYSIS_v1.16.0_REPOSITORY_AUDIT.md`.
-- [x] Framework baseline + deltas — `docs/reports/DEEP_ANALYSIS_AGENTIC_FORGE_v1.2.0.md`,
-  `AGENTIC_FORGE_v1.3.0_UPDATE.md`, `AGENTIC_FORGE_v1.4.1_UPDATE.md`,
-  `AGENTIC_FORGE_v1.4.2_UPDATE.md`.
-- [x] `agentic-forge` bumps: `v1.3.0` (`b41facd`), `v1.4.1` (`a98f5a8`),
-  `v1.4.2` (`b98186a`); current submodule `537f9fd` → `b264e35` (recorded `v1.4.2`).
-- [x] `forge.toml` now declares `test_command`, `test_command_full`, `lint_command`,
-  `format_command`, `type_command` and `strict_agent_system = true`.
-- [x] `AGENTS.md`: `/i18n-maintenance` added; `qa-docker` removed from the active skill
-  list and documented as a deprecated alias for `testing-standards`.
-- [x] Upstream framework v1.3.0+ fixed the 5 `metrics validate` false positives; the
-  former "Known Issue" is resolved.
-- [x] **v1.17.0** — portal gate integration; **released on GitHub + PyPI** (CI `publish-pypi`).
-- [x] **v1.18.0** — ignore-aware analysis (`--exclude`/`--scope`, default `docs/`/`tests/` excludes); **released on GitHub + PyPI** (CI `publish-pypi`).
-- [x] **Analyzer P0 + P1 upstream gate integration** (2026-10-25): Flake8 adapter +
-  `analyze --flake8/--linters`; real Bandit/detect-secrets/Flake8 adapters behind
-  `security --tools --json --fail-on`; security scope/`--deep` fix; 25 MB source-tree
-  rule moved to informational; portal profile with CLI > profile > default precedence;
-  five `METADATA_*` catalog rules. qgis-manage's artifact layer is implemented in the
-  sibling repository (v0.13.0+).
-- [x] **Ignore files + CLI scopes** (2026-10-25): ordered `.gitignore`/`.qgisignore`/`.analyzerignore` with `!` negation, default `docs/`/`tests/` excludes, `--exclude` on analyze/security/fix and `--scope` on analyze; external tool findings filtered by the matcher.
+- [x] **v1.17.0** — Flake8 adapter, real security tools, `security --json`, portal
+  profile, five `METADATA_*` rules, 25 MB source-tree informational rule; GitHub + PyPI.
+- [x] **v1.18.0** — ordered `.gitignore`/`.qgisignore`/`.analyzerignore` matcher with
+  `!` negation, `--exclude` on `analyze`/`security`/`fix`, `--scope` on `analyze`,
+  default `docs/`/`tests/` exclusions; GitHub + PyPI.
+- [x] Real-tool fixes: `flake8_json_reporter` detection and detect-secrets project cwd;
+  verified against the installed `[portal]` extras.
+- [x] README, `COMMANDS_GUIDE.md`, CHANGELOG, release notes, `GITHUB_RELEASE_*`, and
+  development log updated; `agent_metrics.json` synced (283 tests, 54.0/99.9/100).
+- [x] Release pipeline verified: tag → draft release → published release → CI PyPI job.
 
 ## How to Resume
 1. Run `/start-session`.
 2. Nothing pending on the release — **v1.18.0** is live on PyPI and GitHub.
-3. The framework is on `v1.4.2`; the five reports under `docs/reports/` are committed as
-   part of this close-session (previously untracked).
+3. Read `docs/maintenance/session_2026-10-25_ignore_aware_analysis.md` for the full
+   session record.
 
 ## Remaining / Next
-- [x] ~~Module splits~~ · [x] ~~Fase 6 rule registry~~ · [x] ~~Fase 2.2 incremental cache~~ · [x] ~~Tune anti-pattern noise~~.
-- [ ] **Optional**: decompose the two core classes to clear the last 10 LOW findings (`SPAGHETTI_CODE`, `GOD_OBJECT`) — higher risk.
-- [ ] **Optional**: unify `CompositeVisitor._active_visitors` with `SCOPE_RULES` (currently a second scope→visitor map).
-- [ ] **P2**: JSON schema snapshots, real-tool CI job with the `[portal]` extras, and
+- [ ] **P2**: JSON schema snapshots, a CI job with the real `[portal]` extras, and
   `flake8_config` wiring (see `docs/research/upstream_gate_integration.md`).
+- [ ] **Optional**: decompose the two core classes to clear the last 10 LOW findings
+  (`SPAGHETTI_CODE`, `GOD_OBJECT`) — higher risk.
+- [ ] **Optional**: unify `CompositeVisitor._active_visitors` with `SCOPE_RULES`.
 - [ ] **Upstream framework follow-ups** (not blocking this repo):
-  - make the framework test suite self-contained (2 consumer-coupled tests keep its CI red
-    when run in a standalone checkout);
-  - fix `forge.py metrics report` on `task_completion_rate: None`
-    (`forge_metrics_report.py:193`); project data is normalized to `1.0` meanwhile;
+  - make the framework test suite self-contained (2 consumer-coupled tests keep its CI
+    red in a standalone checkout);
+  - fix `forge.py metrics report` on `task_completion_rate: None`;
   - complete the structural checklist (5/9 skills, 7/14 workflows);
   - resolve the `pre-commit` wording and document `version_bump_command`.
 
@@ -56,23 +43,20 @@ and strict validation. No analyzer source code changed; all project gates are gr
 `--max-cc 15` green (max func CC 13); self-run issues are 10 LOW
 (`SPAGHETTI_CODE` 8, `GOD_OBJECT` 2).
 
-- **Metrics validator false positives — RESOLVED (agentic-forge v1.3.0+)**:
-  `forge.py metrics validate` used to flag 5 entries in the scaffold/generic skills.
-  v1.3.0 excludes `scaffold/` from ground-truth checks and derives the CC guidance from
-  `[project].max_cc`; with v1.4.2 the command exits 0 (38 files). Do **not** re-apply the
-  old workaround or patch the submodule.
-- **Upstream-only**: the framework's standalone CI is still red on 2 consumer-coupled
-  tests and the structural checklist is partial; track upstream, do not patch the
-  submodule.
-
 ## Technical Debt
-- [ ] Coverage: keep incremental gains (CI floor 80%).
+- [ ] Coverage: keep incremental gains (CI floor 80%; currently 89.33%).
 - [ ] Optional core-class decomposition (see Remaining / Next).
 
 ## Watch-outs
-- Keep the `project_context.json` schema keys stable (consumed by `ai-context-core`; bump `schema_version` on change).
-- Keep CLI subcommands/flags stable (consumed by `qgis-plugin-manager`).
-- Security rules: verify a registry populated by import side effects stays non-empty (see AGENT_LESSONS 2026-10-10).
-- Cache: the signature covers analyzer version + source fingerprint + resolved project path + effective config; `--no-cache` is the escape hatch.
-- Framework: `forge.py project` commands are read from `forge.toml`; keep the five command
-  keys in sync with the project runners when the toolchain changes.
+- **Ignore precedence**: defaults → `.gitignore` → `.qgisignore` → `.analyzerignore` →
+  profile/CLI; last match wins. Use `--exclude '!docs/'` to restore a default exclusion.
+- **External tools still scan the tree**: Bandit/detect-secrets/Flake8 run over the
+  project, but their findings are filtered through the matcher before reporting.
+- **JSON contract**: `schema`/`schema_version` stay `1`; new fields are additive.
+  `security --json` uses `portal_severity` (`critical`/`warning`/`info`); the native
+  `project_context.json` keeps `high`/`medium`/`low` for backward compatibility.
+- **Cache**: the signature covers analyzer version + source fingerprint + resolved
+  project path + effective config; `--no-cache` is the escape hatch.
+- **Release pipeline**: `.github/workflows/release.yml` creates a draft on tag push and
+  publishes to PyPI when the release is published. Push tags over HTTPS if SSH config
+  permissions block `git@github.com`.
