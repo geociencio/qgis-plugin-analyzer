@@ -1,5 +1,14 @@
 # Development Log
 
+## [2026-10-25] Release v1.17.0 — Portal Gate Integration
+- **Achievement**: Prepared the v1.17.0 minor release with Flake8 support, real Bandit/detect-secrets/Flake8 adapters, the `security --json` contract, the portal profile, five `METADATA_*` rules and the 25 MB source-tree rule moved to informational.
+- **Changes**:
+    - Bumped `pyproject.toml` and `uv.lock` to `1.17.0`; verified `qgis-analyzer --version` reports `1.17.0`.
+    - Moved `CHANGELOG.md` `[Unreleased]` to `[1.17.0] - 2026-10-25`; added `docs/releases/notes/v1.17.0.md` and the CI release body `docs/GITHUB_RELEASE_v1.17.0.md`.
+    - Refreshed README badges/“What's New”, regenerated `RULES.md` (56 rules) and synced `.agent-state/memory/agent_metrics.json`.
+- **Quality**: 273 tests (89.09% coverage); `ruff check` + `mypy src/` clean; self-analysis `--max-cc 15` green with 10 LOW findings; Module Stability 54.1 · Maintainability 99.9 · Security 100.0.
+- **Release**: `v1.17.0` tag + GitHub release + PyPI pipeline (CI `publish-pypi` on release publication).
+
 ## [2026-10-25] Upstream Gate Integration (analyzer P0 + P1)
 - **Achievement**: Implemented the qgis-analyzer slice of the portal gate integration: Flake8 support, real Bandit/detect-secrets/Flake8 adapters, a machine-readable `security` report, the security-scope/`--deep` fix, the 25 MB source-tree rule moved to informational, the portal profile and five `METADATA_*` rules.
 - **Changes**:
