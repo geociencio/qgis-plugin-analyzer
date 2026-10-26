@@ -80,11 +80,14 @@ about=About this plugin
         # Valid
         result = validate_package_constraints(total_size_mb=15.0, binaries=[])
         self.assertTrue(result["is_valid"])
+        self.assertFalse(result["size_exceeded"])
 
-        # Invalid Size
-        result = validate_package_constraints(total_size_mb=25.0, binaries=[])
-        self.assertFalse(result["is_valid"])
-        self.assertIn("exceeds", result["errors"][0])
+        # Oversized source tree is informational: the portal limit applies to the ZIP.
+        result = validate_package_constraints(total_size_mb=30.0, binaries=[])
+        self.assertTrue(result["is_valid"])
+        self.assertTrue(result["size_exceeded"])
+        self.assertEqual(result["errors"], [])
+        self.assertIn("exceeds", result["warnings"][0])
 
         # Invalid Binaries
         result = validate_package_constraints(total_size_mb=10.0, binaries=["bin.exe"])

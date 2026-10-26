@@ -34,6 +34,23 @@ class SecurityCommand(BaseAnalyzerCommand):
             help="Enable entropy and full secrets detection",
         )
         parser.add_argument(
+            "--tools",
+            default=None,
+            metavar="LIST",
+            help="Comma-separated tools: native,bandit,detect-secrets (default: native)",
+        )
+        parser.add_argument(
+            "--json",
+            action="store_true",
+            help="Emit a machine-readable security report to stdout",
+        )
+        parser.add_argument(
+            "--fail-on",
+            choices=["critical", "warning", "info", "none"],
+            default="critical",
+            help="Lowest severity that produces a non-zero exit code (default: critical)",
+        )
+        parser.add_argument(
             "--no-cache",
             action="store_true",
             help="Disable the incremental per-file analysis cache",

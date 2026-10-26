@@ -126,6 +126,7 @@ def analyze_module_worker(
         r_config = rules_config or ctx.get("rules_config")
         a_scope = scope if scope != "all" else ctx.get("scope", "all")
         include_content = ctx.get("include_content", False)
+        deep_security = ctx.get("deep_security", True)
 
         if not p_path:
             return None
@@ -176,7 +177,9 @@ def analyze_module_worker(
 
         security_issues = []
         if a_scope in ["all", "security"]:
-            security_issues = _collect_security_issues(tree, content, rel_path)
+            security_issues = _collect_security_issues(
+                tree, content, rel_path, include_entropy=deep_security
+            )
         results.update(
             {
                 "ast_issues": visitor.issues,
@@ -287,13 +290,26 @@ def _create_empty_analysis_result(
     }
 
 
-def _collect_security_issues(tree: ast.AST, content: str, rel_path: str) -> list[dict[str, Any]]:
-    """Consolidates issues from AST security visitor and secret scanner."""
+def _collect_security_issues(
+    tree: ast.AST, content: str, rel_path: str, *, include_entropy: bool = True
+) -> list[dict[str, Any]]:
+    """Consolidates issues from AST security visitor and secret scanner.
+
+    Args:
+        tree: Parsed module AST.
+        content: Raw module source.
+        rel_path: Project-relative module path.
+        include_entropy: Whether the secret scanner should run the entropy
+            heuristic (``security --deep``).
+
+    Returns:
+        A list of normalized security findings.
+    """
     security_visitor = QGISSecurityVisitor(rel_path)
     security_visitor.visit(tree)
     issues = security_visitor.findings
 
-    secret_scanner = SecretScanner()
+    secret_scanner = SecretScanner(include_entropy=include_entropy)
     for sf in secret_scanner.scan_text(content):
         issues.append(
             {

@@ -32,7 +32,15 @@ class SecretScanner:
         "GENERIC_SECRET": r"(?i)(password|secret|passwd|api_key|token|access_key)[\"']?\s*[:=]\s*[\"']?([A-Za-z0-9/+=]{16,})[\"']?",
     }
 
-    def __init__(self):
+    def __init__(self, include_entropy: bool = True):
+        """Initializes the scanner.
+
+        Args:
+            include_entropy: Whether to run the Shannon-entropy heuristic in
+                addition to the regex patterns. ``security --deep`` enables it
+                for the focused command; ``analyze`` keeps it enabled.
+        """
+        self.include_entropy = include_entropy
         self.compiled_patterns = {k: re.compile(v) for k, v in self.PATTERNS.items()}
 
     @classmethod
@@ -64,6 +72,8 @@ class SecretScanner:
                     )
 
             # 2. Entropy Analysis for long strings (heuristic)
+            if not self.include_entropy:
+                continue
             # Find strings in double or single quotes
             str_matches = re.finditer(r"[\"']([A-Za-z0-9/+=]{20,})[\"']", line)
             for m in str_matches:

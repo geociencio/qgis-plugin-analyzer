@@ -64,6 +64,7 @@ def cache_signature(
     scope: str,
     include_content: bool,
     project_type: str,
+    deep_security: bool = True,
 ) -> str:
     """Return the signature that invalidates the cache when inputs change.
 
@@ -74,6 +75,7 @@ def cache_signature(
         scope: Analysis scope.
         include_content: Whether source content is embedded in results.
         project_type: Detected project type ('qgis' or 'generic').
+        deep_security: Whether the secret scanner runs the entropy heuristic.
 
     Returns:
         A hexadecimal SHA-256 digest of the invalidation inputs.
@@ -87,6 +89,7 @@ def cache_signature(
         "scope": scope,
         "include_content": include_content,
         "project_type": project_type,
+        "deep_security": deep_security,
     }
     blob = json.dumps(payload, sort_keys=True, default=str)
     return hashlib.sha256(blob.encode("utf-8")).hexdigest()
@@ -191,6 +194,7 @@ def build_cache(
     scope: str,
     include_content: bool,
     project_type: str,
+    deep_security: bool = True,
 ) -> ModuleCache | None:
     """Build and load the per-file cache, or return None when disabled.
 
@@ -203,6 +207,7 @@ def build_cache(
         scope: Analysis scope.
         include_content: Whether source content is embedded in results.
         project_type: Detected project type ('qgis' or 'generic').
+        deep_security: Whether the secret scanner runs the entropy heuristic.
 
     Returns:
         A loaded :class:`ModuleCache`, or None when ``enabled`` is False.
@@ -216,6 +221,7 @@ def build_cache(
         scope=scope,
         include_content=include_content,
         project_type=project_type,
+        deep_security=deep_security,
     )
     cache = ModuleCache(output_dir / CACHE_FILENAME, signature, analyzer_version)
     cache.load()

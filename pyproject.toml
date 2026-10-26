@@ -40,6 +40,22 @@ Changelog = "https://github.com/geociencio/qgis-plugin-analyzer/blob/main/CHANGE
 [project.scripts]
 qgis-analyzer = "analyzer.main:main"
 
+[project.optional-dependencies]
+flake8 = [
+  "flake8>=7.0",
+  "flake8-json>=0.1",
+]
+security = [
+  "bandit>=1.7",
+  "detect-secrets>=1.5",
+]
+portal = [
+  "flake8>=7.0",
+  "flake8-json>=0.1",
+  "bandit>=1.7",
+  "detect-secrets>=1.5",
+]
+
 [build-system]
 requires = ["setuptools>=61.0"]
 build-backend = "setuptools.build_meta"

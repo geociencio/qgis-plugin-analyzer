@@ -26,6 +26,10 @@ def load_profile_config(
         "generate_html": False,
         "fail_on_error": False,
         "rules": {},
+        "linters": ["ruff"],
+        "deep_security": True,
+        "security_tools": ["native"],
+        "security_fail_on": "critical",
     }
 
     if not pyproject.exists():

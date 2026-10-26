@@ -5,6 +5,24 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Added
+- **Flake8 adapter** (`analyzer/flake8_audit.py`): `analyze --flake8` / `--linters ruff,flake8`, JSON output via `flake8-json` with a default-output fallback; findings are normalized to `FLAKE8_<code>` and exposed as `flake8_findings` / `flake8_metadata`.
+- **Real security tools**: `security --tools native|bandit|detect-secrets` runs Bandit and/or detect-secrets, normalizes findings (`tool`, `rule_id`, `portal_severity`, `blocking`) and merges them with the native AST/secret findings. Missing tools are reported via `tool_unavailable` and exit `2`.
+- **`security --json`** emits a versioned security report (findings, summary, tool status) and `--fail-on critical|warning|info|none` controls the exit code.
+- Optional extras: `qgis-analyzer[flake8]`, `[security]` and `[portal]`.
+
+### Changed
+- `security` now runs the **security scope** (previously it ran the full `all` scope) and `--deep` controls the native entropy heuristic instead of being a no-op.
+- Native `high` findings map to `critical`/blocking for the security gate, so a high-severity finding fails by default.
+- The source-tree size check is now **informational** (warning); the portal **25 MB** limit belongs to the built ZIP artifact and is enforced by qgis-manage. `repository_compliance` gains `constraint_warnings`, and the QGIS score no longer penalizes the source-tree size.
+- `--json` output for `analyze`/`security` keeps logs and progress on stderr.
+
+### Fixed
+- `security` used to ignore its own scope and `--deep`; both are now honored.
+- `analyze --json` no longer leaks the project-type log to stdout.
+
 ## [1.16.0] - 2026-10-11
 
 ### Added

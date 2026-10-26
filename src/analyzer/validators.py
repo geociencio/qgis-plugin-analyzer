@@ -17,7 +17,7 @@ from typing import Any
 
 # Repository policy thresholds.
 _HTTP_OK = 200
-_MAX_PACKAGE_SIZE_MB = 20
+_MAX_PACKAGE_SIZE_MB = 25
 _MAX_LISTED_SUFFIX = 3
 
 
@@ -121,21 +121,34 @@ def validate_metadata_urls(metadata: dict[str, str]) -> dict[str, str]:
     return results
 
 
-def validate_package_constraints(total_size_mb: float, binaries: list[str]) -> dict[str, Any]:
+def validate_package_constraints(
+    total_size_mb: float, binaries: list[str], *, size_limit_mb: float = _MAX_PACKAGE_SIZE_MB
+) -> dict[str, Any]:
     """Validates package size and binary constraints against Official Repository rules.
 
+    The size limit applies to the **built ZIP artifact**, not to the source
+    project directory. ``analyze`` measures the working tree (which includes
+    ``docs/`` and ``tests/``), so an oversized directory is reported as an
+    informational warning; the artifact layer (qgis-manage) is responsible for
+    enforcing the portal limit on the ZIP.
+
     Args:
-        total_size_mb: Total size of the package in MB.
+        total_size_mb: Total size of the project directory in MB.
         binaries: List of detected binary files.
+        size_limit_mb: Informational size threshold (portal default: 25 MB).
 
     Returns:
-        Validation results including error messages.
+        Validation results including errors, warnings and the measured size.
     """
     errors = []
+    warnings = []
 
-    # Rule: Max 20MB
-    if total_size_mb > _MAX_PACKAGE_SIZE_MB:
-        errors.append(f"Package size ({total_size_mb:.2f}MB) exceeds the 20MB limit.")
+    size_exceeded = total_size_mb > size_limit_mb
+    if size_exceeded:
+        warnings.append(
+            f"Project directory size ({total_size_mb:.2f}MB) exceeds the "
+            f"{size_limit_mb:g}MB reference; the portal limit applies to the built ZIP."
+        )
 
     # Rule: No Binaries
     if binaries:
@@ -149,6 +162,9 @@ def validate_package_constraints(total_size_mb: float, binaries: list[str]) -> d
     return {
         "is_valid": len(errors) == 0,
         "errors": errors,
+        "warnings": warnings,
+        "size_exceeded": size_exceeded,
+        "size_limit_mb": size_limit_mb,
         "total_size_mb": total_size_mb,
         "binary_count": len(binaries),
     }

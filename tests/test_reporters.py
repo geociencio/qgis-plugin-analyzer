@@ -56,6 +56,16 @@ class TestReporters(unittest.TestCase):
                     "location": {"row": 5},
                 }
             ],
+            "flake8_findings": [
+                {
+                    "code": "F401",
+                    "type": "FLAKE8_F401",
+                    "message": "'os' imported but unused",
+                    "file": "test.py",
+                    "line": 3,
+                    "tool": "flake8",
+                }
+            ],
         }
 
     def tearDown(self):
@@ -76,6 +86,8 @@ class TestReporters(unittest.TestCase):
         self.assertIn("Test issue", content)
         self.assertIn("Circular Dependencies Detected", content)
         self.assertIn("test.exe", content)
+        self.assertIn("Ruff + Flake8", content)
+        self.assertIn("[flake8]", content)
 
     def test_markdown_report_generation(self):
         output_path = self.test_dir / "report.md"

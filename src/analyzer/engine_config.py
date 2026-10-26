@@ -19,3 +19,5 @@ class ProjectConfig:
     include_content: bool = False
     workers: int | None = None
     cache: bool = True
+    linters: list[str] = field(default_factory=lambda: ["ruff"])
+    deep_security: bool = True

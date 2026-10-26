@@ -5,6 +5,7 @@ interface definition (cli.py) from execution logic.
 """
 
 import argparse
+import contextlib
 import dataclasses
 import json
 import logging
@@ -16,6 +17,7 @@ from .engine import ProjectAnalyzer
 from .fixer import AutoFixer
 from .reporters.summary_reporter import report_summary
 from .rules import render_list_rules_text, render_rules_md
+from .security_audit import build_security_report, parse_tools
 from .utils import DEFAULT_EXCLUDE
 from .utils.performance_utils import set_progress_quiet
 from .utils.stale_cache import detect_stale_cache
@@ -101,10 +103,16 @@ def handle_analyze(args: argparse.Namespace) -> None:
 
     _warn_legacy_output_dir(pathlib.Path(project_path))
 
-    analyzer = ProjectAnalyzer(
-        str(project_path), output_dir, profile, workers=getattr(args, "workers", None)
-    )
+    # ``ProjectAnalyzer.__init__`` configures the console logger and emits the
+    # project-type line; build it under a stderr redirect so stdout stays
+    # machine-readable in --json mode.
+    with contextlib.redirect_stdout(sys.stderr) if as_json else contextlib.nullcontext():
+        analyzer = ProjectAnalyzer(
+            str(project_path), output_dir, profile, workers=getattr(args, "workers", None)
+        )
     _apply_config_overrides(analyzer, args)
+    if as_json:
+        _route_logs_to_stderr()
 
     success = analyzer.run(scope=scope)
 
@@ -134,6 +142,27 @@ def _apply_config_overrides(analyzer: ProjectAnalyzer, args: argparse.Namespace)
         analyzer.config = dataclasses.replace(analyzer.config, include_content=True)
     if getattr(args, "no_cache", False):
         analyzer.config = dataclasses.replace(analyzer.config, cache=False)
+
+    raw_linters = getattr(args, "linters", None)
+    flake8_flag = bool(getattr(args, "flake8", False))
+    if raw_linters is not None or flake8_flag:
+        if raw_linters is None:
+            linters = ["ruff", "flake8"]
+        else:
+            linters = [item.strip().lower() for item in str(raw_linters).split(",") if item.strip()]
+            if "none" in linters:
+                linters = []
+            if flake8_flag and "flake8" not in linters:
+                linters.append("flake8")
+        unknown = set(linters) - {"ruff", "flake8"}
+        if unknown:
+            raise ValueError(f"Unknown linter(s): {', '.join(sorted(unknown))}")
+        analyzer.config = dataclasses.replace(analyzer.config, linters=linters)
+
+    if hasattr(args, "deep"):
+        analyzer.config = dataclasses.replace(
+            analyzer.config, deep_security=bool(getattr(args, "deep", False))
+        )
 
 
 def _load_context(context_path: pathlib.Path) -> dict[str, Any]:
@@ -284,6 +313,95 @@ def handle_summary(args: argparse.Namespace) -> None:
     report_summary(input_path, by=args.by)
 
 
+def _security_info(message: str, as_json: bool) -> None:
+    """Print a security progress line without corrupting JSON stdout."""
+    print(message, file=sys.stderr if as_json else sys.stdout)
+
+
+def _security_options(args: argparse.Namespace) -> tuple[list[str], str, bool, bool]:
+    """Extract and validate the security command options.
+
+    Args:
+        args: Parsed command-line arguments.
+
+    Returns:
+        A tuple ``(tools, fail_on, as_json, deep)``.
+
+    Raises:
+        SystemExit: When an unknown tool is requested.
+    """
+    try:
+        tools = parse_tools(getattr(args, "tools", None))
+    except ValueError as exc:
+        print(f"❌ {exc}", file=sys.stderr)
+        sys.exit(2)
+    return (
+        tools,
+        getattr(args, "fail_on", "critical") or "critical",
+        bool(getattr(args, "json", False)),
+        bool(getattr(args, "deep", False)),
+    )
+
+
+def _build_security_analyzer(
+    project_path: pathlib.Path,
+    args: argparse.Namespace,
+    as_json: bool,
+) -> ProjectAnalyzer:
+    """Build the analyzer, keeping logs off stdout in JSON mode."""
+    if as_json:
+        _route_logs_to_stderr()
+    output_dir = getattr(args, "output", "./analysis_results")
+    profile = getattr(args, "profile", "default")
+    with contextlib.redirect_stdout(sys.stderr) if as_json else contextlib.nullcontext():
+        analyzer = ProjectAnalyzer(str(project_path), output_dir, profile)
+    _apply_config_overrides(analyzer, args)
+    # The focused security command does not need lint audits; skip them so the
+    # scan stays fast and the report only carries security findings.
+    analyzer.config = dataclasses.replace(analyzer.config, linters=[])
+    if as_json:
+        _route_logs_to_stderr()
+    return analyzer
+
+
+def _print_external_security(report: dict[str, Any]) -> None:
+    """Print external-tool status and findings after the native summary."""
+    external = [item for item in report["findings"] if item.get("tool") != "native"]
+    unavailable = [
+        name for name, status in report["tool_status"].items() if status == "unavailable"
+    ]
+    if not external and not unavailable:
+        return
+    print("\n🛡️  Security tools")
+    for name, status in report["tool_status"].items():
+        print(f"  - {name}: {status}")
+    for finding in external:
+        print(
+            f"  [{finding['portal_severity'].upper()}] "
+            f"{finding['file']}:{finding['line']} "
+            f"{finding['rule_id']} - {finding['message']}"
+        )
+
+
+def _emit_security_report(
+    report: dict[str, Any], context_path: pathlib.Path, as_json: bool
+) -> None:
+    """Emit the security report as JSON or as a human-readable summary."""
+    if as_json:
+        sys.stdout.write(json.dumps(report) + "\n")
+        return
+    report_summary(context_path, by="security")
+    _print_external_security(report)
+
+
+def _security_exit_code(report: dict[str, Any], success: bool) -> int:
+    """Combine the finding gate with the engine's strict-gate result."""
+    exit_code = int(report["exit_code"])
+    if not success and exit_code == 0:
+        exit_code = 1
+    return exit_code
+
+
 def handle_security(args: argparse.Namespace) -> None:
     """Handles the execution of the 'security' command.
 
@@ -295,22 +413,25 @@ def handle_security(args: argparse.Namespace) -> None:
         print(f"❌ Path not found: {project_path}")
         sys.exit(1)
 
-    print(f"🛡️  Starting focused security scan for: {project_path.name}...")
+    tools, fail_on, as_json, deep = _security_options(args)
+    _security_info(f"🛡️  Starting focused security scan for: {project_path.name}...", as_json)
 
-    output_dir = getattr(args, "output", "./analysis_results")
-    profile = getattr(args, "profile", "default")
-    analyzer = ProjectAnalyzer(str(project_path), output_dir, profile)
-    _apply_config_overrides(analyzer, args)
+    analyzer = _build_security_analyzer(project_path, args, as_json)
+    if deep:
+        _security_info("🔍 Deep scan enabled (Entropy analysis and full secret detection)", as_json)
 
-    if hasattr(args, "deep") and args.deep:
-        print("🔍 Deep scan enabled (Entropy analysis and full secret detection)")
-
-    success = analyzer.run()
-
+    success = analyzer.run(scope="security")
     context_path = analyzer.output_dir / "project_context.json"
-    if context_path.exists():
-        # Use the specialized security reporter
-        report_summary(context_path, by="security")
+    if not context_path.exists():
+        print("❌ Analysis failed to generate project_context.json", file=sys.stderr)
+        sys.exit(2)
 
-    if not success:
-        sys.exit(1)
+    report = build_security_report(
+        _load_context(context_path),
+        project_path=project_path,
+        tools=tools,
+        deep=deep,
+        fail_on=fail_on,
+    )
+    _emit_security_report(report, context_path, as_json)
+    sys.exit(_security_exit_code(report, success))

@@ -120,7 +120,7 @@ Before uploading your plugin to the [Official QGIS Plugin Repository](https://pl
 ```bash
 qgis-analyzer analyze . -p release -r
 ```
-*   **What it checks:** Prohibited binaries, package size, metadata URL validity in `metadata.txt`, and strict standard adherence.
+*   **What it checks:** Prohibited binaries, metadata URL validity in `metadata.txt`, and strict standard adherence. Source-tree size is informational; the portal 25 MB limit applies to the built ZIP (qgis-manage).
 
 ### B. Continuous Integration (CI/CD)
 Integrate the analyzer into GitHub Actions to block PRs that introduce circular dependencies or high complexity.

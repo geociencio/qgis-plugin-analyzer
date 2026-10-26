@@ -56,6 +56,17 @@ class AnalyzeCommand(BaseAnalyzerCommand):
             help="Include module source content in the JSON output",
         )
         parser.add_argument(
+            "--linters",
+            default=None,
+            metavar="LIST",
+            help="Comma-separated lint tools to run (ruff,flake8; use 'none' to disable)",
+        )
+        parser.add_argument(
+            "--flake8",
+            action="store_true",
+            help="Shorthand for --linters ruff,flake8",
+        )
+        parser.add_argument(
             "--max-cc",
             type=int,
             default=None,

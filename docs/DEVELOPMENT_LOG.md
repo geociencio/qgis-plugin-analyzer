@@ -1,5 +1,17 @@
 # Development Log
 
+## [2026-10-25] Upstream Gate Integration (analyzer P0)
+- **Achievement**: Implemented the qgis-analyzer P0 slice of the portal gate integration: Flake8 support, real Bandit/detect-secrets adapters, a machine-readable `security` report, the security-scope/`--deep` fix, and the 25 MB source-tree rule moved to informational.
+- **Changes**:
+    - New `flake8_audit.py`; `analyze --flake8` / `--linters ruff,flake8` with `flake8_findings` + `flake8_metadata` in the JSON contract.
+    - New `bandit_audit.py`, `detect_secrets_audit.py` and `security_audit.py`; `security --tools native|bandit|detect-secrets --json --fail-on ...` with merged/deduplicated findings and explicit `tool_unavailable` (exit `2`).
+    - `security` now runs `scope="security"` and respects `--deep` (native entropy opt-in); high findings map to `critical`/blocking.
+    - Source-tree size is a warning (`constraint_warnings`); the portal 25 MB limit stays with the ZIP artifact layer. QGIS score no longer penalizes source-tree size.
+    - Optional extras `[flake8]`, `[security]`, `[portal]`; README/CHANGELOG/user-guide updates.
+    - `--json` logs/progress stay on stderr (including the analyzer project-type line).
+- **Quality**: 260 tests (coverage 89%); `ruff check` + `mypy src/` clean; self-analysis `--max-cc 15` green with 10 LOW findings; Module Stability 54.2 · Maintainability 99.9 · Security 100.0.
+- **Notes**: qgis-manage's `validate --zip` / artifact layer remains pending in that repository; status recorded in `docs/research/upstream_gate_integration.md`.
+
 ## [2026-10-19] Agentic Forge v1.4.2 & Repository Audit
 - **Achievement**: Audited the repository and the shared `agentic-forge` framework, produced the analysis reports, and upgraded `.agent` from `v1.2.0` to `v1.4.2` with the new project-command contract and strict validation.
 - **Changes**:

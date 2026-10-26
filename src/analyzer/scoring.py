@@ -28,7 +28,6 @@ from .scanner import ModuleAnalysisResult
 # Score/coverage thresholds.
 _PERFECT_SCORE = 100.0
 _TYPE_HINT_TARGET = 0.8
-_MAX_PACKAGE_SIZE_MB = 20
 
 
 class QGISChecksResult(TypedDict):
@@ -73,6 +72,8 @@ class ScoringEngine:
         ruff_findings: list[dict[str, Any]],
         qgis_checks: QGISChecksResult | None,
         semantic: SemanticAnalysisResult,
+        *,
+        flake8_findings: list[dict[str, Any]] | None = None,
     ) -> ProjectScores:
         """Calculates project quality scores based on industry-standard formulas."""
         if not modules_data:
@@ -84,12 +85,18 @@ class ScoringEngine:
             }
 
         module_score = self._get_mi_score(modules_data)
-        maintainability_score = self._get_maint_score(modules_data, ruff_findings)
+        maintainability_score = self._get_maint_score(
+            modules_data, ruff_findings, flake8_findings or []
+        )
         modernization_bonus = self._get_modernization_bonus(modules_data)
 
         # Cap modernization bonus: if there are ANY issues, limit to 99.9
         # to ensure it's not a misleading perfect score.
-        any_issues = any(m.get("ast_issues") for m in modules_data) or bool(ruff_findings)
+        any_issues = (
+            any(m.get("ast_issues") for m in modules_data)
+            or bool(ruff_findings)
+            or bool(flake8_findings)
+        )
         if any_issues and (maintainability_score + modernization_bonus) >= _PERFECT_SCORE:
             maintainability_score = 99.9
         else:
@@ -144,6 +151,7 @@ class ScoringEngine:
         self,
         modules_data: list[ModuleAnalysisResult],
         ruff_findings: list[dict[str, Any]],
+        flake8_findings: list[dict[str, Any]] | None = None,
     ) -> float:
         """Calculates maintainability based on function complexity and linting penalties."""
         all_func_comp = []
@@ -156,14 +164,14 @@ class ScoringEngine:
 
         total_lines = sum(m.get("lines", 0) for m in modules_data)
 
-        # Harmonize findings from Ruff and internal AST analysis
+        # Harmonize findings from Ruff, Flake8 and internal AST analysis
         errors = 0
         warnings = 0
         others = 0
 
-        # Process Ruff findings
-        for f in ruff_findings:
-            code = f.get("code", "")
+        # Process Ruff + Flake8 findings
+        for f in [*ruff_findings, *(flake8_findings or [])]:
+            code = str(f.get("code", "") or f.get("type", ""))
             if code.startswith(("E", "F")):
                 errors += 1
             elif code.startswith("W"):
@@ -243,9 +251,8 @@ class ScoringEngine:
             score -= 10
         score -= len(missing_resources) * 5
         score -= len(binaries) * 50
-        if package_size > _MAX_PACKAGE_SIZE_MB:
-            score -= 10
-
+        # ``package_size`` is the source-tree size; the portal limit applies to
+        # the built ZIP and is enforced by qgis-manage's artifact layer.
         score -= security_penalty
         return float(max(0, score))
 

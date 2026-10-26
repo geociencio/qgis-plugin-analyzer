@@ -1,161 +1,176 @@
 {
-    "version": "1.0",
-    "project": "qgis-plugin-analyzer",
-    "sessions": [
-        {
-            "date": "2026-05-25",
-            "session": "gen5_to_gen6_upgrade",
-            "scores": {
-                "stability": 55.1,
-                "maintainability": 77.0,
-                "security": 100.0
-            },
-            "tests": {
-                "pass": 87,
-                "total": 87
-            },
-            "issues": {
-                "critical": 0,
-                "high": 0,
-                "medium": 0,
-                "low": 0
-            }
-        },
-        {
-            "date": "2026-09-14",
-            "session": "generalize_analyzer_v1.14.0",
-            "scores": {
-                "stability": 54.8,
-                "maintainability": 88.1,
-                "security": 100.0
-            },
-            "tests": {
-                "pass": 126,
-                "total": 126
-            },
-            "issues": {
-                "critical": 0,
-                "high": 0,
-                "medium": 0,
-                "low": 0
-            }
-        },
-        {
-            "date": "2026-09-14",
-            "session": "output_contract_i18n",
-            "scores": {
-                "stability": 55.2,
-                "maintainability": 77.0,
-                "security": 100.0
-            },
-            "tests": {
-                "pass": 87,
-                "total": 87
-            },
-            "issues": {
-                "critical": 0,
-                "high": 0,
-                "medium": 0,
-                "low": 0
-            }
-        },
-        {
-            "date": "2026-10-10",
-            "session": "sync_metrics_auto",
-            "scores": {
-                "stability": 54.0,
-                "maintainability": 86.7,
-                "security": 100.0
-            },
-            "tests": {
-                "pass": 192,
-                "total": 192
-            },
-            "issues": {
-                "critical": 0,
-                "high": 0,
-                "medium": 0,
-                "low": 0
-            }
-        },
-        {
-            "date": "2026-10-11",
-            "session": "sync_metrics_auto",
-            "scores": {
-                "stability": 54.6,
-                "maintainability": 99.9,
-                "security": 100.0
-            },
-            "tests": {
-                "pass": 233,
-                "total": 233
-            },
-            "issues": {
-                "critical": 0,
-                "high": 0,
-                "medium": 0,
-                "low": 10
-            }
-        },
-        {
-            "date": "2026-10-19",
-            "session": "sync_metrics_auto",
-            "scores": {
-                "stability": 54.6,
-                "maintainability": 99.9,
-                "security": 100.0
-            },
-            "tests": {
-                "pass": 233,
-                "total": 233
-            },
-            "issues": {
-                "critical": 0,
-                "high": 0,
-                "medium": 0,
-                "low": 10
-            }
-        }
-    ],
-    "last_session": {
-        "date": "2026-10-19",
-        "topic": "agentic_forge_v1.4.2",
-        "tests_ok": 233,
-        "quality_score": 54.6,
-        "task_completion_rate": 1.0,
-        "retries": 0,
-        "stop_conditions_triggered": 0,
-        "tasks": [],
-        "status": "SUCCESS"
+  "version": "1.0",
+  "project": "qgis-plugin-analyzer",
+  "sessions": [
+    {
+      "date": "2026-05-25",
+      "session": "gen5_to_gen6_upgrade",
+      "scores": {
+        "stability": 55.1,
+        "maintainability": 77.0,
+        "security": 100.0
+      },
+      "tests": {
+        "pass": 87,
+        "total": 87
+      },
+      "issues": {
+        "critical": 0,
+        "high": 0,
+        "medium": 0,
+        "low": 0
+      }
     },
-    "history": [
-        {
-            "date": "2026-10-11",
-            "tests_ok": null,
-            "quality_score": null,
-            "task_completion_rate": 1.0,
-            "retries": 0,
-            "stop_conditions_triggered": 0,
-            "tasks": [],
-            "status": "SUCCESS",
-            "session": "deep_analysis_security_v1.15.1"
-        }
-    ],
-    "summary": {
-        "test_count": 233,
-        "tests_ok": 233,
-        "quality_score_latest": 54.6,
-        "maintainability_score": 99.9,
-        "security_score": 100.0,
-        "total_issues": 10,
-        "issue_breakdown": {
-            "SPAGHETTI_CODE": 8,
-            "GOD_OBJECT": 2
-        },
-        "i18n_issues_qgis_analyzer": 0,
-        "task_completion_rate": 1.0,
-        "total_sessions": 6,
-        "cyclomatic_complexity_gate": "PASS",
-        "i18n_hygiene_gate": "PASS"
+    {
+      "date": "2026-09-14",
+      "session": "generalize_analyzer_v1.14.0",
+      "scores": {
+        "stability": 54.8,
+        "maintainability": 88.1,
+        "security": 100.0
+      },
+      "tests": {
+        "pass": 126,
+        "total": 126
+      },
+      "issues": {
+        "critical": 0,
+        "high": 0,
+        "medium": 0,
+        "low": 0
+      }
+    },
+    {
+      "date": "2026-09-14",
+      "session": "output_contract_i18n",
+      "scores": {
+        "stability": 55.2,
+        "maintainability": 77.0,
+        "security": 100.0
+      },
+      "tests": {
+        "pass": 87,
+        "total": 87
+      },
+      "issues": {
+        "critical": 0,
+        "high": 0,
+        "medium": 0,
+        "low": 0
+      }
+    },
+    {
+      "date": "2026-10-10",
+      "session": "sync_metrics_auto",
+      "scores": {
+        "stability": 54.0,
+        "maintainability": 86.7,
+        "security": 100.0
+      },
+      "tests": {
+        "pass": 192,
+        "total": 192
+      },
+      "issues": {
+        "critical": 0,
+        "high": 0,
+        "medium": 0,
+        "low": 0
+      }
+    },
+    {
+      "date": "2026-10-11",
+      "session": "sync_metrics_auto",
+      "scores": {
+        "stability": 54.6,
+        "maintainability": 99.9,
+        "security": 100.0
+      },
+      "tests": {
+        "pass": 233,
+        "total": 233
+      },
+      "issues": {
+        "critical": 0,
+        "high": 0,
+        "medium": 0,
+        "low": 10
+      }
+    },
+    {
+      "date": "2026-10-19",
+      "session": "sync_metrics_auto",
+      "scores": {
+        "stability": 54.6,
+        "maintainability": 99.9,
+        "security": 100.0
+      },
+      "tests": {
+        "pass": 233,
+        "total": 233
+      },
+      "issues": {
+        "critical": 0,
+        "high": 0,
+        "medium": 0,
+        "low": 10
+      }
+    },
+    {
+      "date": "2026-10-25",
+      "session": "sync_metrics_auto",
+      "scores": {
+        "stability": 54.2,
+        "maintainability": 99.9,
+        "security": 100.0
+      },
+      "tests": {
+        "pass": 260,
+        "total": 260
+      },
+      "issues": {
+        "critical": 0,
+        "high": 0,
+        "medium": 0,
+        "low": 10
+      }
     }
+  ],
+  "last_session": {
+    "date": "2026-10-19",
+    "topic": "agentic_forge_v1.4.2",
+    "tests_ok": 233,
+    "quality_score": 54.6,
+    "task_completion_rate": 1.0,
+    "retries": 0,
+    "stop_conditions_triggered": 0,
+    "tasks": [],
+    "status": "SUCCESS"
+  },
+  "history": [
+    {
+      "date": "2026-10-11",
+      "tests_ok": null,
+      "quality_score": null,
+      "task_completion_rate": 1.0,
+      "retries": 0,
+      "stop_conditions_triggered": 0,
+      "tasks": [],
+      "status": "SUCCESS",
+      "session": "deep_analysis_security_v1.15.1"
+    }
+  ],
+  "summary": {
+    "test_count": 260,
+    "tests_ok": 260,
+    "quality_score_latest": 54.2,
+    "maintainability_score": 99.9,
+    "security_score": 100.0,
+    "total_issues": 10,
+    "issue_breakdown": {
+      "SPAGHETTI_CODE": 8,
+      "GOD_OBJECT": 2
+    },
+    "i18n_issues_qgis_analyzer": 0
+  }
 }

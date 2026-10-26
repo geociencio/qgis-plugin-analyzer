@@ -10,7 +10,7 @@ from typing import Any
 
 # Report display thresholds.
 _MAX_LISTED_ITEMS = 10
-_MAX_PACKAGE_SIZE_MB = 20
+_MAX_PACKAGE_SIZE_MB = 25
 _SCORE_GOOD = 80
 _SCORE_FAIR = 50
 
@@ -213,10 +213,11 @@ def _build_html_repo_compliance(repo_comp: dict[str, Any]) -> str:
     package_size = repo_comp.get("package_size_mb", 0)
     if package_size > _MAX_PACKAGE_SIZE_MB:
         html.append(
-            f"<div class='issue medium'><b>Package Size:</b> {package_size:.2f} MB (exceeds 20MB limit)</div>"
+            f"<div class='info'><b>Project Directory Size:</b> {package_size:.2f} MB "
+            "(informational; the portal limit applies to the built ZIP)</div>"
         )
     else:
-        html.append(f"<div class='info'><b>Package Size:</b> {package_size:.2f} MB</div>")
+        html.append(f"<div class='info'><b>Project Directory Size:</b> {package_size:.2f} MB</div>")
 
     url_status = repo_comp.get("url_validation", {})
     if url_status:
@@ -240,24 +241,26 @@ def _build_html_repo_compliance(repo_comp: dict[str, Any]) -> str:
     return "".join(html)
 
 
-def _build_html_ruff_findings(ruff_findings: list[dict[str, Any]]) -> str:
-    """Builds the Ruff findings HTML section.
+def _build_html_lint_findings(findings: list[dict[str, Any]]) -> str:
+    """Builds the Ruff/Flake8 findings HTML section.
 
     Args:
-        ruff_findings: List of Ruff finding dictionaries.
+        findings: List of Ruff/Flake8 finding dictionaries.
 
     Returns:
-        The HTML string for the Ruff section.
+        The HTML string for the linting section.
     """
-    html = ["<div class='card'><h2>🐍 Python Linting (Ruff)</h2>"]
-    for find in ruff_findings[:50]:
+    html = ["<div class='card'><h2>🐍 Python Linting (Ruff + Flake8)</h2>"]
+    for find in findings[:50]:
+        filename = find.get("filename") or find.get("file", "")
+        row = find.get("location", {}).get("row") or find.get("line", 0)
+        tool = find.get("tool", "ruff")
         html.append("<div class='issue medium'>")
         html.append(
-            f"<span class='severity'>{find.get('code', 'LINT')}</span> - {find.get('message')}<br>"
+            f"<span class='severity'>{find.get('code', 'LINT')}</span> - "
+            f"[{tool}] {find.get('message')}<br>"
         )
-        html.append(
-            f"<span class='file-path'>{find.get('filename')}:{find.get('location', {}).get('row', 0)}</span>"
-        )
+        html.append(f"<span class='file-path'>{filename}:{row}</span>")
         html.append("</div>")
     html.append("</div>")
     return "".join(html)
@@ -332,6 +335,7 @@ def generate_html_report(analyses: dict[str, Any], output_path: pathlib.Path) ->
     """
     metrics = analyses.get("metrics", {})
     ruff_findings = analyses.get("ruff_findings", [])
+    lint_findings = [*ruff_findings, *analyses.get("flake8_findings", [])]
     project_type = analyses.get("project_type", "qgis")
     project_label = "QGIS Plugin" if project_type == "qgis" else "Python"
     project_name = analyses.get("project_name", project_label)
@@ -381,9 +385,9 @@ def generate_html_report(analyses: dict[str, Any], output_path: pathlib.Path) ->
     if repo_comp:
         html_body += _build_html_repo_compliance(repo_comp)
 
-    # Ruff Findings
-    if ruff_findings:
-        html_body += _build_html_ruff_findings(ruff_findings)
+    # Ruff + Flake8 findings
+    if lint_findings:
+        html_body += _build_html_lint_findings(lint_findings)
 
     # General Metrics
     html_body += _build_html_general_metrics(metrics)

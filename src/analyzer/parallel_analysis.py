@@ -86,6 +86,7 @@ def _run_pool(
     project_path: pathlib.Path,
     max_workers: int,
     include_content: bool,
+    deep_security: bool = True,
 ) -> list[ModuleAnalysisResult]:
     """Analyze a batch of files through the process pool.
 
@@ -96,6 +97,7 @@ def _run_pool(
         project_path: Root path of the project being analyzed.
         max_workers: Number of worker processes.
         include_content: Whether to embed source content in the results.
+        deep_security: Whether the secret scanner runs the entropy heuristic.
 
     Returns:
         The list of module analysis results produced by the workers.
@@ -109,6 +111,7 @@ def _run_pool(
         "rules_config": rules_config,
         "scope": scope,
         "include_content": include_content,
+        "deep_security": deep_security,
     }
 
     # Batch files to amortize per-task IPC overhead on large projects.
@@ -150,6 +153,7 @@ def run_parallel_analysis(
     project_path: pathlib.Path,
     max_workers: int,
     include_content: bool,
+    deep_security: bool = True,
     cache: ModuleCache | None = None,
 ) -> list[ModuleAnalysisResult]:
     """Runs parallel analysis on all Python files, reusing cached results.
@@ -166,6 +170,7 @@ def run_parallel_analysis(
         project_path: Root path of the project being analyzed.
         max_workers: Number of worker processes.
         include_content: Whether to embed source content in the results.
+        deep_security: Whether the secret scanner runs the entropy heuristic.
         cache: Optional per-file cache; when None no reuse or persistence occurs.
 
     Returns:
@@ -179,6 +184,7 @@ def run_parallel_analysis(
             project_path=project_path,
             max_workers=max_workers,
             include_content=include_content,
+            deep_security=deep_security,
         )
         return sorted(results, key=lambda result: result["path"])
 
@@ -193,6 +199,7 @@ def run_parallel_analysis(
             project_path=project_path,
             max_workers=max_workers,
             include_content=include_content,
+            deep_security=deep_security,
         ):
             results_by_path[result["path"]] = result
         _store_misses(cache, misses, results_by_path)

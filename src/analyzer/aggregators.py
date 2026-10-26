@@ -54,6 +54,7 @@ class FullAnalysisResult(TypedDict, total=False):
     project_type: str
     metrics: dict[str, Any]
     ruff_findings: list[dict[str, Any]]
+    flake8_findings: list[dict[str, Any]]
     security: dict[str, Any]
     semantic: dict[str, Any]
     modules: list[ModuleAnalysisResult]
@@ -61,6 +62,7 @@ class FullAnalysisResult(TypedDict, total=False):
     qgis_compliance: dict[str, Any]
     repository_compliance: dict[str, Any]
     ruff_metadata: dict[str, Any]
+    flake8_metadata: dict[str, Any]
     patterns: dict[str, list[str]]
     optimizations: list[dict[str, Any]]
 
@@ -228,6 +230,8 @@ def build_analysis_results(
     scores: ProjectScores,
     qgis_checks: QGISChecksResult | None,
     semantic: SemanticAnalysisResult,
+    *,
+    flake8_findings: list[dict[str, Any]] | None = None,
 ) -> FullAnalysisResult:
     """Consolidates analysis results into a single dictionary."""
     analyses: FullAnalysisResult = {
@@ -239,6 +243,7 @@ def build_analysis_results(
         "project_type": project_type,
         "metrics": get_metrics_summary(files, modules_data, scores),
         "ruff_findings": ruff_findings,
+        "flake8_findings": flake8_findings or [],
         "security": get_security_summary(modules_data, scores),
         "semantic": {
             "circular_dependencies": semantic["cycles"],
@@ -269,6 +274,7 @@ def build_analysis_results(
             "url_validation": qgis_checks["url_status"],
             "folder_name_valid": qgis_checks["structure"].get("folder_name_valid", True),
             "constraint_errors": qgis_checks["package_constraints"].get("errors", []),
+            "constraint_warnings": qgis_checks["package_constraints"].get("warnings", []),
             "is_compliant": qgis_checks["package_constraints"].get("is_valid", True)
             and qgis_checks["structure"].get("is_valid", True),
         }

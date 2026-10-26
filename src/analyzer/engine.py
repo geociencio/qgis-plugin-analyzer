@@ -29,6 +29,7 @@ from .aggregators import (
     save_reports,
 )
 from .engine_config import ProjectConfig
+from .flake8_audit import run_flake8_audit
 from .module_cache import build_cache
 from .parallel_analysis import chunk_files, run_parallel_analysis
 from .qgis_checks import run_qgis_checks, strict_gate_failed
@@ -83,6 +84,9 @@ class ProjectAnalyzer:
         # Load and wrap config
         raw_config = load_profile_config(self.project_path, profile)
         effective_workers = workers if workers is not None else raw_config.get("workers")
+        raw_linters = raw_config.get("linters", ["ruff"])
+        if isinstance(raw_linters, str):
+            raw_linters = [item.strip() for item in raw_linters.split(",")]
         self.config = ProjectConfig(
             strict=raw_config.get("strict", False),
             generate_html=raw_config.get("generate_html", True),
@@ -92,6 +96,8 @@ class ProjectAnalyzer:
             include_content=raw_config.get("include_content", False),
             workers=effective_workers,
             cache=raw_config.get("cache", True),
+            linters=[item for item in raw_linters if item],
+            deep_security=raw_config.get("deep_security", True),
         )
 
         # Resolve the worker count, keeping the anti-OOM ceiling of 4.
@@ -157,6 +163,7 @@ class ProjectAnalyzer:
             project_path=self.project_path,
             max_workers=self.max_workers,
             include_content=self.config.include_content,
+            deep_security=self.config.deep_security,
             cache=build_cache(
                 enabled=self.config.cache,
                 project_path=self.project_path,
@@ -166,6 +173,7 @@ class ProjectAnalyzer:
                 scope=scope,
                 include_content=self.config.include_content,
                 project_type=self.project_type,
+                deep_security=self.config.deep_security,
             ),
         )
 
@@ -237,16 +245,22 @@ class ProjectAnalyzer:
         if self.project_type == "generic":
             rules_config = {"MISSING_I18N": "ignore", **rules_config}
 
-        # 1. Parallel analysis (AST/Visitors) and 2. Ruff audit
+        # 1. Parallel analysis (AST/Visitors) and 2. lint audits
         modules_data = self._maybe_parallel_analysis(files, rules_config, scope)
-        ruff_findings, ruff_metadata = self._collect_ruff(scope)
+        ruff_findings, ruff_metadata, flake8_findings, flake8_metadata = self._collect_linters(
+            scope
+        )
 
         # 3. QGIS-specific checks and 4. Semantic analysis
         qgis_checks = self._collect_qgis_checks(scope, modules_data, rules_config, discovery)
         semantic = self._collect_semantic(scope, modules_data)
 
         scores = self.scoring.calculate_project_scores(
-            modules_data, ruff_findings, qgis_checks, semantic
+            modules_data,
+            ruff_findings,
+            qgis_checks,
+            semantic,
+            flake8_findings=flake8_findings,
         )
         modules_data = self._filter_issues_by_scope(modules_data, scope)
 
@@ -259,8 +273,10 @@ class ProjectAnalyzer:
             scores,
             qgis_checks,
             semantic,
+            flake8_findings=flake8_findings,
         )
         analyses["ruff_metadata"] = ruff_metadata
+        analyses["flake8_metadata"] = flake8_metadata
 
         save_reports(analyses, self.output_dir, self.config.generate_html)
         logger.info(f"✅ Analysis completed. Reports in: {self.output_dir}")
@@ -297,32 +313,62 @@ class ProjectAnalyzer:
             return []
         return self._run_parallel_analysis(files, rules_config, scope)
 
-    def _collect_ruff(self, scope: str) -> tuple[list[dict[str, Any]], dict[str, Any]]:
-        """Runs the Ruff audit when the scope requires it.
+    def _collect_linters(
+        self, scope: str
+    ) -> tuple[
+        list[dict[str, Any]],
+        dict[str, Any],
+        list[dict[str, Any]],
+        dict[str, Any],
+    ]:
+        """Runs the configured lint audits when the scope requires them.
 
         Args:
             scope: The analysis scope.
 
         Returns:
-            A tuple of (findings, metadata).
+            A tuple ``(ruff_findings, ruff_metadata, flake8_findings,
+            flake8_metadata)``. Metadata is always present so the JSON output
+            contract is stable even when a linter is not requested.
         """
-        metadata: dict[str, Any] = {
+        ruff_metadata: dict[str, Any] = {
             "exit_code": None,
             "tool_unavailable": False,
             "command": "",
         }
+        flake8_metadata: dict[str, Any] = {
+            "exit_code": None,
+            "tool_unavailable": False,
+            "command": "",
+            "formatter": "",
+        }
         if scope not in ("all", "security", "performance"):
-            return [], metadata
+            return [], ruff_metadata, [], flake8_metadata
 
-        result = self.run_ruff_audit()
-        return (
-            result["findings"],
-            {
+        linters = {item.strip().lower() for item in self.config.linters if item.strip()}
+        ruff_findings: list[dict[str, Any]] = []
+        flake8_findings: list[dict[str, Any]] = []
+
+        if "ruff" in linters:
+            result = self.run_ruff_audit()
+            ruff_findings = result["findings"]
+            ruff_metadata = {
                 "exit_code": result.get("exit_code"),
                 "tool_unavailable": bool(result.get("tool_unavailable", False)),
                 "command": result.get("command", ""),
-            },
-        )
+            }
+
+        if "flake8" in linters:
+            result = run_flake8_audit(self.project_path)
+            flake8_findings = result["findings"]
+            flake8_metadata = {
+                "exit_code": result.get("exit_code"),
+                "tool_unavailable": bool(result.get("tool_unavailable", False)),
+                "command": result.get("command", ""),
+                "formatter": result.get("formatter", ""),
+            }
+
+        return ruff_findings, ruff_metadata, flake8_findings, flake8_metadata
 
     def _collect_qgis_checks(
         self,
