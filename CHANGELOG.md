@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- **Ignore-file awareness**: the matcher now honors `.gitignore`, `.qgisignore` and `.analyzerignore` in order (defaults → `.gitignore` → `.qgisignore` → `.analyzerignore` → CLI), with gitignore-style `!` negation and last-match-wins.
+- **`--exclude PATTERN`** for `analyze`, `security` and `fix` (repeatable or comma-separated; `!` re-includes), plus an `exclude` key in profiles.
+- **`--scope`** for `analyze`, preserving the positional `analyze [scope] [path]` form.
+
+### Changed
+- Default excludes now include `docs/` and `tests/` (in addition to `.venv/`, `build/`, caches and generated artifacts), so documentation/test trees no longer inflate the source-tree size. Re-include them with `--exclude '!docs/'` or a `!docs/` ignore rule.
+
 ## [1.17.0] - 2026-10-25
 
 ### Added

@@ -32,6 +32,7 @@ def load_profile_config(
         "security_fail_on": "critical",
         "metadata_rules": True,
         "fail_on": "none",
+        "exclude": [],
     }
 
     if not pyproject.exists():

@@ -52,6 +52,13 @@ class SecurityCommand(BaseAnalyzerCommand):
             help="Lowest severity that fails (default: profile security_fail_on, or critical)",
         )
         parser.add_argument(
+            "--exclude",
+            action="append",
+            default=None,
+            metavar="PATTERN",
+            help="Additional ignore pattern (repeatable/comma-separated; ! re-includes)",
+        )
+        parser.add_argument(
             "--no-cache",
             action="store_true",
             help="Disable the incremental per-file analysis cache",

@@ -15,12 +15,12 @@
 
 **Quality Metrics:**
 
-![Module Stability](https://img.shields.io/badge/Module%20Stability-54.1%2F100-yellow?style=flat-square)
+![Module Stability](https://img.shields.io/badge/Module%20Stability-54.0%2F100-yellow?style=flat-square)
 ![Maintainability](https://img.shields.io/badge/Maintainability-99.9%2F100-brightgreen?style=flat-square)
 ![Security Score](https://img.shields.io/badge/Security--Bandit-100.0%2F100-brightgreen?style=flat-square)
 ![Type Coverage](https://img.shields.io/badge/Type%20Hints-100.0%25-brightgreen?style=flat-square)
 ![Docstring Coverage](https://img.shields.io/badge/Docstrings-100.0%25-brightgreen?style=flat-square)
-![Tests](https://img.shields.io/badge/Tests-273%2F273%20passing-brightgreen?style=flat-square&logo=pytest)
+![Tests](https://img.shields.io/badge/Tests-283%2F283%20passing-brightgreen?style=flat-square&logo=pytest)
 
 The **QGIS Plugin Analyzer** is a static analysis tool designed specifically for QGIS (PyQGIS) plugin developers. Its goal is to elevate plugin quality by ensuring they follow community best practices and are optimized for AI-assisted development.
 
@@ -55,7 +55,7 @@ The **QGIS Plugin Analyzer** is a static analysis tool designed specifically for
 - **High-Performance Engine**: `ProcessPoolExecutor` with single-pass AST traversal, shared worker context, a configurable worker count (`--workers`) and file batching.
 - **Deep Semantic Analysis**: Cross-file dependency graph (Mermaid), circular-import detection and coupling metrics.
 - **Project Auto-Detection**: Distinguishes official QGIS plugins from generic Python projects and tailors validation accordingly.
-- **Advanced Ignore Engine**: `.analyzerignore` with non-anchored patterns and smart default excludes (`.venv`, `build`, …).
+- **Advanced Ignore Engine**: respects `.gitignore`, `.qgisignore` and `.analyzerignore` (ordered, `!` negation), with default excludes for `docs/`, `tests/`, `.venv/` and `build/`; add extra patterns with `--exclude`.
 
 **DX & integration**
 
@@ -186,6 +186,7 @@ You can customize the analyzer's behavior using a `[tool.qgis-analyzer]` section
 [tool.qgis-analyzer.profiles.default]
 strict = false
 generate_html = false  # CLI default
+exclude = ["generated/"]  # defaults already exclude docs/, tests/, .venv/, build/
 
 [tool.qgis-analyzer.profiles.release]
 strict = true
@@ -246,6 +247,8 @@ Audits an existing QGIS plugin repository with optional specialized scopes.
 | :--- | :--- | :--- |
 | `scope` | **(Optional)** Analysis scope: `i18n`, `security`, `performance`, `architecture`, `metadata`, or `all`. | `all` |
 | `project_path` | **(Required)** Path to the plugin directory to analyze. | `.` |
+| `--scope SCOPE` | Explicit scope alternative to the positional form. | none |
+| `--exclude PATTERN` | Extra ignore pattern (repeatable/comma-separated; `!` re-includes). | none |
 | `-o`, `--output` | Directory where HTML/Markdown reports will be saved. | `./analysis_results` |
 | `-r`, `--report` | Explicitly generate detailed HTML/Markdown reports. | `False` |
 | `-p`, `--profile`| Configuration profile from `pyproject.toml` (`default`, `release`). | `default` |
@@ -255,6 +258,21 @@ Audits an existing QGIS plugin repository with optional specialized scopes.
 | `--flake8` | Shorthand for `--linters ruff,flake8`. | `False` |
 | `--max-cc N` | Fail analysis if any function exceeds this cyclomatic complexity. | off |
 | `--workers N` | Number of parallel worker processes (clamped to `1..4` to bound memory). | `min(4, cpu-1)` |
+| `--no-cache` | Disable the incremental per-file analysis cache. | `False` |
+
+**Ignore files and exclusions**
+
+The matcher is ordered and **last match wins**, so a later `!pattern` re-includes a path:
+
+`defaults` → `.gitignore` → `.qgisignore` → `.analyzerignore` → `--exclude` / profile `exclude`.
+
+Default excludes include `docs/`, `tests/`, `.venv/`, `build/`, `dist/`, caches and
+generated artifacts. To analyze one of those directories again:
+
+```bash
+qgis-analyzer analyze . --exclude '!docs/'
+qgis-analyzer analyze . --exclude '!tests/'
+```
 
 **Examples:**
 ```bash
@@ -262,8 +280,12 @@ Audits an existing QGIS plugin repository with optional specialized scopes.
 qgis-analyzer analyze .
 qgis-analyzer analyze /path/to/plugin
 
-# Specialized i18n analysis
+# Specialized i18n analysis (both forms are equivalent)
 qgis-analyzer analyze i18n .
+qgis-analyzer analyze . --scope i18n
+
+# Analyze docs/ and tests/ explicitly
+qgis-analyzer analyze . --exclude '!docs/' --exclude '!tests/'
 
 # Security-only scan with reports
 qgis-analyzer analyze security . --report
@@ -299,6 +321,7 @@ Performs a focused security scan on a file or directory.
 | `--tools LIST` | Comma-separated tools: `native`, `bandit`, `detect-secrets`, `flake8`. | `native` |
 | `--json` | Emit a machine-readable security report (findings, summary, tool status). | `False` |
 | `--fail-on SEV` | Lowest severity that fails: `critical`, `warning`, `info`, `none`. | `critical` |
+| `--exclude PATTERN` | Extra ignore pattern (repeatable/comma-separated; `!` re-includes). | none |
 | `-p`, `--profile`| Configuration profile. | `default` |
 
 **Examples:**

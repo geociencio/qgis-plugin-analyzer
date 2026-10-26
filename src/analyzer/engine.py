@@ -92,6 +92,9 @@ class ProjectAnalyzer:
         raw_security_tools = raw_config.get("security_tools", ["native"])
         if isinstance(raw_security_tools, str):
             raw_security_tools = [item.strip() for item in raw_security_tools.split(",")]
+        raw_exclude = raw_config.get("exclude", [])
+        if isinstance(raw_exclude, str):
+            raw_exclude = [item.strip() for item in raw_exclude.split(",")]
         raw_deep_security = raw_config.get("deep_security")
         self.config = ProjectConfig(
             strict=raw_config.get("strict", False),
@@ -109,6 +112,7 @@ class ProjectAnalyzer:
             security_fail_on=raw_config.get("security_fail_on", "critical"),
             metadata_rules=bool(raw_config.get("metadata_rules", True)),
             fail_on=raw_config.get("fail_on", "none"),
+            exclude=[item for item in raw_exclude if item],
         )
 
         # Resolve the worker count, keeping the anti-OOM ceiling of 4.
@@ -124,11 +128,24 @@ class ProjectAnalyzer:
 
         # Initialize Engines
         self.scoring = ScoringEngine(self.project_type)
+        self.matcher = self._build_matcher()
 
-        # Load .analyzerignore
-        ignore_file = self.project_path / ".analyzerignore"
-        patterns = load_ignore_patterns(ignore_file)
-        self.matcher = IgnoreMatcher(self.project_path, patterns)
+    def _build_matcher(self) -> IgnoreMatcher:
+        """Build the ordered ignore matcher from project and CLI patterns.
+
+        Returns:
+            A matcher combining defaults, ``.gitignore``, ``.qgisignore``,
+            ``.analyzerignore`` and the configured ``exclude`` patterns.
+        """
+        patterns: list[str] = []
+        for ignore_name in (".gitignore", ".qgisignore", ".analyzerignore"):
+            patterns.extend(load_ignore_patterns(self.project_path / ignore_name))
+        patterns.extend(self.config.exclude)
+        return IgnoreMatcher(self.project_path, patterns)
+
+    def refresh_ignore_patterns(self) -> None:
+        """Rebuild the matcher after CLI/profile exclude overrides."""
+        self.matcher = self._build_matcher()
 
     @staticmethod
     def _resolve_max_workers(workers: int | None) -> int:
@@ -347,6 +364,30 @@ class ProjectAnalyzer:
             return []
         return self._run_parallel_analysis(files, rules_config, scope)
 
+    def _filter_ignored_findings(self, findings: list[dict[str, Any]]) -> list[dict[str, Any]]:
+        """Drop lint findings whose file is ignored by the project matcher.
+
+        Ruff/Flake8 are invoked over the whole project; this keeps their
+        findings aligned with the analyzer's ignore files and ``--exclude``.
+
+        Args:
+            findings: Raw lint findings with ``filename``/``file`` fields.
+
+        Returns:
+            The findings that remain in scope.
+        """
+        kept: list[dict[str, Any]] = []
+        for finding in findings:
+            raw_path = str(finding.get("filename") or finding.get("file") or "")
+            if not raw_path:
+                kept.append(finding)
+                continue
+            path = pathlib.Path(raw_path)
+            target = path if path.is_absolute() else self.project_path / path
+            if not self.matcher.is_ignored(target):
+                kept.append(finding)
+        return kept
+
     def _collect_linters(
         self, scope: str
     ) -> tuple[
@@ -385,7 +426,7 @@ class ProjectAnalyzer:
 
         if "ruff" in linters:
             result = self.run_ruff_audit()
-            ruff_findings = result["findings"]
+            ruff_findings = self._filter_ignored_findings(result["findings"])
             ruff_metadata = {
                 "exit_code": result.get("exit_code"),
                 "tool_unavailable": bool(result.get("tool_unavailable", False)),
@@ -394,7 +435,7 @@ class ProjectAnalyzer:
 
         if "flake8" in linters:
             result = run_flake8_audit(self.project_path)
-            flake8_findings = result["findings"]
+            flake8_findings = self._filter_ignored_findings(result["findings"])
             flake8_metadata = {
                 "exit_code": result.get("exit_code"),
                 "tool_unavailable": bool(result.get("tool_unavailable", False)),

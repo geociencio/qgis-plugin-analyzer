@@ -16,6 +16,7 @@ from .bandit_audit import run_bandit_audit
 from .detect_secrets_audit import run_detect_secrets_audit
 from .flake8_audit import run_flake8_audit
 from .rules.scopes import SCOPE_RULES
+from .utils import IgnoreMatcher
 
 KNOWN_TOOLS = frozenset({"native", "bandit", "detect-secrets", "flake8"})
 _SEVERITY_MAP = {
@@ -126,6 +127,18 @@ def meets_fail_on(findings: list[dict[str, Any]], fail_on: str) -> bool:
     return any(item.get("portal_severity") in threshold for item in findings)
 
 
+def _is_ignored(
+    finding: dict[str, Any], project_path: pathlib.Path, matcher: IgnoreMatcher
+) -> bool:
+    """Return whether a finding's file is excluded from the scan."""
+    raw_path = str(finding.get("file") or "")
+    if not raw_path:
+        return False
+    path = pathlib.Path(raw_path)
+    target = path if path.is_absolute() else project_path / path
+    return matcher.is_ignored(target)
+
+
 def build_security_report(
     context: dict[str, Any],
     *,
@@ -133,6 +146,7 @@ def build_security_report(
     tools: list[str],
     deep: bool,
     fail_on: str = "critical",
+    matcher: IgnoreMatcher | None = None,
 ) -> dict[str, Any]:
     """Build the security report envelope and exit code.
 
@@ -143,6 +157,8 @@ def build_security_report(
             ``flake8``).
         deep: Whether the native entropy heuristic ran.
         fail_on: Lowest severity that produces a non-zero exit code.
+        matcher: Optional ignore matcher used to drop findings from excluded
+            files (the external tools scan the tree themselves).
 
     Returns:
         A JSON-serializable report with ``findings``, ``summary``,
@@ -168,6 +184,11 @@ def build_security_report(
             finding.setdefault("blocking", False)
         findings.extend(result["findings"])
         tool_status["flake8"] = "unavailable" if result["tool_unavailable"] else "ok"
+
+    if matcher is not None:
+        findings = [
+            finding for finding in findings if not _is_ignored(finding, project_path, matcher)
+        ]
 
     merged = _merge(findings)
     summary = {

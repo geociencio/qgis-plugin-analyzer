@@ -26,3 +26,4 @@ class ProjectConfig:
     security_fail_on: str = "critical"
     metadata_rules: bool = True
     fail_on: str = "none"
+    exclude: list[str] = field(default_factory=list)

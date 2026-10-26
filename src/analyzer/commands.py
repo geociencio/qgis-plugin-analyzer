@@ -44,8 +44,7 @@ def handle_fix(args: argparse.Namespace) -> bool:
         args.output if hasattr(args, "output") else "./analysis_results",
         args.profile if hasattr(args, "profile") else "default",
     )
-    if hasattr(args, "strict") and args.strict:
-        analyzer.config = dataclasses.replace(analyzer.config, strict=True)
+    _apply_config_overrides(analyzer, args)
 
     analyzer.run()
 
@@ -127,6 +126,14 @@ def handle_analyze(args: argparse.Namespace) -> None:
         sys.exit(1)
 
 
+def _parse_exclude_patterns(values: list[str] | None) -> list[str]:
+    """Normalize repeatable ``--exclude`` values (comma-separated allowed)."""
+    patterns: list[str] = []
+    for value in values or []:
+        patterns.extend(item.strip() for item in str(value).split(",") if item.strip())
+    return patterns
+
+
 def _apply_config_overrides(analyzer: ProjectAnalyzer, args: argparse.Namespace) -> None:
     """Applies CLI overrides onto the analyzer's configuration.
 
@@ -142,6 +149,13 @@ def _apply_config_overrides(analyzer: ProjectAnalyzer, args: argparse.Namespace)
         analyzer.config = dataclasses.replace(analyzer.config, include_content=True)
     if getattr(args, "no_cache", False):
         analyzer.config = dataclasses.replace(analyzer.config, cache=False)
+
+    excludes = _parse_exclude_patterns(getattr(args, "exclude", None))
+    if excludes:
+        analyzer.config = dataclasses.replace(
+            analyzer.config, exclude=[*analyzer.config.exclude, *excludes]
+        )
+        analyzer.refresh_ignore_patterns()
 
     raw_linters = getattr(args, "linters", None)
     flake8_flag = bool(getattr(args, "flake8", False))
@@ -443,6 +457,7 @@ def handle_security(args: argparse.Namespace) -> None:
         tools=tools,
         deep=deep,
         fail_on=fail_on,
+        matcher=analyzer.matcher,
     )
     _emit_security_report(report, context_path, as_json)
     sys.exit(_security_exit_code(report, success))

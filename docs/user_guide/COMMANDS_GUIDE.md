@@ -54,6 +54,14 @@ qgis-analyzer analyze /path/to/plugin
 - `-o, --output`: Output directory for reports (default: `./analysis_results`).
 - `-r, --report`: Generates detailed HTML and Markdown reports.
 - `-p, --profile`: Specifies the configuration profile in `pyproject.toml` (e.g., `default`, `release`).
+- `--scope`: Explicit scope (`all`, `i18n`, `security`, `performance`, `architecture`, `metadata`) instead of the positional form.
+- `--exclude`: Additional ignore pattern (repeatable/comma-separated; `!` re-includes).
+- `--no-cache`: Disables the incremental per-file cache.
+
+> [!NOTE]
+> By default the analyzer skips `docs/`, `tests/`, `.venv/` and `build/` to avoid
+> measuring documentation/test trees. Re-include them with
+> `--exclude '!docs/'` or a `!docs/` rule in `.analyzerignore`.
 
 > [!TIP]
 > If you run `qgis-analyzer /path/to/plugin` without a subcommand, the system automatically assumes the `analyze` command.
@@ -73,6 +81,7 @@ qgis-analyzer fix /path/to/plugin
 - `--apply`: Executes modifications directly to the files.
 - `--auto-approve`: Applies all changes without interactive confirmation.
 - `--rules`: Filters which rules to fix (e.g., `--rules QGS101,QGS105`).
+- `--exclude`: Additional ignore pattern (repeatable/comma-separated; `!` re-includes).
 
 ---
 
@@ -167,11 +176,29 @@ metadata_rules = true
 fail_on = "critical"
 ```
 
-CLI flags override the profile (`--tools`, `--fail-on`, `--linters`), which overrides
-the defaults.
+CLI flags override the profile (`--tools`, `--fail-on`, `--linters`, `--exclude`), which
+overrides the defaults. The profile also accepts an `exclude` list.
+
+### Ignore files and exclusions
+
+The analyzer honors, in order (last match wins):
+
+1. Built-in defaults (`docs/`, `tests/`, `.venv/`, `build/`, caches, generated artifacts).
+2. `.gitignore`.
+3. `.qgisignore`.
+4. `.analyzerignore`.
+5. `--exclude` / profile `exclude`.
+
+Negation (`!pattern`) re-includes a path. Common gitignore forms are supported:
+anchored `/foo`, directory `build/`, basename `*.pyc`, and basic `**` globs.
+
+```bash
+qgis-analyzer analyze . --exclude '!docs/' --exclude 'generated/'
+qgis-analyzer security . --exclude '!tests/fixtures/'
+```
 
 ### `.analyzerignore` File
-Use this file to exclude folders that should not be analyzed (e.g., external libraries or compressed data files).
+Use this file to exclude folders that should not be analyzed (e.g., external libraries or compressed data files). It is merged with `.gitignore` and `.qgisignore`; `!pattern` entries have the final say.
 
 ---
 *Documentation generated for the PyQGIS community.*

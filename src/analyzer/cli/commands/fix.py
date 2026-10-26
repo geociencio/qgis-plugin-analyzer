@@ -44,6 +44,13 @@ class FixCommand(BaseCommand):
             type=str,
             help="Comma-separated list of rule IDs to fix",
         )
+        parser.add_argument(
+            "--exclude",
+            action="append",
+            default=None,
+            metavar="PATTERN",
+            help="Additional ignore pattern (repeatable/comma-separated; ! re-includes)",
+        )
 
     def execute(self, args: argparse.Namespace) -> int:
         """Execute the fix command.

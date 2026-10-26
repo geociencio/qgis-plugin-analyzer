@@ -1,5 +1,14 @@
 # Development Log
 
+## [2026-10-25] Ignore Files, Default Excludes & CLI Scopes
+- **Achievement**: Made project discovery honor `.gitignore`, `.qgisignore` and `.analyzerignore` with ordered/negation semantics, added `--exclude` and `--scope`, and excluded `docs/`/`tests/` by default.
+- **Changes**:
+    - `IgnoreMatcher` now evaluates patterns in order with `!` negation (last match wins) and supports anchored, directory, basename and basic `**` patterns.
+    - `ProjectAnalyzer` merges defaults → `.gitignore` → `.qgisignore` → `.analyzerignore` → profile/CLI `exclude`; `refresh_ignore_patterns()` applies CLI overrides after construction.
+    - `analyze --scope` (compatible with `analyze [scope] [path]`), `--exclude` on `analyze`/`security`/`fix`, and profile `exclude`.
+    - Default excludes now include `docs/` and `tests/`, so source-tree size and analysis focus on plugin code; `!docs/` re-includes.
+- **Quality**: 283 tests (coverage 89%); `ruff check` + `mypy src/` clean; self-analysis `--max-cc 15` green with 10 LOW findings; Module Stability 54.0 · Maintainability 99.9 · Security 100.0.
+
 ## [2026-10-25] Release v1.17.0 — Portal Gate Integration
 - **Achievement**: Prepared the v1.17.0 minor release with Flake8 support, real Bandit/detect-secrets/Flake8 adapters, the `security --json` contract, the portal profile, five `METADATA_*` rules and the 25 MB source-tree rule moved to informational.
 - **Changes**:

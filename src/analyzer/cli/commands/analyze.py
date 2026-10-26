@@ -40,6 +40,19 @@ class AnalyzeCommand(BaseAnalyzerCommand):
         )
         self.add_common_args(parser)
         parser.add_argument(
+            "--scope",
+            choices=["all", "i18n", "security", "performance", "architecture", "metadata"],
+            default=None,
+            help="Analysis scope (alternative to the positional scope form)",
+        )
+        parser.add_argument(
+            "--exclude",
+            action="append",
+            default=None,
+            metavar="PATTERN",
+            help="Additional ignore pattern (repeatable/comma-separated; ! re-includes)",
+        )
+        parser.add_argument(
             "-r",
             "--report",
             action="store_true",
@@ -97,8 +110,15 @@ class AnalyzeCommand(BaseAnalyzerCommand):
         """
         scopes = ["all", "i18n", "security", "performance", "architecture", "metadata"]
 
-        # Logic to distinguish between 'analyze [scope] [path]' and 'analyze [path]'
-        if args.scope_or_path in scopes:
+        # ``--scope`` is the explicit form; keep ``analyze [scope] [path]``
+        # working for backward compatibility.
+        if args.scope is not None:
+            if args.scope_or_path in scopes:
+                raise ValueError("Specify the scope either positionally or with --scope, not both.")
+            if args.remaining_path is not None:
+                raise ValueError("Only one project path can be specified.")
+            args.project_path = args.scope_or_path
+        elif args.scope_or_path in scopes:
             args.scope = args.scope_or_path
             args.project_path = args.remaining_path or "."
         else:

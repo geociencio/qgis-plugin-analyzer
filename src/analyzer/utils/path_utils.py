@@ -1,12 +1,13 @@
 """Path and file matching utilities."""
 
 import fnmatch
-import os
 import pathlib
 from typing import Any
 
-# Default patterns to ignore if not specified
-DEFAULT_EXCLUDE = {
+# Default patterns to ignore if not specified. They are applied first so a
+# later ``!pattern`` (gitignore/.qgisignore/.analyzerignore/--exclude) can
+# re-include an explicitly requested path.
+DEFAULT_EXCLUDE: tuple[str, ...] = (
     ".venv/",
     "venv/",
     "__pycache__/",
@@ -18,9 +19,13 @@ DEFAULT_EXCLUDE = {
     ".ruff_cache/",
     ".mypy_cache/",
     ".analyzerignore",
+    ".gitignore",
+    ".qgisignore",
     ".analyzer_cache.json",
     "analysis_results/",
-}
+    "docs/",
+    "tests/",
+)
 
 # Prohibited binary extensions per QGIS repository policy
 BINARY_EXTENSIONS = {".exe", ".dll", ".so", ".dylib", ".pyd", ".bin", ".a", ".lib"}
@@ -54,24 +59,28 @@ def safe_path_resolve(base_path: pathlib.Path, target_path_str: str) -> pathlib.
 
 
 class IgnoreMatcher:
-    """Handles .analyzerignore patterns using fnmatch-style globbing."""
+    """Ordered ignore matcher with gitignore-style negation support.
+
+    Patterns are evaluated in order and the last matching pattern wins, so a
+    later ``!pattern`` can re-include a path ignored by a default, a
+    ``.gitignore`` entry or an earlier exclude.
+    """
 
     def __init__(self, root_path: pathlib.Path, patterns: list[str]):
         """Initializes the matcher with root path and patterns.
 
         Args:
             root_path: The project root path.
-            patterns: List of ignore pattern strings.
+            patterns: Ordered ignore pattern strings (``!`` negates).
         """
         self.root_path = root_path
-        # Combine user patterns with defaults
-        all_patterns = set(p.strip() for p in patterns if p.strip() and not p.startswith("#"))
-        all_patterns.update(DEFAULT_EXCLUDE)
-        self.patterns = list(all_patterns)
+        cleaned = [p.strip() for p in patterns if p.strip() and not p.lstrip().startswith("#")]
+        # Defaults come first; user/CLI patterns can override them with ``!``.
+        self.patterns = [*DEFAULT_EXCLUDE, *cleaned]
         self._cache: dict[str, bool] = {}
 
     def is_ignored(self, path: pathlib.Path) -> bool:
-        """Checks if a path matches any ignore pattern.
+        """Checks if a path matches the ordered ignore patterns.
 
         Args:
             path: The path to check.
@@ -84,44 +93,55 @@ class IgnoreMatcher:
             return self._cache[str_path]
 
         try:
-            rel_path = path.relative_to(self.root_path)
-            str_rel_path = str(rel_path)
-            result = self._check_patterns(str_rel_path, path.name)
-            self._cache[str_path] = result
-            return result
+            rel_path = path.relative_to(self.root_path).as_posix()
         except ValueError:
             return False
 
-    def _check_patterns(self, str_rel_path: str, name: str) -> bool:
-        for pattern in self.patterns:
-            # Handle anchored patterns (starting with /)
-            is_anchored = pattern.startswith("/")
-            clean_pattern = pattern.lstrip("/")
+        result = self._check_patterns(rel_path, path.name)
+        self._cache[str_path] = result
+        return result
 
-            # Handle directory-specific patterns (ending in /)
-            is_dir_pattern = clean_pattern.endswith("/")
-            clean_pattern = clean_pattern.rstrip("/")
+    def _check_patterns(self, rel_path: str, name: str) -> bool:
+        """Apply patterns in order; the last match wins."""
+        ignored = False
+        for raw_pattern in self.patterns:
+            negated = raw_pattern.startswith("!")
+            pattern = raw_pattern[1:] if negated else raw_pattern
+            if pattern and self._matches(pattern.strip(), rel_path, name):
+                ignored = not negated
+        return ignored
 
-            if is_dir_pattern:
-                if is_anchored:
-                    if str_rel_path == clean_pattern or str_rel_path.startswith(
-                        clean_pattern + os.sep
-                    ):
-                        return True
-                else:
-                    parts = str_rel_path.split(os.sep)
-                    if clean_pattern in parts:
-                        return True
-            else:
-                if is_anchored:
-                    if fnmatch.fnmatch(str_rel_path, clean_pattern):
-                        return True
-                else:
-                    if fnmatch.fnmatch(str_rel_path, clean_pattern):
-                        return True
-                    if "/" not in clean_pattern and fnmatch.fnmatch(name, clean_pattern):
-                        return True
-        return False
+    @staticmethod
+    def _matches(pattern: str, rel_path: str, name: str) -> bool:
+        """Return whether one normalized pattern matches a relative path."""
+        if not pattern:
+            return False
+
+        anchored = pattern.startswith("/")
+        clean = pattern.lstrip("/")
+        is_dir = clean.endswith("/")
+        clean = clean.rstrip("/")
+        if not clean:
+            return False
+
+        # ``**/foo`` matches foo at any depth; normalize the common form.
+        if clean.startswith("**/"):
+            clean = clean[3:]
+            if not clean:
+                return False
+
+        if is_dir:
+            if anchored or "/" in clean:
+                return rel_path == clean or rel_path.startswith(clean + "/")
+            return clean in rel_path.split("/")
+
+        if anchored or "/" in clean:
+            return fnmatch.fnmatch(rel_path, clean)
+        if fnmatch.fnmatch(rel_path, clean) or fnmatch.fnmatch(name, clean):
+            return True
+        # A slash-less pattern also matches a directory component (gitignore
+        # semantics for patterns such as ``.venv`` or ``node_modules``).
+        return any(fnmatch.fnmatch(part, clean) for part in rel_path.split("/")[:-1])
 
 
 def load_ignore_patterns(ignore_file: pathlib.Path) -> list[str]:
