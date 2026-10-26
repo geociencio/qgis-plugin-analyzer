@@ -138,6 +138,9 @@ class TestSecurityReport(unittest.TestCase):
     def test_parse_tools(self):
         self.assertEqual(parse_tools(None), ["native"])
         self.assertEqual(parse_tools("native,bandit"), ["native", "bandit"])
+        self.assertEqual(
+            parse_tools("bandit,detect-secrets,flake8"), ["bandit", "detect-secrets", "flake8"]
+        )
         with self.assertRaises(ValueError):
             parse_tools("snyk")
 
@@ -177,6 +180,32 @@ class TestSecurityReport(unittest.TestCase):
         self.assertEqual(len(b307), 1)
         self.assertEqual(b307[0]["tool"], "bandit")
         self.assertEqual(report["tool_status"]["bandit"], "ok")
+
+    def test_flake8_tool_is_merged_as_info(self):
+        external = {
+            "findings": [
+                {
+                    "file": "plugin.py",
+                    "line": 4,
+                    "type": "FLAKE8_F401",
+                    "rule_id": "F401",
+                    "severity": "info",
+                    "message": "'os' imported but unused",
+                    "tool": "flake8",
+                }
+            ],
+            "tool_unavailable": False,
+        }
+        with patch("analyzer.security_audit.run_flake8_audit", return_value=external):
+            report = build_security_report(
+                self._context(), project_path=self.root, tools=["native", "flake8"], deep=False
+            )
+
+        flake8 = [item for item in report["findings"] if item["tool"] == "flake8"]
+        self.assertEqual(len(flake8), 1)
+        self.assertEqual(flake8[0]["portal_severity"], "info")
+        self.assertFalse(flake8[0]["blocking"])
+        self.assertEqual(report["tool_status"]["flake8"], "ok")
 
     def test_tool_unavailable_exits_two(self):
         unavailable = {"findings": [], "tool_unavailable": True}

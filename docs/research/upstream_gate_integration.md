@@ -7,14 +7,14 @@
 > **Baseline**: `qgis-manage 0.12.0`, `qgis-plugin-analyzer 1.16.0`.
 >
 > **Implementation status (2026-10-25, analyzer P0)** — the qgis-analyzer slice is
-> implemented: `flake8_audit.py` + `analyze --flake8/--linters`, real Bandit and
-> detect-secrets adapters behind `security --tools ... --json --fail-on`, the security
-> scope/`--deep` fix, and the 25 MB rule moved to an informational warning. Deviations
-> from this proposal: `security` still runs the native engine (findings are merged and
-> de-duplicated with external tools), the artifact `--artifact` flag is intentionally
-> not added to the analyzer (qgis-manage owns ZIP inspection), and the portal profile +
-> `METADATA_*` rules remain P1. The qgis-manage `validate --zip` / artifact layer is still
-> pending in that repository.
+> implemented: `flake8_audit.py` + `analyze --flake8/--linters`, real Bandit,
+> detect-secrets and Flake8 adapters behind `security --tools ... --json --fail-on`, the
+> security scope/`--deep` fix, and the 25 MB rule moved to an informational warning.
+> Deviations from this proposal: `security` still runs the native engine (findings are
+> merged and de-duplicated with external tools), the artifact `--artifact` flag is
+> intentionally not added to the analyzer (qgis-manage owns ZIP inspection), and the
+> portal profile + `METADATA_*` rules remain P1. The qgis-manage artifact layer is being
+> implemented in that repository (v0.13.0+), so it no longer blocks the analyzer side.
 
 ---
 

@@ -22,7 +22,7 @@ and strict validation. No analyzer source code changed; all project gates are gr
   former "Known Issue" is resolved.
 - [x] **v1.16.0** remains the released analyzer version (GitHub + PyPI).
 - [x] **Analyzer P0 upstream gate integration** (2026-10-25): Flake8 adapter +
-  `analyze --flake8/--linters`; real Bandit/detect-secrets adapters behind
+  `analyze --flake8/--linters`; real Bandit/detect-secrets/Flake8 adapters behind
   `security --tools --json --fail-on`; security scope/`--deep` fix; 25 MB source-tree
   rule moved to informational. qgis-manage `validate --zip` remains pending.
 
@@ -48,7 +48,7 @@ and strict validation. No analyzer source code changed; all project gates are gr
 
 ## 🐛 Known Issues
 
-**None blocking** — 260 tests passing; `ruff check` + `mypy src/` clean; self-analysis
+**None blocking** — 261 tests passing; `ruff check` + `mypy src/` clean; self-analysis
 `--max-cc 15` green (max func CC 13); self-run issues are 10 LOW
 (`SPAGHETTI_CODE` 8, `GOD_OBJECT` 2).
 

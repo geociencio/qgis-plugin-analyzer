@@ -9,7 +9,7 @@
     - Source-tree size is a warning (`constraint_warnings`); the portal 25 MB limit stays with the ZIP artifact layer. QGIS score no longer penalizes source-tree size.
     - Optional extras `[flake8]`, `[security]`, `[portal]`; README/CHANGELOG/user-guide updates.
     - `--json` logs/progress stay on stderr (including the analyzer project-type line).
-- **Quality**: 260 tests (coverage 89%); `ruff check` + `mypy src/` clean; self-analysis `--max-cc 15` green with 10 LOW findings; Module Stability 54.2 · Maintainability 99.9 · Security 100.0.
+- **Quality**: 261 tests (coverage 89%); `ruff check` + `mypy src/` clean; self-analysis `--max-cc 15` green with 10 LOW findings; Module Stability 54.2 · Maintainability 99.9 · Security 100.0.
 - **Notes**: qgis-manage's `validate --zip` / artifact layer remains pending in that repository; status recorded in `docs/research/upstream_gate_integration.md`.
 
 ## [2026-10-19] Agentic Forge v1.4.2 & Repository Audit

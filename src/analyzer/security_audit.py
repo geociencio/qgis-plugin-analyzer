@@ -13,9 +13,10 @@ from typing import Any
 from . import __version__
 from .bandit_audit import run_bandit_audit
 from .detect_secrets_audit import run_detect_secrets_audit
+from .flake8_audit import run_flake8_audit
 from .rules.scopes import SCOPE_RULES
 
-KNOWN_TOOLS = frozenset({"native", "bandit", "detect-secrets"})
+KNOWN_TOOLS = frozenset({"native", "bandit", "detect-secrets", "flake8"})
 _SEVERITY_MAP = {
     "critical": "critical",
     "high": "critical",
@@ -131,7 +132,8 @@ def build_security_report(
     Args:
         context: Parsed ``project_context.json`` from the security-scope run.
         project_path: Root path of the analyzed project.
-        tools: Requested tools (``native``, ``bandit``, ``detect-secrets``).
+        tools: Requested tools (``native``, ``bandit``, ``detect-secrets``,
+            ``flake8``).
         deep: Whether the native entropy heuristic ran.
         fail_on: Lowest severity that produces a non-zero exit code.
 
@@ -151,6 +153,14 @@ def build_security_report(
         result = run_detect_secrets_audit(project_path)
         findings.extend(result["findings"])
         tool_status["detect-secrets"] = "unavailable" if result["tool_unavailable"] else "ok"
+
+    if "flake8" in tools:
+        result = run_flake8_audit(project_path)
+        for finding in result["findings"]:
+            finding.setdefault("portal_severity", "info")
+            finding.setdefault("blocking", False)
+        findings.extend(result["findings"])
+        tool_status["flake8"] = "unavailable" if result["tool_unavailable"] else "ok"
 
     merged = _merge(findings)
     summary = {

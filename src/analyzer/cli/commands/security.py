@@ -37,7 +37,7 @@ class SecurityCommand(BaseAnalyzerCommand):
             "--tools",
             default=None,
             metavar="LIST",
-            help="Comma-separated tools: native,bandit,detect-secrets (default: native)",
+            help="Comma-separated tools: native,bandit,detect-secrets,flake8 (default: native)",
         )
         parser.add_argument(
             "--json",

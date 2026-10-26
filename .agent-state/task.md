@@ -26,7 +26,7 @@ Reference: `docs/reports/DEEP_ANALYSIS_v1.15.0_DEAD_CODE_DUPLICATION.md`
 
 ## Goal 5: Upstream Gate Integration — Analyzer P0 (2026-10-25)
 - [x] Flake8 adapter + `analyze --flake8/--linters`; `flake8_findings`/`flake8_metadata` <!-- id: 6.1 -->
-- [x] `security --tools bandit,detect-secrets --json --fail-on`; scope/`--deep` fix <!-- id: 6.2 -->
+- [x] `security --tools bandit,detect-secrets,flake8 --json --fail-on`; scope/`--deep` fix <!-- id: 6.2 -->
 - [x] 25 MB source-tree rule moved to informational; `constraint_warnings` <!-- id: 6.3 -->
 - [x] Optional extras `[flake8]`, `[security]`, `[portal]` + README/CHANGELOG/tests <!-- id: 6.4 -->
 - [ ] qgis-manage P0: `validate --zip` + artifact checks (separate repository) <!-- id: 6.5 -->
@@ -40,5 +40,5 @@ Reference: `docs/reports/DEEP_ANALYSIS_v1.15.0_DEAD_CODE_DUPLICATION.md`
 
 ## Operational Status
 - **Active Phase**: None — **v1.16.0 released on GitHub + PyPI**; **agentic-forge v1.4.2** adopted (`b98186a`).
-- **Current Metrics**: 260/260 tests; `ruff` + `mypy` clean; self-analysis `--max-cc 15` green (max func CC 13); Module Stability 54.2 · Maintainability 99.9 · Security 100.0; type hints **100%** · docstrings **100%**. Remaining self-run issues: **10 LOW** (`SPAGHETTI_CODE` 8, `GOD_OBJECT` 2 — core-class refactor deferred).
+- **Current Metrics**: 261/261 tests; `ruff` + `mypy` clean; self-analysis `--max-cc 15` green (max func CC 13); Module Stability 54.2 · Maintainability 99.9 · Security 100.0; type hints **100%** · docstrings **100%**. Remaining self-run issues: **10 LOW** (`SPAGHETTI_CODE` 8, `GOD_OBJECT` 2 — core-class refactor deferred).
 - **Known**: none blocking. The former 5 `forge.py metrics validate` false positives were fixed upstream (agentic-forge v1.3.0+); v1.4.2 `metrics validate` is green (38 files). Upstream framework follow-ups: standalone CI is still red on 2 consumer-coupled tests and structural-checklist coverage is partial (see `next_steps.md`).

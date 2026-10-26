@@ -20,7 +20,7 @@
 ![Security Score](https://img.shields.io/badge/Security--Bandit-100.0%2F100-brightgreen?style=flat-square)
 ![Type Coverage](https://img.shields.io/badge/Type%20Hints-100.0%25-brightgreen?style=flat-square)
 ![Docstring Coverage](https://img.shields.io/badge/Docstrings-100.0%25-brightgreen?style=flat-square)
-![Tests](https://img.shields.io/badge/Tests-260%2F260%20passing-brightgreen?style=flat-square&logo=pytest)
+![Tests](https://img.shields.io/badge/Tests-261%2F261%20passing-brightgreen?style=flat-square&logo=pytest)
 
 The **QGIS Plugin Analyzer** is a static analysis tool designed specifically for QGIS (PyQGIS) plugin developers. Its goal is to elevate plugin quality by ensuring they follow community best practices and are optimized for AI-assisted development.
 
@@ -29,7 +29,7 @@ The **QGIS Plugin Analyzer** is a static analysis tool designed specifically for
 **Security & correctness**
 
 - **Bandit-inspired Security Core**: Detects `eval`/`exec` (B307/B102), unsafe `pickle` (B301), `shell=True` (B602), SQL injection (B608) and hardcoded secrets; findings carry CWE ids.
-- **External security tools (optional)**: `security --tools bandit,detect-secrets` runs the real portal tools, normalizes their findings (`portal_severity`, `blocking`) and emits `--json`; missing tools are reported as `tool_unavailable` with exit code `2`.
+- **External security tools (optional)**: `security --tools bandit,detect-secrets,flake8` runs the real portal tools, normalizes their findings (`portal_severity`, `blocking`) and emits `--json`; missing tools are reported as `tool_unavailable` with exit code `2`.
 - **Deep Entropy Secret Scanner**: Detect hardcoded API keys, passwords and tokens via regex + information entropy (`security --deep`).
 - **Extended Safety Audit**: Signal leaks, missing slots and UI-blocking loops, with `QgsTask` suggestions.
 - **Qt Resource Validation**: Detects missing/broken resource paths (`:/plugins/...`).
@@ -272,7 +272,7 @@ Performs a focused security scan on a file or directory.
 | :--- | :--- | :--- |
 | `path` | **(Required)** Path to the file or directory to scan. | N/A |
 | `--deep` | Enable the native entropy heuristic (full secret detection). | `False` |
-| `--tools LIST` | Comma-separated tools: `native`, `bandit`, `detect-secrets`. | `native` |
+| `--tools LIST` | Comma-separated tools: `native`, `bandit`, `detect-secrets`, `flake8`. | `native` |
 | `--json` | Emit a machine-readable security report (findings, summary, tool status). | `False` |
 | `--fail-on SEV` | Lowest severity that fails: `critical`, `warning`, `info`, `none`. | `critical` |
 | `-p`, `--profile`| Configuration profile. | `default` |
@@ -282,8 +282,8 @@ Performs a focused security scan on a file or directory.
 # Native scan (regex + AST rules); entropy only with --deep
 qgis-analyzer security .
 
-# Portal parity: real Bandit + detect-secrets, JSON, block on critical findings
-qgis-analyzer security . --tools bandit,detect-secrets --json --fail-on critical
+# Portal parity: real Bandit + detect-secrets + Flake8, JSON, block on critical findings
+qgis-analyzer security . --tools bandit,detect-secrets,flake8 --json --fail-on critical
 
 # Machine-readable native report
 qgis-analyzer security . --deep --json
