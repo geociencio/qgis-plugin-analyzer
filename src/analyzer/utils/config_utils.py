@@ -27,9 +27,11 @@ def load_profile_config(
         "fail_on_error": False,
         "rules": {},
         "linters": ["ruff"],
-        "deep_security": True,
+        "deep_security": None,
         "security_tools": ["native"],
         "security_fail_on": "critical",
+        "metadata_rules": True,
+        "fail_on": "none",
     }
 
     if not pyproject.exists():

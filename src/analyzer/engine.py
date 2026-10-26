@@ -21,6 +21,7 @@
 """Analysis engine orchestrating the scanner → visitors → aggregators pipeline."""
 
 import pathlib
+from collections.abc import Mapping
 from typing import Any
 
 from . import __version__
@@ -41,6 +42,7 @@ from .scoring import (
     ScoringEngine,
     SemanticAnalysisResult,
 )
+from .security_audit import collect_native_findings, meets_fail_on
 from .semantic import run_semantic_analysis
 from .utils import (
     IgnoreMatcher,
@@ -87,6 +89,10 @@ class ProjectAnalyzer:
         raw_linters = raw_config.get("linters", ["ruff"])
         if isinstance(raw_linters, str):
             raw_linters = [item.strip() for item in raw_linters.split(",")]
+        raw_security_tools = raw_config.get("security_tools", ["native"])
+        if isinstance(raw_security_tools, str):
+            raw_security_tools = [item.strip() for item in raw_security_tools.split(",")]
+        raw_deep_security = raw_config.get("deep_security")
         self.config = ProjectConfig(
             strict=raw_config.get("strict", False),
             generate_html=raw_config.get("generate_html", True),
@@ -97,7 +103,12 @@ class ProjectAnalyzer:
             workers=effective_workers,
             cache=raw_config.get("cache", True),
             linters=[item for item in raw_linters if item],
-            deep_security=raw_config.get("deep_security", True),
+            deep_security=True if raw_deep_security is None else bool(raw_deep_security),
+            deep_security_configured=raw_deep_security is not None,
+            security_tools=[item for item in raw_security_tools if item],
+            security_fail_on=raw_config.get("security_fail_on", "critical"),
+            metadata_rules=bool(raw_config.get("metadata_rules", True)),
+            fail_on=raw_config.get("fail_on", "none"),
         )
 
         # Resolve the worker count, keeping the anti-OOM ceiling of 4.
@@ -193,6 +204,8 @@ class ProjectAnalyzer:
         modules_data: list[ModuleAnalysisResult],
         rules_config: dict[str, Any],
         discovery: dict[str, Any],
+        *,
+        metadata_rules: bool = True,
     ) -> QGISChecksResult:
         """Runs QGIS-specific validation checks.
 
@@ -200,11 +213,18 @@ class ProjectAnalyzer:
             modules_data: Results from module analysis.
             rules_config: Configuration for rules.
             discovery: Discovery results from the project scanner.
+            metadata_rules: Whether to include the catalog-backed METADATA_* rules.
 
         Returns:
             A QGISChecksResult containing findings from all checks.
         """
-        return run_qgis_checks(modules_data, self.project_path, rules_config, discovery)
+        return run_qgis_checks(
+            modules_data,
+            self.project_path,
+            rules_config,
+            discovery,
+            metadata_rules=metadata_rules,
+        )
 
     def _run_semantic_analysis(
         self, modules_data: list[ModuleAnalysisResult]
@@ -281,7 +301,21 @@ class ProjectAnalyzer:
         save_reports(analyses, self.output_dir, self.config.generate_html)
         logger.info(f"✅ Analysis completed. Reports in: {self.output_dir}")
 
-        return not self._strict_gate_failed(qgis_checks)
+        fail_on_failed = self._fail_on_gate(analyses)
+        return not (self._strict_gate_failed(qgis_checks) or fail_on_failed)
+
+    def _fail_on_gate(self, analyses: Mapping[str, Any]) -> bool:
+        """Evaluate the profile ``fail_on`` security threshold.
+
+        Args:
+            analyses: The consolidated analysis result.
+
+        Returns:
+            True when a security finding reaches ``[project].fail_on``.
+        """
+        if self.config.fail_on in ("", "none"):
+            return False
+        return meets_fail_on(collect_native_findings(analyses), self.config.fail_on)
 
     def _refine_project_type(self, discovery: dict[str, Any]) -> None:
         """Refines the auto-detected project type from discovery metadata.
@@ -389,7 +423,10 @@ class ProjectAnalyzer:
             The QGIS checks result, or None when out of scope.
         """
         if self.project_type == "qgis" and scope in ("all", "metadata", "performance"):
-            return self._run_qgis_specific_checks(modules_data, rules_config, discovery)
+            include_metadata = self.config.metadata_rules and scope in ("all", "metadata")
+            return self._run_qgis_specific_checks(
+                modules_data, rules_config, discovery, metadata_rules=include_metadata
+            )
         return None
 
     def _collect_semantic(

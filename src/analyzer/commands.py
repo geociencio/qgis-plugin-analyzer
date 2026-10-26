@@ -159,9 +159,11 @@ def _apply_config_overrides(analyzer: ProjectAnalyzer, args: argparse.Namespace)
             raise ValueError(f"Unknown linter(s): {', '.join(sorted(unknown))}")
         analyzer.config = dataclasses.replace(analyzer.config, linters=linters)
 
-    if hasattr(args, "deep"):
+    if getattr(args, "deep", None) is not None:
         analyzer.config = dataclasses.replace(
-            analyzer.config, deep_security=bool(getattr(args, "deep", False))
+            analyzer.config,
+            deep_security=bool(args.deep),
+            deep_security_configured=True,
         )
 
 
@@ -318,11 +320,12 @@ def _security_info(message: str, as_json: bool) -> None:
     print(message, file=sys.stderr if as_json else sys.stdout)
 
 
-def _security_options(args: argparse.Namespace) -> tuple[list[str], str, bool, bool]:
-    """Extract and validate the security command options.
+def _security_options(args: argparse.Namespace, config: Any) -> tuple[list[str], str, bool, bool]:
+    """Resolve security options with CLI > profile > default precedence.
 
     Args:
         args: Parsed command-line arguments.
+        config: The resolved :class:`ProjectConfig`.
 
     Returns:
         A tuple ``(tools, fail_on, as_json, deep)``.
@@ -330,16 +333,19 @@ def _security_options(args: argparse.Namespace) -> tuple[list[str], str, bool, b
     Raises:
         SystemExit: When an unknown tool is requested.
     """
+    raw_tools = getattr(args, "tools", None)
+    if raw_tools is None:
+        raw_tools = ",".join(config.security_tools)
     try:
-        tools = parse_tools(getattr(args, "tools", None))
+        tools = parse_tools(raw_tools)
     except ValueError as exc:
         print(f"❌ {exc}", file=sys.stderr)
         sys.exit(2)
     return (
         tools,
-        getattr(args, "fail_on", "critical") or "critical",
+        getattr(args, "fail_on", None) or config.security_fail_on,
         bool(getattr(args, "json", False)),
-        bool(getattr(args, "deep", False)),
+        bool(config.deep_security),
     )
 
 
@@ -356,6 +362,10 @@ def _build_security_analyzer(
     with contextlib.redirect_stdout(sys.stderr) if as_json else contextlib.nullcontext():
         analyzer = ProjectAnalyzer(str(project_path), output_dir, profile)
     _apply_config_overrides(analyzer, args)
+    # Focused security scans default to regex-only native secrets unless the
+    # profile or --deep explicitly enables the entropy heuristic.
+    if not analyzer.config.deep_security_configured:
+        analyzer.config = dataclasses.replace(analyzer.config, deep_security=False)
     # The focused security command does not need lint audits; skip them so the
     # scan stays fast and the report only carries security findings.
     analyzer.config = dataclasses.replace(analyzer.config, linters=[])
@@ -413,10 +423,11 @@ def handle_security(args: argparse.Namespace) -> None:
         print(f"❌ Path not found: {project_path}")
         sys.exit(1)
 
-    tools, fail_on, as_json, deep = _security_options(args)
+    as_json = bool(getattr(args, "json", False))
     _security_info(f"🛡️  Starting focused security scan for: {project_path.name}...", as_json)
 
     analyzer = _build_security_analyzer(project_path, args, as_json)
+    tools, fail_on, as_json, deep = _security_options(args, analyzer.config)
     if deep:
         _security_info("🔍 Deep scan enabled (Entropy analysis and full secret detection)", as_json)
 

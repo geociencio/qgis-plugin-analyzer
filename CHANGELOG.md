@@ -11,11 +11,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Flake8 adapter** (`analyzer/flake8_audit.py`): `analyze --flake8` / `--linters ruff,flake8`, JSON output via `flake8-json` with a default-output fallback; findings are normalized to `FLAKE8_<code>` and exposed as `flake8_findings` / `flake8_metadata`.
 - **Real security tools**: `security --tools native|bandit|detect-secrets|flake8` runs Bandit, detect-secrets and/or Flake8, normalizes findings (`tool`, `rule_id`, `portal_severity`, `blocking`) and merges them with the native AST/secret findings. Missing tools are reported via `tool_unavailable` and exit `2`.
 - **`security --json`** emits a versioned security report (findings, summary, tool status) and `--fail-on critical|warning|info|none` controls the exit code.
+- **Metadata rules**: 5 catalog-backed `METADATA_*` checks (`REPOSITORY`, `VERSION`, `QGIS4`, `SUPPORTS_QT6`, `CATEGORY`) evaluated in the `metadata` scope and exposed through `qgis_compliance.best_practices`.
+- **Portal profile**: `[tool.qgis-analyzer.profiles.portal]` wires `linters`, `security_tools`, `security_fail_on`, `metadata_rules` and `fail_on`; CLI flags override the profile, which overrides defaults.
 - Optional extras: `qgis-analyzer[flake8]`, `[security]` and `[portal]`.
 
 ### Changed
 - `security` now runs the **security scope** (previously it ran the full `all` scope) and `--deep` controls the native entropy heuristic instead of being a no-op.
 - Native `high` findings map to `critical`/blocking for the security gate, so a high-severity finding fails by default.
+- `analyze --profile portal` applies the `fail_on` security gate (critical by default in that profile) and includes the metadata rules.
 - The source-tree size check is now **informational** (warning); the portal **25 MB** limit belongs to the built ZIP artifact and is enforced by qgis-manage. `repository_compliance` gains `constraint_warnings`, and the QGIS score no longer penalizes the source-tree size.
 - `--json` output for `analyze`/`security` keeps logs and progress on stderr.
 

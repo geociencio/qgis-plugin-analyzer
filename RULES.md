@@ -116,6 +116,18 @@ Detected by `PatternsVisitor` (`src/analyzer/visitors/patterns_visitor.py`). All
 | `MAGIC_NUMBER` | 🟢 Low | Numeric literal (other than 0/1/-1/2) used in a comparison. | Extract it into a named constant. |
 | `SPAGHETTI_CODE` | 🟢 Low | Function with cyclomatic complexity > 20 or nesting depth > 4. | Extract sub-logic into smaller, testable functions. |
 
+## 10. QGIS Metadata
+
+Evaluated from `metadata.txt` during the `metadata` scope and portal profile.
+
+| Rule ID | Severity | Description | Recommendation |
+| :--- | :--- | :--- | :--- |
+| `METADATA_VERSION` | 🔴 High | Metadata version is missing or is not a numeric `X.Y.Z` value. | Use a numeric semantic version (e.g. `version=1.2.3`) in `metadata.txt`. |
+| `METADATA_CATEGORY` | 🟡 Medium | Metadata category is missing or is not one of Raster/Vector/Database/Mesh/Web. | Set `category` to one of `Raster`, `Vector`, `Database`, `Mesh` or `Web`. |
+| `METADATA_QGIS4` | 🟡 Medium | `qgisMaximumVersion` is below 4.0. | Set `qgisMaximumVersion=4.0` (or higher) to advertise QGIS 4 readiness. |
+| `METADATA_REPOSITORY` | 🟡 Medium | Plugin metadata does not declare a repository URL. | Add `repository=https://...` to `metadata.txt` (required for the official repository). |
+| `METADATA_SUPPORTS_QT6` | 🟢 Low | The deprecated `supportsQt6` flag is present. | Remove `supportsQt6`; Qt6 support is implied by the QGIS/Qt version, not this flag. |
+
 ### Informational (not issues)
 
 | Name | Description |

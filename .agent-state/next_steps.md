@@ -21,10 +21,12 @@ and strict validation. No analyzer source code changed; all project gates are gr
 - [x] Upstream framework v1.3.0+ fixed the 5 `metrics validate` false positives; the
   former "Known Issue" is resolved.
 - [x] **v1.16.0** remains the released analyzer version (GitHub + PyPI).
-- [x] **Analyzer P0 upstream gate integration** (2026-10-25): Flake8 adapter +
+- [x] **Analyzer P0 + P1 upstream gate integration** (2026-10-25): Flake8 adapter +
   `analyze --flake8/--linters`; real Bandit/detect-secrets/Flake8 adapters behind
   `security --tools --json --fail-on`; security scope/`--deep` fix; 25 MB source-tree
-  rule moved to informational. qgis-manage `validate --zip` remains pending.
+  rule moved to informational; portal profile with CLI > profile > default precedence;
+  five `METADATA_*` catalog rules. qgis-manage's artifact layer is implemented in the
+  sibling repository (v0.13.0+).
 
 ## How to Resume
 1. Run `/start-session`.
@@ -36,8 +38,8 @@ and strict validation. No analyzer source code changed; all project gates are gr
 - [x] ~~Module splits~~ · [x] ~~Fase 6 rule registry~~ · [x] ~~Fase 2.2 incremental cache~~ · [x] ~~Tune anti-pattern noise~~.
 - [ ] **Optional**: decompose the two core classes to clear the last 10 LOW findings (`SPAGHETTI_CODE`, `GOD_OBJECT`) — higher risk.
 - [ ] **Optional**: unify `CompositeVisitor._active_visitors` with `SCOPE_RULES` (currently a second scope→visitor map).
-- [ ] **qgis-manage P0**: `validate --zip` + artifact checks in `package --repo-check`
-  (separate repository; see `docs/research/upstream_gate_integration.md`).
+- [ ] **P2**: JSON schema snapshots, real-tool CI job with the `[portal]` extras, and
+  `flake8_config` wiring (see `docs/research/upstream_gate_integration.md`).
 - [ ] **Upstream framework follow-ups** (not blocking this repo):
   - make the framework test suite self-contained (2 consumer-coupled tests keep its CI red
     when run in a standalone checkout);
@@ -48,7 +50,7 @@ and strict validation. No analyzer source code changed; all project gates are gr
 
 ## 🐛 Known Issues
 
-**None blocking** — 261 tests passing; `ruff check` + `mypy src/` clean; self-analysis
+**None blocking** — 272 tests passing; `ruff check` + `mypy src/` clean; self-analysis
 `--max-cc 15` green (max func CC 13); self-run issues are 10 LOW
 (`SPAGHETTI_CODE` 8, `GOD_OBJECT` 2).
 

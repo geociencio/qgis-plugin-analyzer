@@ -153,6 +153,23 @@ QGS101 = "error"   # Strictly forbid direct GDAL imports
 QGS303 = "ignore"  # Ignore icon validation for now
 ```
 
+### Portal profile
+
+The `portal` profile bundles the official-repository gate: Flake8, external security
+tools, the `METADATA_*` rules and a security threshold.
+
+```toml
+[tool.qgis-analyzer.profiles.portal]
+linters = ["ruff", "flake8"]
+security_tools = ["native", "bandit", "detect-secrets", "flake8"]
+security_fail_on = "critical"
+metadata_rules = true
+fail_on = "critical"
+```
+
+CLI flags override the profile (`--tools`, `--fail-on`, `--linters`), which overrides
+the defaults.
+
 ### `.analyzerignore` File
 Use this file to exclude folders that should not be analyzed (e.g., external libraries or compressed data files).
 

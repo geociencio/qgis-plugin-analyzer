@@ -8,6 +8,7 @@ import unittest
 import analyzer
 from analyzer.rules import RULE_CATALOG, categories, get_rule, get_rules, rules_for_scope
 from analyzer.rules.catalog import CATEGORY_ORDER
+from analyzer.rules.catalog_metadata import METADATA_RULE_IDS
 from analyzer.rules.qgis_rules import get_qgis_audit_rules
 from analyzer.rules.render import render_list_rules_text, render_rules_md
 from analyzer.rules.scopes import SCOPE_RULES
@@ -139,7 +140,16 @@ class TestScopeParity(unittest.TestCase):
             "QT6_QDATETIME_ARGS",
             "QT6_QDATETIME_QDATE",
         },
-        "metadata": {"MANDATORY_CLEANUP", "OBSOLETE_API", "IFACE_AS_ARGUMENT"},
+        "metadata": {
+            "MANDATORY_CLEANUP",
+            "OBSOLETE_API",
+            "IFACE_AS_ARGUMENT",
+            "METADATA_REPOSITORY",
+            "METADATA_VERSION",
+            "METADATA_QGIS4",
+            "METADATA_SUPPORTS_QT6",
+            "METADATA_CATEGORY",
+        },
     }
 
     def test_scope_rules_match_pre_change_snapshot(self):
@@ -161,6 +171,7 @@ class TestIdCoverage(unittest.TestCase):
             | {rule["id"] for rule in get_qgis_audit_rules()}
             | SecurityRegistry.rule_ids()
             | SecretScanner.rule_ids()
+            | METADATA_RULE_IDS
         )
         emitted = {rule.id for rule in get_rules()}
 

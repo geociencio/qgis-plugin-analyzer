@@ -31,7 +31,8 @@ class SecurityCommand(BaseAnalyzerCommand):
             "-d",
             "--deep",
             action="store_true",
-            help="Enable entropy and full secrets detection",
+            default=None,
+            help="Enable entropy and full secrets detection (default: profile)",
         )
         parser.add_argument(
             "--tools",
@@ -47,8 +48,8 @@ class SecurityCommand(BaseAnalyzerCommand):
         parser.add_argument(
             "--fail-on",
             choices=["critical", "warning", "info", "none"],
-            default="critical",
-            help="Lowest severity that produces a non-zero exit code (default: critical)",
+            default=None,
+            help="Lowest severity that fails (default: profile security_fail_on, or critical)",
         )
         parser.add_argument(
             "--no-cache",

@@ -21,3 +21,8 @@ class ProjectConfig:
     cache: bool = True
     linters: list[str] = field(default_factory=lambda: ["ruff"])
     deep_security: bool = True
+    deep_security_configured: bool = False
+    security_tools: list[str] = field(default_factory=lambda: ["native"])
+    security_fail_on: str = "critical"
+    metadata_rules: bool = True
+    fail_on: str = "none"

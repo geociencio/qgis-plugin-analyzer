@@ -8,6 +8,7 @@ metadata, repository constraints and metadata URL checks.
 import pathlib
 from typing import Any
 
+from .metadata_audit import audit_metadata_rules
 from .scanner import ModuleAnalysisResult, audit_qgis_standards
 from .scoring import QGISChecksResult
 from .utils import logger
@@ -24,6 +25,8 @@ def run_qgis_checks(
     project_path: pathlib.Path,
     rules_config: dict[str, Any],
     discovery: dict[str, Any],
+    *,
+    metadata_rules: bool = True,
 ) -> QGISChecksResult:
     """Runs QGIS-specific validation checks.
 
@@ -32,12 +35,18 @@ def run_qgis_checks(
         project_path: Root path of the project.
         rules_config: Configuration for rules.
         discovery: Discovery results from the project scanner.
+        metadata_rules: Whether to append the catalog-backed ``METADATA_*``
+            findings (metadata scope / portal profile).
 
     Returns:
         A QGISChecksResult containing findings from all checks.
     """
     metadata_file = project_path / "metadata.txt"
     compliance = audit_qgis_standards(modules_data, project_path, rules_config)
+    if metadata_rules:
+        metadata_findings = audit_metadata_rules(metadata_file)
+        compliance["issues"].extend(metadata_findings)
+        compliance["issues_count"] = len(compliance["issues"])
     structure = validate_plugin_structure(project_path)
     metadata = validate_metadata(metadata_file)
 

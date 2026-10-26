@@ -13,6 +13,7 @@ from __future__ import annotations
 
 from .catalog_builder import RuleTuple
 from .catalog_core import RULES_CORE
+from .catalog_metadata import RULES_METADATA
 from .catalog_platform import RULES_PLATFORM
 
 # Ordered catalog sections: (key, number, title, intro-markdown).
@@ -32,6 +33,12 @@ CATEGORY_ORDER: list[tuple[str, str, str, str]] = [
         "Design Patterns & Anti-patterns",
         "Detected by `PatternsVisitor` (`src/analyzer/visitors/patterns_visitor.py`). "
         "All are **informational** (`low`) and suppressible with `# noqa`.",
+    ),
+    (
+        "metadata",
+        "10",
+        "QGIS Metadata",
+        "Evaluated from `metadata.txt` during the `metadata` scope and portal profile.",
     ),
 ]
 
@@ -54,4 +61,4 @@ INFORMATIONAL_ROWS: list[tuple[str, str]] = [
 ]
 
 # (id, severity, category, description, recommendation, scopes, sources, emitted)
-RAW_RULES: list[RuleTuple] = [*RULES_CORE, *RULES_PLATFORM]
+RAW_RULES: list[RuleTuple] = [*RULES_CORE, *RULES_PLATFORM, *RULES_METADATA]

@@ -1,13 +1,14 @@
 """Security report orchestration for the focused ``security`` command.
 
 The engine owns native AST/secret detection; this module merges those findings
-with optional external tools (Bandit, detect-secrets), normalizes severities to
-the cross-repository portal contract and computes the exit code.
+with optional external tools (Bandit, detect-secrets, Flake8), normalizes
+severities to the cross-repository portal contract and computes the exit code.
 """
 
 from __future__ import annotations
 
 import pathlib
+from collections.abc import Mapping
 from typing import Any
 
 from . import __version__
@@ -79,7 +80,7 @@ def _normalize_native(issue: dict[str, Any]) -> dict[str, Any]:
     }
 
 
-def _native_findings(context: dict[str, Any]) -> list[dict[str, Any]]:
+def collect_native_findings(context: Mapping[str, Any]) -> list[dict[str, Any]]:
     """Collect native security findings from the analysis context.
 
     ``security_issues`` carries the Bandit-inspired and secret findings;
@@ -119,6 +120,12 @@ def _merge(findings: list[dict[str, Any]]) -> list[dict[str, Any]]:
     )
 
 
+def meets_fail_on(findings: list[dict[str, Any]], fail_on: str) -> bool:
+    """Return True when any finding reaches the ``fail_on`` threshold."""
+    threshold = _FAIL_ON.get(fail_on, _FAIL_ON["critical"])
+    return any(item.get("portal_severity") in threshold for item in findings)
+
+
 def build_security_report(
     context: dict[str, Any],
     *,
@@ -141,7 +148,7 @@ def build_security_report(
         A JSON-serializable report with ``findings``, ``summary``,
         ``tool_status`` and ``exit_code``.
     """
-    findings = _native_findings(context)
+    findings = collect_native_findings(context)
     tool_status: dict[str, str] = {"native": "ok"}
 
     if "bandit" in tools:
@@ -173,9 +180,7 @@ def build_security_report(
 
     if any(status == "unavailable" for status in tool_status.values()):
         exit_code = 2
-    elif any(
-        item["portal_severity"] in _FAIL_ON.get(fail_on, _FAIL_ON["critical"]) for item in merged
-    ):
+    elif meets_fail_on(merged, fail_on):
         exit_code = 1
     else:
         exit_code = 0
