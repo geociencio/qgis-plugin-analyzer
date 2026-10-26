@@ -47,6 +47,7 @@ class FullAnalysisResult(TypedDict, total=False):
     """Consolidated analysis result for the entire project."""
 
     schema_version: int
+    schema: int
     analyzer_version: str
     analyzed_at: str
     project_name: str
@@ -236,6 +237,7 @@ def build_analysis_results(
     """Consolidates analysis results into a single dictionary."""
     analyses: FullAnalysisResult = {
         "schema_version": 1,
+        "schema": 1,
         "analyzer_version": __version__,
         "analyzed_at": datetime.datetime.now(datetime.UTC).isoformat(),
         "project_name": project_path.name,

@@ -25,6 +25,7 @@ _DEFAULT_LINE = re.compile(
     r"^(?P<file>.+?):(?P<line>\d+):(?P<col>\d+):\s+"
     r"(?P<code>[A-Z]\d{3,4})\s+(?P<message>.*)$"
 )
+_JSON_PLUGIN_MODULES = ("flake8_json_reporter", "flake8_json")
 
 
 def _relative_path(filename: str, project_path: pathlib.Path) -> str:
@@ -131,7 +132,7 @@ def run_flake8_audit(
         A dictionary with ``findings``, ``exit_code``, ``command``,
         ``formatter`` and ``tool_unavailable``.
     """
-    has_json = importlib.util.find_spec("flake8_json") is not None
+    has_json = any(importlib.util.find_spec(module) is not None for module in _JSON_PLUGIN_MODULES)
     formatter = "json" if has_json else "default"
     cmd = [sys.executable, "-m", "flake8", str(project_path)]
     if config is not None:

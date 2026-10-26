@@ -77,6 +77,20 @@ class TestFlake8Audit(unittest.TestCase):
         self.assertEqual(result["findings"], [])
         self.assertFalse(result["tool_unavailable"])
 
+    def test_json_reporter_module_is_detected(self):
+        def fake_spec(name: str):
+            return object() if name == "flake8_json_reporter" else None
+
+        with patch("analyzer.flake8_audit.importlib.util.find_spec", side_effect=fake_spec):
+            with patch(
+                "analyzer.flake8_audit.subprocess.run",
+                return_value=self._completed("{}", code=0),
+            ):
+                result = run_flake8_audit(self.root)
+
+        self.assertEqual(result["formatter"], "json")
+        self.assertFalse(result["tool_unavailable"])
+
     def test_unavailable_tool_is_explicit(self):
         with patch("analyzer.flake8_audit.importlib.util.find_spec", return_value=None):
             with patch(

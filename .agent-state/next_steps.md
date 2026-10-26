@@ -50,7 +50,7 @@ and strict validation. No analyzer source code changed; all project gates are gr
 
 ## 🐛 Known Issues
 
-**None blocking** — 272 tests passing; `ruff check` + `mypy src/` clean; self-analysis
+**None blocking** — 273 tests passing; `ruff check` + `mypy src/` clean; self-analysis
 `--max-cc 15` green (max func CC 13); self-run issues are 10 LOW
 (`SPAGHETTI_CODE` 8, `GOD_OBJECT` 2).
 

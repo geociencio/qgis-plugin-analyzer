@@ -43,5 +43,5 @@ Reference: `docs/reports/DEEP_ANALYSIS_v1.15.0_DEAD_CODE_DUPLICATION.md`
 
 ## Operational Status
 - **Active Phase**: None — **v1.16.0 released on GitHub + PyPI**; **agentic-forge v1.4.2** adopted (`b98186a`).
-- **Current Metrics**: 272/272 tests; `ruff` + `mypy` clean; self-analysis `--max-cc 15` green (max func CC 13); Module Stability 54.1 · Maintainability 99.9 · Security 100.0; type hints **100%** · docstrings **100%**. Remaining self-run issues: **10 LOW** (`SPAGHETTI_CODE` 8, `GOD_OBJECT` 2 — core-class refactor deferred).
+- **Current Metrics**: 273/273 tests; `ruff` + `mypy` clean; self-analysis `--max-cc 15` green (max func CC 13); Module Stability 54.1 · Maintainability 99.9 · Security 100.0; type hints **100%** · docstrings **100%**. Remaining self-run issues: **10 LOW** (`SPAGHETTI_CODE` 8, `GOD_OBJECT` 2 — core-class refactor deferred).
 - **Known**: none blocking. The former 5 `forge.py metrics validate` false positives were fixed upstream (agentic-forge v1.3.0+); v1.4.2 `metrics validate` is green (38 files). Upstream framework follow-ups: standalone CI is still red on 2 consumer-coupled tests and structural-checklist coverage is partial (see `next_steps.md`).

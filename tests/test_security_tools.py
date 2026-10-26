@@ -79,10 +79,12 @@ class TestDetectSecretsAudit(unittest.TestCase):
         with patch(
             "analyzer.detect_secrets_audit.subprocess.run",
             return_value=self._completed(payload),
-        ):
+        ) as run:
             result = run_detect_secrets_audit(self.root)
 
         self.assertFalse(result["tool_unavailable"])
+        self.assertEqual(run.call_args.kwargs["cwd"], str(self.root))
+        self.assertEqual(run.call_args.args[0][-1], ".")
         finding = result["findings"][0]
         self.assertEqual(finding["type"], "SECRET_AWSKEYDETECTOR")
         self.assertEqual(finding["portal_severity"], "critical")

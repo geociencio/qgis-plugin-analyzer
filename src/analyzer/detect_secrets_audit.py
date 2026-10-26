@@ -45,11 +45,13 @@ def run_detect_secrets_audit(project_path: pathlib.Path) -> dict[str, Any]:
         "--all-files",
         "--exclude-files",
         _EXCLUDE_PATTERN,
-        str(project_path),
+        ".",
     ]
 
     try:
-        result = subprocess.run(cmd, capture_output=True, text=True, check=False)
+        result = subprocess.run(
+            cmd, capture_output=True, text=True, check=False, cwd=str(project_path)
+        )
     except Exception as exc:  # pragma: no cover - defensive subprocess guard
         logger.error(f"Error running detect-secrets: {exc}")
         return {
@@ -85,12 +87,13 @@ def run_detect_secrets_audit(project_path: pathlib.Path) -> dict[str, Any]:
                 if not isinstance(entry, dict):
                     continue
                 secret_type = str(entry.get("type", "UNKNOWN"))
+                secret_slug = "_".join(secret_type.upper().replace("-", " ").split())
                 findings.append(
                     {
                         "file": _relative_path(str(filename), project_path),
                         "line": int(entry.get("line_number", 0) or 0),
                         "col": 0,
-                        "type": f"SECRET_{secret_type.upper()}",
+                        "type": f"SECRET_{secret_slug}",
                         "rule_id": secret_type,
                         "severity": "critical",
                         "portal_severity": "critical",

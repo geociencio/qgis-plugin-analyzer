@@ -43,6 +43,7 @@ class TestCliJsonOutput(unittest.TestCase):
         self.assertEqual(code, 0)
         data = json.loads(stdout)
         self.assertEqual(data["schema_version"], 1)
+        self.assertEqual(data["schema"], 1)
         self.assertIn("modules", data)
 
     def test_security_json_blocks_on_high_finding(self):
@@ -54,6 +55,8 @@ class TestCliJsonOutput(unittest.TestCase):
         data = json.loads(stdout)
         self.assertEqual(data["command"], "security")
         self.assertEqual(data["scope"], "security")
+        self.assertEqual(data["schema"], 1)
+        self.assertEqual(data["schema_version"], 1)
         self.assertGreaterEqual(data["summary"]["critical"], 1)
         self.assertTrue(any(item["rule_id"] == "B307" for item in data["findings"]))
 

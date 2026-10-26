@@ -21,10 +21,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `analyze --profile portal` applies the `fail_on` security gate (critical by default in that profile) and includes the metadata rules.
 - The source-tree size check is now **informational** (warning); the portal **25 MB** limit belongs to the built ZIP artifact and is enforced by qgis-manage. `repository_compliance` gains `constraint_warnings`, and the QGIS score no longer penalizes the source-tree size.
 - `--json` output for `analyze`/`security` keeps logs and progress on stderr.
+- JSON envelopes expose an additive `schema: 1` alias next to `schema_version` for qgis-manage compatibility.
 
 ### Fixed
 - `security` used to ignore its own scope and `--deep`; both are now honored.
 - `analyze --json` no longer leaks the project-type log to stdout.
+- The Flake8 adapter now detects the `flake8_json_reporter` module shipped by `flake8-json`; previously it always fell back to parsing the default output.
+- `detect-secrets` now runs with the target project as its working directory and scans `.`; passing an absolute path previously produced an empty result set.
 
 ## [1.16.0] - 2026-10-11
 

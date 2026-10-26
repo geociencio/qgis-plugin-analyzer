@@ -187,6 +187,7 @@ def build_security_report(
 
     return {
         "schema_version": 1,
+        "schema": 1,
         "analyzer_version": __version__,
         "command": "security",
         "scope": "security",
