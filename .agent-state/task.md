@@ -54,6 +54,7 @@ Reference: `docs/reports/DEEP_ANALYSIS_v1.15.0_DEAD_CODE_DUPLICATION.md`
 - [x] Project-level resolver (scope, duplicates, UniqueConnection, cross-module low) <!-- id: 9.2 -->
 - [x] `signal_connections` JSON, `--signals`, profile config and opt-in `emit` issue <!-- id: 9.3 -->
 - [x] Collector/resolver/lifetime/integration tests; catalog + RULES.md updated <!-- id: 9.4 -->
+- [x] Issue #1 fixes: sender-scoped slot-less disconnect, tuple loop expansion, container/parent lifetime propagation <!-- id: 9.5 -->
 
 ## Deferred Follow-ups (all completed)
 - [x] Module splits (engine/fixer/summary_reporter/commands ≤ 400 lines; `docs/plans/implementation_plan_module_splits.md`) <!-- id: 4.1 -->

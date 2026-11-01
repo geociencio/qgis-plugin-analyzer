@@ -15,6 +15,7 @@ adapters, shipped the `security --json` contract, and released two minor version
 - [x] **v1.18.1** — distribution boundary fix: wheel only `analyzer/*` + `.dist-info`,
   sdist only tool source + install metadata; **released on GitHub + PyPI** (CI `publish-pypi`).
 - [x] **v1.19.0** — per-connection `SIGNAL_LEAK` resolver, `--signals`, opt-in `emit`, JSON contract; **released on GitHub + PyPI** (CI `publish-pypi`).
+- [x] Issue #1 regression fixes on `main` (slot-less sender scope, tuple loops, lifetime propagation); pending a 1.19.1 release.
 - [x] Real-tool fixes: `flake8_json_reporter` detection and detect-secrets project cwd;
   verified against the installed `[portal]` extras.
 - [x] README, `COMMANDS_GUIDE.md`, CHANGELOG, release notes, `GITHUB_RELEASE_*`, and
