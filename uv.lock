@@ -669,7 +669,7 @@ wheels = [
 
 [[package]]
 name = "qgis-plugin-analyzer"
-version = "1.18.1"
+version = "1.19.0"
 source = { editable = "." }
 
 [package.optional-dependencies]
