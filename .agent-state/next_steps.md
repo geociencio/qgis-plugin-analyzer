@@ -14,7 +14,7 @@ adapters, shipped the `security --json` contract, and released two minor version
   default `docs/`/`tests/` exclusions; GitHub + PyPI.
 - [x] **v1.18.1** — distribution boundary fix: wheel only `analyzer/*` + `.dist-info`,
   sdist only tool source + install metadata; **released on GitHub + PyPI** (CI `publish-pypi`).
-- [x] **v1.19.0** — per-connection `SIGNAL_LEAK` resolver, `--signals`, opt-in `emit`, JSON contract; release prepared (version/docs/build). GitHub + PyPI pending.
+- [x] **v1.19.0** — per-connection `SIGNAL_LEAK` resolver, `--signals`, opt-in `emit`, JSON contract; **released on GitHub + PyPI** (CI `publish-pypi`).
 - [x] Real-tool fixes: `flake8_json_reporter` detection and detect-secrets project cwd;
   verified against the installed `[portal]` extras.
 - [x] README, `COMMANDS_GUIDE.md`, CHANGELOG, release notes, `GITHUB_RELEASE_*`, and
@@ -23,7 +23,7 @@ adapters, shipped the `security --json` contract, and released two minor version
 
 ## How to Resume
 1. Run `/start-session`.
-2. **v1.19.0** is prepared; push the release commit/tag and publish the GitHub release to trigger PyPI.
+2. Nothing pending on the release — **v1.19.0** is live on PyPI and GitHub.
 3. Read `docs/maintenance/session_2026-10-25_ignore_aware_analysis.md` for the full
    session record.
 

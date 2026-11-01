@@ -7,7 +7,7 @@
     - Moved `CHANGELOG.md` `[Unreleased]` to `[1.19.0] - 2026-11-01`; added `docs/releases/notes/v1.19.0.md` and `docs/GITHUB_RELEASE_v1.19.0.md`.
     - Refreshed README/What's New, implementation status in the plan, and project metrics.
 - **Quality**: 305 tests (89.54% coverage); `ruff` + `mypy` clean; self-analysis green with 10 LOW; Module Stability 53.6 · Maintainability 99.9 · Security 100.0.
-- **Release**: `v1.19.0` tag + GitHub release + PyPI pipeline (CI `publish-pypi` on release publication).
+- **Release**: **v1.19.0 published** on GitHub and PyPI (CI `publish-pypi`) on 2026-11-01.
 
 ## [2026-11-01] Signal Connection Analysis (SIGNAL_LEAK)
 - **Achievement**: Replaced the file-local literal set diff with a cacheable per-module collector and a project-level resolver.
