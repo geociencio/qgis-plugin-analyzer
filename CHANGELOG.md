@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.19.1] - 2026-11-01
+
+### Fixed
+- `SIGNAL_LEAK` slot-less `disconnect()` now matches only connections from the same sender (issue #1), instead of consuming every pending connection in the class.
+- Tuple-unpacked loop targets (`for signal, slot in (...)`) are expanded per iteration.
+- Lifetime hints propagate from a disposed container to its child widget connections; explicit custom parents (e.g. `SidePanel(self)`) are classified as `parent_child`.
+
 ## [1.19.0] - 2026-11-01
 
 ### Added
@@ -17,11 +24,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - The summary now labels the signal block as informational and only prints detailed paths with `--signals`; the 🚨 banner is gone.
 - Signal collection is cached per module and resolved at project scope, so `scope`/`confidence` changes do not require re-analysis.
-
-### Fixed
-- `SIGNAL_LEAK` slot-less `disconnect()` now matches only connections from the same sender (issue #1), instead of consuming every pending connection in the class.
-- Tuple-unpacked loop targets (`for signal, slot in (...)`) are expanded per iteration.
-- Lifetime hints propagate from a disposed container to its child widget connections; explicit custom parents (e.g. `SidePanel(self)`) are classified as `parent_child`.
 
 ## [1.18.1] - 2026-11-01
 

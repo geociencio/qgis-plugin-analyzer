@@ -3,15 +3,15 @@
 > **Audience**: `qgis-plugin-analyzer` maintainer or an AI coding agent working on
 > that repository.
 > **Baseline analysed**: `qgis-plugin-analyzer` **1.18.1** (2026-11-01).
-> **Status**: ✅ **IMPLEMENTED (v1.19.0, 2026-11-01)** — core collector/resolver
-> released; see implementation notes below.
+> **Status**: ✅ **IMPLEMENTED (v1.19.1, 2026-11-01)** — core collector/resolver
+> released, including the issue #1 scope/lifetime fixes; see implementation notes below.
 > **Companion**: SecInterp's implementation plan
 > [implementation_plan_v3.12.1_signal_idempotency.md](implementation_plan_v3.12.1_signal_idempotency.md).
 > **Why this matters**: on the SecInterp corpus the rule reports 47 "signal leaks";
 > none is a dangling connection, while the real duplicate-connection bug is only
 > partially visible (3 of 16 connection sites).
 >
-> **Implementation notes (2026-11-01, v1.19.0)**: landed in `signal_analysis.py`
+> **Implementation notes (2026-11-01, v1.19.1)**: landed in `signal_analysis.py`
 > (cacheable event collector with aliases, loop expansion and lifetime hints) and
 > `signal_resolver.py` (project-level scope/slot matching, duplicate and
 > `UniqueConnection` handling, cross-module low confidence). The engine resolves

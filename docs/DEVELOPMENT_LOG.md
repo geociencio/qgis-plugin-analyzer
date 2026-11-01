@@ -1,5 +1,14 @@
 # Development Log
 
+## [2026-11-01] Release v1.19.1 — SIGNAL_LEAK Fixes
+- **Achievement**: Released the issue #1 patch: sender-scoped slot-less disconnects, tuple-unpacked loop expansion and container/parent lifetime propagation.
+- **Changes**:
+    - Bumped `pyproject.toml` and `uv.lock` to `1.19.1`; verified `qgis-analyzer --version`.
+    - Moved the issue fixes from the 1.19.0 changelog section to `[1.19.1]`; added release notes and CI body.
+    - Updated README/What's New and release metrics.
+- **Quality**: 309 tests (89.5% coverage); `ruff` + `mypy` clean; self-analysis green with 10 LOW; Module Stability 53.5 · Maintainability 99.9 · Security 100.0.
+- **Release**: `v1.19.1` tag + GitHub release + PyPI pipeline.
+
 ## [2026-11-01] Release v1.19.0 — Signal Connection Resolution
 - **Achievement**: Released the per-connection `SIGNAL_LEAK` resolver with aliases, loops, slots, duplicate/unique connections, conservative lifetime and cross-module low confidence.
 - **Changes**:

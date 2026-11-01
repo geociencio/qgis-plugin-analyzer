@@ -1,6 +1,6 @@
-# Next Steps — Handover (2026-11-01, v1.19.0)
+# Next Steps — Handover (2026-11-01, v1.19.1)
 
-## Session Summary (topics: `portal_gate` · `ignore_aware_analysis` · `distribution_boundary` · `signal_connections` · `release_v1.19.0`)
+## Session Summary (topics: `portal_gate` · `ignore_aware_analysis` · `distribution_boundary` · `signal_connections` · `release_v1.19.1`)
 
 Completed the portal-gate integration, fixed the real Bandit/detect-secrets/Flake8
 adapters, shipped the `security --json` contract, and released two minor versions:
@@ -15,7 +15,7 @@ adapters, shipped the `security --json` contract, and released two minor version
 - [x] **v1.18.1** — distribution boundary fix: wheel only `analyzer/*` + `.dist-info`,
   sdist only tool source + install metadata; **released on GitHub + PyPI** (CI `publish-pypi`).
 - [x] **v1.19.0** — per-connection `SIGNAL_LEAK` resolver, `--signals`, opt-in `emit`, JSON contract; **released on GitHub + PyPI** (CI `publish-pypi`).
-- [x] Issue #1 regression fixes on `main` (slot-less sender scope, tuple loops, lifetime propagation); pending a 1.19.1 release.
+- [x] Issue #1 regression fixes on `main` (slot-less sender scope, tuple loops, lifetime propagation); release prepared in 1.19.1.
 - [x] Real-tool fixes: `flake8_json_reporter` detection and detect-secrets project cwd;
   verified against the installed `[portal]` extras.
 - [x] README, `COMMANDS_GUIDE.md`, CHANGELOG, release notes, `GITHUB_RELEASE_*`, and
@@ -24,7 +24,7 @@ adapters, shipped the `security --json` contract, and released two minor version
 
 ## How to Resume
 1. Run `/start-session`.
-2. Nothing pending on the release — **v1.19.0** is live on PyPI and GitHub.
+2. **v1.19.1** is prepared; push the release commit/tag and publish the GitHub release to trigger PyPI.
 3. Read `docs/maintenance/session_2026-10-25_ignore_aware_analysis.md` for the full
    session record.
 

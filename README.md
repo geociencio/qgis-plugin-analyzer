@@ -67,21 +67,19 @@ The **QGIS Plugin Analyzer** is a static analysis tool designed specifically for
 - **Integrated Lint Analysis**: Runs Ruff and, optionally, Flake8 (`--flake8` / `--linters ruff,flake8`) through the active interpreter, exposing `ruff_metadata` / `flake8_metadata` with explicit `tool_unavailable` flags.
 - **Zero Runtime Dependencies**: Standard library only; Ruff is the only required external tool. Flake8, Bandit and detect-secrets are optional extras (`qgis-analyzer[flake8]`, `[security]`, `[portal]`).
 
-## 🆕 What's New in v1.19.0
+## 🆕 What's New in v1.19.1
 
-**Signal connection resolution** — `SIGNAL_LEAK` now reports per-connection paths
-instead of a file-local string diff.
+**SIGNAL_LEAK scope and lifetime fixes** — patch release for issue #1.
 
-- 🔗 **Aliases and loops** — `for signal in (...)` and simple aliases expand into
-  individual connections.
-- 🎯 **Slots and duplicates** — `disconnect(slot)` consumes one connection;
-  `disconnect()` consumes all; duplicates and `Qt.UniqueConnection` are modelled.
-- 🧬 **Lifetime-aware** — `deleteLater`, explicit parent wiring and `destroyed`
-  hooks are benign; `self.*` alone is not.
+- 🎯 **Sender-scoped disconnect** — `self.changed.disconnect()` no longer hides
+  connections from other senders.
+- 🔁 **Tuple-unpacked loops** — `for signal, slot in (...)` expands per element.
+- 🧬 **Lifetime propagation** — disposed containers/custom parents mark child
+  connections benign; `self.*` without evidence stays unmatched.
 - 🧾 **`--signals`** — detailed unmatched paths with `file:line`, confidence and
   lifetime (informational unless `emit=true`).
 
-[**📖 Full Release Notes**](docs/releases/notes/v1.19.0.md) | [**🗺️ CLI Commands Roadmap**](docs/research/CLI_COMMANDS_ROADMAP.md)
+[**📖 Full Release Notes**](docs/releases/notes/v1.19.1.md) | [**🗺️ CLI Commands Roadmap**](docs/research/CLI_COMMANDS_ROADMAP.md)
 
 ## 🚀 Installation and Usage
 
