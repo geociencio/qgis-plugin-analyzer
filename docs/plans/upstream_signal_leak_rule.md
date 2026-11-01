@@ -3,7 +3,7 @@
 > **Audience**: `qgis-plugin-analyzer` maintainer or an AI coding agent working on
 > that repository.
 > **Baseline analysed**: `qgis-plugin-analyzer` **1.18.1** (2026-11-01).
-> **Status**: ✅ **IMPLEMENTED (v1.19.1, 2026-11-01)** — core collector/resolver
+> **Status**: ✅ **IMPLEMENTED (v1.19.2, 2026-11-01)** — core collector/resolver
 > released, including the issue #1 scope/lifetime fixes; see implementation notes below.
 > **Companion**: SecInterp's implementation plan
 > [implementation_plan_v3.12.1_signal_idempotency.md](implementation_plan_v3.12.1_signal_idempotency.md).
@@ -11,14 +11,14 @@
 > none is a dangling connection, while the real duplicate-connection bug is only
 > partially visible (3 of 16 connection sites).
 >
-> **Implementation notes (2026-11-01, v1.19.1)**: landed in `signal_analysis.py`
+> **Implementation notes (2026-11-01, v1.19.2)**: landed in `signal_analysis.py`
 > (cacheable event collector with aliases, loop expansion and lifetime hints) and
 > `signal_resolver.py` (project-level scope/slot matching, duplicate and
 > `UniqueConnection` handling, cross-module low confidence). The engine resolves
 > before scoring, writes `signal_connections` to per-module and summary JSON,
 > keeps the deprecated `signal_leaks`, and only emits `SIGNAL_LEAK` issues with
 > `emit=true`. `analyze --signals` prints the detailed informational list. Tests:
-> 309 passing; issue #1 regressions covered (sender-scoped slot-less disconnect, tuple loops, lifetime propagation). Deviation: `include_benign` controls benign detail in the human
+> 313 passing; issue #1 regressions covered (sender-scoped slot-less disconnect, tuple loops, lifetime propagation, R4 translated-text parent, R5 list wrappers, R6 sender/slot pairing). Deviation: `include_benign` controls benign detail in the human
 > list; benign records remain in JSON and in the benign count.
 
 ---

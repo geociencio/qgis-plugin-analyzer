@@ -1,5 +1,14 @@
 # Development Log
 
+## [2026-11-01] Release v1.19.2 — SIGNAL_LEAK Parent & Loop Corrections
+- **Achievement**: Released the follow-up issue #1 patch: R4 translated-text parent false positive, R5 literal list/tuple loops, R6 sender/slot pairing, and R3 same-module addWidget parent hints.
+- **Changes**:
+    - Bumped `pyproject.toml` and `uv.lock` to `1.19.2`; verified `qgis-analyzer --version`.
+    - Added release notes/CI body, README What's New, task/next-step status and plan status.
+    - Added regression tests for the 7-site issue reproduction (Tab 3 unmatched, Dem 3 matched, Tasks matched).
+- **Quality**: 313 tests (89.5% coverage); `ruff` + `mypy` clean; self-analysis green with 10 LOW; Module Stability 53.5 · Maintainability 99.9 · Security 100.0.
+- **Release**: `v1.19.2` tag + GitHub release + PyPI pipeline.
+
 ## [2026-11-01] Release v1.19.1 — SIGNAL_LEAK Fixes
 - **Achievement**: Released the issue #1 patch: sender-scoped slot-less disconnects, tuple-unpacked loop expansion and container/parent lifetime propagation.
 - **Changes**:

@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.19.2] - 2026-11-01
+
+### Fixed
+- **R4**: translated text constructors such as `QRadioButton(self.tr("A"))` are no longer mistaken for `parent`; only an explicit `self`/`parent` argument marks a widget as parented.
+- **R5**: `list([...])` / `tuple([...])` loop iterables are unwrapped, so a slot-less or slot-specific disconnect inside `for task in list([self.task])` resolves to the same sender.
+- **R6**: tuple-unpacked loops pair each expanded sender with its own slot, instead of reusing the first slot for every disconnect.
+- **R3**: `addWidget`/`addTab`/`setWidget` now provide a parent-child lifetime hint for child panels.
+
 ## [1.19.1] - 2026-11-01
 
 ### Fixed

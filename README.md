@@ -20,7 +20,7 @@
 ![Security Score](https://img.shields.io/badge/Security--Bandit-100.0%2F100-brightgreen?style=flat-square)
 ![Type Coverage](https://img.shields.io/badge/Type%20Hints-100.0%25-brightgreen?style=flat-square)
 ![Docstring Coverage](https://img.shields.io/badge/Docstrings-100.0%25-brightgreen?style=flat-square)
-![Tests](https://img.shields.io/badge/Tests-309%2F309%20passing-brightgreen?style=flat-square&logo=pytest)
+![Tests](https://img.shields.io/badge/Tests-313%2F313%20passing-brightgreen?style=flat-square&logo=pytest)
 
 The **QGIS Plugin Analyzer** is a static analysis tool designed specifically for QGIS (PyQGIS) plugin developers. Its goal is to elevate plugin quality by ensuring they follow community best practices and are optimized for AI-assisted development.
 
@@ -67,19 +67,19 @@ The **QGIS Plugin Analyzer** is a static analysis tool designed specifically for
 - **Integrated Lint Analysis**: Runs Ruff and, optionally, Flake8 (`--flake8` / `--linters ruff,flake8`) through the active interpreter, exposing `ruff_metadata` / `flake8_metadata` with explicit `tool_unavailable` flags.
 - **Zero Runtime Dependencies**: Standard library only; Ruff is the only required external tool. Flake8, Bandit and detect-secrets are optional extras (`qgis-analyzer[flake8]`, `[security]`, `[portal]`).
 
-## 🆕 What's New in v1.19.1
+## 🆕 What's New in v1.19.2
 
-**SIGNAL_LEAK scope and lifetime fixes** — patch release for issue #1.
+**SIGNAL_LEAK parent and loop corrections** — follow-up patch for issue #1.
 
-- 🎯 **Sender-scoped disconnect** — `self.changed.disconnect()` no longer hides
-  connections from other senders.
-- 🔁 **Tuple-unpacked loops** — `for signal, slot in (...)` expands per element.
-- 🧬 **Lifetime propagation** — disposed containers/custom parents mark child
-  connections benign; `self.*` without evidence stays unmatched.
+- 🚫 **Translated text is not a parent** — `QRadioButton(self.tr("A"))` no longer
+  becomes a false `parent_child`.
+- 🔗 **Pairing fixed** — each sender in a tuple loop keeps its own slot.
+- 📋 **List wrappers** — `for task in list([self.task])` resolves the original
+  connection.
 - 🧾 **`--signals`** — detailed unmatched paths with `file:line`, confidence and
   lifetime (informational unless `emit=true`).
 
-[**📖 Full Release Notes**](docs/releases/notes/v1.19.1.md) | [**🗺️ CLI Commands Roadmap**](docs/research/CLI_COMMANDS_ROADMAP.md)
+[**📖 Full Release Notes**](docs/releases/notes/v1.19.2.md) | [**🗺️ CLI Commands Roadmap**](docs/research/CLI_COMMANDS_ROADMAP.md)
 
 ## 🚀 Installation and Usage
 

@@ -144,8 +144,8 @@
         "security": 100.0
       },
       "tests": {
-        "pass": 309,
-        "total": 309
+        "pass": 313,
+        "total": 313
       },
       "issues": {
         "critical": 0,
@@ -191,8 +191,8 @@
     }
   ],
   "summary": {
-    "test_count": 309,
-    "tests_ok": 309,
+    "test_count": 313,
+    "tests_ok": 313,
     "quality_score_latest": 53.5,
     "maintainability_score": 99.9,
     "security_score": 100.0,
