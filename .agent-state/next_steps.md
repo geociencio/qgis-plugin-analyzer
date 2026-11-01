@@ -39,7 +39,7 @@ adapters, shipped the `security --json` contract, and released two minor version
 
 ## 🐛 Known Issues
 
-**None blocking** — 283 tests passing; `ruff check` + `mypy src/` clean; self-analysis
+**None blocking** — 285 tests passing; `ruff check` + `mypy src/` clean; self-analysis
 `--max-cc 15` green (max func CC 13); self-run issues are 10 LOW
 (`SPAGHETTI_CODE` 8, `GOD_OBJECT` 2).
 

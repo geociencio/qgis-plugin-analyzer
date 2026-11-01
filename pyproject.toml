@@ -40,6 +40,14 @@ Changelog = "https://github.com/geociencio/qgis-plugin-analyzer/blob/main/CHANGE
 [project.scripts]
 qgis-analyzer = "analyzer.main:main"
 
+[tool.setuptools]
+package-dir = {"" = "src"}
+include-package-data = false
+
+[tool.setuptools.packages.find]
+where = ["src"]
+include = ["analyzer*"]
+
 [project.optional-dependencies]
 flake8 = [
   "flake8>=7.0",

@@ -1,0 +1,31 @@
+# Distribution boundary: only the analyzer package and the metadata required to
+# install it. Tests, docs, agent state, generated reports and caches stay out of
+# both the wheel and the sdist.
+include LICENSE
+include README.md
+include pyproject.toml
+recursive-include src/analyzer *.py
+
+prune tests
+prune docs
+prune scripts
+prune .agent
+prune .agent-state
+prune analysis_results
+prune analysis_results_release
+prune self_analysis_results
+prune self_analysis_results_v2
+prune debug_summary
+prune english_test_results
+prune test_sec_interp_results
+prune src/qgis_plugin_analyzer.egg-info
+exclude src/qgis_plugin_analyzer.egg-info/*
+prune qgis_plugin_analyzer.egg-info
+exclude qgis_plugin_analyzer.egg-info/*
+exclude setup.cfg
+
+global-exclude __pycache__
+global-exclude *.py[cod]
+global-exclude *.pyo
+global-exclude *.pyd
+global-exclude *.egg-info

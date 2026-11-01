@@ -1,5 +1,13 @@
 # Development Log
 
+## [2026-11-01] Distribution Boundary Fix
+- **Achievement**: Tightened the wheel/sdist boundary so distributions contain only the analyzer package and install metadata.
+- **Changes**:
+    - Added `[tool.setuptools]` src-layout discovery (`package-dir = {"" = "src"}`, `include = ["analyzer*"]`, `include-package-data = false`); the wheel no longer ships a root `__init__.py`.
+    - Added `MANIFEST.in` prunes for tests, docs, scripts, agent state, caches, generated reports and egg-info; only `src/analyzer/*.py` plus LICENSE/README/pyproject are in the sdist.
+    - Added `tests/test_packaging.py` static guards for the boundary.
+- **Quality**: 285 tests; `ruff` + `mypy` clean; wheel/sdist rebuilt and inspected.
+
 ## [2026-10-25] Session Close — Portal Gate & Ignore-aware Analysis
 - **Achievement**: Closed the session after shipping v1.17.0 (portal gate) and v1.18.0 (ignore-aware analysis), with both releases published to GitHub and PyPI.
 - **Changes**:
