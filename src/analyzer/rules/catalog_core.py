@@ -45,10 +45,11 @@ RULES_CORE: list[RuleTuple] = [
         "SIGNAL_LEAK",
         "low",
         "threading_security",
-        "Signals connected in `initGui()` but not disconnected in `unload()` "
-        "(informational; surfaced via `qgis_context.signal_leaks`, **not** emitted as "
-        "an issue).",
-        "Ensure every `.connect()` in `initGui` has a matching `.disconnect()` in `unload`.",
+        "Unmatched signal connect/disconnect paths within the configured scope "
+        "(informational by default; `qgis_context.signal_connections` exposes "
+        "file, line, slot, confidence and lifetime).",
+        "Disconnect in `unload()` or rely on a documented Qt lifetime; review "
+        "`analyze --signals` and opt in with `emit=true` for a gate.",
         emitted=False,
     ),
     rule(

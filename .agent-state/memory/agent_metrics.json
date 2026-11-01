@@ -139,13 +139,13 @@
       "date": "2026-11-01",
       "session": "sync_metrics_auto",
       "scores": {
-        "stability": 54.0,
+        "stability": 53.6,
         "maintainability": 99.9,
         "security": 100.0
       },
       "tests": {
-        "pass": 285,
-        "total": 285
+        "pass": 305,
+        "total": 305
       },
       "issues": {
         "critical": 0,
@@ -191,9 +191,9 @@
     }
   ],
   "summary": {
-    "test_count": 285,
-    "tests_ok": 285,
-    "quality_score_latest": 54.0,
+    "test_count": 305,
+    "tests_ok": 305,
+    "quality_score_latest": 53.6,
     "maintainability_score": 99.9,
     "security_score": 100.0,
     "total_issues": 10,

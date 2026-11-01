@@ -133,7 +133,6 @@ class CompositeVisitor(ast.NodeVisitor):
             "gdal_style": self._qgis_rules_visitor.gdal_style,
             "pyqt_transition": self._qgis_rules_visitor.qt_imports,
             "legacy_signals_count": self._qgis_rules_visitor.legacy_signals,
-            "signal_leaks": self._safety_visitor.signal_leaks,
         }
 
     def visit(self, node: ast.AST) -> None:

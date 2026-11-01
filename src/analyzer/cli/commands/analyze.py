@@ -98,6 +98,11 @@ class AnalyzeCommand(BaseAnalyzerCommand):
             action="store_true",
             help="Disable the incremental per-file analysis cache",
         )
+        parser.add_argument(
+            "--signals",
+            action="store_true",
+            help="Print detailed unmatched signal paths (informational)",
+        )
 
     def execute(self, args: argparse.Namespace) -> int:
         """Execute the analyze command.

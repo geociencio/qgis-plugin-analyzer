@@ -30,6 +30,7 @@ from typing import Any, TypedDict
 
 from .rules.qgis_rules import get_qgis_audit_rules
 from .secrets import SecretScanner
+from .signal_analysis import collect_signal_events
 from .utils.ast_utils import (
     calculate_module_complexity,
     check_main_guard,
@@ -175,6 +176,10 @@ def analyze_module_worker(
         if include_content:
             results["content"] = content
 
+        qgis_context = dict(visitor.qgis_context)
+        if a_scope in ("all", "performance"):
+            qgis_context["signal_events"] = collect_signal_events(tree, rel_path)
+
         security_issues = []
         if a_scope in ["all", "security"]:
             security_issues = _collect_security_issues(
@@ -189,7 +194,7 @@ def analyze_module_worker(
                     "docstring_styles": list(set(visitor.docstring_styles)),
                     "type_hint_stats": visitor.type_hint_stats,
                     "docstring_stats": visitor.docstring_stats,
-                    "qgis_context": visitor.qgis_context,
+                    "qgis_context": qgis_context,
                     "security_findings_count": len(security_issues),
                     "patterns": visitor.patterns,
                     "halstead": calculate_halstead_metrics(tree),

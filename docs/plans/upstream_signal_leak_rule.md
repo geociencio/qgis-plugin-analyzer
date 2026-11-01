@@ -3,13 +3,23 @@
 > **Audience**: `qgis-plugin-analyzer` maintainer or an AI coding agent working on
 > that repository.
 > **Baseline analysed**: `qgis-plugin-analyzer` **1.18.1** (2026-11-01).
-> **Status**: 📝 REVISED PROPOSAL — awaiting technical approval; no upstream code
-> written.
+> **Status**: ✅ **IMPLEMENTED (unreleased)** — core collector/resolver landed;
+> see implementation notes below.
 > **Companion**: SecInterp's implementation plan
 > [implementation_plan_v3.12.1_signal_idempotency.md](implementation_plan_v3.12.1_signal_idempotency.md).
 > **Why this matters**: on the SecInterp corpus the rule reports 47 "signal leaks";
 > none is a dangling connection, while the real duplicate-connection bug is only
 > partially visible (3 of 16 connection sites).
+>
+> **Implementation notes (2026-11-01)**: landed in `signal_analysis.py`
+> (cacheable event collector with aliases, loop expansion and lifetime hints) and
+> `signal_resolver.py` (project-level scope/slot matching, duplicate and
+> `UniqueConnection` handling, cross-module low confidence). The engine resolves
+> before scoring, writes `signal_connections` to per-module and summary JSON,
+> keeps the deprecated `signal_leaks`, and only emits `SIGNAL_LEAK` issues with
+> `emit=true`. `analyze --signals` prints the detailed informational list. Tests:
+> 305 passing. Deviation: `include_benign` controls benign detail in the human
+> list; benign records remain in JSON and in the benign count.
 
 ---
 

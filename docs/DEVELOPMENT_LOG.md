@@ -1,5 +1,14 @@
 # Development Log
 
+## [2026-11-01] Signal Connection Analysis (SIGNAL_LEAK)
+- **Achievement**: Replaced the file-local literal set diff with a cacheable per-module collector and a project-level resolver.
+- **Changes**:
+    - Added `signal_analysis.py` (events, aliases, loops, receiver/slot identity, connection type and conservative lifetime hints) and `signal_resolver.py` (scope matching, duplicate/unique connections, cross-module low confidence).
+    - `SIGNAL_LEAK` JSON now exposes per-connection `signal_connections`; `signal_leaks` remains deprecated.
+    - Added `--signals`, `SIGNAL_LEAK` profile config (`emit`, `scope`, `confidence`, `include_benign`, `ignore_senders`, `ignore_paths`) and opt-in issue emission before scoring.
+    - Updated catalog/RULES.md, summary output and tests (collector, resolver, lifetime, integration).
+- **Quality**: 305 tests (90% coverage); `ruff` + `mypy` clean; self-analysis green with 10 LOW findings.
+
 ## [2026-11-01] Release v1.18.1 — Distribution Boundary Fix
 - **Achievement**: Released the packaging patch so wheels/sdists contain only the analyzer source and install metadata.
 - **Changes**:

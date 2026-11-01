@@ -36,6 +36,7 @@ from .scoring import (
     QGISChecksResult,
     SemanticAnalysisResult,
 )
+from .signal_resolver import aggregate_signal_reports
 
 # Heuristic thresholds for optimization suggestions.
 _COMPLEXITY_HOTSPOT_CC = 15
@@ -146,6 +147,18 @@ def get_research_summary(modules_data: list[ModuleAnalysisResult]) -> dict[str, 
         total_legacy_signals += q_ctx.get("legacy_signals_count", 0)
         all_signal_leaks.update(q_ctx.get("signal_leaks", []))
 
+    qgis_context_summary: dict[str, Any] = {
+        "gdal_styles": gdal_styles,
+        "pyqt_usage": pyqt_versions,
+        "uses_processing": processing_usage,
+        "total_legacy_signals": total_legacy_signals,
+        "signal_leaks": sorted(list(all_signal_leaks)),
+    }
+    signal_report = aggregate_signal_reports(modules_data)
+    if signal_report is not None:
+        qgis_context_summary["signal_connections"] = signal_report
+        qgis_context_summary["signal_leaks"] = signal_report["signal_leaks"]
+
     return {
         "type_hint_coverage": (
             round((annotated_params / max(1, total_params)) * 100, 1) if total_params > 0 else 0.0
@@ -159,13 +172,7 @@ def get_research_summary(modules_data: list[ModuleAnalysisResult]) -> dict[str, 
             else 0.0
         ),
         "detected_docstring_styles": sorted(list(detected_styles)),
-        "qgis_context_summary": {
-            "gdal_styles": gdal_styles,
-            "pyqt_usage": pyqt_versions,
-            "uses_processing": processing_usage,
-            "total_legacy_signals": total_legacy_signals,
-            "signal_leaks": sorted(list(all_signal_leaks)),
-        },
+        "qgis_context_summary": qgis_context_summary,
     }
 
 

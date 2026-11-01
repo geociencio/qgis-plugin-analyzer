@@ -33,7 +33,7 @@ The listed severity is the analyzer's default emitted severity; a profile
 | `UI_BLOCKING_LOOP` | 🔴 High | Intensive loops (getFeatures, sleep) in UI handlers without QgsTask. | Move heavy operations to a `QgsTask` to avoid freezing the interface. |
 | `UNSAFE_THREAD` | 🔴 High | Use of standard Python `threading.Thread`. | Use `QgsTask` or `QThread` to safely interact with the QGIS main thread. |
 | `POTENTIAL_MISSING_SLOT` | 🟡 Medium | Signal connected to a method that doesn't exist in the class. | Verify the slot name exists and is correctly spelled in the target class. |
-| ~~`SIGNAL_LEAK`~~ | — | Signals connected in `initGui()` but not disconnected in `unload()` (informational; surfaced via `qgis_context.signal_leaks`, **not** emitted as an issue). | Ensure every `.connect()` in `initGui` has a matching `.disconnect()` in `unload`. |
+| ~~`SIGNAL_LEAK`~~ | — | Unmatched signal connect/disconnect paths within the configured scope (informational by default; `qgis_context.signal_connections` exposes file, line, slot, confidence and lifetime). | Disconnect in `unload()` or rely on a documented Qt lifetime; review `analyze --signals` and opt in with `emit=true` for a gate. |
 
 ## 4. Security
 

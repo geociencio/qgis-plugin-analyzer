@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- **Signal connection analysis**: `SIGNAL_LEAK` now resolves connect/disconnect events per connection, with `file`, `line`, `scope`, `sender`, `receiver`, `slot`, `status`, `confidence`, `lifetime` and `connection_type`. Loop variables, simple aliases, duplicate connections, `Qt.UniqueConnection` and explicit lifetime evidence are handled; `--signals` prints the detailed informational list.
+- `[tool.qgis-analyzer.profiles.<profile>.rules.SIGNAL_LEAK]` accepts `emit`, `scope`, `confidence`, `include_benign`, `ignore_senders` and `ignore_paths`.
+- `research_metrics.qgis_context.signal_connections` and `qgis_context_summary.signal_connections` provide stable per-connection JSON; `signal_leaks` remains as a deprecated sender-string list.
+
+### Changed
+- The summary now labels the signal block as informational and only prints detailed paths with `--signals`; the 🚨 banner is gone.
+- Signal collection is cached per module and resolved at project scope, so `scope`/`confidence` changes do not require re-analysis.
+
 ## [1.18.1] - 2026-11-01
 
 ### Fixed

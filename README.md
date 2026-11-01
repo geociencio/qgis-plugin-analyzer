@@ -15,12 +15,12 @@
 
 **Quality Metrics:**
 
-![Module Stability](https://img.shields.io/badge/Module%20Stability-54.0%2F100-yellow?style=flat-square)
+![Module Stability](https://img.shields.io/badge/Module%20Stability-53.6%2F100-yellow?style=flat-square)
 ![Maintainability](https://img.shields.io/badge/Maintainability-99.9%2F100-brightgreen?style=flat-square)
 ![Security Score](https://img.shields.io/badge/Security--Bandit-100.0%2F100-brightgreen?style=flat-square)
 ![Type Coverage](https://img.shields.io/badge/Type%20Hints-100.0%25-brightgreen?style=flat-square)
 ![Docstring Coverage](https://img.shields.io/badge/Docstrings-100.0%25-brightgreen?style=flat-square)
-![Tests](https://img.shields.io/badge/Tests-285%2F285%20passing-brightgreen?style=flat-square&logo=pytest)
+![Tests](https://img.shields.io/badge/Tests-305%2F305%20passing-brightgreen?style=flat-square&logo=pytest)
 
 The **QGIS Plugin Analyzer** is a static analysis tool designed specifically for QGIS (PyQGIS) plugin developers. Its goal is to elevate plugin quality by ensuring they follow community best practices and are optimized for AI-assisted development.
 
@@ -31,7 +31,7 @@ The **QGIS Plugin Analyzer** is a static analysis tool designed specifically for
 - **Bandit-inspired Security Core**: Detects `eval`/`exec` (B307/B102), unsafe `pickle` (B301), `shell=True` (B602), SQL injection (B608) and hardcoded secrets; findings carry CWE ids.
 - **External security tools (optional)**: `security --tools bandit,detect-secrets,flake8` runs the real portal tools, normalizes their findings (`portal_severity`, `blocking`) and emits `--json`; missing tools are reported as `tool_unavailable` with exit code `2`.
 - **Deep Entropy Secret Scanner**: Detect hardcoded API keys, passwords and tokens via regex + information entropy (`security --deep`).
-- **Extended Safety Audit**: Signal leaks, missing slots and UI-blocking loops, with `QgsTask` suggestions.
+- **Extended Safety Audit**: Unmatched signal connect/disconnect paths, missing slots and UI-blocking loops, with `QgsTask` suggestions.
 - **Qt Resource Validation**: Detects missing/broken resource paths (`:/plugins/...`).
 
 **QGIS standards & modernization**
@@ -204,6 +204,15 @@ MANUAL_RESOURCE_PATH = "ignore" # Ignore resource path checks
 [tool.qgis-analyzer.profiles.default.rules.MISSING_I18N]
 extra_ignore_calls = ["customSetLabel"]
 extra_exact_ignores = ["My App Name"]
+
+# Informational signal matching (opt in to a gate with emit = true):
+[tool.qgis-analyzer.profiles.default.rules.SIGNAL_LEAK]
+emit = false
+scope = "class"           # function | class | file
+confidence = "low"        # low shows all; medium/high reduce noise
+include_benign = false
+ignore_senders = []
+ignore_paths = []
 ```
 
 Precedence is **CLI > profile > default**: `security --profile portal` uses
@@ -254,6 +263,7 @@ Audits an existing QGIS plugin repository with optional specialized scopes.
 | `--max-cc N` | Fail analysis if any function exceeds this cyclomatic complexity. | off |
 | `--workers N` | Number of parallel worker processes (clamped to `1..4` to bound memory). | `min(4, cpu-1)` |
 | `--no-cache` | Disable the incremental per-file analysis cache. | `False` |
+| `--signals` | Print detailed unmatched signal paths (informational). | `False` |
 
 **Ignore files and exclusions**
 
@@ -379,6 +389,7 @@ Written to the `--output` directory (default `./analysis_results`):
   - `repository_compliance` includes `constraint_errors` (blocking, e.g. binaries) and `constraint_warnings` (informational size).
   - `patterns` (design patterns) and `optimizations` (`module_too_large`, `complexity_refactoring`).
   - Per module: `path`, `lines`, `complexity`, `imports`, `functions`, `classes`, `ast_issues`, `research_metrics` (type-hint/docstring coverage, `halstead`).
+  - `research_metrics.qgis_context.signal_connections`: per-connection `sender`, `receiver`, `slot`, `status`, `confidence`, `lifetime`, `connection_type`; `qgis_context_summary.signal_connections` aggregates them. `signal_leaks` remains a deprecated sender-string list.
   - `cc_gate` / `cc_violations` when `--max-cc` is used with `--json`.
   - `security --json` emits its own envelope: `schema`/`schema_version`, `analyzer_version`, `command`, `scope`, `tools`, `tool_status`, `tool_unavailable`, `findings` (`portal_severity`, `blocking`, `tool`), `summary` and `exit_code`.
 - **`PROJECT_SUMMARY.md`** / **`PROJECT_SUMMARY.html`** — human-readable report.

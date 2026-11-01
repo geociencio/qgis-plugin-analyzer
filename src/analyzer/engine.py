@@ -35,6 +35,7 @@ from .module_cache import build_cache
 from .parallel_analysis import chunk_files, run_parallel_analysis
 from .qgis_checks import run_qgis_checks, strict_gate_failed
 from .ruff_audit import run_ruff_audit as _run_ruff_audit
+from .rules.registry import get_rule
 from .scanner import ModuleAnalysisResult
 from .scope_filter import filter_issues_by_scope
 from .scoring import (
@@ -44,6 +45,7 @@ from .scoring import (
 )
 from .security_audit import collect_native_findings, meets_fail_on
 from .semantic import run_semantic_analysis
+from .signal_resolver import report_for_file, resolve_signals
 from .utils import (
     IgnoreMatcher,
     discover_project_files,
@@ -284,6 +286,7 @@ class ProjectAnalyzer:
 
         # 1. Parallel analysis (AST/Visitors) and 2. lint audits
         modules_data = self._maybe_parallel_analysis(files, rules_config, scope)
+        self._resolve_signal_connections(modules_data, rules_config, scope)
         ruff_findings, ruff_metadata, flake8_findings, flake8_metadata = self._collect_linters(
             scope
         )
@@ -363,6 +366,84 @@ class ProjectAnalyzer:
         if scope not in ("all", "i18n", "security", "performance", "architecture"):
             return []
         return self._run_parallel_analysis(files, rules_config, scope)
+
+    @staticmethod
+    def _as_patterns(value: Any) -> list[str]:
+        """Normalize a profile list/string value into pattern strings."""
+        if value is None:
+            return []
+        items = value.split(",") if isinstance(value, str) else list(value)
+        return [str(item).strip() for item in items if str(item).strip()]
+
+    def _resolve_signal_connections(
+        self,
+        modules_data: list[ModuleAnalysisResult],
+        rules_config: dict[str, Any],
+        scope: str,
+    ) -> None:
+        """Resolve signal events at project scope and attach per-module reports."""
+        if scope not in ("all", "performance"):
+            return
+        events: list[dict[str, Any]] = []
+        for module in modules_data:
+            context = module.get("research_metrics", {}).get("qgis_context", {})
+            events.extend(context.get("signal_events", []) or [])
+
+        if not events:
+            for module in modules_data:
+                module.get("research_metrics", {}).get("qgis_context", {}).pop(
+                    "signal_events", None
+                )
+            return
+
+        config = rules_config.get("SIGNAL_LEAK", {})
+        signal_config = config if isinstance(config, dict) else {}
+        report = resolve_signals(
+            events,
+            scope=str(signal_config.get("scope", "class")),
+            confidence=str(signal_config.get("confidence", "low")),
+            include_benign=bool(signal_config.get("include_benign", False)),
+            ignore_senders=self._as_patterns(signal_config.get("ignore_senders")),
+            ignore_paths=self._as_patterns(signal_config.get("ignore_paths")),
+            project_root=self.project_path,
+        )
+        emit = bool(signal_config.get("emit", False))
+        rule = get_rule("SIGNAL_LEAK")
+        severity = rule.severity if rule is not None else "low"
+
+        for module in modules_data:
+            context = module.get("research_metrics", {}).get("qgis_context", {})
+            file_report = report_for_file(report, module.get("path", ""))
+            context["signal_connections"] = file_report
+            context["signal_leaks"] = file_report["signal_leaks"]
+            context.pop("signal_events", None)
+            if emit:
+                self._emit_signal_issues(module, file_report, severity)
+
+    @staticmethod
+    def _emit_signal_issues(
+        module: ModuleAnalysisResult,
+        report: dict[str, Any],
+        severity: str,
+    ) -> None:
+        """Append SIGNAL_LEAK issues for unmatched connection records."""
+        issues = module.setdefault("ast_issues", [])
+        for item in report.get("items", []):
+            if item.get("status") != "unmatched":
+                continue
+            issues.append(
+                {
+                    "file": item.get("file", module.get("path", "")),
+                    "line": item.get("line", 0),
+                    "type": "SIGNAL_LEAK",
+                    "severity": severity,
+                    "message": (
+                        f"Unmatched connect/disconnect path for "
+                        f"{item.get('sender', '')} ({item.get('confidence', 'low')})"
+                    ),
+                    "code": item.get("text", ""),
+                }
+            )
 
     def _filter_ignored_findings(self, findings: list[dict[str, Any]]) -> list[dict[str, Any]]:
         """Drop lint findings whose file is ignored by the project matcher.

@@ -5,24 +5,6 @@ from analyzer.visitors.safety_visitor import SafetyVisitor
 
 
 class TestSafety(unittest.TestCase):
-    def test_signal_leak_detection(self):
-        code = """
-class MyPlugin:
-    def initGui(self):
-        self.iface.mapCanvas().xyCoordinates.connect(self.on_xy)
-        self.btn.clicked.connect(self.do_something)
-
-    def unload(self):
-        self.iface.mapCanvas().xyCoordinates.disconnect(self.on_xy)
-        # Missing disconnect for self.btn.clicked
-    """
-        tree = ast.parse(code)
-        visitor = SafetyVisitor("test.py")
-        visitor.visit(tree)
-
-        self.assertIn("self.btn.clicked", visitor.signal_leaks)
-        self.assertNotIn("self.iface.mapCanvas().xyCoordinates", visitor.signal_leaks)
-
     def test_ui_blocking_loop_detection(self):
         code = """
 class MyPlugin:

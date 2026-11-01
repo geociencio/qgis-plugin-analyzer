@@ -9,9 +9,9 @@ from .base import BaseVisitor
 class SafetyVisitor(BaseVisitor):
     """Visitor to detect QGIS runtime hazards and safety violations.
 
-    Detects:
-    - Signal Leaks: Signals connected but not disconnected in 'unload'.
-    - UI Blocking: Intensive loops in UI handlers without QgsTask.
+    Detects UI-blocking loops in QGIS handlers. Signal connect/disconnect
+    analysis lives in :mod:`analyzer.signal_analysis` so it can be resolved at
+    project scope instead of per file.
     """
 
     def __init__(
@@ -28,8 +28,6 @@ class SafetyVisitor(BaseVisitor):
             scope: Analysis scope.
         """
         super().__init__(rel_path, rules_config, scope)
-        self.connections: set[str] = set()
-        self.disconnections: set[str] = set()
         self.in_ui_handler = False
         self.has_qgs_task = False
 
@@ -70,17 +68,8 @@ class SafetyVisitor(BaseVisitor):
         self.has_qgs_task = self._old_has_task
 
     def visit_Call(self, node: ast.Call) -> None:
-        """Detects signal connections and disconnections."""
+        """Detects potentially slow calls in UI handlers."""
         func_name = self._get_full_attribute_name(node.func)
-
-        if func_name.endswith(".connect"):
-            # Try to identify the signal name (e.g. self.iface.mapCanvas().xyCoordinates)
-            signal = func_name.rsplit(".connect", 1)[0]
-            self.connections.add(signal)
-
-        elif func_name.endswith(".disconnect"):
-            signal = func_name.rsplit(".disconnect", 1)[0]
-            self.disconnections.add(signal)
 
         # UI Blocking checks
         if self.in_ui_handler and not self.has_qgs_task:
@@ -128,8 +117,3 @@ class SafetyVisitor(BaseVisitor):
         if isinstance(node, ast.Attribute):
             return f"{self._get_full_attribute_name(node.value)}.{node.attr}"
         return ""
-
-    @property
-    def signal_leaks(self) -> list[str]:
-        """Returns signals that are connected but never disconnected."""
-        return sorted(list(self.connections - self.disconnections))

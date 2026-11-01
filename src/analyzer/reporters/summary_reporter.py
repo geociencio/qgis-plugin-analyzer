@@ -31,12 +31,14 @@ _CC_HIGH = 15
 _CC_MEDIUM = 8
 
 
-def report_summary(input_path: pathlib.Path, by: str = "total") -> bool:
+def report_summary(input_path: pathlib.Path, by: str = "total", show_signals: bool = False) -> bool:
     """Reads analysis JSON and prints a professional terminal summary.
 
     Args:
         input_path: Path to the project_context.json file.
         by: Granularity level ('total', 'modules', 'functions', 'classes', 'security').
+        show_signals: Print the detailed unmatched signal list instead of only
+            the informational count.
 
     Returns:
         True if the report was successfully generated, False otherwise.
@@ -50,7 +52,7 @@ def report_summary(input_path: pathlib.Path, by: str = "total") -> bool:
             data = json.load(f)
 
         if by == "total":
-            return _report_total(data)
+            return _report_total(data, show_signals=show_signals)
         elif by == "modules":
             return _report_by_modules(data)
         elif by == "functions":
@@ -83,11 +85,12 @@ def _print_quality_indicators(metrics: dict[str, Any]) -> None:
     print_colored_score("- Security Score (Bandit)", metrics.get("security_score", "N/A"))
 
 
-def _print_research_metrics(research: dict[str, Any]) -> None:
+def _print_research_metrics(research: dict[str, Any], show_signals: bool = False) -> None:
     """Print research-based metrics section.
 
     Args:
         research: Dictionary containing research metrics.
+        show_signals: Print the detailed unmatched signal list.
     """
     if not research:
         return
@@ -118,12 +121,42 @@ def _print_research_metrics(research: dict[str, Any]) -> None:
         print(f"- Legacy Signals/Slots: {signals}")
         if q_ctx.get("uses_processing"):
             print("- Processing Framework: Active")
+        _print_signal_connections(q_ctx, show_signals)
 
-        leaks = q_ctx.get("signal_leaks", [])
-        if leaks:
-            print(f"🚨 Signal Leaks Detected: {len(leaks)}")
+
+def _print_signal_connections(q_ctx: dict[str, Any], show_signals: bool) -> None:
+    """Print the informational signal-connection block."""
+    signal_report = q_ctx.get("signal_connections")
+    if isinstance(signal_report, dict):
+        summary = signal_report.get("summary", {})
+        unmatched = int(summary.get("unmatched", 0) or 0)
+        if unmatched:
+            suffix = "" if show_signals else " (informational; use --signals for details)"
+            print(f"ℹ️  Unmatched signal paths: {unmatched}{suffix}")
+        if show_signals:
+            include_benign = bool(signal_report.get("include_benign", False))
+            for item in signal_report.get("items", []):
+                status = item.get("status")
+                if status == "unmatched" or (include_benign and status == "benign"):
+                    _print_signal_item(item)
+        return
+
+    # Legacy compatibility for contexts produced before the resolver.
+    leaks = q_ctx.get("signal_leaks", [])
+    if leaks:
+        print(f"ℹ️  Unmatched signal paths: {len(leaks)} (informational)")
+        if show_signals:
             for signal in leaks:
                 print(f"  - {signal}")
+
+
+def _print_signal_item(item: dict[str, Any]) -> None:
+    """Print one unmatched signal connection."""
+    print(
+        f"  - {item.get('file')}:{item.get('line')} "
+        f"{item.get('sender')} -> {item.get('slot') or '<all>'} "
+        f"[{item.get('confidence')}, {item.get('lifetime') or 'no lifetime'}]"
+    )
 
 
 def _collect_all_issues(data: dict[str, Any]) -> list[dict[str, Any]]:
@@ -188,13 +221,13 @@ def _print_sample_issues(issues: list[dict[str, Any]], limit: int = 5) -> None:
         print(f"... and {len(issues) - limit} more issues.")
 
 
-def _report_total(data: dict[str, Any]) -> bool:
+def _report_total(data: dict[str, Any], show_signals: bool = False) -> bool:
     """Prints the executive total summary."""
     print_header("📋 QGIS Plugin Analyzer: Project Summary")
     print_separator()
 
     _print_quality_indicators(data.get("metrics", {}))
-    _print_research_metrics(data.get("research_summary", {}))
+    _print_research_metrics(data.get("research_summary", {}), show_signals=show_signals)
 
     issues = _collect_all_issues(data)
     if not issues:

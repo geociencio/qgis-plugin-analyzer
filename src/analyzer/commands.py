@@ -96,6 +96,7 @@ def handle_analyze(args: argparse.Namespace) -> None:
     scope = getattr(args, "scope", "all")
     as_json = getattr(args, "json", False)
     max_cc = getattr(args, "max_cc", None)
+    show_signals = bool(getattr(args, "signals", False))
 
     if as_json:
         _route_logs_to_stderr()
@@ -120,7 +121,7 @@ def handle_analyze(args: argparse.Namespace) -> None:
         if as_json:
             _emit_json(context_path, max_cc)
         else:
-            _report_and_gate(context_path, max_cc)
+            _report_and_gate(context_path, max_cc, show_signals=show_signals)
 
     if not success:
         sys.exit(1)
@@ -210,17 +211,20 @@ def _emit_json(context_path: pathlib.Path, max_cc: int | None) -> None:
     sys.stdout.write(json.dumps(data))
 
 
-def _report_and_gate(context_path: pathlib.Path, max_cc: int | None) -> None:
+def _report_and_gate(
+    context_path: pathlib.Path, max_cc: int | None, *, show_signals: bool = False
+) -> None:
     """Prints the human-readable summary and enforces the complexity gate.
 
     Args:
         context_path: Path to ``project_context.json``.
         max_cc: Optional cyclomatic complexity gate.
+        show_signals: Print the detailed unmatched signal list.
 
     Raises:
         SystemExit: When the complexity gate fails (exit code 1).
     """
-    report_summary(context_path)
+    report_summary(context_path, show_signals=show_signals)
     if max_cc is None:
         return
 
