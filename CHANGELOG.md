@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.18.1] - 2026-11-01
+
 ### Fixed
 - **Distribution boundary**: the wheel no longer ships a top-level `__init__.py`, and the sdist prunes `tests/`, `docs/`, `scripts/`, agent state, caches and generated reports. Only the `analyzer` package plus `LICENSE`/`README`/`pyproject.toml` install metadata are distributed.
 

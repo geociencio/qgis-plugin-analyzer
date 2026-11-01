@@ -1,5 +1,14 @@
 # Development Log
 
+## [2026-11-01] Release v1.18.1 — Distribution Boundary Fix
+- **Achievement**: Released the packaging patch so wheels/sdists contain only the analyzer source and install metadata.
+- **Changes**:
+    - Bumped `pyproject.toml` and `uv.lock` to `1.18.1`; verified `qgis-analyzer --version`.
+    - Moved `CHANGELOG.md` `[Unreleased]` to `[1.18.1] - 2026-11-01`; added `docs/releases/notes/v1.18.1.md` and `docs/GITHUB_RELEASE_v1.18.1.md`.
+    - Rebuilt wheel/sdist, verified the boundary and installed both in fresh environments.
+- **Quality**: 285 tests (89.33% coverage); `ruff` + `mypy` clean; self-analysis green with 10 LOW; Module Stability 54.0 · Maintainability 99.9 · Security 100.0.
+- **Release**: `v1.18.1` tag + GitHub release + PyPI pipeline (CI `publish-pypi` on release publication).
+
 ## [2026-11-01] Distribution Boundary Fix
 - **Achievement**: Tightened the wheel/sdist boundary so distributions contain only the analyzer package and install metadata.
 - **Changes**:

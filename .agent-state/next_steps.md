@@ -1,6 +1,6 @@
-# Next Steps — Handover (2026-10-25, v1.18.0)
+# Next Steps — Handover (2026-11-01, v1.18.1)
 
-## Session Summary (topics: `portal_gate` · `ignore_aware_analysis` · `release_v1.18.0`)
+## Session Summary (topics: `portal_gate` · `ignore_aware_analysis` · `distribution_boundary` · `release_v1.18.1`)
 
 Completed the portal-gate integration, fixed the real Bandit/detect-secrets/Flake8
 adapters, shipped the `security --json` contract, and released two minor versions:
@@ -12,15 +12,17 @@ adapters, shipped the `security --json` contract, and released two minor version
 - [x] **v1.18.0** — ordered `.gitignore`/`.qgisignore`/`.analyzerignore` matcher with
   `!` negation, `--exclude` on `analyze`/`security`/`fix`, `--scope` on `analyze`,
   default `docs/`/`tests/` exclusions; GitHub + PyPI.
+- [x] **v1.18.1** — distribution boundary fix: wheel only `analyzer/*` + `.dist-info`,
+  sdist only tool source + install metadata; GitHub + PyPI pending.
 - [x] Real-tool fixes: `flake8_json_reporter` detection and detect-secrets project cwd;
   verified against the installed `[portal]` extras.
 - [x] README, `COMMANDS_GUIDE.md`, CHANGELOG, release notes, `GITHUB_RELEASE_*`, and
-  development log updated; `agent_metrics.json` synced (283 tests, 54.0/99.9/100).
+  development log updated; `agent_metrics.json` synced (285 tests, 54.0/99.9/100).
 - [x] Release pipeline verified: tag → draft release → published release → CI PyPI job.
 
 ## How to Resume
 1. Run `/start-session`.
-2. Nothing pending on the release — **v1.18.0** is live on PyPI and GitHub.
+2. **v1.18.1** is prepared; push the release commit/tag and publish the GitHub release to trigger PyPI.
 3. Read `docs/maintenance/session_2026-10-25_ignore_aware_analysis.md` for the full
    session record.
 

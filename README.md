@@ -67,21 +67,19 @@ The **QGIS Plugin Analyzer** is a static analysis tool designed specifically for
 - **Integrated Lint Analysis**: Runs Ruff and, optionally, Flake8 (`--flake8` / `--linters ruff,flake8`) through the active interpreter, exposing `ruff_metadata` / `flake8_metadata` with explicit `tool_unavailable` flags.
 - **Zero Runtime Dependencies**: Standard library only; Ruff is the only required external tool. Flake8, Bandit and detect-secrets are optional extras (`qgis-analyzer[flake8]`, `[security]`, `[portal]`).
 
-## 🆕 What's New in v1.18.0
+## 🆕 What's New in v1.18.1
 
-**Ignore-aware analysis** — the analyzer now respects your repository's ignore files
-and focuses on plugin code by default.
+**Distribution boundary fix** — no analyzer behavior changes; packages now contain only
+the tool.
 
-- 🔍 **`.gitignore` / `.qgisignore` / `.analyzerignore`** — merged and evaluated in
-  order; the last match wins and `!pattern` re-includes.
-- 🚫 **Default excludes** — `docs/`, `tests/`, `.venv/` and `build/` are skipped, so
-  the source-tree size reflects the plugin code.
-- 🎛️ **`--exclude` / `--scope`** — repeatable excludes on `analyze`/`security`/`fix`,
-  and an explicit scope flag while keeping `analyze [scope] [path]`.
-- 🧹 **Consistent filtering** — Ruff, Flake8 and external security findings are
-  filtered by the same matcher.
+- 📦 **Clean wheel** — only `analyzer/*` + `.dist-info`; the top-level `__init__.py`
+  is gone.
+- 🧹 **Clean sdist** — `tests/`, `docs/`, `scripts/`, agent state and generated
+  reports are pruned; only tool source + install metadata remain.
+- 🛡️ **Regression guards** — `tests/test_packaging.py` pins the setuptools/MANIFEST
+  boundary.
 
-[**📖 Full Release Notes**](docs/releases/notes/v1.18.0.md) | [**🗺️ CLI Commands Roadmap**](docs/research/CLI_COMMANDS_ROADMAP.md)
+[**📖 Full Release Notes**](docs/releases/notes/v1.18.1.md) | [**🗺️ CLI Commands Roadmap**](docs/research/CLI_COMMANDS_ROADMAP.md)
 
 ## 🚀 Installation and Usage
 
