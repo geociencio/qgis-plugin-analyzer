@@ -16,7 +16,8 @@
     - `SIGNAL_LEAK` JSON now exposes per-connection `signal_connections`; `signal_leaks` remains deprecated.
     - Added `--signals`, `SIGNAL_LEAK` profile config (`emit`, `scope`, `confidence`, `include_benign`, `ignore_senders`, `ignore_paths`) and opt-in issue emission before scoring.
     - Updated catalog/RULES.md, summary output and tests (collector, resolver, lifetime, integration).
-- **Quality**: 305 tests (90% coverage); `ruff` + `mypy` clean; self-analysis green with 10 LOW findings.
+    - Fixed issue #1: slot-less `disconnect()` is sender-scoped, tuple-unpacked loops expand per element, and lifetime hints propagate from disposed containers/custom parents.
+- **Quality**: 309 tests (89% coverage); `ruff` + `mypy` clean; self-analysis green with 10 LOW findings.
 
 ## [2026-11-01] Release v1.18.1 — Distribution Boundary Fix
 - **Achievement**: Released the packaging patch so wheels/sdists contain only the analyzer source and install metadata.

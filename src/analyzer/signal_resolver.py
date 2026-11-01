@@ -70,6 +70,7 @@ def resolve_signals(
             record
             for record in pending.values()
             if _same_group(record, disconnect, scope)
+            and record.get("sender") == disconnect.get("sender")
             and _receiver_matches(record, disconnect)
             and _slot_matches(record, disconnect)
         ]

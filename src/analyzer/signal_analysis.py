@@ -11,6 +11,8 @@ import ast
 from dataclasses import asdict, dataclass, replace
 from typing import Any
 
+from .signal_scope import _ScopeState
+
 _CONNECTION_PREFIXES = ("Qt.", "QtCore.Qt.", "PyQt5.QtCore.Qt.", "PyQt6.QtCore.Qt.")
 _PARENTED_CTOR_NAMES = {
     "QDialog",
@@ -77,6 +79,23 @@ def _target_name(node: ast.AST) -> str | None:
     return None
 
 
+def _target_names(node: ast.AST) -> list[str] | None:
+    """Return simple names for a loop/assignment target, including tuples."""
+    if isinstance(node, ast.Name):
+        return [node.id]
+    if isinstance(node, (ast.Tuple, ast.List)):
+        names: list[str] = []
+        for element in node.elts:
+            if isinstance(element, ast.Name):
+                names.append(element.id)
+            elif isinstance(element, ast.Attribute):
+                names.append(ast.unparse(element))
+            else:
+                return None
+        return names
+    return None
+
+
 def _slot_confidence(slot: str | None) -> str:
     """Return low confidence for unknown/dynamic slots."""
     if slot is None or slot.startswith("<"):
@@ -135,105 +154,14 @@ def _add_hint(hints: dict[str, set[str]], kind: str, expression: str) -> None:
 
 def _record_parented_assignment(hints: dict[str, set[str]], target: str, value: ast.AST) -> None:
     """Record an explicit QWidget(parent)-style assignment."""
-    if not isinstance(value, ast.Call):
+    if not isinstance(value, ast.Call) or not value.args:
         return
-    if _call_name(value.func) in _PARENTED_CTOR_NAMES and value.args:
+    name = _call_name(value.func)
+    first_arg = ast.unparse(value.args[0])
+    has_explicit_parent = first_arg in {"self", "parent"} or first_arg.startswith("self.")
+    looks_like_widget = name.endswith(("Widget", "Dialog", "Panel", "Editor", "Selector", "Tab"))
+    if name in _PARENTED_CTOR_NAMES or has_explicit_parent or looks_like_widget:
         _add_hint(hints, "parented", target)
-
-
-class _ScopeState:
-    """Alias and loop bindings for one file's signal collector."""
-
-    def __init__(self) -> None:
-        self.aliases: list[dict[str, str | None]] = [{}]
-        self.loops: list[dict[str, list[str | None] | None]] = []
-
-    def push_scope(self) -> None:
-        """Enter a class/function alias scope."""
-        self.aliases.append({})
-
-    def pop_scope(self) -> None:
-        """Leave the current alias scope."""
-        self.aliases.pop()
-
-    def push_loop(self, name: str, values: list[str | None] | None) -> None:
-        """Bind a loop target for the loop body."""
-        self.loops.append({name: values})
-
-    def pop_loop(self) -> None:
-        """Leave the current loop binding."""
-        self.loops.pop()
-
-    def record_alias(self, target: str, value: ast.AST) -> None:
-        """Store a simple alias, invalidating ambiguous reassignments."""
-        if not isinstance(value, (ast.Name, ast.Attribute)):
-            return
-        canonical = self.canonical(value)
-        aliases = self.aliases[-1]
-        if target in aliases and aliases[target] != canonical:
-            aliases[target] = None
-        else:
-            aliases[target] = canonical
-
-    def loop_values(self, iterable: ast.AST) -> list[str | None] | None:
-        """Expand a literal tuple/list loop into canonical values."""
-        if not isinstance(iterable, (ast.Tuple, ast.List)):
-            return None
-        values: list[str | None] = []
-        for element in iterable.elts:
-            values.extend(self.expand(element))
-        return values or None
-
-    def expand(self, node: ast.AST) -> list[str]:
-        """Resolve a node to one or more canonical expressions."""
-        if isinstance(node, ast.Name):
-            binding = self.binding(node.id)
-            if binding is not None:
-                return [value if value is not None else node.id for value in binding]
-            aliased = self.alias(node.id)
-            return [aliased if aliased is not None else node.id]
-        if isinstance(node, ast.Attribute):
-            bases = self.expand(node.value)
-            return [f"{base}.{node.attr}" for base in bases if base]
-        return [ast.unparse(node)]
-
-    def canonical(self, node: ast.AST) -> str:
-        """Return the first canonical form for a node."""
-        expanded = self.expand(node)
-        return expanded[0] if expanded else ast.unparse(node)
-
-    def binding(self, name: str) -> list[str | None] | None:
-        """Return an active loop binding for ``name``, if any."""
-        for bindings in reversed(self.loops):
-            if name in bindings:
-                return bindings[name]
-        return None
-
-    def alias(self, name: str) -> str | None:
-        """Return an active alias for ``name``, if any."""
-        for aliases in reversed(self.aliases):
-            if name in aliases:
-                return aliases[name]
-        return None
-
-    def alias_is_ambiguous(self, name: str) -> bool:
-        """Return whether ``name`` was reassigned to conflicting expressions."""
-        return any(name in aliases and aliases[name] is None for aliases in reversed(self.aliases))
-
-    def expr_confidence(self, node: ast.AST) -> str:
-        """Estimate whether a sender/receiver could be resolved statically."""
-        if isinstance(node, ast.Name):
-            binding = self.binding(node.id)
-            if binding is not None:
-                return "low" if any(value is None for value in binding) else "high"
-            if self.alias_is_ambiguous(node.id):
-                return "low"
-            return "high"
-        if isinstance(node, ast.Attribute):
-            return self.expr_confidence(node.value)
-        if isinstance(node, (ast.Subscript, ast.Call)):
-            return "low" if isinstance(node, ast.Subscript) else "high"
-        return "low"
 
 
 class _SignalCollector(ast.NodeVisitor):
@@ -283,21 +211,24 @@ class _SignalCollector(ast.NodeVisitor):
             target_name = _target_name(target)
             if target_name:
                 _record_parented_assignment(self._hints, target_name, node.value)
+                self._scope_state.record_factory(target_name, node.value)
                 self._scope_state.record_alias(target_name, node.value)
         self.generic_visit(node)
 
     def visit_For(self, node: ast.For) -> None:
         """Expand literal tuple/list loop variables for the loop body."""
-        target_name = _target_name(node.target)
-        if target_name is None:
+        target_names = _target_names(node.target)
+        if not target_names:
             self.generic_visit(node)
             return
 
-        values = self._scope_state.loop_values(node.iter)
-        self._scope_state.push_loop(target_name, values)
+        bindings = self._scope_state.loop_bindings(node.iter, target_names)
+        for target in target_names:
+            self._scope_state.push_loop(target, bindings.get(target))
         for statement in [*node.body, *node.orelse]:
             self.visit(statement)
-        self._scope_state.pop_loop()
+        for _ in target_names:
+            self._scope_state.pop_loop()
 
     def visit_Call(self, node: ast.Call) -> None:
         """Record connect/disconnect and local lifetime evidence."""
@@ -306,7 +237,9 @@ class _SignalCollector(ast.NodeVisitor):
             if func.attr in {"connect", "disconnect"}:
                 self._record_signal_call(node, func)
             elif func.attr == "deleteLater":
-                _add_hint(self._hints, "delete_later", self._scope_state.canonical(func.value))
+                receiver = self._scope_state.canonical(func.value)
+                _add_hint(self._hints, "delete_later", receiver)
+                self._scope_state.mark_deleted(receiver)
             elif func.attr == "setParent":
                 _add_hint(self._hints, "parented", self._scope_state.canonical(func.value))
         self.generic_visit(node)
@@ -317,7 +250,10 @@ class _SignalCollector(ast.NodeVisitor):
             if event.kind != "connect":
                 continue
             lifetime = self._lifetime_for(event)
-            if lifetime is not None:
+            if lifetime is None and self._scope_state.is_deleted_class(event.class_name):
+                lifetime = "local_widget"
+                self.events[index] = replace(event, lifetime=lifetime, confidence="medium")
+            elif lifetime is not None:
                 self.events[index] = replace(event, lifetime=lifetime)
 
     def _record_signal_call(self, node: ast.Call, func: ast.Attribute) -> None:

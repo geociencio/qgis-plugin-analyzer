@@ -115,6 +115,20 @@ class TestSignalCollection(unittest.TestCase):
         self.assertEqual(report["summary"]["connect_sites"], 2)
         self.assertEqual(report["summary"]["unmatched"], 1)
 
+    def test_slotless_disconnect_only_matches_its_sender(self):
+        report = _report(
+            """
+            class Plugin:
+                def f(self):
+                    self.a.toggled.connect(self.changed.emit)
+                    self.b.toggled.connect(self.changed.emit)
+                    self.changed.disconnect()
+            """
+        )
+
+        self.assertEqual(report["summary"]["matched"], 0)
+        self.assertEqual(report["summary"]["unmatched"], 2)
+
     def test_disconnect_without_slot_consumes_all(self):
         report = _report(
             """
@@ -126,6 +140,21 @@ class TestSignalCollection(unittest.TestCase):
             """
         )
 
+        self.assertEqual(report["summary"]["unmatched"], 0)
+
+    def test_tuple_unpacked_loop_disconnect(self):
+        report = _report(
+            """
+            class Plugin:
+                def connect_signals(self):
+                    self.raster.layerChanged.connect(self.band.setLayer)
+                def disconnect_signals(self):
+                    for signal, slot in ((self.raster.layerChanged, self.band.setLayer),):
+                        signal.disconnect(slot)
+            """
+        )
+
+        self.assertEqual(report["summary"]["matched"], 1)
         self.assertEqual(report["summary"]["unmatched"], 0)
 
     def test_unique_connection_is_deduplicated(self):
@@ -233,6 +262,38 @@ class TestSignalLifetime(unittest.TestCase):
                 def f(self):
                     self.row = QWidget(self)
                     self.row.clicked.connect(self.on_click)
+            """
+        )
+
+        self.assertEqual(report["summary"]["benign"], 1)
+        self.assertEqual(report["items"][0]["lifetime"], "parent_child")
+
+    def test_disposed_container_makes_child_widgets_benign(self):
+        report = _report(
+            """
+            class UnitStyleEditor:
+                def __init__(self):
+                    self.check.toggled.connect(self.visibility_changed.emit)
+            class UnitsEditor:
+                def rebuild(self):
+                    row = UnitStyleEditor(self)
+                    row.deleteLater()
+            """
+        )
+
+        self.assertEqual(report["summary"]["benign"], 1)
+        self.assertEqual(report["items"][0]["lifetime"], "local_widget")
+
+    def test_explicit_parent_panel_is_benign(self):
+        report = _report(
+            """
+            class SidePanel:
+                def __init__(self, parent):
+                    self.parent = parent
+            class MainDialog:
+                def init(self):
+                    self.panel = SidePanel(self)
+                    self.panel.changed.connect(self.on_changed)
             """
         )
 

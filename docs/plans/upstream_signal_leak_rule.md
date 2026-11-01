@@ -18,7 +18,7 @@
 > before scoring, writes `signal_connections` to per-module and summary JSON,
 > keeps the deprecated `signal_leaks`, and only emits `SIGNAL_LEAK` issues with
 > `emit=true`. `analyze --signals` prints the detailed informational list. Tests:
-> 305 passing. Deviation: `include_benign` controls benign detail in the human
+> 309 passing; issue #1 regressions covered (sender-scoped slot-less disconnect, tuple loops, lifetime propagation). Deviation: `include_benign` controls benign detail in the human
 > list; benign records remain in JSON and in the benign count.
 
 ---
