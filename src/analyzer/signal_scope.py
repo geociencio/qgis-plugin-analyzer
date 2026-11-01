@@ -14,6 +14,17 @@ def _call_name(node: ast.AST) -> str:
     return ""
 
 
+def _unwrap_sequence(node: ast.AST) -> ast.AST:
+    """Unwrap ``list``/``tuple`` around a literal sequence."""
+    if (
+        isinstance(node, ast.Call)
+        and _call_name(node.func) in {"list", "tuple"}
+        and len(node.args) == 1
+    ):
+        return node.args[0]
+    return node
+
+
 class _ScopeState:
     """Alias and loop bindings for one file's signal collector."""
 
@@ -70,6 +81,7 @@ class _ScopeState:
 
     def loop_values(self, iterable: ast.AST) -> list[str | None] | None:
         """Expand a literal tuple/list loop into canonical values."""
+        iterable = _unwrap_sequence(iterable)
         if not isinstance(iterable, (ast.Tuple, ast.List)):
             return None
         values: list[str | None] = []
@@ -81,6 +93,7 @@ class _ScopeState:
         self, iterable: ast.AST, targets: list[str]
     ) -> dict[str, list[str | None] | None]:
         """Expand a loop, including tuple-unpacked targets."""
+        iterable = _unwrap_sequence(iterable)
         if len(targets) > 1 and isinstance(iterable, (ast.Tuple, ast.List)):
             bindings: dict[str, list[str | None]] = {target: [] for target in targets}
             for row in iterable.elts:

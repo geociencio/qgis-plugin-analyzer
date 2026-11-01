@@ -112,6 +112,17 @@ def _minimum_confidence(values: list[str]) -> str:
     return "high"
 
 
+def _paired_slot(slots: list[str | None], index: int) -> str | None:
+    """Pair an expanded slot with its sender, reusing a single literal slot."""
+    if not slots:
+        return None
+    if index < len(slots):
+        return slots[index]
+    if len(slots) == 1:
+        return slots[0]
+    return None
+
+
 def _is_connection_type(node: ast.AST) -> bool:
     """Return whether a positional argument is a Qt connection type."""
     text = ast.unparse(node)
@@ -156,11 +167,11 @@ def _record_parented_assignment(hints: dict[str, set[str]], target: str, value: 
     """Record an explicit QWidget(parent)-style assignment."""
     if not isinstance(value, ast.Call) or not value.args:
         return
-    name = _call_name(value.func)
-    first_arg = ast.unparse(value.args[0])
-    has_explicit_parent = first_arg in {"self", "parent"} or first_arg.startswith("self.")
-    looks_like_widget = name.endswith(("Widget", "Dialog", "Panel", "Editor", "Selector", "Tab"))
-    if name in _PARENTED_CTOR_NAMES or has_explicit_parent or looks_like_widget:
+    first = value.args[0]
+    if not isinstance(first, (ast.Name, ast.Attribute)):
+        return
+    first_text = ast.unparse(first)
+    if first_text in {"self", "parent"} or first_text.startswith("self."):
         _add_hint(hints, "parented", target)
 
 
@@ -234,15 +245,21 @@ class _SignalCollector(ast.NodeVisitor):
         """Record connect/disconnect and local lifetime evidence."""
         func = node.func
         if isinstance(func, ast.Attribute):
-            if func.attr in {"connect", "disconnect"}:
-                self._record_signal_call(node, func)
-            elif func.attr == "deleteLater":
-                receiver = self._scope_state.canonical(func.value)
-                _add_hint(self._hints, "delete_later", receiver)
-                self._scope_state.mark_deleted(receiver)
-            elif func.attr == "setParent":
-                _add_hint(self._hints, "parented", self._scope_state.canonical(func.value))
+            self._record_call_hint(node, func)
         self.generic_visit(node)
+
+    def _record_call_hint(self, node: ast.Call, func: ast.Attribute) -> None:
+        """Record signal events and lifetime hints for one call."""
+        if func.attr in {"connect", "disconnect"}:
+            self._record_signal_call(node, func)
+        elif func.attr == "deleteLater":
+            receiver = self._scope_state.canonical(func.value)
+            _add_hint(self._hints, "delete_later", receiver)
+            self._scope_state.mark_deleted(receiver)
+        elif func.attr == "setParent":
+            _add_hint(self._hints, "parented", self._scope_state.canonical(func.value))
+        elif func.attr in {"addWidget", "addTab", "setWidget"} and node.args:
+            _add_hint(self._hints, "parented", self._scope_state.canonical(node.args[0]))
 
     def finalize(self) -> None:
         """Attach conservative lifetime hints to connect events."""
@@ -261,12 +278,17 @@ class _SignalCollector(ast.NodeVisitor):
         senders = self._scope_state.expand(func.value)
         if not senders:
             return
-        receiver, slot, connection_type = self._call_parts(node)
-        confidence = _minimum_confidence(
-            [self._scope_state.expr_confidence(func.value), _slot_confidence(slot)]
-        )
+        receiver, slot_expr, connection_type = self._call_parts(node)
+        slot_values: list[str | None]
+        if slot_expr is not None:
+            slot_values = list(self._scope_state.expand(slot_expr))
+        else:
+            slot_values = [None]
+        sender_confidence = self._scope_state.expr_confidence(func.value)
         text = ast.unparse(node)[:_MAX_TEXT]
-        for sender in senders:
+        for index, sender in enumerate(senders):
+            slot = _paired_slot(slot_values, index)
+            confidence = _minimum_confidence([sender_confidence, _slot_confidence(slot)])
             self.events.append(
                 SignalEvent(
                     file=self.rel_path,
@@ -288,8 +310,8 @@ class _SignalCollector(ast.NodeVisitor):
             if func.attr == "connect" and sender.endswith(".destroyed"):
                 _add_hint(self._hints, "destroyed", sender[: -len(".destroyed")])
 
-    def _call_parts(self, node: ast.Call) -> tuple[str | None, str | None, str]:
-        """Return ``(receiver, slot, connection_type)`` for a connect/disconnect."""
+    def _call_parts(self, node: ast.Call) -> tuple[str | None, ast.AST | None, str]:
+        """Return ``(receiver, slot expression, connection_type)``."""
         args = list(node.args)
         connection_type = "auto"
         type_expr: ast.AST | None = None
@@ -310,14 +332,15 @@ class _SignalCollector(ast.NodeVisitor):
             connection_type = _connection_type(type_expr)
 
         receiver: str | None = None
-        slot: str | None = None
+        slot_expr: ast.AST | None = None
         if len(args) >= _RECEIVER_AND_SLOT_ARGS:
             receiver = self._scope_state.canonical(args[0])
-            slot = self._scope_state.canonical(args[1])
+            slot_expr = args[1]
         elif args:
-            slot = self._scope_state.canonical(args[0])
+            slot_expr = args[0]
+            slot = self._scope_state.canonical(slot_expr)
             receiver = "self" if slot.startswith("self.") or slot == "self" else None
-        return receiver, slot, connection_type
+        return receiver, slot_expr, connection_type
 
     def _lifetime_for(self, event: SignalEvent) -> str | None:
         """Classify a connect event from local lifetime hints."""

@@ -284,6 +284,24 @@ class TestSignalLifetime(unittest.TestCase):
         self.assertEqual(report["summary"]["benign"], 1)
         self.assertEqual(report["items"][0]["lifetime"], "local_widget")
 
+    def test_add_widget_marks_a_child_panel_as_parented(self):
+        report = _report(
+            """
+            class MainWindow:
+                def init(self):
+                    self.preview_widget = PreviewWidget()
+                    splitter = QSplitter()
+                    splitter.addWidget(self.preview_widget)
+            class MainDialog:
+                def init(self):
+                    panel = self.preview_widget.side_panel
+                    panel.changed.connect(self.on_changed)
+            """
+        )
+
+        self.assertEqual(report["summary"]["benign"], 1)
+        self.assertEqual(report["items"][0]["lifetime"], "parent_child")
+
     def test_explicit_parent_panel_is_benign(self):
         report = _report(
             """
@@ -299,6 +317,63 @@ class TestSignalLifetime(unittest.TestCase):
 
         self.assertEqual(report["summary"]["benign"], 1)
         self.assertEqual(report["items"][0]["lifetime"], "parent_child")
+
+    def test_translated_text_is_not_a_parent(self):
+        report = _report(
+            """
+            class Tab:
+                def __init__(self):
+                    self.a = QRadioButton(self.tr("A"))
+                    self.b = QRadioButton(self.tr("B"))
+                    self.reset = QPushButton(self.tr("Reset"))
+                def connect_signals(self):
+                    self.a.toggled.connect(self.changed.emit)
+                    self.b.toggled.connect(self.changed.emit)
+                    self.reset.clicked.connect(self.reset_units)
+                def disconnect_signals(self):
+                    self.changed.disconnect()
+            """
+        )
+
+        self.assertEqual(report["summary"]["matched"], 0)
+        self.assertEqual(report["summary"]["unmatched"], 3)
+        self.assertEqual(report["summary"]["benign"], 0)
+
+    def test_list_wrapped_literal_loop_is_resolved(self):
+        report = _report(
+            """
+            class Tasks:
+                def start(self):
+                    self.task.finished.connect(self.on_finished)
+                def cancel(self):
+                    for task in list([self.task]):
+                        task.finished.disconnect()
+            """
+        )
+
+        self.assertEqual(report["summary"]["matched"], 1)
+        self.assertEqual(report["summary"]["unmatched"], 0)
+
+    def test_tuple_loop_pairs_each_sender_with_its_slot(self):
+        report = _report(
+            """
+            class Dem:
+                def connect_signals(self):
+                    self.raster.layerChanged.connect(self.band.setLayer)
+                    self.raster.layerChanged.connect(self.update_stats)
+                    self.band.bandChanged.connect(self.update_stats)
+                def disconnect_signals(self):
+                    for signal, slot in (
+                        (self.raster.layerChanged, self.band.setLayer),
+                        (self.raster.layerChanged, self.update_stats),
+                        (self.band.bandChanged, self.update_stats),
+                    ):
+                        signal.disconnect(slot)
+            """
+        )
+
+        self.assertEqual(report["summary"]["matched"], 3)
+        self.assertEqual(report["summary"]["unmatched"], 0)
 
     def test_self_attribute_without_lifetime_evidence_is_not_benign(self):
         report = _report(
