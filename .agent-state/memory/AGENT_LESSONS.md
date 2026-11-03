@@ -15,6 +15,44 @@ See `.agent/memory/memory_policy.md` for the full policy.
 lessons:
 
   # --- ACTIVE LESSONS (< 90 days or not yet in a SKILL.md) ---
+  - date: '2026-11-02'
+    category: TOOLING
+    topic: agent_metrics last_session is not refreshed by sync_metrics.py
+    lesson: >-
+      `agent_metrics.json` keeps two stores: `sessions[]`, which
+      `scripts/sync_metrics.py` replaces for the current day, and `last_session`,
+      which only `forge.py metrics close-session` rotates. The 2026-11-01 session
+      ran sync_metrics but never rotated, so `/start-session` on 2026-11-02
+      computed its delta against a stale 2026-10-26 record (283 tests, 54.0)
+      instead of the live 313 tests / 53.5.
+    action: >-
+      Always finish with `forge.py metrics close-session --topic <topic>`; when
+      `last_session.date` is older than the newest `sessions[]` entry, compute
+      deltas from that entry and report the stale block instead of blaming code.
+  - date: '2026-11-02'
+    category: TOOLING
+    topic: forge.py subcommands execute on unknown flags
+    lesson: >-
+      `forge.py metrics close-session --help` does not print help: the dispatcher
+      passes `--help` through, finds no `--topic`, and performs the rotation.
+      That run archived a spurious `2026-11-03 / session` entry before the real
+      close, which had to be removed by hand.
+    action: >-
+      Never probe forge subcommands with `--help`; run the bare subcommand only
+      when you intend the mutation, and diff `agent_metrics.json` afterwards.
+  - date: '2026-11-02'
+    category: TOOLING
+    topic: forge close-session stamps the UTC date, not the local date
+    lesson: >-
+      `forge_metrics.rotate_session_history` uses
+      `datetime.now(timezone.utc)`, so an evening session in a negative-UTC
+      offset (21:00 EST) is recorded as the next day while
+      `scripts/sync_metrics.py` (via `date.today()`) uses the local date. The two
+      stores then disagree by one day.
+    action: >-
+      When closing after UTC midnight, normalize `last_session.date` to the local
+      session date so it matches `sessions[]`, the session record and the log,
+      and mention the mismatch in the session summary.
   - date: '2026-10-25'
     category: TESTING
     topic: Mocks hid two real third-party integration bugs
