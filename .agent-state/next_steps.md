@@ -8,7 +8,7 @@ framework tests. `scripts/sync_metrics.py` refreshed the 2026-11-02 entry and
 this close rotated `last_session` (the old block still pointed at 2026-10-26/283
 tests). Only `.agent-state/` bookkeeping changed; release line unchanged.
 
-## Session Summary (topics: `portal_gate` · `ignore_aware_analysis` · `distribution_boundary` · `signal_connections` · `release_v1.19.2`)
+## Session Summary (topics: `portal_gate` · `ignore_aware_analysis` · `distribution_boundary` · `signal_connections` · `release_v1.19.3`)
 
 Completed the portal-gate integration, fixed the real Bandit/detect-secrets/Flake8
 adapters, shipped the `security --json` contract, and released two minor versions:
@@ -25,15 +25,16 @@ adapters, shipped the `security --json` contract, and released two minor version
 - [x] **v1.19.0** — per-connection `SIGNAL_LEAK` resolver, `--signals`, opt-in `emit`, JSON contract; **released on GitHub + PyPI** (CI `publish-pypi`).
 - [x] Issue #1 regression fixes; **released in v1.19.1** on GitHub + PyPI (CI `publish-pypi`).
 - [x] Issue #1 follow-ups R4–R6 (+R3 addWidget hints); **released in v1.19.2** on GitHub + PyPI.
+- [x] v1.19.3 — single CLI entry point (`analyzer.main:main`), `python -m analyzer`; release prepared.
 - [x] Real-tool fixes: `flake8_json_reporter` detection and detect-secrets project cwd;
   verified against the installed `[portal]` extras.
 - [x] README, `COMMANDS_GUIDE.md`, CHANGELOG, release notes, `GITHUB_RELEASE_*`, and
-  development log updated; `agent_metrics.json` synced (285 tests, 54.0/99.9/100).
+  development log updated; `agent_metrics.json` synced (313 tests, 53.9/99.9/100).
 - [x] Release pipeline verified: tag → draft release → published release → CI PyPI job.
 
 ## How to Resume
 1. Run `/start-session`.
-2. Nothing pending on the release — **v1.19.2** is live on PyPI and GitHub.
+2. **v1.19.3** is prepared; push the release commit/tag and publish the GitHub release to trigger PyPI.
 3. Read `docs/maintenance/session_2026-10-25_ignore_aware_analysis.md` for the full
    session record.
 
@@ -52,7 +53,7 @@ adapters, shipped the `security --json` contract, and released two minor version
 
 ## 🐛 Known Issues
 
-**None blocking** — 313 tests passing; `ruff check` + `mypy src/` clean; self-analysis
+**None blocking** — 318 tests passing; `ruff check` + `mypy src/` clean; self-analysis
 `--max-cc 15` green (max func CC 13); self-run issues are 10 LOW
 (`SPAGHETTI_CODE` 8, `GOD_OBJECT` 2).
 

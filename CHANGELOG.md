@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.19.3] - 2026-11-05
+
+### Added
+- `python -m analyzer` now runs the same CLI as the installed `qgis-analyzer` script via `src/analyzer/__main__.py`.
+
+### Changed
+- `src/analyzer/cli/__init__.py` is now a pure `CLIApp` re-export; the duplicated `analyzer.cli.main` implementation was removed.
+- `analyzer.main:main` remains the only canonical entry point and `pyproject.toml` is unchanged.
+
 ## [1.19.2] - 2026-11-01
 
 ### Fixed
