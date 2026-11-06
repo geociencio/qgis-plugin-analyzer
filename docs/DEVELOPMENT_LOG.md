@@ -7,7 +7,7 @@
     - Added `src/analyzer/__main__.py`; `qgis-analyzer` and `python -m analyzer.main` remain valid.
     - Added `tests/test_cli_entrypoints.py` and bumped to `1.19.3`.
 - **Quality**: 318 tests (89.5% coverage); `ruff` + `mypy` clean; self-analysis green with 10 LOW; Module Stability 53.9 · Maintainability 99.9 · Security 100.0.
-- **Release**: `v1.19.3` tag + GitHub release + PyPI pipeline.
+- **Release**: **v1.19.3 published** on GitHub and PyPI (CI `publish-pypi`) on 2026-11-05.
 
 ## [2026-11-02] Session Close — Post-release Init Validation
 - **Achievement**: Revalidated the post-v1.19.2 state end to end and closed a validation-only session with an accurate handover; no code changes were needed.
